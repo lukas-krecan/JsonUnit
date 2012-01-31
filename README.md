@@ -12,6 +12,21 @@ simple:
     
 When the values are compared, order of elements and whitespaces are ignored. On the other hand values 1 and 1.0 are considered to be different.  
 
+Maven dependency
+----------------
+JsonUnit is accessible in Maven central repository
+	
+	<dependency>
+    	<groupId>net.javacrumbs.json-unit</groupId>
+    	<artifactId>json-unit</artifactId>
+    	<version>0.0.2</version>
+	</dependency>
+	
+Licence
+-------
+JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/LICENSE-2.0)
+
+
 Known limitations
 -----------------
 1. It's not much extensible. The interface is intentionally simple, extensibility might be added in the future. 
