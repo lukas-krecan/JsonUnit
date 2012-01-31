@@ -63,6 +63,21 @@ public class JsonAssertTest {
 			assertEquals("JSON documents are different:\nDifferent keys found in node \"\". Expected [test], got [foo].\n", e.getMessage());
 		}
 	}
+
+	@Test
+	public void testNullOk() {
+		assertJsonEquals("{\"test\":null}", "{\n\"test\": null\n}");
+	}
+	
+	@Test
+	public void testNullFail() {
+		try {
+			assertJsonEquals("{\"test\":null}", "{\n\"test\": 1\n}");
+			fail("Exception expected");
+		} catch (AssertionError e) {
+			assertEquals("JSON documents are different:\nDifferent types found in node \"test\". Expected NULL, got NUMBER.\n", e.getMessage());
+		}
+	}
 	
 	@Test
 	public void testExtraRootKey() {
@@ -73,7 +88,7 @@ public class JsonAssertTest {
 			assertEquals("JSON documents are different:\nDifferent keys found in node \"\". Expected [test], got [foo, test].\n", e.getMessage());
 		}
 	}
-	
+
 	@Test
 	public void testMissingRootKey() {
 		try {
@@ -182,6 +197,20 @@ public class JsonAssertTest {
 		} catch (AssertionError e) {
 			assertEquals("JSON documents are different:\nDifferent types found in node \"test\". Expected NUMBER, got STRING.\n", e.getMessage());
 		}
+	}
+
+	@Test
+	public void testEmpty() {
+		try {
+			assertJsonEquals("{\"test\":{}}", "{\n\"test\": \"something\"\n}");
+			fail("Exception expected");
+		} catch (AssertionError e) {
+			assertEquals("JSON documents are different:\nDifferent types found in node \"test\". Expected OBJECT, got STRING.\n", e.getMessage());
+		}
+	}
+	@Test
+	public void testEmptyOk() {
+		assertJsonEquals("{\"test\":{}}", "{\n\"test\": {}\n}");
 	}
 	
 

@@ -41,7 +41,7 @@ class Diff {
 	private final ObjectNode actualRoot;
 	private final List<String> differences = new ArrayList<String>();	
 	
-	private enum NodeType {OBJECT, ARRAY, STRING, NUMBER, BOOLEAN};
+	private enum NodeType {OBJECT, ARRAY, STRING, NUMBER, BOOLEAN, NULL};
 	
 	public Diff(ObjectNode expected, ObjectNode actual) {
 		super();
@@ -109,6 +109,9 @@ class Diff {
 				case BOOLEAN:
 					compareValues(expectedNode.getBooleanValue(), actualNode.getBooleanValue(), fieldPath);
 					break;
+				case NULL:
+					//nothing
+					break;
 				default:
 					throw new IllegalStateException("Unexpected node type "+expectedNodeType);
 			}
@@ -164,6 +167,8 @@ class Diff {
 			return NodeType.NUMBER;
 		} else if (node.isBoolean()) {
 			return NodeType.BOOLEAN;
+		} else if (node.isNull()) {
+			return NodeType.NULL;
 		} else {
 			throw new IllegalStateException("Unexpected node type "+node);
 		}
