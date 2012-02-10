@@ -163,8 +163,45 @@ public class JsonAssertTest {
 	@Test
 	public void testComplexErrors() {
 		try {
-			assertJsonEquals("{\"test\":[1, 2, {\"child\":{\"value1\":1, \"value2\":true, \"value3\": \"test\", \"value4\":{\"leaf\":5}}}], \"root2\": false, \"root3\" :1}", 
-				"{\"test\":[5, false, {\"child\":{\"value1\":5, \"value2\":\"true\", \"value3\": \"test\", \"value4\":{\"leaf2\":5}}, \"child2\":{}}], \"root4\": \"bar\"}");
+			assertJsonEquals("{\n" + 
+					"   \"test\":[\n" + 
+					"      1,\n" + 
+					"      2,\n" + 
+					"      {\n" + 
+					"         \"child\":{\n" + 
+					"            \"value1\":1,\n" + 
+					"            \"value2\":true,\n" + 
+					"            \"value3\":\"test\",\n" + 
+					"            \"value4\":{\n" + 
+					"               \"leaf\":5\n" + 
+					"            }\n" + 
+					"         }\n" + 
+					"      }\n" + 
+					"   ],\n" + 
+					"   \"root2\":false,\n" + 
+					"   \"root3\":1\n" + 
+					"}", 
+				"{\n" + 
+				"   \"test\":[\n" + 
+				"      5,\n" + 
+				"      false,\n" + 
+				"      {\n" + 
+				"         \"child\":{\n" + 
+				"            \"value1\":5,\n" + 
+				"            \"value2\":\"true\",\n" + 
+				"            \"value3\":\"test\",\n" + 
+				"            \"value4\":{\n" + 
+				"               \"leaf2\":5\n" + 
+				"            }\n" + 
+				"         },\n" + 
+				"         \"child2\":{\n" + 
+				"\n" + 
+				"         }\n" + 
+				"      }\n" + 
+				"   ],\n" + 
+				"   \"root4\":\"bar\"\n" + 
+				"}");
+			fail("Exception expected");
 		} catch (AssertionError e) {
 			assertEquals("JSON documents are different:\n" + 
 					"Different keys found in node \"\". Expected [root2, root3, test], got [root4, test].\n" + 

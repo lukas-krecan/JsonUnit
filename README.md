@@ -20,11 +20,13 @@ JsonUnit is accessible in Maven central repository
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit</artifactId>
     	<version>0.0.2</version>
+    	<scope>test</scope>
 	</dependency>
 	
 Licence
 -------
-JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/LICENSE-2.0)
+JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/LICENSE-2.0) It's built on top 
+of [Jackson](http://jackson.codehaus.org/)
 
 
 Known limitations
