@@ -12,6 +12,61 @@ simple:
     
 When the values are compared, order of elements and whitespaces are ignored. On the other hand values 1 and 1.0 are considered to be different.  
 
+Sample output
+-------------
+For example 
+
+    assertJsonEquals("{\n" +
+			"   \"test\":[\n" +
+			"      1,\n" +
+			"      2,\n" +
+			"      {\n" +
+			"         \"child\":{\n" +
+			"            \"value1\":1,\n" +
+			"            \"value2\":true,\n" +
+			"            \"value3\":\"test\",\n" +
+			"            \"value4\":{\n" +
+			"               \"leaf\":5\n" +
+			"            }\n" +
+			"         }\n" +
+			"      }\n" +
+			"   ],\n" +
+			"   \"root2\":false,\n" +
+			"   \"root3\":1\n" +
+			"}",
+			"{\n" +
+			"   \"test\":[\n" +
+			"      5,\n" +
+			"      false,\n" +
+			"      {\n" +
+			"         \"child\":{\n" +
+			"            \"value1\":5,\n" +
+			"            \"value2\":\"true\",\n" +
+			"            \"value3\":\"test\",\n" +
+			"            \"value4\":{\n" +
+			"               \"leaf2\":5\n" +
+			"            }\n" +
+			"         },\n" +
+			"         \"child2\":{\n" +
+			"\n" +
+			"         }\n" +
+			"      }\n" +
+			"   ],\n" +
+			"   \"root4\":\"bar\"\n" +
+			"}");
+			
+Results in
+
+    java.lang.AssertionError: JSON documents are different:
+	Different keys found in node "". Expected [root2, root3, test], got [root4, test].
+	Different value found in node "test[0]". Expected 1, got 5.
+	Different types found in node "test[1]". Expected NUMBER, got BOOLEAN.
+	Different keys found in node "test[2]". Expected [child], got [child, child2].
+	Different value found in node "test[2].child.value1". Expected 1, got 5.
+	Different types found in node "test[2].child.value2". Expected BOOLEAN, got STRING.
+	Different keys found in node "test[2].child.value4". Expected [leaf], got [leaf2].
+
+
 Maven dependency
 ----------------
 JsonUnit is accessible in Maven central repository
@@ -25,7 +80,7 @@ JsonUnit is accessible in Maven central repository
 	
 Licence
 -------
-JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/LICENSE-2.0) It's built on top 
+JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/LICENSE-2.0). It's built on top 
 of [Jackson](http://jackson.codehaus.org/)
 
 
