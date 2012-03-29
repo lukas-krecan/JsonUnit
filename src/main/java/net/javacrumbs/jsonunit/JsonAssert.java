@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ObjectNode;
 
 /**
  * Assertions for comparing JSON. The comparison ignores whitespaces and order of nodes. 
@@ -50,8 +50,8 @@ import org.codehaus.jackson.node.ObjectNode;
 	 * @param actual
 	 */
 	public static void  assertJsonEquals(Reader expected, Reader actual) {
-		ObjectNode expectedNode = readValue(expected, "expected");
-		ObjectNode actualNode = readValue(actual, "actual");
+		JsonNode expectedNode = readValue(expected, "expected");
+		JsonNode actualNode = readValue(actual, "actual");
 		assertJsonEquals(expectedNode, actualNode);
 	}
 
@@ -60,7 +60,7 @@ import org.codehaus.jackson.node.ObjectNode;
 	 * @param expectedNode
 	 * @param actualNode
 	 */
-	public static void assertJsonEquals(ObjectNode expectedNode, ObjectNode actualNode) {
+	public static void assertJsonEquals(JsonNode expectedNode, JsonNode actualNode) {
 		Diff diff = new Diff(expectedNode, actualNode);
 		if (!diff.similar()) {
 			doFail(diff.toString());
@@ -68,9 +68,9 @@ import org.codehaus.jackson.node.ObjectNode;
 	}
 
 	
-	private static ObjectNode readValue(Reader value, String label) {
+	private static JsonNode readValue(Reader value, String label) {
 		try {
-			return MAPPER.readValue(value, ObjectNode.class);
+			return MAPPER.readTree(value);
 		} catch (IOException e) {
 			throw new IllegalArgumentException("Can not parse "+label+" value.", e);
 		}

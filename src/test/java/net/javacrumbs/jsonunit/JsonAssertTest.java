@@ -36,6 +36,33 @@ public class JsonAssertTest {
 		assertJsonEquals("{}", "{}");
 	}
 	@Test
+	public void testArray() {
+		assertJsonEquals("[{\"test\":1}, {\"test\":2}]", "[{\n\"test\": 1\n}, {\"test\": 2}]");
+	}
+	@Test
+	public void testArrayDifferent() {
+		try {
+			assertJsonEquals("[{\"test\":1}, {\"test\":2}]", "[{\n\"test\": 1\n}, {\"test\": 4}]");
+			fail("Exception expected");
+		} catch (AssertionError e) {
+			assertEquals("JSON documents are different:\nDifferent value found in node \"[1].test\". Expected 2, got 4.\n", e.getMessage());
+		}
+	}
+	@Test
+	public void testSimple() {
+		assertJsonEquals("1", "1");
+	}
+	@Test
+	public void testSimpleDifferent() {
+		try {
+			assertJsonEquals("1", "\n2\n");
+			fail("Exception expected");
+		} catch (AssertionError e) {
+			assertEquals("JSON documents are different:\nDifferent value found in node \"\". Expected 1, got 2.\n", e.getMessage());
+		}
+	}
+
+	@Test
 	public void testEqualsNode() throws IOException {
 		assertJsonEquals(MAPPER.readValue("{\"test\":1}", ObjectNode.class) , MAPPER.readValue("{\"test\": 1}", ObjectNode.class));
 	}

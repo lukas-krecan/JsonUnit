@@ -37,13 +37,13 @@ import org.codehaus.jackson.node.ObjectNode;
  *
  */
 class Diff {
-	private final ObjectNode expectedRoot; 
-	private final ObjectNode actualRoot;
+	private final JsonNode expectedRoot; 
+	private final JsonNode actualRoot;
 	private final List<String> differences = new ArrayList<String>();	
 	
 	private enum NodeType {OBJECT, ARRAY, STRING, NUMBER, BOOLEAN, NULL};
 	
-	public Diff(ObjectNode expected, ObjectNode actual) {
+	public Diff(JsonNode expected, JsonNode actual) {
 		super();
 		this.expectedRoot = expected;
 		this.actualRoot = actual;
@@ -53,7 +53,7 @@ class Diff {
 
 	
 	private void compare() {
-		compareObjectNodes(expectedRoot, actualRoot, "");
+		compareNodes(expectedRoot, actualRoot, "");
 	}
 
 
