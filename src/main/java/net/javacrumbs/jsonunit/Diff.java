@@ -91,7 +91,7 @@ class Diff {
 		NodeType expectedNodeType = getNodeType(expectedNode);
 		NodeType actualNodeType = getNodeType(actualNode);
 		if (!expectedNodeType.equals(actualNodeType)) {
-			differenceFound("Different types found in node \"%s\". Expected %s, got %s.", fieldPath, expectedNodeType, actualNodeType);
+			differenceFound("Different values found in node \"%s\". Expected '%s', got '%s'.", fieldPath, expectedNode, actualNode);
 		} else {
 			switch (expectedNodeType) {
 				case OBJECT:

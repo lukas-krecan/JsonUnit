@@ -1,3 +1,6 @@
+## 0.0.4
+* Better error messages in case of different types
+
 ## 0.0.3
 * Support for array types and other oddities in root
 
