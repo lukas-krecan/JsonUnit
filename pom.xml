@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.javacrumbs.json-unit</groupId>
 	<artifactId>json-unit</artifactId>
-	<version>0.0.4-SNAPSHOT</version>
+	<version>0.0.4</version>
 	<url>https://github.com/lukas-krecan/JsonUnit</url>
 
 	<description>Unit testing library that can decide if to JSON documents are equal. Strongly inspired by XmlUnit.</description>
