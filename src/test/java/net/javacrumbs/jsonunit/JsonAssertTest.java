@@ -293,6 +293,11 @@ public class JsonAssertTest {
 	}
 	
 	@Test
+	public void testAssertPartArrayOk() {
+		assertJsonPartEquals("2", "{\"test\":[{\"value\":1},{\"value\":2}]}", "test[1].value");
+	}
+	
+	@Test
 	public void testAssertPartArray() {
 		try {
 			assertJsonPartEquals("3", "{\"test\":[{\"value\":1},{\"value\":2}]}", "test[1].value");

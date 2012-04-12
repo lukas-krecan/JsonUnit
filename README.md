@@ -10,6 +10,8 @@ simple:
     
     assertJsonEquals("{\"test\":1}", "{\n\"foo\": 1\n}");
     
+    assertJsonPartEquals("2", "{\"test\":[{\"value\":1},{\"value\":2}]}", "test[1].value");
+    
 When the values are compared, order of elements and whitespaces are ignored. On the other hand values 1 and 1.0 are considered to be different.  
 
 Sample output
@@ -75,7 +77,7 @@ JsonUnit is accessible in Maven central repository
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit</artifactId>
-    	<version>0.0.4</version>
+    	<version>0.0.5</version>
     	<scope>test</scope>
 	</dependency>
 	
