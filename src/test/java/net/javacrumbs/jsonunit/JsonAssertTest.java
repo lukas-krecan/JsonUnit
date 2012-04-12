@@ -291,6 +291,16 @@ public class JsonAssertTest {
 			assertEquals("JSON documents are different:\nDifferent value found in node \"test.value\". Expected 2, got 1.\n", e.getMessage());
 		}
 	}
+
+	@Test
+	public void testAssertPartSomplex() {
+		try {
+			assertJsonPartEquals("{\"value\":2}", "{\"test\":{\"value\":1}}", "test");
+			fail("Exception expected");
+		} catch (AssertionError e) {
+			assertEquals("JSON documents are different:\nDifferent value found in node \"test.value\". Expected 2, got 1.\n", e.getMessage());
+		}
+	}
 	
 	@Test
 	public void testAssertPartArrayOk() {
