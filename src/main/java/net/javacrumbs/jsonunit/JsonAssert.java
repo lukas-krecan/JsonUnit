@@ -61,10 +61,42 @@ import org.codehaus.jackson.map.ObjectMapper;
 	 * @param actualNode
 	 */
 	public static void assertJsonEquals(JsonNode expectedNode, JsonNode actualNode) {
-		Diff diff = new Diff(expectedNode, actualNode);
+		assertJsonPartEquals(expectedNode, actualNode, "");
+	}
+	
+	/**
+	 * Compares part of the JSON. Path has this format "root.array[0].value".
+	 * @param expected
+	 * @param fullJson
+	 * @param path
+	 */
+	public static void assertJsonPartEquals(JsonNode expected, JsonNode fullJson, String path) {
+		Diff diff = new Diff(expected, fullJson, path);
 		if (!diff.similar()) {
 			doFail(diff.toString());
 		}
+	}
+
+	/**
+	 * Compares part of the JSON. Path has this format "root.array[0].value".
+	 * @param expected
+	 * @param fullJson
+	 * @param path
+	 */
+	public static void assertJsonPartEquals(Reader expected, Reader fullJson, String path) {
+		JsonNode expectedNode = readValue(expected, "expected");
+		JsonNode fullJsonNode = readValue(fullJson, "fullJson");
+		assertJsonPartEquals(expectedNode, fullJsonNode, path);
+	}
+	
+	/**
+	 * Compares part of the JSON. Path has this format "root.array[0].value".
+	 * @param expected
+	 * @param fullJson
+	 * @param path
+	 */
+	public static void assertJsonPartEquals(String expected, String fullJson, String path) {
+		assertJsonPartEquals(new StringReader(expected), new StringReader(fullJson), path);
 	}
 
 	

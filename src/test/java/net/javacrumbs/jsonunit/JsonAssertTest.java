@@ -15,7 +15,7 @@
  */
 package net.javacrumbs.jsonunit;
 
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
+import static net.javacrumbs.jsonunit.JsonAssert.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -276,6 +276,39 @@ public class JsonAssertTest {
 	public void testEmptyOk() {
 		assertJsonEquals("{\"test\":{}}", "{\n\"test\": {}\n}");
 	}
-	
 
+	@Test
+	public void testAssertPartOk() {
+		assertJsonPartEquals("1", "{\"test\":{\"value\":1}}", "test.value");
+	}
+	
+	@Test
+	public void testAssertPart() {
+		try {
+			assertJsonPartEquals("2", "{\"test\":{\"value\":1}}", "test.value");
+			fail("Exception expected");
+		} catch (AssertionError e) {
+			assertEquals("JSON documents are different:\nDifferent value found in node \"test.value\". Expected 2, got 1.\n", e.getMessage());
+		}
+	}
+	
+	@Test
+	public void testAssertPartArray() {
+		try {
+			assertJsonPartEquals("3", "{\"test\":[{\"value\":1},{\"value\":2}]}", "test[1].value");
+			fail("Exception expected");
+		} catch (AssertionError e) {
+			assertEquals("JSON documents are different:\nDifferent value found in node \"test[1].value\". Expected 3, got 2.\n", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testAssertPartNonexistiong() {
+		try {
+			assertJsonPartEquals("2", "{\"test\":{\"value\":1}}", "test.bogus");
+			fail("Exception expected");
+		} catch (AssertionError e) {
+			assertEquals("JSON documents are different:\nNo value found in path \"test.bogus\".\n", e.getMessage());
+		}
+	}
 }

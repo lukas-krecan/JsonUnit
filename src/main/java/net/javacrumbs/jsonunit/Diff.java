@@ -21,10 +21,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
@@ -37,23 +40,51 @@ import org.codehaus.jackson.node.ObjectNode;
  *
  */
 class Diff {
+	private static final Pattern ARRAY_PATTERN = Pattern.compile("(\\w+)\\[(\\d+)\\]");
 	private final JsonNode expectedRoot; 
 	private final JsonNode actualRoot;
-	private final List<String> differences = new ArrayList<String>();	
+	private final List<String> differences = new ArrayList<String>();
+	private final String startPath;	
 	
 	private enum NodeType {OBJECT, ARRAY, STRING, NUMBER, BOOLEAN, NULL};
 	
-	public Diff(JsonNode expected, JsonNode actual) {
+	public Diff(JsonNode expected, JsonNode actual, String startPath) {
 		super();
 		this.expectedRoot = expected;
 		this.actualRoot = actual;
+		this.startPath = startPath;
 	}
 	
 	
 
 	
 	private void compare() {
-		compareNodes(expectedRoot, actualRoot, "");
+		JsonNode part = getStartNode(actualRoot, startPath);
+		if (part.isMissingNode()) {
+			differenceFound("No value found in path \"%s\".", startPath);
+		} else {
+			compareNodes(expectedRoot, part, startPath);
+		}
+	}
+
+	static JsonNode getStartNode(JsonNode actualRoot, String startPath) {
+		if (startPath.isEmpty()) {
+			return actualRoot;
+		}
+
+		JsonNode startNode = actualRoot;
+		StringTokenizer stringTokenizer = new StringTokenizer(startPath, ".");
+		while (stringTokenizer.hasMoreElements()) {
+			String step = stringTokenizer.nextToken();
+			Matcher matcher = ARRAY_PATTERN.matcher(step);
+			if (!matcher.matches()) {
+				startNode = startNode.path(step);
+			} else {
+				startNode = startNode.path(matcher.group(1));
+				startNode = startNode.path(Integer.valueOf(matcher.group(2)));
+			}
+		}
+		return startNode;
 	}
 
 

@@ -1,3 +1,6 @@
+## 0.0.5
+* assertJsonPartEquals added
+
 ## 0.0.4
 * Better error messages in case of different types
 
