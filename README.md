@@ -59,15 +59,15 @@ For example
 			
 Results in
 
-    java.lang.AssertionError: JSON documents are different:
-    Different keys found in node "". Expected [root2, root3, test], got [root4, test].
-    Different value found in node "test[0]". Expected 1, got 5.
-    Different values found in node "test[1]". Expected '2', got 'false'.
-    Different keys found in node "test[2]". Expected [child], got [child, child2].
-    Different value found in node "test[2].child.value1". Expected 1, got 5.
-    Different values found in node "test[2].child.value2". Expected 'true', got '"true"'.
-    Different keys found in node "test[2].child.value4". Expected [leaf], got [leaf2].
-
+	JSON documents have different structures:
+	Different keys found in node "". Expected [root2, root3, test], got [root4, test].
+	Different keys found in node "test[2]". Expected [child], got [child, child2].
+	Different keys found in node "test[2].child.value4". Expected [leaf], got [leaf2].
+	JSON documents have different values:
+	Different value found in node "test[0]". Expected 1, got 5.
+	Different values found in node "test[1]". Expected '2', got 'false'.
+	Different value found in node "test[2].child.value1". Expected 1, got 5.
+	Different values found in node "test[2].child.value2". Expected 'true', got '"true"'.
 
 
 Maven dependency

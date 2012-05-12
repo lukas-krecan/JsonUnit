@@ -23,27 +23,27 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
- * Assertions for comparing JSON. The comparison ignores whitespaces and order of nodes. 
+ * Assertions for comparing JSON. The comparison ignores whitespaces and order of nodes.
  * @author Lukas Krecan
  *
  */
  public class JsonAssert {
-	
+
 	private static final ObjectMapper MAPPER = new ObjectMapper();
-	
+
 	private JsonAssert(){
 		//nothing
 	}
-	
+
 	/**
-	 * Compares to JSON documents. Throws {@link AssertionError} if they are different.
+	 * Compares two JSON documents. Throws {@link AssertionError} if they are different.
 	 * @param expected
 	 * @param actual
 	 */
 	public static void  assertJsonEquals(String expected, String actual) {
 		assertJsonEquals(new StringReader(expected), new StringReader(actual));
 	}
-	
+
 	/**
 	 * Compares to JSON documents. Throws {@link AssertionError} if they are different.
 	 * @param expected
@@ -63,7 +63,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 	public static void assertJsonEquals(JsonNode expectedNode, JsonNode actualNode) {
 		assertJsonPartEquals(expectedNode, actualNode, "");
 	}
-	
+
 	/**
 	 * Compares part of the JSON. Path has this format "root.array[0].value".
 	 * @param expected
@@ -88,7 +88,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 		JsonNode fullJsonNode = readValue(fullJson, "fullJson");
 		assertJsonPartEquals(expectedNode, fullJsonNode, path);
 	}
-	
+
 	/**
 	 * Compares part of the JSON. Path has this format "root.array[0].value".
 	 * @param expected
@@ -99,7 +99,75 @@ import org.codehaus.jackson.map.ObjectMapper;
 		assertJsonPartEquals(new StringReader(expected), new StringReader(fullJson), path);
 	}
 
-	
+
+	/**
+	 * Compares structures of two JSON documents.
+	 * Throws {@link AssertionError} if they are different.
+	 * @param expected
+	 * @param actual
+	 */
+	public static void  assertJsonStructureEquals(String expected, String actual) {
+		assertJsonStructureEquals(new StringReader(expected), new StringReader(actual));
+	}
+
+	/**
+	 * Compares structures of two JSON documents.
+	 * Throws {@link AssertionError} if they are different.
+	 * @param expected
+	 * @param actual
+	 */
+	public static void  assertJsonStructureEquals(Reader expected, Reader actual) {
+		JsonNode expectedNode = readValue(expected, "expected");
+		JsonNode actualNode = readValue(actual, "actual");
+		assertJsonStructureEquals(expectedNode, actualNode);
+	}
+
+	/**
+	 * Compares structures of two JSON documents.
+	 * Throws {@link AssertionError} if they are different.
+	 * @param expectedNode
+	 * @param actualNode
+	 */
+	public static void assertJsonStructureEquals(JsonNode expectedNode, JsonNode actualNode) {
+		assertJsonStructurePartEquals(expectedNode, actualNode, "");
+	}
+
+	/**
+	 * Compares structure of part of the JSON. Path has this format "root.array[0].value".
+	 * @param expected
+	 * @param fullJson
+	 * @param path
+	 */
+	public static void assertJsonStructurePartEquals(JsonNode expected, JsonNode fullJson, String path) {
+		Diff diff = new Diff(expected, fullJson, path);
+		if (!diff.similarStructure()) {
+			doFail(diff.structureDifferences());
+		}
+	}
+
+	/**
+	 * Compares structure of part of the JSON. Path has this format "root.array[0].value".
+	 * @param expected
+	 * @param fullJson
+	 * @param path
+	 */
+	public static void assertJsonStructurePartEquals(Reader expected, Reader fullJson, String path) {
+		JsonNode expectedNode = readValue(expected, "expected");
+		JsonNode fullJsonNode = readValue(fullJson, "fullJson");
+		assertJsonStructurePartEquals(expectedNode, fullJsonNode, path);
+	}
+
+	/**
+	 * Compares structure of part of the JSON. Path has this format "root.array[0].value".
+	 * @param expected
+	 * @param fullJson
+	 * @param path
+	 */
+	public static void assertJsonStructurePartEquals(String expected, String fullJson, String path) {
+		assertJsonStructurePartEquals(new StringReader(expected), new StringReader(fullJson), path);
+	}
+
+
 	private static JsonNode readValue(Reader value, String label) {
 		try {
 			return MAPPER.readTree(value);
@@ -113,6 +181,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 	private static void doFail(String diffMessage) {
 		throw new AssertionError(diffMessage);
 	}
-	
-	
+
+
 }
