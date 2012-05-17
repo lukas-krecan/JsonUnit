@@ -29,9 +29,6 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.javacrumbs.jsonunit.differences.Differences;
-import net.javacrumbs.jsonunit.differences.StructureDifferences;
-import net.javacrumbs.jsonunit.differences.ValueDifferences;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;

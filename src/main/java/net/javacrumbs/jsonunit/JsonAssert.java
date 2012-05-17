@@ -23,7 +23,7 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
 /**
- * Assertions for comparing JSON. The comparison ignores whitespaces and order of nodes.
+ * Assertions for comparing JSON. The comparison ignores white-spaces and order of nodes.
  * @author Lukas Krecan
  *
  */

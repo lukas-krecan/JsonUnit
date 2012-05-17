@@ -15,7 +15,9 @@
  */
 package net.javacrumbs.jsonunit;
 
-import static net.javacrumbs.jsonunit.JsonAssert.*;
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartEquals;
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonStructureEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -335,12 +337,62 @@ public class JsonAssertTest {
 	}
 
 	@Test
+	public void testComplexStructureOk() {
+			assertJsonStructureEquals("{\n" +
+					"   \"test\":[\n" +
+					"      1,\n" +
+					"      2,\n" +
+					"      {\n" +
+					"         \"child\":{\n" +
+					"            \"value1\":1,\n" +
+					"            \"value2\":true,\n" +
+					"            \"value3\":\"test\",\n" +
+					"            \"value4\":{\n" +
+					"               \"leaf\":5\n" +
+					"            }\n" +
+					"         }\n" +
+					"      }\n" +
+					"   ],\n" +
+					"   \"root2\":false,\n" +
+					"   \"root3\":1\n" +
+					"}",
+					"{\n" +
+						"   \"test\":[\n" +
+						"      4,\n" +
+						"      5,\n" +
+						"      {\n" +
+						"         \"child\":{\n" +
+						"            \"value1\":6,\n" +
+						"            \"value2\":false,\n" +
+						"            \"value3\":\"different\",\n" +
+						"            \"value4\":{\n" +
+						"               \"leaf\":6\n" +
+						"            }\n" +
+						"         }\n" +
+						"      }\n" +
+						"   ],\n" +
+						"   \"root2\":true,\n" +
+						"   \"root3\":2\n" +
+						"}");
+				}
+
+	@Test
 	public void testAssertStructureDiffers() {
 		try {
 			assertJsonStructureEquals("[{\"test\":1}, {\"test\":2}]", "[{\n\"test\": 1\n}, {\"TEST\": 4}]");
 			fail("Exception expected");
 		} catch (AssertionError e) {
 			assertEquals("JSON documents have different structures:\nDifferent keys found in node \"[1]\". Expected [test], got [TEST].\n", e.getMessage());
+		}
+	}
+
+	@Test
+	public void testAssertStructureArrayDiffers() {
+		try {
+			assertJsonStructureEquals("[1, 2]", "[1, 2, 3]");
+			fail("Exception expected");
+		} catch (AssertionError e) {
+			assertEquals("JSON documents have different structures:\nArray \"\" has different length. Expected 2, got 3.\n", e.getMessage());
 		}
 	}
 }
