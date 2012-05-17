@@ -29,6 +29,10 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.javacrumbs.jsonunit.differences.Differences;
+import net.javacrumbs.jsonunit.differences.StructureDifferences;
+import net.javacrumbs.jsonunit.differences.ValueDifferences;
+
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -41,29 +45,33 @@ import org.codehaus.jackson.node.ObjectNode;
  */
 class Diff {
 	private static final Pattern ARRAY_PATTERN = Pattern.compile("(\\w+)\\[(\\d+)\\]");
-	private final JsonNode expectedRoot; 
+	private final JsonNode expectedRoot;
 	private final JsonNode actualRoot;
-	private final List<String> differences = new ArrayList<String>();
-	private final String startPath;	
-	
+	private final Differences structureDifferences = new StructureDifferences();
+	private final Differences valueDifferences = new ValueDifferences();
+	private final String startPath;
+	private boolean compared = false;
+
 	private enum NodeType {OBJECT, ARRAY, STRING, NUMBER, BOOLEAN, NULL};
-	
+
 	public Diff(JsonNode expected, JsonNode actual, String startPath) {
 		super();
 		this.expectedRoot = expected;
 		this.actualRoot = actual;
 		this.startPath = startPath;
 	}
-	
-	
 
-	
+
+
 	private void compare() {
-		JsonNode part = getStartNode(actualRoot, startPath);
-		if (part.isMissingNode()) {
-			differenceFound("No value found in path \"%s\".", startPath);
-		} else {
-			compareNodes(expectedRoot, part, startPath);
+		if ( ! compared) {
+			JsonNode part = getStartNode(actualRoot, startPath);
+			if (part.isMissingNode()) {
+				structureDifferenceFound("Missing node in path \"%s\".", startPath);
+			} else {
+				compareNodes(expectedRoot, part, startPath);
+			}
+			compared = true;
 		}
 	}
 
@@ -97,9 +105,9 @@ class Diff {
 	private void compareObjectNodes(ObjectNode expected, ObjectNode actual, String path) {
 		Map<String, JsonNode> expectedFields = getFields(expected);
 		Map<String, JsonNode> actualFields = getFields(actual);
-		
+
 		if (!expectedFields.keySet().equals(actualFields.keySet())) {
-			differenceFound("Different keys found in node \"%s\". Expected %s, got %s.", path, sort(expectedFields.keySet()), sort(actualFields.keySet()));
+			structureDifferenceFound("Different keys found in node \"%s\". Expected %s, got %s.", path, sort(expectedFields.keySet()), sort(actualFields.keySet()));
 		}
 
 		for (String fieldName : commonFields(expectedFields, actualFields)) {
@@ -122,7 +130,7 @@ class Diff {
 		NodeType expectedNodeType = getNodeType(expectedNode);
 		NodeType actualNodeType = getNodeType(actualNode);
 		if (!expectedNodeType.equals(actualNodeType)) {
-			differenceFound("Different values found in node \"%s\". Expected '%s', got '%s'.", fieldPath, expectedNode, actualNode);
+			valueDifferenceFound("Different values found in node \"%s\". Expected '%s', got '%s'.", fieldPath, expectedNode, actualNode);
 		} else {
 			switch (expectedNodeType) {
 				case OBJECT:
@@ -153,17 +161,17 @@ class Diff {
 
 	private void compareValues(Object expectedValue, Object actualValue, String path) {
 		if (!expectedValue.equals(actualValue)) {
-			differenceFound("Different value found in node \"%s\". Expected %s, got %s.", path, expectedValue, actualValue);
+			valueDifferenceFound("Different value found in node \"%s\". Expected %s, got %s.", path, expectedValue, actualValue);
 		}
 	}
 
 
 	private void compareArrayNodes(ArrayNode expectedNode, ArrayNode actualNode, String path) {
-		List<JsonNode> expectedElements = asList(expectedNode.getElements());		
-		List<JsonNode> actualElements = asList(actualNode.getElements());	
+		List<JsonNode> expectedElements = asList(expectedNode.getElements());
+		List<JsonNode> actualElements = asList(actualNode.getElements());
 		if (expectedElements.size()!=actualElements.size()) {
-			differenceFound("Array \"%s\" has different length. Expected %d, got %d.", path, expectedElements.size(), actualElements.size());
-		} 
+			structureDifferenceFound("Array \"%s\" has different length. Expected %d, got %d.", path, expectedElements.size(), actualElements.size());
+		}
 		for (int i=0; i<Math.min(expectedElements.size(), actualElements.size()); i++) {
 			compareNodes(expectedElements.get(i), actualElements.get(i), getArrayPath(path, i));
 		}
@@ -220,7 +228,7 @@ class Diff {
 			return parent+"."+name;
 		}
 	}
-	
+
 	/**
 	 * Constructs path to an array element.
 	 * @param path
@@ -235,8 +243,12 @@ class Diff {
 		}
 	}
 
-	private void differenceFound(String message, Object... arguments) {
-		differences.add(String.format(message, arguments));
+	private void structureDifferenceFound(String message, Object... arguments) {
+		structureDifferences.add(message, arguments);
+	}
+
+	private void valueDifferenceFound(String message, Object... arguments) {
+		valueDifferences.add(message, arguments);
 	}
 
 
@@ -251,11 +263,15 @@ class Diff {
 		return new TreeSet<String>(set);
 	}
 
-	public boolean similar() {
+	public boolean similarStructure() {
 		compare();
-		return differences.isEmpty();
+		return structureDifferences.isEmpty();
 	}
-	
+
+	public boolean similar() {
+		return similarStructure() && valueDifferences.isEmpty();
+	}
+
 	/**
 	 * Returns children of an ObjectNode.
 	 * @param node
@@ -270,17 +286,38 @@ class Diff {
 		}
 		return Collections.unmodifiableMap(result);
 	}
-	
+
 	@Override
 	public String toString() {
-		if (differences.isEmpty()) {
-			return "JSON documents have the same value.";
-		} else {
-			StringBuilder message = new StringBuilder("JSON documents are different:\n");
-			for (String difference : differences) {
-				message.append(difference).append("\n");
-			}
-			return message.toString();
-		}
+		return differences();
 	}
+
+	public String differences() {
+		if (similar()) {
+		    return "JSON documents have the same value.";
+		}
+		StringBuilder message = new StringBuilder();
+		structureDifferences.appendDifferences(message);
+		valueDifferences.appendDifferences(message);
+		return message.toString();
+	}
+
+	public String valueDifferences() {
+		if (similarStructure()) {
+		    return "JSON documents have the same value.";
+		}
+		StringBuilder message = new StringBuilder();
+		valueDifferences.appendDifferences(message);
+		return message.toString();
+	}
+
+	public String structureDifferences() {
+		if (similarStructure()) {
+		    return "JSON documents have the same structure.";
+		}
+		StringBuilder message = new StringBuilder();
+		structureDifferences.appendDifferences(message);
+		return message.toString();
+	}
+
 }
