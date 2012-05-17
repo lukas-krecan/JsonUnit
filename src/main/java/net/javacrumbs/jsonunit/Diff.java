@@ -21,14 +21,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.StringTokenizer;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
@@ -44,8 +43,8 @@ class Diff {
 	private static final Pattern ARRAY_PATTERN = Pattern.compile("(\\w+)\\[(\\d+)\\]");
 	private final JsonNode expectedRoot;
 	private final JsonNode actualRoot;
-	private final Differences structureDifferences = new StructureDifferences();
-	private final Differences valueDifferences = new ValueDifferences();
+	private final Differences structureDifferences = new Differences("structures");
+	private final Differences valueDifferences = new Differences("values");
 	private final String startPath;
 	private boolean compared = false;
 

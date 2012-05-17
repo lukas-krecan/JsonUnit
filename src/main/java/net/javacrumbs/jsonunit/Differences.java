@@ -15,11 +15,41 @@
  */
 package net.javacrumbs.jsonunit;
 
-interface Differences {
+import java.util.ArrayList;
+import java.util.List;
 
-	String getDifferenceType();
-	void add(String message, Object... args);
-	void add(String message);
-	boolean isEmpty();
-	void appendDifferences(StringBuilder builder);
+class Differences {
+
+	private String differenceType;
+	private List<String> messages = new ArrayList<String>();
+
+	protected Differences(String differenceType) {
+		this.differenceType = differenceType;
+	}
+
+	public String getDifferenceType() {
+		return differenceType;
+	}
+
+	public void add(String message, Object... args) {
+		add(String.format(message, args));
+	}
+
+	public void add(String message) {
+		messages.add(message);
+	}
+
+	public boolean isEmpty() {
+		return messages.isEmpty();
+	}
+
+	public void appendDifferences(StringBuilder builder) {
+		if ( ! messages.isEmpty()) {
+			builder.append("JSON documents have different " + getDifferenceType() + ":\n");
+			for (String message : messages) {
+				builder.append(message).append("\n");
+			}
+	    }
+	}
+
 }
