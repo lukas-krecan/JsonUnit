@@ -129,7 +129,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 	 * @param actualNode
 	 */
 	public static void assertJsonStructureEquals(JsonNode expectedNode, JsonNode actualNode) {
-		assertJsonStructurePartEquals(expectedNode, actualNode, "");
+		assertJsonPartStructureEquals(expectedNode, actualNode, "");
 	}
 
 	/**
@@ -138,7 +138,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 	 * @param fullJson
 	 * @param path
 	 */
-	public static void assertJsonStructurePartEquals(JsonNode expected, JsonNode fullJson, String path) {
+	public static void assertJsonPartStructureEquals(JsonNode expected, JsonNode fullJson, String path) {
 		Diff diff = new Diff(expected, fullJson, path);
 		if (!diff.similarStructure()) {
 			doFail(diff.structureDifferences());
@@ -151,10 +151,10 @@ import org.codehaus.jackson.map.ObjectMapper;
 	 * @param fullJson
 	 * @param path
 	 */
-	public static void assertJsonStructurePartEquals(Reader expected, Reader fullJson, String path) {
+	public static void assertJsonPartStructureEquals(Reader expected, Reader fullJson, String path) {
 		JsonNode expectedNode = readValue(expected, "expected");
 		JsonNode fullJsonNode = readValue(fullJson, "fullJson");
-		assertJsonStructurePartEquals(expectedNode, fullJsonNode, path);
+		assertJsonPartStructureEquals(expectedNode, fullJsonNode, path);
 	}
 
 	/**
@@ -163,8 +163,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 	 * @param fullJson
 	 * @param path
 	 */
-	public static void assertJsonStructurePartEquals(String expected, String fullJson, String path) {
-		assertJsonStructurePartEquals(new StringReader(expected), new StringReader(fullJson), path);
+	public static void assertJsonPartStructureEquals(String expected, String fullJson, String path) {
+		assertJsonPartStructureEquals(new StringReader(expected), new StringReader(fullJson), path);
 	}
 
 
