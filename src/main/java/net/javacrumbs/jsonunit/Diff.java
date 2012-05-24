@@ -72,7 +72,7 @@ class Diff {
 	}
 
 	static JsonNode getStartNode(JsonNode actualRoot, String startPath) {
-		if (startPath.isEmpty()) {
+		if (startPath.length() == 0) {
 			return actualRoot;
 		}
 
@@ -218,7 +218,7 @@ class Diff {
 	 * @return
 	 */
 	private String getPath(String parent, String name) {
-		if (parent.isEmpty()) {
+		if (parent.length() == 0) {
 			return name;
 		} else {
 			return parent+"."+name;
@@ -232,7 +232,7 @@ class Diff {
 	 * @return
 	 */
 	private String getArrayPath(String parent, int i) {
-		if (parent.isEmpty()) {
+		if (parent.length() == 0) {
 			return "["+i+"]";
 		} else {
 			return parent+"["+i+"]";
