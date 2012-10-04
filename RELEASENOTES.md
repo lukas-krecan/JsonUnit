@@ -1,3 +1,9 @@
+## 0.0.7
+* Made Java 5 compatible
+
+## 0.0.6
+* assertJsonPartStructureEquals added
+
 ## 0.0.5
 * assertJsonPartEquals added
 
