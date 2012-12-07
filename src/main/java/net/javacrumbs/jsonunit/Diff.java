@@ -177,7 +177,7 @@ class Diff {
 	private List<JsonNode> asList(Iterator<JsonNode> elements) {
 		List<JsonNode> result = new ArrayList<JsonNode>();
 		while (elements.hasNext()) {
-			JsonNode jsonNode = (JsonNode) elements.next();
+			JsonNode jsonNode = elements.next();
 			result.add(jsonNode);
 		}
 		return Collections.unmodifiableList(result);
@@ -227,7 +227,7 @@ class Diff {
 
 	/**
 	 * Constructs path to an array element.
-	 * @param path
+	 * @param parent
 	 * @param i
 	 * @return
 	 */
@@ -277,7 +277,7 @@ class Diff {
 		Map<String, JsonNode> result = new HashMap<String, JsonNode>();
 		Iterator<Entry<String, JsonNode>> fields = node.getFields();
 		while (fields.hasNext()) {
-			Map.Entry<String, JsonNode> field = (Map.Entry<String, JsonNode>) fields.next();
+			Map.Entry<String, JsonNode> field =  fields.next();
 			result.put(field.getKey(), field.getValue());
 		}
 		return Collections.unmodifiableMap(result);
@@ -298,22 +298,13 @@ class Diff {
 		return message.toString();
 	}
 
-	public String valueDifferences() {
-		if (similarStructure()) {
-		    return "JSON documents have the same value.";
-		}
-		StringBuilder message = new StringBuilder();
-		valueDifferences.appendDifferences(message);
-		return message.toString();
-	}
-
-	public String structureDifferences() {
-		if (similarStructure()) {
-		    return "JSON documents have the same structure.";
-		}
-		StringBuilder message = new StringBuilder();
-		structureDifferences.appendDifferences(message);
-		return message.toString();
-	}
+    public String structureDifferences() {
+   		if (similarStructure()) {
+   		    return "JSON documents have the same structure.";
+   		}
+   		StringBuilder message = new StringBuilder();
+   		structureDifferences.appendDifferences(message);
+   		return message.toString();
+   	}
 
 }
