@@ -89,7 +89,7 @@ public class JsonAssertTest {
 			assertJsonEquals("{\"test\":1}", "{\n\"foo\": 1\n}");
 			fail("Exception expected");
 		} catch (AssertionError e) {
-			assertEquals("JSON documents have different structures:\nDifferent keys found in node \"\". Expected [test], got [foo].\n", e.getMessage());
+			assertEquals("JSON documents have different structures:\nDifferent keys found in node \"\". Expected [test], got [foo]. Missing: \"test\" Extra: \"foo\"\n", e.getMessage());
 		}
 	}
 
@@ -114,7 +114,7 @@ public class JsonAssertTest {
 			assertJsonEquals("{\"test\":1}", "{\n\"test\": 1\n, \"foo\": 2}");
 			fail("Exception expected");
 		} catch (AssertionError e) {
-			assertEquals("JSON documents have different structures:\nDifferent keys found in node \"\". Expected [test], got [foo, test].\n", e.getMessage());
+			assertEquals("JSON documents have different structures:\nDifferent keys found in node \"\". Expected [test], got [foo, test].  Extra: \"foo\"\n", e.getMessage());
 		}
 	}
 
@@ -124,7 +124,7 @@ public class JsonAssertTest {
 			assertJsonEquals("{\"test\":1, \"foo\": 2}", "{\n\"test\": 1\n}");
 			fail("Exception expected");
 		} catch (AssertionError e) {
-			assertEquals("JSON documents have different structures:\nDifferent keys found in node \"\". Expected [foo, test], got [test].\n", e.getMessage());
+			assertEquals("JSON documents have different structures:\nDifferent keys found in node \"\". Expected [foo, test], got [test]. Missing: \"foo\" \n", e.getMessage());
 		}
 	}
 
@@ -234,9 +234,9 @@ public class JsonAssertTest {
 		} catch (AssertionError e) {
 			assertEquals(
 					"JSON documents have different structures:\n" +
-							"Different keys found in node \"\". Expected [root2, root3, test], got [root4, test].\n" +
-							"Different keys found in node \"test[2]\". Expected [child], got [child, child2].\n" +
-							"Different keys found in node \"test[2].child.value4\". Expected [leaf], got [leaf2].\n" +
+							"Different keys found in node \"\". Expected [root2, root3, test], got [root4, test]. Missing: \"root2\",\"root3\" Extra: \"root4\"\n" +
+							"Different keys found in node \"test[2]\". Expected [child], got [child, child2].  Extra: \"test[2].child2\"\n" +
+							"Different keys found in node \"test[2].child.value4\". Expected [leaf], got [leaf2]. Missing: \"test[2].child.value4.leaf\" Extra: \"test[2].child.value4.leaf2\"\n" +
 							"JSON documents have different values:\n" +
 							"Different value found in node \"test[0]\". Expected 1, got 5.\n" +
 							"Different values found in node \"test[1]\". Expected '2', got 'false'.\n" +
@@ -382,7 +382,7 @@ public class JsonAssertTest {
 			assertJsonStructureEquals("[{\"test\":1}, {\"test\":2}]", "[{\n\"test\": 1\n}, {\"TEST\": 4}]");
 			fail("Exception expected");
 		} catch (AssertionError e) {
-			assertEquals("JSON documents have different structures:\nDifferent keys found in node \"[1]\". Expected [test], got [TEST].\n", e.getMessage());
+			assertEquals("JSON documents have different structures:\nDifferent keys found in node \"[1]\". Expected [test], got [TEST]. Missing: \"[1].test\" Extra: \"[1].TEST\"\n", e.getMessage());
 		}
 	}
 

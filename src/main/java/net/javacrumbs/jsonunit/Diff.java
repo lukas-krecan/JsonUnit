@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -102,8 +103,14 @@ class Diff {
 		Map<String, JsonNode> expectedFields = getFields(expected);
 		Map<String, JsonNode> actualFields = getFields(actual);
 
-		if (!expectedFields.keySet().equals(actualFields.keySet())) {
-			structureDifferenceFound("Different keys found in node \"%s\". Expected %s, got %s.", path, sort(expectedFields.keySet()), sort(actualFields.keySet()));
+		Set<String> expectedKeys = expectedFields.keySet();
+		Set<String> actualKeys = actualFields.keySet();
+		if (!expectedKeys.equals(actualKeys)) {
+			String missingKeys = getMissingKeys(expectedKeys, actualKeys, path);
+			String extraKeys = getExtraKeys(expectedKeys, actualKeys, path);
+			
+			
+			structureDifferenceFound("Different keys found in node \"%s\". Expected %s, got %s. %s %s", path, sort(expectedFields.keySet()), sort(actualFields.keySet()), missingKeys, extraKeys);
 		}
 
 		for (String fieldName : commonFields(expectedFields, actualFields)) {
@@ -114,6 +121,40 @@ class Diff {
 		}
 	}
 
+	
+	
+	static String getMissingKeys(Set<String> expectedKeys, Collection<String> actualKeys, String path) {
+		Set<String> missingKeys = new TreeSet<String>(expectedKeys);
+		missingKeys.removeAll(actualKeys);
+		if (!missingKeys.isEmpty()) {
+			return "Missing: "+appendKeysToPrefix(missingKeys, path);
+		} else {
+			return "";
+		}
+	}
+	
+	static String getExtraKeys(Set<String> expectedKeys, Collection<String> actualKeys, String path) {
+		Set<String> extraKeys = new TreeSet<String>(actualKeys);
+		extraKeys.removeAll(expectedKeys);
+		if (!extraKeys.isEmpty()) {
+			return "Extra: "+appendKeysToPrefix(extraKeys, path);
+		} else {
+			return "";
+		}
+	}
+
+	static String appendKeysToPrefix(Iterable<String> keys, String prefix) {
+		Iterator<String> iterator = keys.iterator();
+		StringBuffer buffer = new StringBuffer();
+		while (iterator.hasNext()) {
+			String key = (String) iterator.next();
+			buffer.append("\"").append(getPath(prefix, key)).append("\"");
+			if (iterator.hasNext()) {
+				buffer.append(",");
+			}
+		}
+		return buffer.toString();
+	}
 
 
 	/**
@@ -217,7 +258,7 @@ class Diff {
 	 * @param name
 	 * @return
 	 */
-	private String getPath(String parent, String name) {
+	private static String getPath(String parent, String name) {
 		if (parent.length() == 0) {
 			return name;
 		} else {
