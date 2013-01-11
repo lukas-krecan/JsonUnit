@@ -260,9 +260,9 @@ public class JsonAssertTest {
 	@Test
 	public void testDifferentType() {
 		try {
-			assertJsonEquals("{\"test\":1}", "{\n\"test\": \"something\"\n}");
-			fail("Exception expected");
-		} catch (AssertionError e) {
+            assertJsonEquals("{\"test\":1}", "{\n\"test\": \"something\"\n}");
+            fail("Exception expected");
+        } catch (AssertionError e) {
 			assertEquals("JSON documents have different values:\nDifferent values found in node \"test\". Expected '1', got '\"something\"'.\n", e.getMessage());
 		}
 	}
