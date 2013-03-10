@@ -1,3 +1,6 @@
+## 0.0.9
+* Matchers added
+
 ## 0.0.7
 * Made Java 5 compatible
 

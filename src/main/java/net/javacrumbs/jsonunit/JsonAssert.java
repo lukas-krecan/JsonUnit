@@ -22,6 +22,8 @@ import java.io.StringReader;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 
+import static net.javacrumbs.jsonunit.JsonUtils.readValue;
+
 /**
  * Assertions for comparing JSON. The comparison ignores white-spaces and order of nodes.
  * @author Lukas Krecan
@@ -167,14 +169,6 @@ import org.codehaus.jackson.map.ObjectMapper;
 		assertJsonPartStructureEquals(new StringReader(expected), new StringReader(fullJson), path);
 	}
 
-
-	private static JsonNode readValue(Reader value, String label) {
-		try {
-			return MAPPER.readTree(value);
-		} catch (IOException e) {
-			throw new IllegalArgumentException("Can not parse "+label+" value.", e);
-		}
-	}
 	/**
 	 * Fails a test with the given message.
 	 */
