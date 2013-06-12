@@ -12,7 +12,17 @@ simple:
     
     assertJsonPartEquals("2", "{\"test\":[{\"value\":1},{\"value\":2}]}", "test[1].value");
     
-When the values are compared, order of elements and whitespaces are ignored. On the other hand values 1 and 1.0 are considered to be different.  
+When the values are compared, order of elements and whitespaces are ignored. On the other hand values 1 and 1.0 are considered to be different.
+
+Since 0.0.9 Hamcrest matchers are supported, so you write the tests in the following way
+
+    import static net.javacrumbs.jsonunit.JsonMatchers.*;
+    import static org.junit.Assert.*;
+
+    assertThat("{\"test\":1}", jsonEquals("{\"test\": 1}"));
+    assertThat("{\"test\":1}", jsonPartEquals("test", "1"));
+
+
 
 Sample output
 -------------
@@ -77,7 +87,7 @@ JsonUnit is accessible in Maven central repository
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit</artifactId>
-    	<version>0.0.7</version>
+    	<version>0.0.9</version>
     	<scope>test</scope>
 	</dependency>
 	

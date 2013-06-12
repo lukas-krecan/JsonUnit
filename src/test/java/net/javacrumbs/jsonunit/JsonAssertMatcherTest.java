@@ -28,6 +28,7 @@ public class JsonAssertMatcherTest {
 	@Test
 	public void testEquals() {
 		assertThat("{\"test\":1}", jsonEquals("{\n\"test\": 1\n}"));
+		assertThat("{\"test\":1}", jsonPartEquals("test", "1"));
 		assertThat("{\"foo\":\"bar\",\"test\": 2}", jsonEquals("{\n\"test\": 2,\n\"foo\":\"bar\"}"));
 		assertThat("{}", jsonEquals("{}"));
 	}
