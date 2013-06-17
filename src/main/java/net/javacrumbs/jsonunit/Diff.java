@@ -198,12 +198,25 @@ class Diff {
 
 	private void compareValues(Object expectedValue, Object actualValue, String path) {
 		if (!expectedValue.equals(actualValue)) {
-			valueDifferenceFound("Different value found in node \"%s\". Expected %s, got %s.", path, expectedValue, actualValue);
+			valueDifferenceFound("Different value found in node \"%s\". Expected %s, got %s.", path, quoteTextValue(expectedValue), quoteTextValue(actualValue));
 		}
 	}
 
+    /**
+     * If the value is String than it's quoted in ".
+     * @param value
+     * @return
+     */
+    private Object quoteTextValue(Object value) {
+        if (value instanceof String) {
+            return "\""+value+"\"";
+        } else {
+            return value;
+        }
+    }
 
-	private void compareArrayNodes(ArrayNode expectedNode, ArrayNode actualNode, String path) {
+
+    private void compareArrayNodes(ArrayNode expectedNode, ArrayNode actualNode, String path) {
 		List<JsonNode> expectedElements = asList(expectedNode.getElements());
 		List<JsonNode> actualElements = asList(actualNode.getElements());
 		if (expectedElements.size()!=actualElements.size()) {

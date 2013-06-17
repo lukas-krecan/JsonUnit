@@ -1,3 +1,6 @@
+## 0.0.10
+* Text differences are closed in quotes
+
 ## 0.0.9
 * Matchers added
 

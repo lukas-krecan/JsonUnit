@@ -78,6 +78,16 @@ public class JsonAssertTest {
 		}
 	}
 
+    @Test
+   	public void testEqualsNodeStringFail() throws IOException {
+   		try {
+   			assertJsonEquals(MAPPER.readValue("{\"test\":\"a\"}", ObjectNode.class) , MAPPER.readValue("{\"test\": \"b\"}", ObjectNode.class));
+   			fail("Exception expected");
+   		} catch (AssertionError e) {
+   			assertEquals("JSON documents have different values:\nDifferent value found in node \"test\". Expected \"a\", got \"b\".\n", e.getMessage());
+   		}
+   	}
+
 	@Test(expected=IllegalArgumentException.class)
 	public void testInvalidJsonActual() {
 		assertJsonEquals("{\"test\":1}", "{\n\"foo\": 1\n");
