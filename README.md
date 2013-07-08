@@ -93,7 +93,7 @@ JsonUnit is accessible in Maven central repository
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit</artifactId>
-    	<version>0.0.10</version>
+    	<version>0.0.11</version>
     	<scope>test</scope>
 	</dependency>
 	
