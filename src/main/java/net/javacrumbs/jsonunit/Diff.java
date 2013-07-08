@@ -1,5 +1,5 @@
 /**
- * Copyright 2009-2012 the original author or authors.
+ * Copyright 2009-2013 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,15 +48,17 @@ class Diff {
 	private final Differences valueDifferences = new Differences("values");
 	private final String startPath;
 	private boolean compared = false;
+    private final String ignorePlaceholder;
 
-	private enum NodeType {OBJECT, ARRAY, STRING, NUMBER, BOOLEAN, NULL};
+    private enum NodeType {OBJECT, ARRAY, STRING, NUMBER, BOOLEAN, NULL};
 
-	public Diff(JsonNode expected, JsonNode actual, String startPath) {
+	public Diff(JsonNode expected, JsonNode actual, String startPath, String ignorePlaceholder) {
 		super();
 		this.expectedRoot = expected;
 		this.actualRoot = actual;
 		this.startPath = startPath;
-	}
+        this.ignorePlaceholder = ignorePlaceholder;
+    }
 
 
 
@@ -166,6 +168,12 @@ class Diff {
 	private void compareNodes(JsonNode expectedNode, JsonNode actualNode, String fieldPath) {
 		NodeType expectedNodeType = getNodeType(expectedNode);
 		NodeType actualNodeType = getNodeType(actualNode);
+
+        //ignoring value
+        if (expectedNodeType==NodeType.STRING && ignorePlaceholder.equals(expectedNode.getTextValue())) {
+            return;
+        }
+
 		if (!expectedNodeType.equals(actualNodeType)) {
 			valueDifferenceFound("Different values found in node \"%s\". Expected '%s', got '%s'.", fieldPath, expectedNode, actualNode);
 		} else {
