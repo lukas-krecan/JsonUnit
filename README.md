@@ -79,6 +79,12 @@ Results in
 	Different value found in node "test[2].child.value1". Expected 1, got 5.
 	Different values found in node "test[2].child.value2". Expected 'true', got '"true"'.
 
+Ignoring values
+----------------
+Sometimes you need to ignore certain values when comparing. It is possible to use ${json-unit.ignore}" 
+placeholder like this 
+
+    assertJsonEquals("{\"test\":\"${json-unit.ignore}\"}", "{\n\"test\": {\"object\" : {\"another\" : 1}}}");
 
 Maven dependency
 ----------------
