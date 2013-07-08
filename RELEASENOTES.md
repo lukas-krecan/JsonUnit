@@ -1,3 +1,6 @@
+## 0.0.11
+* Ignore placeholder "${json-unit.ignore}" added 
+
 ## 0.0.10
 * Text differences are closed in quotes
 
