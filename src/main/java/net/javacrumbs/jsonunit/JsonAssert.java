@@ -15,7 +15,6 @@
  */
 package net.javacrumbs.jsonunit;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
@@ -32,6 +31,8 @@ import static net.javacrumbs.jsonunit.JsonUtils.readValue;
  public class JsonAssert {
 
 	private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    private static String ignorePlaceholder = "${json-unit.ignore}";
 
 	private JsonAssert(){
 		//nothing
@@ -73,7 +74,7 @@ import static net.javacrumbs.jsonunit.JsonUtils.readValue;
 	 * @param path
 	 */
 	public static void assertJsonPartEquals(JsonNode expected, JsonNode fullJson, String path) {
-		Diff diff = new Diff(expected, fullJson, path);
+		Diff diff = new Diff(expected, fullJson, path, ignorePlaceholder);
 		if (!diff.similar()) {
 			doFail(diff.toString());
 		}
@@ -141,7 +142,7 @@ import static net.javacrumbs.jsonunit.JsonUtils.readValue;
 	 * @param path
 	 */
 	public static void assertJsonPartStructureEquals(JsonNode expected, JsonNode fullJson, String path) {
-		Diff diff = new Diff(expected, fullJson, path);
+		Diff diff = new Diff(expected, fullJson, path, ignorePlaceholder);
 		if (!diff.similarStructure()) {
 			doFail(diff.structureDifferences());
 		}
@@ -176,5 +177,15 @@ import static net.javacrumbs.jsonunit.JsonUtils.readValue;
 		throw new AssertionError(diffMessage);
 	}
 
+    /**
+     * Set's string that will be ignored in comparison. Default value is "${json-unit.ignore}"
+     * @param ignorePlaceholder
+     */
+    public static void setIgnorePlaceholder(String ignorePlaceholder) {
+        JsonAssert.ignorePlaceholder = ignorePlaceholder;
+    }
 
+    public static String getIgnorePlaceholder() {
+        return ignorePlaceholder;
+    }
 }

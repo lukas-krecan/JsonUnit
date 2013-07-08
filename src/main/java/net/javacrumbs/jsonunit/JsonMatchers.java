@@ -112,7 +112,7 @@ public class JsonMatchers {
             } else {
                 throw new IllegalArgumentException("Type " + item.getClass() + " is not supported");
             }
-            Diff diff = new Diff(expected, jsonNode, path);
+            Diff diff = new Diff(expected, jsonNode, path, JsonAssert.getIgnorePlaceholder());
             if (!diff.similar()) {
                 differences = diff.differences();
             }
