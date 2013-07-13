@@ -344,8 +344,12 @@ class Diff {
 
     private void logDifferences(boolean result) {
         if (!result) {
-            logger.info(getDifferences().trim());
-            logger.debug("Comparing expected:\n{}\n------------\nwith actual:\n{}\n", expectedRoot, getStartNode(actualRoot, startPath));
+            if (logger.isInfoEnabled()) {
+                logger.info(getDifferences().trim());
+            }
+            if (logger.isDebugEnabled()) {
+                logger.debug("Comparing expected:\n{}\n------------\nwith actual:\n{}\n", expectedRoot, getStartNode(actualRoot, startPath));
+            }
         }
     }
 
