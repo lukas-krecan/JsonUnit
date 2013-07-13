@@ -1,3 +1,6 @@
+## 0.0.12
+* Added logging
+
 ## 0.0.11
 * Ignore placeholder "${json-unit.ignore}" added 
 

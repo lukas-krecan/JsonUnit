@@ -33,6 +33,8 @@ import java.util.regex.Pattern;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -49,6 +51,8 @@ class Diff {
 	private final String startPath;
 	private boolean compared = false;
     private final String ignorePlaceholder;
+
+    private final Logger logger = LoggerFactory.getLogger("net.javacrumbs.jsonunit.Difference");
 
     private enum NodeType {OBJECT, ARRAY, STRING, NUMBER, BOOLEAN, NULL};
 
@@ -321,16 +325,31 @@ class Diff {
 		return new TreeSet<String>(set);
 	}
 
+    private boolean hasSimilarStructure() {
+        compare();
+        return structureDifferences.isEmpty();
+    }
+
 	public boolean similarStructure() {
-		compare();
-		return structureDifferences.isEmpty();
+        boolean result = hasSimilarStructure();
+        logDifferences(result);
+        return result;
 	}
 
 	public boolean similar() {
-		return similarStructure() && valueDifferences.isEmpty();
+        boolean result = hasSimilarStructure() && valueDifferences.isEmpty();
+        logDifferences(result);
+        return result;
 	}
 
-	/**
+    private void logDifferences(boolean result) {
+        if (!result) {
+            logger.info(getDifferences().trim());
+            logger.debug("Comparing expected:\n{}\n------------\nwith actual:\n{}\n", expectedRoot, getStartNode(actualRoot, startPath));
+        }
+    }
+
+    /**
 	 * Returns children of an ObjectNode.
 	 * @param node
 	 * @return
@@ -354,11 +373,15 @@ class Diff {
 		if (similar()) {
 		    return "JSON documents have the same value.";
 		}
-		StringBuilder message = new StringBuilder();
-		structureDifferences.appendDifferences(message);
-		valueDifferences.appendDifferences(message);
-		return message.toString();
+        return getDifferences();
 	}
+
+    private String getDifferences() {
+        StringBuilder message = new StringBuilder();
+        structureDifferences.appendDifferences(message);
+        valueDifferences.appendDifferences(message);
+        return message.toString();
+    }
 
     public String structureDifferences() {
    		if (similarStructure()) {
