@@ -23,6 +23,7 @@ Since 0.0.9 Hamcrest matchers are supported, so you write the tests in the follo
 
     assertThat("{\"test\":1}", jsonEquals("{\"test\": 1}"));
     assertThat("{\"test\":1}", jsonPartEquals("test", "1"));
+    assertThat("{\"test\":[1, 2, 3]}", jsonPartEquals("test[0]", "1"));
 
 
 
