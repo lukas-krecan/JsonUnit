@@ -14,6 +14,8 @@ simple:
     
 When the values are compared, order of elements and whitespaces are ignored. On the other hand values 1 and 1.0 are considered to be different.
 
+Hamcers matchers
+----------------
 Since 0.0.9 Hamcrest matchers are supported, so you write the tests in the following way
 
     import static net.javacrumbs.jsonunit.JsonMatchers.*;
