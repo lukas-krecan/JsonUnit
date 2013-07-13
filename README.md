@@ -91,8 +91,8 @@ placeholder like this
 Logging
 -------
 Although the differences are printed out by the assert statement, sometimes you use JsonUnit with other libraries like
-[Jadler](http://jadler.net) that do not print the differences between documents. In such case, you can switch the
-logging on. JsonUnit uses [SLF4J](http://www.slf4j.org/). The only thing you need to do is to configure your logging
+[Jadler](http://jadler.net) that do not print the differences between documents. In such case, you can switch on the
+logging. JsonUnit uses [SLF4J](http://www.slf4j.org/). The only thing you need to do is to configure your logging
 framework to log `net.javacrumbs.jsonunit.Difference` on INFO or DEBUG level. On info level it will log the differences,
 on DEBUG level compared parts of the document will be logged.
 
