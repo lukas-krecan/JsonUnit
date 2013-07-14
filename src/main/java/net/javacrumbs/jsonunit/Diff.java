@@ -52,7 +52,8 @@ class Diff {
 	private boolean compared = false;
     private final String ignorePlaceholder;
 
-    private final Logger logger = LoggerFactory.getLogger("net.javacrumbs.jsonunit.Difference");
+    private static final Logger diffLogger = LoggerFactory.getLogger("net.javacrumbs.jsonunit.difference.diff");
+    private static final Logger valuesLogger = LoggerFactory.getLogger("net.javacrumbs.jsonunit.difference.values");
 
     private enum NodeType {OBJECT, ARRAY, STRING, NUMBER, BOOLEAN, NULL};
 
@@ -344,11 +345,11 @@ class Diff {
 
     private void logDifferences(boolean result) {
         if (!result) {
-            if (logger.isInfoEnabled()) {
-                logger.info(getDifferences().trim());
+            if (diffLogger.isDebugEnabled()) {
+                diffLogger.debug(getDifferences().trim());
             }
-            if (logger.isDebugEnabled()) {
-                logger.debug("Comparing expected:\n{}\n------------\nwith actual:\n{}\n", expectedRoot, getStartNode(actualRoot, startPath));
+            if (valuesLogger.isDebugEnabled()) {
+                valuesLogger.debug("Comparing expected:\n{}\n------------\nwith actual:\n{}\n", expectedRoot, getStartNode(actualRoot, startPath));
             }
         }
     }
