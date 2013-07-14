@@ -1,3 +1,6 @@
+## 0.0.13
+* Logging categories changed
+
 ## 0.0.12
 * Added logging
 

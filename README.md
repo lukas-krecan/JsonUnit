@@ -94,8 +94,7 @@ Logging
 Although the differences are printed out by the assert statement, sometimes you use JsonUnit with other libraries like
 [Jadler](http://jadler.net) that do not print the differences between documents. In such case, you can switch on the
 logging. JsonUnit uses [SLF4J](http://www.slf4j.org/). The only thing you need to do is to configure your logging
-framework to log `net.javacrumbs.jsonunit.Difference` on INFO or DEBUG level. On INFO level it will log the differences,
-on DEBUG level it will add parts of the original documents that were compared.
+framework to log `net.javacrumbs.jsonunit.difference` on DEBUG level.
 
 Maven dependency
 ----------------
@@ -104,7 +103,7 @@ JsonUnit is accessible in Maven central repository
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit</artifactId>
-    	<version>0.0.12</version>
+    	<version>0.0.13</version>
     	<scope>test</scope>
 	</dependency>
 	
