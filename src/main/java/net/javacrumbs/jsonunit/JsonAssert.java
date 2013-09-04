@@ -67,6 +67,15 @@ import static net.javacrumbs.jsonunit.JsonUtils.readValue;
 		assertJsonPartEquals(expectedNode, actualNode, "");
 	}
 
+    /**
+   	 * Compares to JSON documents. Throws {@link AssertionError} if they are different.
+   	 * @param expected
+   	 * @param actualNode
+   	 */
+   	public static void assertJsonEquals(String expected, JsonNode actualNode) {
+   		assertJsonPartEquals(readValue(expected, "expected"), actualNode, "");
+   	}
+
 	/**
 	 * Compares part of the JSON. Path has this format "root.array[0].value".
 	 * @param expected
@@ -101,6 +110,16 @@ import static net.javacrumbs.jsonunit.JsonUtils.readValue;
 	public static void assertJsonPartEquals(String expected, String fullJson, String path) {
 		assertJsonPartEquals(new StringReader(expected), new StringReader(fullJson), path);
 	}
+
+    /**
+   	 * Compares part of the JSON. Path has this format "root.array[0].value".
+   	 * @param expected
+   	 * @param fullJson
+   	 * @param path
+   	 */
+   	public static void assertJsonPartEquals(String expected, JsonNode fullJson, String path) {
+   		assertJsonPartEquals(readValue(expected, "expected"), fullJson, path);
+   	}
 
 
 	/**
