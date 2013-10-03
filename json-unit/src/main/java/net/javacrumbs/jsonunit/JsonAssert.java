@@ -18,8 +18,8 @@ package net.javacrumbs.jsonunit;
 import java.io.Reader;
 import java.io.StringReader;
 
+import net.javacrumbs.jsonunit.core.internal.Diff;
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
 
 import static net.javacrumbs.jsonunit.JsonUtils.readValue;
 
@@ -29,8 +29,6 @@ import static net.javacrumbs.jsonunit.JsonUtils.readValue;
  *
  */
  public class JsonAssert {
-
-	private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private static String ignorePlaceholder = "${json-unit.ignore}";
 

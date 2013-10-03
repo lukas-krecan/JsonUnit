@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit;
+package net.javacrumbs.jsonunit.core.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,11 +38,11 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Compares JSON structures.
+ * Compares JSON structures. Mainly for internal use, the API might be mre volatile than the rest.
  * @author Lukas Krecan
  *
  */
-class Diff {
+public class Diff {
 	private static final Pattern ARRAY_PATTERN = Pattern.compile("(\\w+)\\[(\\d+)\\]");
 	private final JsonNode expectedRoot;
 	private final JsonNode actualRoot;
@@ -55,7 +55,7 @@ class Diff {
     private static final Logger diffLogger = LoggerFactory.getLogger("net.javacrumbs.jsonunit.difference.diff");
     private static final Logger valuesLogger = LoggerFactory.getLogger("net.javacrumbs.jsonunit.difference.values");
 
-    private enum NodeType {OBJECT, ARRAY, STRING, NUMBER, BOOLEAN, NULL};
+    private enum NodeType {OBJECT, ARRAY, STRING, NUMBER, BOOLEAN, NULL}
 
 	public Diff(JsonNode expected, JsonNode actual, String startPath, String ignorePlaceholder) {
 		super();
@@ -322,7 +322,7 @@ class Diff {
 	}
 
 
-	private final SortedSet<String> sort(Set<String> set) {
+	private SortedSet<String> sort(Set<String> set) {
 		return new TreeSet<String>(set);
 	}
 

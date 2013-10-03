@@ -15,6 +15,7 @@
  */
 package net.javacrumbs.jsonunit;
 
+import net.javacrumbs.jsonunit.core.internal.Diff;
 import org.codehaus.jackson.JsonNode;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -25,7 +26,7 @@ import java.io.Reader;
 import static net.javacrumbs.jsonunit.JsonUtils.readValue;
 
 /**
- * Contains Matchers to be used with assertThat and other tools.
+ * Contains Hamcrest matchers to be used with Hamcrest assertThat and other tools.
  */
 public class JsonMatchers {
     /**

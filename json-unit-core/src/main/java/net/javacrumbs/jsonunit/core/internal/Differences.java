@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit;
+package net.javacrumbs.jsonunit.core.internal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,7 @@ class Differences {
 
 	public void appendDifferences(StringBuilder builder) {
 		if ( ! messages.isEmpty()) {
-			builder.append("JSON documents have different " + getDifferenceType() + ":\n");
+			builder.append("JSON documents have different ").append(getDifferenceType()).append(":\n");
 			for (String message : messages) {
 				builder.append(message).append("\n");
 			}
