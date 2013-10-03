@@ -23,7 +23,7 @@ import org.hamcrest.Matcher;
 
 import java.io.Reader;
 
-import static net.javacrumbs.jsonunit.JsonUtils.readValue;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
 
 /**
  * Contains Hamcrest matchers to be used with Hamcrest assertThat and other tools.
