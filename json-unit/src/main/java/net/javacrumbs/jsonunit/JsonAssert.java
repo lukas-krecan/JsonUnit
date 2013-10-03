@@ -21,7 +21,7 @@ import java.io.StringReader;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import org.codehaus.jackson.JsonNode;
 
-import static net.javacrumbs.jsonunit.JsonUtils.readValue;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
 
 /**
  * Assertions for comparing JSON. The comparison ignores white-spaces and order of nodes.

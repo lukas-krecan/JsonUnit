@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit;
+package net.javacrumbs.jsonunit.core.internal;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -22,14 +22,29 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 
-class JsonUtils {
+/**
+ * Internal utility class to parse JSON values.
+ */
+public class JsonUtils {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    static JsonNode readValue(String value, String label) {
+    /**
+     * Parses value from String.
+     * @param value
+     * @param label label to be logged in case of error.
+     * @return
+     */
+    public static JsonNode readValue(String value, String label) {
         return readValue(new StringReader(value), label);
     }
 
-    static JsonNode readValue(Reader value, String label) {
+    /**
+     * Parses value from Reader.
+     * @param value
+     * @param label  label to be logged in case of error.
+     * @return
+     */
+    public static JsonNode readValue(Reader value, String label) {
    		try {
    			return MAPPER.readTree(value);
    		} catch (IOException e) {
