@@ -33,7 +33,7 @@ You use Hamcrest matchers in the following way
 
 Ignoring values
 ----------------
-Sometimes you need to ignore certain values when comparing. It is possible to use ${json-unit.ignore}"
+Sometimes you need to ignore certain values when comparing. It is possible to use ${json-unit.ignore}
 placeholder like this
 
     assertJsonEquals("{\"test\":\"${json-unit.ignore}\"}",
