@@ -1,3 +1,7 @@
+## 0.0.14
+* Modules refactored
+* Added support for FEST assert
+
 ## 0.0.13
 * Logging categories changed
 

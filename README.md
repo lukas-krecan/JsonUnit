@@ -7,87 +7,53 @@ simple:
     import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
     
     ...
-    
+
+    // compares two JSON documents
     assertJsonEquals("{\"test\":1}", "{\n\"foo\": 1\n}");
-    
+
+    // compares only part
     assertJsonPartEquals("2", "{\"test\":[{\"value\":1},{\"value\":2}]}", "test[1].value");
+
+    // compares only the structure, not the values
+    assertJsonStructureEquals("[{\"test\":1}, {\"test\":2}]", "[{\n\"test\": 1\n}, {\"TEST\": 4}]")
     
 When the values are compared, order of elements and whitespaces are ignored. On the other hand values 1 and 1.0 are considered to be different.
 
-Hamcers matchers
+Hamcrests matchers
 ----------------
-Since 0.0.9 Hamcrest matchers are supported, so you write the tests in the following way
+You use Hamcrest matchers in the following way
 
     import static net.javacrumbs.jsonunit.JsonMatchers.*;
     import static org.junit.Assert.*;
+    ...
 
     assertThat("{\"test\":1}", jsonEquals("{\"test\": 1}"));
     assertThat("{\"test\":1}", jsonPartEquals("test", "1"));
     assertThat("{\"test\":[1, 2, 3]}", jsonPartEquals("test[0]", "1"));
 
-
-
-Sample output
--------------
-For example 
-
-    assertJsonEquals("{\n" +
-			"   \"test\":[\n" +
-			"      1,\n" +
-			"      2,\n" +
-			"      {\n" +
-			"         \"child\":{\n" +
-			"            \"value1\":1,\n" +
-			"            \"value2\":true,\n" +
-			"            \"value3\":\"test\",\n" +
-			"            \"value4\":{\n" +
-			"               \"leaf\":5\n" +
-			"            }\n" +
-			"         }\n" +
-			"      }\n" +
-			"   ],\n" +
-			"   \"root2\":false,\n" +
-			"   \"root3\":1\n" +
-			"}",
-			"{\n" +
-			"   \"test\":[\n" +
-			"      5,\n" +
-			"      false,\n" +
-			"      {\n" +
-			"         \"child\":{\n" +
-			"            \"value1\":5,\n" +
-			"            \"value2\":\"true\",\n" +
-			"            \"value3\":\"test\",\n" +
-			"            \"value4\":{\n" +
-			"               \"leaf2\":5\n" +
-			"            }\n" +
-			"         },\n" +
-			"         \"child2\":{\n" +
-			"\n" +
-			"         }\n" +
-			"      }\n" +
-			"   ],\n" +
-			"   \"root4\":\"bar\"\n" +
-			"}");
-			
-Results in
-
-	JSON documents have different structures:
-	Different keys found in node "". Expected [root2, root3, test], got [root4, test].
-	Different keys found in node "test[2]". Expected [child], got [child, child2].
-	Different keys found in node "test[2].child.value4". Expected [leaf], got [leaf2].
-	JSON documents have different values:
-	Different value found in node "test[0]". Expected 1, got 5.
-	Different values found in node "test[1]". Expected '2', got 'false'.
-	Different value found in node "test[2].child.value1". Expected 1, got 5.
-	Different values found in node "test[2].child.value2". Expected 'true', got '"true"'.
-
 Ignoring values
 ----------------
-Sometimes you need to ignore certain values when comparing. It is possible to use ${json-unit.ignore}" 
-placeholder like this 
+Sometimes you need to ignore certain values when comparing. It is possible to use ${json-unit.ignore}"
+placeholder like this
 
     assertJsonEquals("{\"test\":\"${json-unit.ignore}\"}", "{\n\"test\": {\"object\" : {\"another\" : 1}}}");
+
+FEST assertions
+---------------
+FEST assertions are supported by a special module json-unit-fest
+
+    import static net.javacrumbs.jsonunit.fest.JsonAssert.assertThatJson;
+    ...
+
+    // compares entire documents
+    assertThatJson("{\"test\":1}").isEqualTo("{\"test\":2}");
+
+    // compares only parts of the document
+    assertThatJson("{\"test1\":2, \"test2\":1}").node("test1").isEqualTo("2").node("test2").isEqualTo("2");
+
+    // compares only the structure
+    assertThatJson("{\"test\":1}").hasSameStructureAs("{\"test\":21}");
+
 
 Logging
 -------
@@ -103,7 +69,16 @@ JsonUnit is accessible in Maven central repository
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit</artifactId>
-    	<version>0.0.13</version>
+    	<version>0.0.14</version>
+    	<scope>test</scope>
+	</dependency>
+
+To use FEST asserts:
+
+	<dependency>
+    	<groupId>net.javacrumbs.json-unit</groupId>
+    	<artifactId>json-unit-fest</artifactId>
+    	<version>0.0.14</version>
     	<scope>test</scope>
 	</dependency>
 	
