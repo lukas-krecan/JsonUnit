@@ -18,25 +18,61 @@ package net.javacrumbs.jsonunit.fest;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import org.codehaus.jackson.JsonNode;
 import org.fest.assertions.api.AbstractAssert;
+import org.fest.assertions.description.Description;
+
+import java.io.StringReader;
 
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
 
 public class JsonAssert extends AbstractAssert<JsonAssert, JsonNode> {
     private static String ignorePlaceholder = "${json-unit.ignore}";
 
-    protected JsonAssert(JsonNode actual) {
+    private final String path;
+
+    protected JsonAssert(JsonNode actual, String path) {
         super(actual, JsonAssert.class);
+        this.path = path;
     }
 
-    public static JsonAssert assertThat(String json) {
-        return new JsonAssert(readValue(json, "actual"));
+
+    /**
+     * Creates a new instance of <code>{@link JsonAssert}</code>.
+     * It is not called assertThat to not clash with StringAssert.
+     *
+     * @param json
+     * @return
+     */
+    public static JsonAssert assertThatJson(JsonNode json) {
+        return new JsonAssert(json, "");
+    }
+
+    /**
+     * Creates a new instance of <code>{@link JsonAssert}</code>.
+     * It is not called assertThat to not clash with StringAssert.
+     *
+     * @param json
+     * @return
+     */
+    public static JsonAssert assertThatJson(String json) {
+        return assertThatJson(readValue(json, "actual"));
+    }
+
+    /**
+     * Creates a new instance of <code>{@link JsonAssert}</code>.
+     * It is not called assertThat to not clash with StringAssert.
+     *
+     * @param json
+     * @return
+     */
+    public static JsonAssert assertThatJson(StringReader json) {
+        return assertThatJson(readValue(json, "actual"));
     }
 
     @Override
     public JsonAssert isEqualTo(JsonNode expected) {
         isNotNull();
 
-        Diff diff = new Diff(expected, actual, "", ignorePlaceholder);
+        Diff diff = new Diff(expected, actual, path, ignorePlaceholder);
         if (!diff.similar()) {
             doFail(diff.toString());
         }
@@ -44,13 +80,23 @@ public class JsonAssert extends AbstractAssert<JsonAssert, JsonNode> {
     }
 
     public JsonAssert isEqualTo(String expected) {
-       return isEqualTo(readValue(expected, "expected"));
+        return isEqualTo(readValue(expected, "expected"));
+    }
+
+    public JsonAssert isEqualTo(StringReader expected) {
+        return isEqualTo(readValue(expected, "expected"));
+    }
+
+    public JsonAssert node(String path) {
+        return new JsonAssert(actual, path);
     }
 
     /**
      * Fails a test with the given message.
      */
-    private static void doFail(String diffMessage) {
-        throw new AssertionError(diffMessage);
+    private void doFail(String diffMessage) {
+        Description description = getWritableAssertionInfo().description();
+        throw new AssertionError((description != null ? description.value()+"\n" : "") + diffMessage);
     }
+
 }
