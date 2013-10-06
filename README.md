@@ -39,11 +39,11 @@ placeholder like this
     assertJsonEquals("{\"test\":\"${json-unit.ignore}\"}",
         "{\n\"test\": {\"object\" : {\"another\" : 1}}}");
 
-AssertJ assertions
+Fluent assertions
 ---------------
-[AssertJ assertions](https://github.com/joel-costigliola/assertj-core) are supported by a special module json-unit-assertj
+Fluent (FEST or AssertJ like) assertions are supported by a special module json-unit-fluent
 
-    import static net.javacrumbs.jsonunit.assertj.JsonAssert.assertThatJson;
+    import static net.javacrumbs.jsonunit.fluent.JsonAssert.assertThatJson;
     ...
 
     // compares entire documents
@@ -59,6 +59,12 @@ AssertJ assertions
 
     // compares only the structure
     assertThatJson("{\"test\":1}").hasSameStructureAs("{\"test\":21}");
+
+    // ignores a value
+    assertThatJson("{\"test\":1}").isEqualTo("{\"test\":\"${json-unit.ignore}\"}");
+
+    // ignores a value with a different placeholder
+    assertThatJson("{\"test\":1}").ignoring("##IGNORE##").isEqualTo("{\"test\":\"##IGNORE##\"}")
 
 
 Logging
@@ -79,11 +85,11 @@ JsonUnit is accessible in Maven central repository
     	<scope>test</scope>
 	</dependency>
 
-To use AssertJ asserts:
+To use fluent assertions:
 
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
-    	<artifactId>json-unit-assertj</artifactId>
+    	<artifactId>json-unit-fluent</artifactId>
     	<version>0.0.15</version>
     	<scope>test</scope>
 	</dependency>

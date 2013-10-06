@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit.assertj;
+package net.javacrumbs.jsonunit.fluent;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
@@ -21,7 +21,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.StringReader;
 
-import static net.javacrumbs.jsonunit.assertj.JsonAssert.assertThatJson;
+import static net.javacrumbs.jsonunit.fluent.JsonAssert.assertThatJson;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -156,9 +156,7 @@ public class JsonAssertTest {
 
     @Test
     public void testIgnoreDifferent() {
-        JsonAssert.setIgnorePlaceholder("##IGNORE##");
-        assertThatJson("{\"test\":1}").isEqualTo("{\"test\":\"##IGNORE##\"}");
-        JsonAssert.setIgnorePlaceholder("${json-unit.ignore}");
+        assertThatJson("{\"test\":1}").ignoring("##IGNORE##").isEqualTo("{\"test\":\"##IGNORE##\"}");
     }
 
     @Test

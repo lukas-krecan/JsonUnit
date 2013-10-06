@@ -1,10 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.javacrumbs.json-unit</groupId>
-    <artifactId>json-unit-assertj</artifactId>
+    <artifactId>json-unit-fluent</artifactId>
     <version>0.0.16-SNAPSHOT</version>
 
-    <description>JSON FEST Assertions</description>
+    <description>
+        JSON Assertions inspired by FEST and AssertJ. It actually does not
+        use any of these modules, but can be used together with any of them.
+    </description>
 
     <parent>
         <groupId>net.javacrumbs.json-unit</groupId>
@@ -18,10 +21,5 @@
             <artifactId>json-unit-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-	<dependency>
-	   <groupId>org.assertj</groupId>
-	   <artifactId>assertj-core</artifactId>
-	   <version>1.3.0</version>
-	</dependency>
     </dependencies>
 </project>

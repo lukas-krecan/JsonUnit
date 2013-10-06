@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit.assertj;
+package net.javacrumbs.jsonunit.fluent;
 
 import net.javacrumbs.jsonunit.core.internal.Diff;
-import org.assertj.core.api.AbstractAssert;
 import org.codehaus.jackson.JsonNode;
 
-import java.io.Reader;
-
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
 
 
 /**
- * Contains JSON related assertions. Typical usage is:
+ * Contains JSON related fluent assertions inspired by FESt or AssertJ. Typical usage is:
  * <p/>
  * <code>
  * assertThatJson("{\"test\":1}").isEqualTo("{\"test\":2}");
@@ -35,19 +31,30 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
  * </code>
  * <p/>
  * Please note that the method name is assertThatJson and not assertThat. The reason is that we need to accept String parameter
- * and do not want to override standard FEST assertThat(String) method.
+ * and do not want to override standard FEST or AssertJ assertThat(String) method.
  */
-public class JsonAssert extends AbstractAssert<JsonAssert, JsonNode> {
+public class JsonAssert {
     private static final String EXPECTED = "expected";
     private static final String ACTUAL = "actual";
-
-    private static String ignorePlaceholder = "${json-unit.ignore}";
+    private static final String DEFAULT_IGNORE_PLACEHOLDER = "${json-unit.ignore}";
 
     private final String path;
+    private final JsonNode actual;
+    private final String description;
+    private final String ignorePlaceholder;
 
-    protected JsonAssert(JsonNode actual, String path) {
-        super(actual, JsonAssert.class);
+    protected JsonAssert(JsonNode actual, String path, String description, String ignorePlaceholder) {
+        if (actual == null) {
+            throw new IllegalArgumentException("Can not make assertions about null JSON.");
+        }
         this.path = path;
+        this.actual = actual;
+        this.description = description;
+        this.ignorePlaceholder = ignorePlaceholder;
+    }
+
+    public JsonAssert(JsonNode actual) {
+        this(actual, "", "", DEFAULT_IGNORE_PLACEHOLDER);
     }
 
 
@@ -59,7 +66,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, JsonNode> {
      * @return new JsonAssert object.
      */
     public static JsonAssert assertThatJson(JsonNode json) {
-        return new JsonAssert(json, "");
+        return new JsonAssert(json);
     }
 
     /**
@@ -81,8 +88,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, JsonNode> {
      * @return {@code this} object.
      */
     public JsonAssert isEqualTo(JsonNode expected) {
-        isNotNull();
-
         Diff diff = new Diff(expected, actual, path, ignorePlaceholder);
         if (!diff.similar()) {
             failWithMessage(diff.differences());
@@ -97,7 +102,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, JsonNode> {
      * @param expected
      * @return {@code this} object.
      */
-    @Override
     public JsonAssert isEqualTo(Object expected) {
         return isEqualTo(convertToJson(expected, EXPECTED));
     }
@@ -109,8 +113,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, JsonNode> {
      * @return {@code this} object.
      */
     public JsonAssert isNotEqualTo(JsonNode expected) {
-        isNotNull();
-
         Diff diff = new Diff(expected, actual, path, ignorePlaceholder);
         if (diff.similar()) {
             failWithMessage("JSON is equal.");
@@ -125,7 +127,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, JsonNode> {
      * @param expected
      * @return {@code this} object.
      */
-    @Override
     public JsonAssert isNotEqualTo(Object expected) {
         return isNotEqualTo(convertToJson(expected, EXPECTED));
     }
@@ -137,8 +138,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, JsonNode> {
      * @return {@code this} object.
      */
     public JsonAssert hasSameStructureAs(JsonNode expected) {
-        isNotNull();
-
         Diff diff = new Diff(expected, actual, path, ignorePlaceholder);
         if (!diff.similarStructure()) {
             failWithMessage(diff.structureDifferences());
@@ -169,39 +168,44 @@ public class JsonAssert extends AbstractAssert<JsonAssert, JsonNode> {
      * @return object comparing only node given by path.
      */
     public JsonAssert node(String path) {
-        return new JsonAssert(actual, path);
+        return new JsonAssert(actual, path, description, ignorePlaceholder);
     }
 
-    @Override
-    public JsonAssert isIn(Object... values) {
-        throw new UnsupportedOperationException("isIn assertion is not yet supported.");
-    }
-
-    @Override
-    public JsonAssert isIn(Iterable<?> values) {
-        throw new UnsupportedOperationException("isIn assertion is not yet supported.");
-    }
-
-    @Override
-    public JsonAssert isNotIn(Object... values) {
-        throw new UnsupportedOperationException("isNotIn assertion is not yet supported.");
-    }
-
-    @Override
-    public JsonAssert isNotIn(Iterable<?> values) {
-        throw new UnsupportedOperationException("isNotIn assertion is not yet supported.");
+    private void failWithMessage(String message) {
+        if (description!=null && description.length()>0) {
+            throw new AssertionError("[" + description + "] " + message);
+        } else {
+            throw new AssertionError(message);
+        }
     }
 
     /**
-     * Set's string that will be ignored in comparison. Default value is "${json-unit.ignore}"
+     * Sets the description of this object.
      *
-     * @param ignorePlaceholder
+     * @param description
+     * @return
      */
-    public static void setIgnorePlaceholder(String ignorePlaceholder) {
-        JsonAssert.ignorePlaceholder = ignorePlaceholder;
+    public JsonAssert as(String description) {
+        return describedAs(description);
     }
 
-    public static String getIgnorePlaceholder() {
-        return ignorePlaceholder;
+    /**
+     * Sets the description of this object.
+     *
+     * @param description
+     * @return
+     */
+    public JsonAssert describedAs(String description) {
+        return new JsonAssert(actual, path, description, ignorePlaceholder);
+    }
+
+    /**
+     * Sets the placeholder that can be used to ignore values.
+     * The default value is ${json-unit.ignore}
+     * @param ignorePlaceholder
+     * @return
+     */
+    public JsonAssert ignoring(String ignorePlaceholder) {
+        return new JsonAssert(actual, path, description, ignorePlaceholder);
     }
 }

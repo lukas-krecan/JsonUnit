@@ -1,3 +1,6 @@
+## 0.0.16
+* Fluent assertions made framework independent.
+
 ## 0.0.15
 * Switched from FEST to AssertJ
 
