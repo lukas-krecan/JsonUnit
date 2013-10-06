@@ -2,14 +2,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>0.0.15-SNAPSHOT</version>
+    <version>0.0.15</version>
 
     <description>JSON FEST Assertions</description>
 
     <parent>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit-parent</artifactId>
-        <version>0.0.15-SNAPSHOT</version>
+        <version>0.0.15</version>
     </parent>
 
     <dependencies>
