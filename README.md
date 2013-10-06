@@ -51,11 +51,11 @@ Fluent (FEST or AssertJ like) assertions are supported by a special module json-
 
     // compares only parts of the document
     assertThatJson("{\"test1\":2, \"test2\":1}")
-        .node("test1").isEqualTo("2")
-        .node("test2").isEqualTo("2");
+        .node("test1").isEqualTo(2)
+        .node("test2").isEqualTo(2);
 
     assertThatJson("{\"root\":{\"test\":[1,2,3}}")
-        .node("root.test[0]").isEqualTo("1");
+        .node("root.test[0]").isEqualTo(1);
 
     // compares only the structure
     assertThatJson("{\"test\":1}").hasSameStructureAs("{\"test\":21}");
@@ -81,7 +81,7 @@ JsonUnit is accessible in Maven central repository
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit</artifactId>
-    	<version>0.0.15</version>
+    	<version>0.0.16</version>
     	<scope>test</scope>
 	</dependency>
 
@@ -90,7 +90,7 @@ To use fluent assertions:
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit-fluent</artifactId>
-    	<version>0.0.15</version>
+    	<version>0.0.16</version>
     	<scope>test</scope>
 	</dependency>
 	

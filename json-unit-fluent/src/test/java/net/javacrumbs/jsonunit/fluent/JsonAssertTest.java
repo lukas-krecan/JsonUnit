@@ -112,12 +112,18 @@ public class JsonAssertTest {
     @Test
     public void testAssertPathArray() {
         try {
-            assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[0]").isEqualTo("2");
+            assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[0]").isEqualTo(2);
             fail("Exception expected");
         } catch (AssertionError e) {
             assertEquals("JSON documents have different values:\nDifferent value found in node \"root.test[0]\". Expected 2, got 1.\n", e.getMessage());
         }
     }
+
+    @Test
+    public void testAssertPathArrayOk() {
+        assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[1]").isEqualTo(2);
+    }
+
 
     @Test
     public void testLongPaths() {
@@ -132,7 +138,7 @@ public class JsonAssertTest {
     @Test
     public void testMoreNodes() {
         try {
-            assertThatJson("{\"test1\":2, \"test2\":1}").node("test1").isEqualTo("2").node("test2").isEqualTo("2");
+            assertThatJson("{\"test1\":2, \"test2\":1}").node("test1").isEqualTo(2).node("test2").isEqualTo(2);
             fail("Exception expected");
         } catch (AssertionError e) {
             assertEquals("JSON documents have different values:\nDifferent value found in node \"test2\". Expected 2, got 1.\n", e.getMessage());
@@ -161,12 +167,12 @@ public class JsonAssertTest {
 
     @Test
     public void testEqualsToArray() throws IOException {
-        assertThatJson("{\"test\":[1,2,3]}").node("test").isEqualTo(new int[]{1,2,3});
+        assertThatJson("{\"test\":[1,2,3]}").node("test").isEqualTo(new int[]{1, 2, 3});
     }
 
     @Test(expected = AssertionError.class)
     public void testNotEqualsToToArray() throws IOException {
-        assertThatJson("{\"test\":[1,2,3]}").node("test").isNotEqualTo(new int[]{1,2,3});
+        assertThatJson("{\"test\":[1,2,3]}").node("test").isNotEqualTo(new int[]{1, 2, 3});
     }
 
     @Test
