@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit.fest;
+package net.javacrumbs.jsonunit.assertj;
 
 import net.javacrumbs.jsonunit.core.internal.Diff;
+import org.assertj.core.api.AbstractAssert;
 import org.codehaus.jackson.JsonNode;
-import org.fest.assertions.api.AbstractAssert;
-import org.fest.assertions.description.Description;
 
 import java.io.Reader;
-import java.io.StringReader;
 
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
 
 
@@ -66,23 +65,13 @@ public class JsonAssert extends AbstractAssert<JsonAssert, JsonNode> {
     /**
      * Creates a new instance of <code>{@link JsonAssert}</code>.
      * It is not called assertThat to not clash with StringAssert.
+     * The json parameter is converted to JSON using ObjectMapper.
      *
      * @param json
      * @return new JsonAssert object.
      */
-    public static JsonAssert assertThatJson(String json) {
-        return assertThatJson(readValue(json, ACTUAL));
-    }
-
-    /**
-     * Creates a new instance of <code>{@link JsonAssert}</code>.
-     * It is not called assertThat to not clash with StringAssert.
-     *
-     * @param json
-     * @return new JsonAssert object.
-     */
-    public static JsonAssert assertThatJson(StringReader json) {
-        return assertThatJson(readValue(json, ACTUAL));
+    public static JsonAssert assertThatJson(Object json) {
+        return assertThatJson(convertToJson(json, ACTUAL));
     }
 
     /**
@@ -91,35 +80,54 @@ public class JsonAssert extends AbstractAssert<JsonAssert, JsonNode> {
      * @param expected
      * @return {@code this} object.
      */
-    @Override
     public JsonAssert isEqualTo(JsonNode expected) {
         isNotNull();
 
         Diff diff = new Diff(expected, actual, path, ignorePlaceholder);
         if (!diff.similar()) {
-            doFail(diff.differences());
+            failWithMessage(diff.differences());
         }
         return this;
     }
 
     /**
-     * Compares JSON for equality. Ignores order of sibling nodes and whitespaces.
+     * Compares JSON for equality. The expected object is converted to JSON
+     * before comparison. Ignores order of sibling nodes and whitespaces.
      *
      * @param expected
      * @return {@code this} object.
      */
-    public JsonAssert isEqualTo(String expected) {
-        return isEqualTo(readValue(expected, EXPECTED));
+    @Override
+    public JsonAssert isEqualTo(Object expected) {
+        return isEqualTo(convertToJson(expected, EXPECTED));
     }
 
     /**
-     * Compares JSON for equality. Ignores order of sibling nodes and whitespaces.
+     * Fails if compared documents are equal.
      *
      * @param expected
      * @return {@code this} object.
      */
-    public JsonAssert isEqualTo(Reader expected) {
-        return isEqualTo(readValue(expected, EXPECTED));
+    public JsonAssert isNotEqualTo(JsonNode expected) {
+        isNotNull();
+
+        Diff diff = new Diff(expected, actual, path, ignorePlaceholder);
+        if (diff.similar()) {
+            failWithMessage("JSON is equal.");
+        }
+        return this;
+    }
+
+    /**
+     * Fails if compared documents are equal. The expected object is converted to JSON
+     * before comparison. Ignores order of sibling nodes and whitespaces.
+     *
+     * @param expected
+     * @return {@code this} object.
+     */
+    @Override
+    public JsonAssert isNotEqualTo(Object expected) {
+        return isNotEqualTo(convertToJson(expected, EXPECTED));
     }
 
     /**
@@ -133,7 +141,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, JsonNode> {
 
         Diff diff = new Diff(expected, actual, path, ignorePlaceholder);
         if (!diff.similarStructure()) {
-            doFail(diff.structureDifferences());
+            failWithMessage(diff.structureDifferences());
         }
         return this;
     }
@@ -145,22 +153,17 @@ public class JsonAssert extends AbstractAssert<JsonAssert, JsonNode> {
      * @param expected
      * @return {@code this} object.
      */
-    public JsonAssert hasSameStructureAs(String expected) {
-        return hasSameStructureAs(readValue(expected, EXPECTED));
-    }
-
-    /**
-     * Compares JSON structure. Ignores values, only compares shape of the document and key names.
-     *
-     * @param expected
-     * @return {@code this} object.
-     */
-    public JsonAssert hasSameStructureAs(Reader expected) {
-        return hasSameStructureAs(readValue(expected, EXPECTED));
+    public JsonAssert hasSameStructureAs(Object expected) {
+        return hasSameStructureAs(convertToJson(expected, EXPECTED));
     }
 
     /**
      * Creates an assert object that only compares given node.
+     * The path is denoted by JSON path, for example.
+     * <p/>
+     * <code>
+     * assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[0]").isEqualTo("1");
+     * </code>
      *
      * @param path
      * @return object comparing only node given by path.
@@ -169,16 +172,29 @@ public class JsonAssert extends AbstractAssert<JsonAssert, JsonNode> {
         return new JsonAssert(actual, path);
     }
 
-    /**
-     * Fails a test with the given message.
-     */
-    private void doFail(String diffMessage) {
-        Description description = getWritableAssertionInfo().description();
-        throw new AssertionError((description != null ? description.value() + "\n" : "") + diffMessage);
+    @Override
+    public JsonAssert isIn(Object... values) {
+        throw new UnsupportedOperationException("isIn assertion is not yet supported.");
+    }
+
+    @Override
+    public JsonAssert isIn(Iterable<?> values) {
+        throw new UnsupportedOperationException("isIn assertion is not yet supported.");
+    }
+
+    @Override
+    public JsonAssert isNotIn(Object... values) {
+        throw new UnsupportedOperationException("isNotIn assertion is not yet supported.");
+    }
+
+    @Override
+    public JsonAssert isNotIn(Iterable<?> values) {
+        throw new UnsupportedOperationException("isNotIn assertion is not yet supported.");
     }
 
     /**
      * Set's string that will be ignored in comparison. Default value is "${json-unit.ignore}"
+     *
      * @param ignorePlaceholder
      */
     public static void setIgnorePlaceholder(String ignorePlaceholder) {

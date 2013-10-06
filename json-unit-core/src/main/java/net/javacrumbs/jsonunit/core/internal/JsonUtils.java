@@ -51,4 +51,23 @@ public class JsonUtils {
    			throw new IllegalArgumentException("Can not parse "+label+" value.", e);
    		}
    	}
+
+    /**
+     * Converts object to JSON.
+     * @param source
+     * @param label  label to be logged in case of error.
+     * @return
+     */
+    public static JsonNode convertToJson(Object source, String label) {
+        if (source instanceof JsonNode) {
+            return (JsonNode)source;
+        }
+        if (source instanceof String) {
+            return readValue((String)source, label);
+        } else if (source instanceof Reader) {
+            return readValue((Reader)source, label);
+        } else {
+            return MAPPER.convertValue(source, JsonNode.class);
+        }
+   	}
 }

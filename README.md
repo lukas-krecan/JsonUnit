@@ -39,11 +39,11 @@ placeholder like this
     assertJsonEquals("{\"test\":\"${json-unit.ignore}\"}",
         "{\n\"test\": {\"object\" : {\"another\" : 1}}}");
 
-FEST assertions
+AssertJ assertions
 ---------------
-FEST assertions are supported by a special module json-unit-fest
+[AssertJ assertions](https://github.com/joel-costigliola/assertj-core) are supported by a special module json-unit-assertj
 
-    import static net.javacrumbs.jsonunit.fest.JsonAssert.assertThatJson;
+    import static net.javacrumbs.jsonunit.assertj.JsonAssert.assertThatJson;
     ...
 
     // compares entire documents
@@ -53,6 +53,9 @@ FEST assertions are supported by a special module json-unit-fest
     assertThatJson("{\"test1\":2, \"test2\":1}")
         .node("test1").isEqualTo("2")
         .node("test2").isEqualTo("2");
+
+    assertThatJson("{\"root\":{\"test\":[1,2,3}}")
+        .node("root.test[0]").isEqualTo("1");
 
     // compares only the structure
     assertThatJson("{\"test\":1}").hasSameStructureAs("{\"test\":21}");
@@ -72,16 +75,16 @@ JsonUnit is accessible in Maven central repository
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit</artifactId>
-    	<version>0.0.14</version>
+    	<version>0.0.15</version>
     	<scope>test</scope>
 	</dependency>
 
-To use FEST asserts:
+To use AssertJ asserts:
 
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
-    	<artifactId>json-unit-fest</artifactId>
-    	<version>0.0.14</version>
+    	<artifactId>json-unit-assertj</artifactId>
+    	<version>0.0.15</version>
     	<scope>test</scope>
 	</dependency>
 	

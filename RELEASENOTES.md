@@ -1,3 +1,6 @@
+## 0.0.15
+* Switched from FEST to AssertJ
+
 ## 0.0.14
 * Modules refactored
 * Added support for FEST assert

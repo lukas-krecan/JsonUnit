@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit.fest;
+package net.javacrumbs.jsonunit.assertj;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
@@ -21,7 +21,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.StringReader;
 
-import static net.javacrumbs.jsonunit.fest.JsonAssert.assertThatJson;
+import static net.javacrumbs.jsonunit.assertj.JsonAssert.assertThatJson;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -75,6 +75,16 @@ public class JsonAssertTest {
     }
 
     @Test
+    public void testNotEqualTo() throws IOException {
+        try {
+            assertThatJson("{\"test\":1}").isNotEqualTo("{\"test\": 1}");
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("JSON is equal.", e.getMessage());
+        }
+    }
+
+    @Test
     public void testSameStructureOk() throws IOException {
         assertThatJson("{\"test\":1}").hasSameStructureAs("{\"test\":21}");
     }
@@ -96,6 +106,16 @@ public class JsonAssertTest {
             fail("Exception expected");
         } catch (AssertionError e) {
             assertEquals("JSON documents have different values:\nDifferent value found in node \"test\". Expected 2, got 1.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAssertPathArray() {
+        try {
+            assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[0]").isEqualTo("2");
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("JSON documents have different values:\nDifferent value found in node \"root.test[0]\". Expected 2, got 1.\n", e.getMessage());
         }
     }
 
@@ -125,7 +145,7 @@ public class JsonAssertTest {
             assertThatJson("{\"test\":1}").as("Test is different").isEqualTo("{\"test\":2}");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("Test is different\nJSON documents have different values:\nDifferent value found in node \"test\". Expected 2, got 1.\n", e.getMessage());
+            assertEquals("[Test is different] JSON documents have different values:\nDifferent value found in node \"test\". Expected 2, got 1.\n", e.getMessage());
         }
     }
 
@@ -139,5 +159,20 @@ public class JsonAssertTest {
         JsonAssert.setIgnorePlaceholder("##IGNORE##");
         assertThatJson("{\"test\":1}").isEqualTo("{\"test\":\"##IGNORE##\"}");
         JsonAssert.setIgnorePlaceholder("${json-unit.ignore}");
+    }
+
+    @Test
+    public void testEqualsToArray() throws IOException {
+        assertThatJson("{\"test\":[1,2,3]}").node("test").isEqualTo(new int[]{1,2,3});
+    }
+
+    @Test(expected = AssertionError.class)
+    public void testNotEqualsToToArray() throws IOException {
+        assertThatJson("{\"test\":[1,2,3]}").node("test").isNotEqualTo(new int[]{1,2,3});
+    }
+
+    @Test
+    public void testEqualsToBoolean() throws IOException {
+        assertThatJson("{\"test\":true}").node("test").isEqualTo(true);
     }
 }
