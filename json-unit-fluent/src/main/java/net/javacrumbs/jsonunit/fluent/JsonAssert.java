@@ -15,8 +15,8 @@
  */
 package net.javacrumbs.jsonunit.fluent;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import net.javacrumbs.jsonunit.core.internal.Diff;
-import org.codehaus.jackson.JsonNode;
 
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 

@@ -19,7 +19,7 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import net.javacrumbs.jsonunit.core.internal.Diff;
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
 

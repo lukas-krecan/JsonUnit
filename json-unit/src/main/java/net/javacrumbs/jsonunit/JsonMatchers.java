@@ -16,7 +16,7 @@
 package net.javacrumbs.jsonunit;
 
 import net.javacrumbs.jsonunit.core.internal.Diff;
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;

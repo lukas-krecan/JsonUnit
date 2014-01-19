@@ -15,7 +15,7 @@
  */
 package net.javacrumbs.jsonunit.fluent;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
 import java.io.IOException;

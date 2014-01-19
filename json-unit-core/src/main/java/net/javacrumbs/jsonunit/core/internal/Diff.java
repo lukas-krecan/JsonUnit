@@ -30,9 +30,9 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -175,7 +175,7 @@ public class Diff {
 		NodeType actualNodeType = getNodeType(actualNode);
 
         //ignoring value
-        if (expectedNodeType==NodeType.STRING && ignorePlaceholder.equals(expectedNode.getTextValue())) {
+        if (expectedNodeType==NodeType.STRING && ignorePlaceholder.equals(expectedNode.asText())) {
             return;
         }
 
@@ -190,13 +190,13 @@ public class Diff {
 					compareArrayNodes((ArrayNode)expectedNode, (ArrayNode)actualNode, fieldPath);
 					break;
 				case STRING:
-					compareValues(expectedNode.getTextValue(), actualNode.getTextValue(), fieldPath);
+					compareValues(expectedNode.asText(), actualNode.asText(), fieldPath);
 					break;
 				case NUMBER:
-					compareValues(expectedNode.getNumberValue(), actualNode.getNumberValue(), fieldPath);
+					compareValues(expectedNode.numberValue(), actualNode.numberValue(), fieldPath);
 					break;
 				case BOOLEAN:
-					compareValues(expectedNode.getBooleanValue(), actualNode.getBooleanValue(), fieldPath);
+					compareValues(expectedNode.asBoolean(), actualNode.asBoolean(), fieldPath);
 					break;
 				case NULL:
 					//nothing
@@ -230,8 +230,8 @@ public class Diff {
 
 
     private void compareArrayNodes(ArrayNode expectedNode, ArrayNode actualNode, String path) {
-		List<JsonNode> expectedElements = asList(expectedNode.getElements());
-		List<JsonNode> actualElements = asList(actualNode.getElements());
+		List<JsonNode> expectedElements = asList(expectedNode.elements());
+		List<JsonNode> actualElements = asList(actualNode.elements());
 		if (expectedElements.size()!=actualElements.size()) {
 			structureDifferenceFound("Array \"%s\" has different length. Expected %d, got %d.", path, expectedElements.size(), actualElements.size());
 		}
@@ -361,7 +361,7 @@ public class Diff {
 	 */
 	private static Map<String, JsonNode> getFields(ObjectNode node) {
 		Map<String, JsonNode> result = new HashMap<String, JsonNode>();
-		Iterator<Entry<String, JsonNode>> fields = node.getFields();
+		Iterator<Entry<String, JsonNode>> fields = node.fields();
 		while (fields.hasNext()) {
 			Map.Entry<String, JsonNode> field =  fields.next();
 			result.put(field.getKey(), field.getValue());
