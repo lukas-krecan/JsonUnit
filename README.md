@@ -43,7 +43,7 @@ Fluent assertions
 ---------------
 Fluent (FEST or AssertJ like) assertions are supported by a special module json-unit-fluent
 
-    import static net.javacrumbs.jsonunit.fluent.JsonAssert.assertThatJson;
+    import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
     ...
 
     // compares entire documents

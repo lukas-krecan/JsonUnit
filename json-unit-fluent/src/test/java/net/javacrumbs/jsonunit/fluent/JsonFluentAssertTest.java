@@ -21,12 +21,11 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.StringReader;
 
-import static net.javacrumbs.jsonunit.fluent.JsonAssert.assertThatJson;
+import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-@Deprecated
-public class JsonAssertTest {
+public class JsonFluentAssertTest {
     private final ObjectMapper mapper = new ObjectMapper();
 
 

@@ -22,7 +22,7 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 
 
 /**
- * Contains JSON related fluent assertions inspired by FESt or AssertJ. Typical usage is:
+ * Contains JSON related fluent assertions inspired by FEST or AssertJ. Typical usage is:
  * <p/>
  * <code>
  * assertThatJson("{\"test\":1}").isEqualTo("{\"test\":2}");
@@ -32,29 +32,18 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
  * <p/>
  * Please note that the method name is assertThatJson and not assertThat. The reason is that we need to accept String parameter
  * and do not want to override standard FEST or AssertJ assertThat(String) method.
+ * @deprecated use JsonFluentAssert instead
  */
-public class JsonAssert {
-    private static final String EXPECTED = "expected";
+@Deprecated
+public class JsonAssert extends JsonFluentAssert {
     private static final String ACTUAL = "actual";
-    private static final String DEFAULT_IGNORE_PLACEHOLDER = "${json-unit.ignore}";
-
-    private final String path;
-    private final JsonNode actual;
-    private final String description;
-    private final String ignorePlaceholder;
 
     protected JsonAssert(JsonNode actual, String path, String description, String ignorePlaceholder) {
-        if (actual == null) {
-            throw new IllegalArgumentException("Can not make assertions about null JSON.");
-        }
-        this.path = path;
-        this.actual = actual;
-        this.description = description;
-        this.ignorePlaceholder = ignorePlaceholder;
+        super(actual, path, description, ignorePlaceholder);
     }
 
     public JsonAssert(JsonNode actual) {
-        this(actual, "", "", DEFAULT_IGNORE_PLACEHOLDER);
+        super(actual);
     }
 
 
@@ -79,133 +68,5 @@ public class JsonAssert {
      */
     public static JsonAssert assertThatJson(Object json) {
         return assertThatJson(convertToJson(json, ACTUAL));
-    }
-
-    /**
-     * Compares JSON for equality. Ignores order of sibling nodes and whitespaces.
-     *
-     * @param expected
-     * @return {@code this} object.
-     */
-    public JsonAssert isEqualTo(JsonNode expected) {
-        Diff diff = new Diff(expected, actual, path, ignorePlaceholder);
-        if (!diff.similar()) {
-            failWithMessage(diff.differences());
-        }
-        return this;
-    }
-
-    /**
-     * Compares JSON for equality. The expected object is converted to JSON
-     * before comparison. Ignores order of sibling nodes and whitespaces.
-     *
-     * @param expected
-     * @return {@code this} object.
-     */
-    public JsonAssert isEqualTo(Object expected) {
-        return isEqualTo(convertToJson(expected, EXPECTED));
-    }
-
-    /**
-     * Fails if compared documents are equal.
-     *
-     * @param expected
-     * @return {@code this} object.
-     */
-    public JsonAssert isNotEqualTo(JsonNode expected) {
-        Diff diff = new Diff(expected, actual, path, ignorePlaceholder);
-        if (diff.similar()) {
-            failWithMessage("JSON is equal.");
-        }
-        return this;
-    }
-
-    /**
-     * Fails if compared documents are equal. The expected object is converted to JSON
-     * before comparison. Ignores order of sibling nodes and whitespaces.
-     *
-     * @param expected
-     * @return {@code this} object.
-     */
-    public JsonAssert isNotEqualTo(Object expected) {
-        return isNotEqualTo(convertToJson(expected, EXPECTED));
-    }
-
-    /**
-     * Compares JSON structure. Ignores values, only compares shape of the document and key names.
-     *
-     * @param expected
-     * @return {@code this} object.
-     */
-    public JsonAssert hasSameStructureAs(JsonNode expected) {
-        Diff diff = new Diff(expected, actual, path, ignorePlaceholder);
-        if (!diff.similarStructure()) {
-            failWithMessage(diff.structureDifferences());
-        }
-        return this;
-    }
-
-
-    /**
-     * Compares JSON structure. Ignores values, only compares shape of the document and key names.
-     *
-     * @param expected
-     * @return {@code this} object.
-     */
-    public JsonAssert hasSameStructureAs(Object expected) {
-        return hasSameStructureAs(convertToJson(expected, EXPECTED));
-    }
-
-    /**
-     * Creates an assert object that only compares given node.
-     * The path is denoted by JSON path, for example.
-     * <p/>
-     * <code>
-     * assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[0]").isEqualTo("1");
-     * </code>
-     *
-     * @param path
-     * @return object comparing only node given by path.
-     */
-    public JsonAssert node(String path) {
-        return new JsonAssert(actual, path, description, ignorePlaceholder);
-    }
-
-    private void failWithMessage(String message) {
-        if (description!=null && description.length()>0) {
-            throw new AssertionError("[" + description + "] " + message);
-        } else {
-            throw new AssertionError(message);
-        }
-    }
-
-    /**
-     * Sets the description of this object.
-     *
-     * @param description
-     * @return
-     */
-    public JsonAssert as(String description) {
-        return describedAs(description);
-    }
-
-    /**
-     * Sets the description of this object.
-     *
-     * @param description
-     * @return
-     */
-    public JsonAssert describedAs(String description) {
-        return new JsonAssert(actual, path, description, ignorePlaceholder);
-    }
-
-    /**
-     * Sets the placeholder that can be used to ignore values.
-     * The default value is ${json-unit.ignore}
-     * @param ignorePlaceholder
-     * @return
-     */
-    public JsonAssert ignoring(String ignorePlaceholder) {
-        return new JsonAssert(actual, path, description, ignorePlaceholder);
     }
 }
