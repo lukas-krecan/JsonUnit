@@ -81,7 +81,7 @@ JsonUnit is accessible in Maven central repository
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit</artifactId>
-    	<version>0.0.16</version>
+    	<version>1.0.0</version>
     	<scope>test</scope>
 	</dependency>
 
@@ -90,9 +90,13 @@ To use fluent assertions:
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit-fluent</artifactId>
-    	<version>0.0.16</version>
+    	<version>1.0.0</version>
     	<scope>test</scope>
 	</dependency>
+
+Versions
+--------
+json-unit versions 1.0.0 and higher are built on top of Jackson 2.x. If you are using Jackson 1.x you can use json-unit 0.0.16.
 	
 Licence
 -------

@@ -1,5 +1,6 @@
 ## 1.0.0
 * Switched to Jackson 2.x
+* Fluent JsonAssert renamed to JsonFluentAssert
 
 ## 0.0.16
 * Fluent assertions made framework independent.
