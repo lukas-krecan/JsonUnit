@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit.fluent;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -178,5 +179,21 @@ public class JsonFluentAssertTest {
     @Test
     public void testEqualsToBoolean() throws IOException {
         assertThatJson("{\"test\":true}").node("test").isEqualTo(true);
+    }
+
+    @Test
+    public void testIssue3() throws IOException {
+        assertThatJson("{\"someKey\":\"111 text\"}").node("someKey").isEqualTo("\"111 text\"");
+    }
+
+    @Test
+    public void testIssue3NoSpace() throws IOException {
+        assertThatJson("{\"someKey\":\"111text\"}").node("someKey").isEqualTo("\"111text\"");
+    }
+
+    @Test
+    @Ignore
+    public void testIssue3Original() throws IOException {
+        assertThatJson("{\"someKey\":\"111 text\"}").node("someKey").isEqualTo("111 text");
     }
 }
