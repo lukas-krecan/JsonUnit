@@ -15,13 +15,11 @@
  */
 package net.javacrumbs.jsonunit;
 
-import java.io.Reader;
-import java.io.StringReader;
-
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import org.codehaus.jackson.JsonNode;
 
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJsonQuoteIfNeeded;
 
 /**
  * Assertions for comparing JSON. The comparison ignores white-spaces and order of nodes.
@@ -30,30 +28,13 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
  */
  public class JsonAssert {
 
+    private static final String EXPECTED = "expected";
+    public static final String FULL_JSON = "fullJson";
+    public static final String ACTUAL = "actual";
     private static String ignorePlaceholder = "${json-unit.ignore}";
 
 	private JsonAssert(){
 		//nothing
-	}
-
-	/**
-	 * Compares two JSON documents. Throws {@link AssertionError} if they are different.
-	 * @param expected
-	 * @param actual
-	 */
-	public static void  assertJsonEquals(String expected, String actual) {
-		assertJsonEquals(new StringReader(expected), new StringReader(actual));
-	}
-
-	/**
-	 * Compares to JSON documents. Throws {@link AssertionError} if they are different.
-	 * @param expected
-	 * @param actual
-	 */
-	public static void  assertJsonEquals(Reader expected, Reader actual) {
-		JsonNode expectedNode = readValue(expected, "expected");
-		JsonNode actualNode = readValue(actual, "actual");
-		assertJsonEquals(expectedNode, actualNode);
 	}
 
 	/**
@@ -68,13 +49,13 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
     /**
    	 * Compares to JSON documents. Throws {@link AssertionError} if they are different.
    	 * @param expected
-   	 * @param actualNode
+   	 * @param actual
    	 */
-   	public static void assertJsonEquals(String expected, JsonNode actualNode) {
-   		assertJsonPartEquals(readValue(expected, "expected"), actualNode, "");
+   	public static void assertJsonEquals(Object expected, Object actual) {
+   		assertJsonPartEquals(convertExpectedToJson(expected), convertActualToJson(actual), "");
    	}
 
-	/**
+    /**
 	 * Compares part of the JSON. Path has this format "root.array[0].value".
 	 * @param expected
 	 * @param fullJson
@@ -93,41 +74,8 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
 	 * @param fullJson
 	 * @param path
 	 */
-	public static void assertJsonPartEquals(Reader expected, Reader fullJson, String path) {
-		JsonNode expectedNode = readValue(expected, "expected");
-		JsonNode fullJsonNode = readValue(fullJson, "fullJson");
-		assertJsonPartEquals(expectedNode, fullJsonNode, path);
-	}
-
-	/**
-	 * Compares part of the JSON. Path has this format "root.array[0].value".
-	 * @param expected
-	 * @param fullJson
-	 * @param path
-	 */
-	public static void assertJsonPartEquals(String expected, String fullJson, String path) {
-		assertJsonPartEquals(new StringReader(expected), new StringReader(fullJson), path);
-	}
-
-    /**
-   	 * Compares part of the JSON. Path has this format "root.array[0].value".
-   	 * @param expected
-   	 * @param fullJson
-   	 * @param path
-   	 */
-   	public static void assertJsonPartEquals(String expected, JsonNode fullJson, String path) {
-   		assertJsonPartEquals(readValue(expected, "expected"), fullJson, path);
-   	}
-
-
-	/**
-	 * Compares structures of two JSON documents.
-	 * Throws {@link AssertionError} if they are different.
-	 * @param expected
-	 * @param actual
-	 */
-	public static void  assertJsonStructureEquals(String expected, String actual) {
-		assertJsonStructureEquals(new StringReader(expected), new StringReader(actual));
+	public static void assertJsonPartEquals(Object expected, Object fullJson, String path) {
+		assertJsonPartEquals(convertExpectedToJson(expected), convertToJson(fullJson, FULL_JSON), path);
 	}
 
 	/**
@@ -136,10 +84,8 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
 	 * @param expected
 	 * @param actual
 	 */
-	public static void  assertJsonStructureEquals(Reader expected, Reader actual) {
-		JsonNode expectedNode = readValue(expected, "expected");
-		JsonNode actualNode = readValue(actual, "actual");
-		assertJsonStructureEquals(expectedNode, actualNode);
+	public static void  assertJsonStructureEquals(Object expected, Object actual) {
+		assertJsonStructureEquals(convertExpectedToJson(expected), convertActualToJson(actual));
 	}
 
 	/**
@@ -171,20 +117,8 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
 	 * @param fullJson
 	 * @param path
 	 */
-	public static void assertJsonPartStructureEquals(Reader expected, Reader fullJson, String path) {
-		JsonNode expectedNode = readValue(expected, "expected");
-		JsonNode fullJsonNode = readValue(fullJson, "fullJson");
-		assertJsonPartStructureEquals(expectedNode, fullJsonNode, path);
-	}
-
-	/**
-	 * Compares structure of part of the JSON. Path has this format "root.array[0].value".
-	 * @param expected
-	 * @param fullJson
-	 * @param path
-	 */
-	public static void assertJsonPartStructureEquals(String expected, String fullJson, String path) {
-		assertJsonPartStructureEquals(new StringReader(expected), new StringReader(fullJson), path);
+	public static void assertJsonPartStructureEquals(Object expected, Object fullJson, String path) {
+		assertJsonPartStructureEquals(convertExpectedToJson(expected), convertToJson(fullJson, FULL_JSON), path);
 	}
 
 	/**
@@ -193,6 +127,15 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
 	private static void doFail(String diffMessage) {
 		throw new AssertionError(diffMessage);
 	}
+
+
+    private static JsonNode convertExpectedToJson(Object expected) {
+        return convertToJsonQuoteIfNeeded(expected, EXPECTED);
+    }
+
+    private static JsonNode convertActualToJson(Object actual) {
+        return convertToJson(actual, ACTUAL);
+    }
 
     /**
      * Set's string that will be ignored in comparison. Default value is "${json-unit.ignore}"

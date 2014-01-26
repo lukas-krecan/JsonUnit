@@ -15,13 +15,13 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.Test;
+
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
 
 public class DiffTest {
 	private static final ObjectMapper MAPPER = new ObjectMapper();
