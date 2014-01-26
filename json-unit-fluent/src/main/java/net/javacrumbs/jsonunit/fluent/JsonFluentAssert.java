@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJsonQuoteIfNeeded;
 
 
 /**
@@ -88,9 +89,13 @@ public class JsonFluentAssert {
      * @return {@code this} object.
      */
     public JsonFluentAssert isEqualTo(JsonNode expected) {
-        Diff diff = new Diff(expected, actual, path, ignorePlaceholder);
-        if (!diff.similar()) {
-            failWithMessage(diff.differences());
+        if (expected == null) {
+            isEqualTo((Object) expected);
+        } else {
+            Diff diff = new Diff(expected, actual, path, ignorePlaceholder);
+            if (!diff.similar()) {
+                failWithMessage(diff.differences());
+            }
         }
         return this;
     }
@@ -103,7 +108,11 @@ public class JsonFluentAssert {
      * @return {@code this} object.
      */
     public JsonFluentAssert isEqualTo(Object expected) {
-        return isEqualTo(convertToJson(expected, EXPECTED));
+        return isEqualTo(convertExpectedToJson(expected));
+    }
+
+    private JsonNode convertExpectedToJson(Object expected) {
+        return convertToJsonQuoteIfNeeded(expected, EXPECTED);
     }
 
     /**
@@ -113,9 +122,13 @@ public class JsonFluentAssert {
      * @return {@code this} object.
      */
     public JsonFluentAssert isNotEqualTo(JsonNode expected) {
-        Diff diff = new Diff(expected, actual, path, ignorePlaceholder);
-        if (diff.similar()) {
-            failWithMessage("JSON is equal.");
+        if (expected == null) {
+            isNotEqualTo((Object) expected);
+        } else {
+            Diff diff = new Diff(expected, actual, path, ignorePlaceholder);
+            if (diff.similar()) {
+                failWithMessage("JSON is equal.");
+            }
         }
         return this;
     }
@@ -128,7 +141,7 @@ public class JsonFluentAssert {
      * @return {@code this} object.
      */
     public JsonFluentAssert isNotEqualTo(Object expected) {
-        return isNotEqualTo(convertToJson(expected, EXPECTED));
+        return isNotEqualTo(convertExpectedToJson(expected));
     }
 
     /**
@@ -153,7 +166,7 @@ public class JsonFluentAssert {
      * @return {@code this} object.
      */
     public JsonFluentAssert hasSameStructureAs(Object expected) {
-        return hasSameStructureAs(convertToJson(expected, EXPECTED));
+        return hasSameStructureAs(convertExpectedToJson(expected));
     }
 
     /**
@@ -172,7 +185,7 @@ public class JsonFluentAssert {
     }
 
     private void failWithMessage(String message) {
-        if (description!=null && description.length()>0) {
+        if (description != null && description.length() > 0) {
             throw new AssertionError("[" + description + "] " + message);
         } else {
             throw new AssertionError(message);
@@ -202,6 +215,7 @@ public class JsonFluentAssert {
     /**
      * Sets the placeholder that can be used to ignore values.
      * The default value is ${json-unit.ignore}
+     *
      * @param ignorePlaceholder
      * @return
      */

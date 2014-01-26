@@ -15,17 +15,18 @@
  */
 package net.javacrumbs.jsonunit;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.junit.Test;
+
+import java.io.IOException;
+import java.io.StringReader;
+
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonStructureEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-
-import java.io.IOException;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.junit.Test;
 
 public class JsonAssertTest {
 
@@ -348,6 +349,16 @@ public class JsonAssertTest {
     @Test
     public void testAssertPartOk() {
         assertJsonPartEquals("1", "{\"test\":{\"value\":1}}", "test.value");
+    }
+
+    @Test
+    public void testAssertPartOkReaders() {
+        assertJsonPartEquals(new StringReader("1"), new StringReader("{\"test\":{\"value\":1}}"), "test.value");
+    }
+
+    @Test
+    public void testAssertPartOkString() {
+        assertJsonPartEquals("a b", "{\"test\":{\"value\":\"a b\"}}", "test.value");
     }
 
     @Test
