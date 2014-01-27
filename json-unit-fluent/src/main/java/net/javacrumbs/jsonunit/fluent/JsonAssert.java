@@ -15,7 +15,7 @@
  */
 package net.javacrumbs.jsonunit.fluent;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import org.codehaus.jackson.JsonNode;
 
 
 /**

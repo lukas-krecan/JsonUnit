@@ -15,9 +15,9 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.node.ArrayNode;
+import org.codehaus.jackson.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -200,7 +200,7 @@ public class Diff {
                     compareValues(expectedNode.asText(), actualNode.asText(), fieldPath);
                     break;
                 case NUMBER:
-                    compareValues(expectedNode.numberValue(), actualNode.numberValue(), fieldPath);
+                    compareValues(expectedNode.getNumberValue(), actualNode.getNumberValue(), fieldPath);
                     break;
                 case BOOLEAN:
                     compareValues(expectedNode.asBoolean(), actualNode.asBoolean(), fieldPath);
@@ -237,8 +237,8 @@ public class Diff {
 
 
     private void compareArrayNodes(ArrayNode expectedNode, ArrayNode actualNode, String path) {
-        List<JsonNode> expectedElements = asList(expectedNode.elements());
-        List<JsonNode> actualElements = asList(actualNode.elements());
+        List<JsonNode> expectedElements = asList(expectedNode.getElements());
+        List<JsonNode> actualElements = asList(actualNode.getElements());
         if (expectedElements.size() != actualElements.size()) {
             structureDifferenceFound("Array \"%s\" has different length. Expected %d, got %d.", path, expectedElements.size(), actualElements.size());
         }
@@ -369,7 +369,7 @@ public class Diff {
      */
     private static Map<String, JsonNode> getFields(ObjectNode node) {
         Map<String, JsonNode> result = new HashMap<String, JsonNode>();
-        Iterator<Entry<String, JsonNode>> fields = node.fields();
+        Iterator<Entry<String, JsonNode>> fields = node.getFields();
         while (fields.hasNext()) {
             Map.Entry<String, JsonNode> field = fields.next();
             result.put(field.getKey(), field.getValue());
