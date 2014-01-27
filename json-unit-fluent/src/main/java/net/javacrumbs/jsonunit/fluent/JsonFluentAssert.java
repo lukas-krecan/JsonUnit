@@ -54,20 +54,8 @@ public class JsonFluentAssert {
         this.ignorePlaceholder = ignorePlaceholder;
     }
 
-    public JsonFluentAssert(JsonNode actual) {
+    protected JsonFluentAssert(JsonNode actual) {
         this(actual, "", "", DEFAULT_IGNORE_PLACEHOLDER);
-    }
-
-
-    /**
-     * Creates a new instance of <code>{@link JsonFluentAssert}</code>.
-     * It is not called assertThat to not clash with StringAssert.
-     *
-     * @param json
-     * @return new JsonFluentAssert object.
-     */
-    public static JsonFluentAssert assertThatJson(JsonNode json) {
-        return new JsonFluentAssert(json);
     }
 
     /**
@@ -79,25 +67,7 @@ public class JsonFluentAssert {
      * @return new JsonFluentAssert object.
      */
     public static JsonFluentAssert assertThatJson(Object json) {
-        return assertThatJson(convertToJson(json, ACTUAL));
-    }
-
-    /**
-     * Compares JSON for equality. Ignores order of sibling nodes and whitespaces.
-     *
-     * @param expected
-     * @return {@code this} object.
-     */
-    public JsonFluentAssert isEqualTo(JsonNode expected) {
-        if (expected == null) {
-            isEqualTo((Object) expected);
-        } else {
-            Diff diff = new Diff(expected, actual, path, ignorePlaceholder);
-            if (!diff.similar()) {
-                failWithMessage(diff.differences());
-            }
-        }
-        return this;
+        return new JsonFluentAssert(convertToJson(json, ACTUAL));
     }
 
     /**
@@ -108,27 +78,9 @@ public class JsonFluentAssert {
      * @return {@code this} object.
      */
     public JsonFluentAssert isEqualTo(Object expected) {
-        return isEqualTo(convertExpectedToJson(expected));
-    }
-
-    private JsonNode convertExpectedToJson(Object expected) {
-        return convertToJsonQuoteIfNeeded(expected, EXPECTED);
-    }
-
-    /**
-     * Fails if compared documents are equal.
-     *
-     * @param expected
-     * @return {@code this} object.
-     */
-    public JsonFluentAssert isNotEqualTo(JsonNode expected) {
-        if (expected == null) {
-            isNotEqualTo((Object) expected);
-        } else {
-            Diff diff = new Diff(expected, actual, path, ignorePlaceholder);
-            if (diff.similar()) {
-                failWithMessage("JSON is equal.");
-            }
+        Diff diff = createDiff(expected);
+        if (!diff.similar()) {
+            failWithMessage(diff.differences());
         }
         return this;
     }
@@ -141,23 +93,12 @@ public class JsonFluentAssert {
      * @return {@code this} object.
      */
     public JsonFluentAssert isNotEqualTo(Object expected) {
-        return isNotEqualTo(convertExpectedToJson(expected));
-    }
-
-    /**
-     * Compares JSON structure. Ignores values, only compares shape of the document and key names.
-     *
-     * @param expected
-     * @return {@code this} object.
-     */
-    public JsonFluentAssert hasSameStructureAs(JsonNode expected) {
-        Diff diff = new Diff(expected, actual, path, ignorePlaceholder);
-        if (!diff.similarStructure()) {
-            failWithMessage(diff.structureDifferences());
+        Diff diff = createDiff(expected);
+        if (diff.similar()) {
+            failWithMessage("JSON is equal.");
         }
         return this;
     }
-
 
     /**
      * Compares JSON structure. Ignores values, only compares shape of the document and key names.
@@ -166,7 +107,11 @@ public class JsonFluentAssert {
      * @return {@code this} object.
      */
     public JsonFluentAssert hasSameStructureAs(Object expected) {
-        return hasSameStructureAs(convertExpectedToJson(expected));
+        Diff diff = createDiff(expected);
+        if (!diff.similarStructure()) {
+            failWithMessage(diff.structureDifferences());
+        }
+        return this;
     }
 
     /**
@@ -182,6 +127,15 @@ public class JsonFluentAssert {
      */
     public JsonFluentAssert node(String path) {
         return new JsonFluentAssert(actual, path, description, ignorePlaceholder);
+    }
+
+
+    private Diff createDiff(Object expected) {
+        return new Diff(convertExpectedToJson(expected), actual, path, ignorePlaceholder);
+    }
+
+    private JsonNode convertExpectedToJson(Object expected) {
+        return convertToJsonQuoteIfNeeded(expected, EXPECTED);
     }
 
     private void failWithMessage(String message) {

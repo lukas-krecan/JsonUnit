@@ -60,6 +60,16 @@ public class JsonFluentAssertTest {
     }
 
     @Test
+    public void testAssertNodeInExpectOnly() throws IOException {
+        try {
+            assertThatJson("{\"test\":1}").isEqualTo(mapper.readTree("{\"test\":2}"));
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("JSON documents have different values:\nDifferent value found in node \"test\". Expected 2, got 1.\n", e.getMessage());
+        }
+    }
+
+    @Test
     public void testAssertReader() throws IOException {
         try {
             assertThatJson(new StringReader("{\"test\":1}")).isEqualTo(new StringReader("{\"test\":2}"));

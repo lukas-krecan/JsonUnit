@@ -21,9 +21,7 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
-import java.io.Reader;
-
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 
 /**
  * Contains Hamcrest matchers to be used with Hamcrest assertThat and other tools.
@@ -32,41 +30,11 @@ public class JsonMatchers {
     /**
      * Are the JSON structures equivalent?
      *
-     * @param jsonNode
-     * @return
-     */
-    public static Matcher<JsonNode> jsonEquals(JsonNode jsonNode) {
-        return new JsonPartMatcher<JsonNode>("", jsonNode);
-    }
-
-    /**
-     * Are the JSON structures equivalent?
-     *
      * @param json
      * @return
      */
-    public static Matcher<String> jsonEquals(String json) {
-        return new JsonPartMatcher<String>("", readValue(json, "expectedJson"));
-    }
-
-    /**
-     * Are the JSON structures equivalent?
-     *
-     * @param json
-     * @return
-     */
-    public static Matcher<String> jsonEquals(Reader json) {
-        return new JsonPartMatcher<String>("", readValue(json, "expectedJson"));
-    }
-
-    /**
-     * Is the part of JSON structures equivalent?
-     *
-     * @param jsonNode
-     * @return
-     */
-    public static Matcher<JsonNode> jsonPartEquals(String path, JsonNode jsonNode) {
-        return new JsonPartMatcher<JsonNode>(path, jsonNode);
+    public static Matcher<Object> jsonEquals(Object json) {
+        return new JsonPartMatcher<Object>("", convertToJson(json, "expectedJson"));
     }
 
     /**
@@ -75,20 +43,9 @@ public class JsonMatchers {
      * @param json
      * @return
      */
-    public static Matcher<String> jsonPartEquals(String path, String json) {
-        return new JsonPartMatcher<String>(path, readValue(json, "expectedJson"));
+    public static Matcher<Object> jsonPartEquals(String path, Object json) {
+        return new JsonPartMatcher<Object>(path, convertToJson(json, "expectedJson"));
     }
-
-    /**
-     * Is the part of JSON structures equivalent?
-     *
-     * @param json
-     * @return
-     */
-    public static Matcher<String> jsonPartEquals(String path, Reader json) {
-        return new JsonPartMatcher<String>(path, readValue(json, "expectedJson"));
-    }
-
 
     private static final class JsonPartMatcher<T> extends BaseMatcher<T> {
         private final JsonNode expected;
@@ -101,18 +58,7 @@ public class JsonMatchers {
         }
 
         public boolean matches(Object item) {
-            JsonNode jsonNode;
-            if (item instanceof String) {
-                jsonNode = readValue((String) item, "fullJson");
-            } else if (item instanceof Reader) {
-                jsonNode = readValue((Reader) item, "fullJson");
-            } else if (item instanceof JsonNode) {
-                jsonNode = (JsonNode) item;
-            } else if (item == null) {
-                jsonNode = null;
-            } else {
-                throw new IllegalArgumentException("Type " + item.getClass() + " is not supported");
-            }
+            JsonNode jsonNode = convertToJson(item, "fullJson");
             Diff diff = new Diff(expected, jsonNode, path, JsonAssert.getIgnorePlaceholder());
             if (!diff.similar()) {
                 differences = diff.differences();

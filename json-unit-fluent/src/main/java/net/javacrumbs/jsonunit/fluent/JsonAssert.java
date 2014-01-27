@@ -44,28 +44,4 @@ public class JsonAssert extends JsonFluentAssert {
     public JsonAssert(JsonNode actual) {
         super(actual);
     }
-
-
-    /**
-     * Creates a new instance of <code>{@link JsonAssert}</code>.
-     * It is not called assertThat to not clash with StringAssert.
-     *
-     * @param json
-     * @return new JsonAssert object.
-     */
-    public static JsonAssert assertThatJson(JsonNode json) {
-        return new JsonAssert(json);
-    }
-
-    /**
-     * Creates a new instance of <code>{@link JsonAssert}</code>.
-     * It is not called assertThat to not clash with StringAssert.
-     * The json parameter is converted to JSON using ObjectMapper.
-     *
-     * @param json
-     * @return new JsonAssert object.
-     */
-    public static JsonAssert assertThatJson(Object json) {
-        return assertThatJson(convertToJson(json, ACTUAL));
-    }
 }
