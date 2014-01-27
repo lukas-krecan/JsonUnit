@@ -1,3 +1,8 @@
+## 1.1.0 + 0.1.0
+* Simplified API
+* Invalid JSONs in String comparison quoted
+* Runtime incompatible (compile-time compatible) changes
+
 ## 1.0.0
 * Switched to Jackson 2.x
 * Fluent JsonAssert renamed to JsonFluentAssert

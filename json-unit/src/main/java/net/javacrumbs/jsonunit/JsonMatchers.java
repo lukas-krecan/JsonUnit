@@ -15,51 +15,58 @@
  */
 package net.javacrumbs.jsonunit;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
+import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 
 /**
  * Contains Hamcrest matchers to be used with Hamcrest assertThat and other tools.
+ * <p/>
+ * All the methods accept Objects as parameters. The supported types are:
+ * <ol>
+ * <li>Jackson JsonNode</li>
+ * <li>Numbers, booleans and any other type parseable by Jackson's ObjectMapper.convertValue</li>
+ * <li>String is parsed as JSON. For expected values the string is quoted if it contains obviously invalid JSON.</li>
+ * <li>{@link java.io.Reader} similarly to String</li>
+ * <li>null as null Node</li>
+ * </ol>
  */
 public class JsonMatchers {
     /**
      * Are the JSON structures equivalent?
      *
-     * @param json
+     * @param expected
      * @return
      */
-    public static Matcher<Object> jsonEquals(Object json) {
-        return new JsonPartMatcher<Object>("", convertToJson(json, "expectedJson"));
+    public static Matcher<Object> jsonEquals(Object expected) {
+        return new JsonPartMatcher<Object>("", expected);
     }
 
     /**
      * Is the part of JSON structures equivalent?
      *
-     * @param json
+     * @param expected
      * @return
      */
-    public static Matcher<Object> jsonPartEquals(String path, Object json) {
-        return new JsonPartMatcher<Object>(path, convertToJson(json, "expectedJson"));
+    public static Matcher<Object> jsonPartEquals(String path, Object expected) {
+        return new JsonPartMatcher<Object>(path, expected);
     }
 
     private static final class JsonPartMatcher<T> extends BaseMatcher<T> {
-        private final JsonNode expected;
+        private final Object expected;
         private final String path;
         private String differences;
 
-        JsonPartMatcher(String path, JsonNode expected) {
+        JsonPartMatcher(String path, Object expected) {
             this.expected = expected;
             this.path = path;
         }
 
         public boolean matches(Object item) {
-            JsonNode jsonNode = convertToJson(item, "fullJson");
-            Diff diff = new Diff(expected, jsonNode, path, JsonAssert.getIgnorePlaceholder());
+            Diff diff = create(expected, item, "fullJson", path, JsonAssert.getIgnorePlaceholder());
             if (!diff.similar()) {
                 differences = diff.differences();
             }

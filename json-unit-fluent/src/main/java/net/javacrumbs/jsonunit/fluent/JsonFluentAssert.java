@@ -15,11 +15,10 @@
  */
 package net.javacrumbs.jsonunit.fluent;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 
+import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJsonQuoteIfNeeded;
 
 
 /**
@@ -33,18 +32,26 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJsonQuote
  * <p/>
  * Please note that the method name is assertThatJson and not assertThat. The reason is that we need to accept String parameter
  * and do not want to override standard FEST or AssertJ assertThat(String) method.
+ * <p/>
+ * All the methods accept Objects as parameters. The supported types are:
+ * <ol>
+ * <li>Jackson JsonNode</li>
+ * <li>Numbers, booleans and any other type parseable by Jackson's ObjectMapper.convertValue</li>
+ * <li>String is parsed as JSON. For expected values the string is quoted if it contains obviously invalid JSON.</li>
+ * <li>{@link java.io.Reader} similarly to String</li>
+ * <li>null as null Node</li>
+ * </ol>
  */
 public class JsonFluentAssert {
-    private static final String EXPECTED = "expected";
     private static final String ACTUAL = "actual";
     private static final String DEFAULT_IGNORE_PLACEHOLDER = "${json-unit.ignore}";
 
     private final String path;
-    private final JsonNode actual;
+    private final Object actual;
     private final String description;
     private final String ignorePlaceholder;
 
-    protected JsonFluentAssert(JsonNode actual, String path, String description, String ignorePlaceholder) {
+    protected JsonFluentAssert(Object actual, String path, String description, String ignorePlaceholder) {
         if (actual == null) {
             throw new IllegalArgumentException("Can not make assertions about null JSON.");
         }
@@ -54,7 +61,7 @@ public class JsonFluentAssert {
         this.ignorePlaceholder = ignorePlaceholder;
     }
 
-    protected JsonFluentAssert(JsonNode actual) {
+    protected JsonFluentAssert(Object actual) {
         this(actual, "", "", DEFAULT_IGNORE_PLACEHOLDER);
     }
 
@@ -131,11 +138,7 @@ public class JsonFluentAssert {
 
 
     private Diff createDiff(Object expected) {
-        return new Diff(convertExpectedToJson(expected), actual, path, ignorePlaceholder);
-    }
-
-    private JsonNode convertExpectedToJson(Object expected) {
-        return convertToJsonQuoteIfNeeded(expected, EXPECTED);
+        return create(expected, actual, ACTUAL, path, ignorePlaceholder);
     }
 
     private void failWithMessage(String message) {

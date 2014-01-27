@@ -24,6 +24,7 @@ import java.io.StringReader;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartEquals;
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartStructureEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonStructureEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -352,6 +353,21 @@ public class JsonAssertTest {
     }
 
     @Test
+    public void testAssertPartOkNumber() {
+        assertJsonPartEquals(1, "{\"test\":{\"value\":1}}", "test.value");
+    }
+
+    @Test
+    public void testAssertPartOkFloat() {
+        assertJsonPartEquals(1.1, "{\"test\":{\"value\":1.1}}", "test.value");
+    }
+
+    @Test
+    public void testAssertPartOkDouble() {
+        assertJsonPartEquals(1.1d, "{\"test\":{\"value\":1.1}}", "test.value");
+    }
+
+    @Test
     public void testAssertPartOkReaders() {
         assertJsonPartEquals(new StringReader("1"), new StringReader("{\"test\":{\"value\":1}}"), "test.value");
     }
@@ -389,11 +405,16 @@ public class JsonAssertTest {
     @Test
     public void testAssertPartArray() {
         try {
-            assertJsonPartEquals("3", "{\"test\":[{\"value\":1},{\"value\":2}]}", "test[1].value");
+            assertJsonPartEquals(3, "{\"test\":[{\"value\":1},{\"value\":2}]}", "test[1].value");
             fail("Exception expected");
         } catch (AssertionError e) {
             assertEquals("JSON documents have different values:\nDifferent value found in node \"test[1].value\". Expected 3, got 2.\n", e.getMessage());
         }
+    }
+
+    @Test
+    public void testAssertPartStructureEquals() {
+        assertJsonPartStructureEquals("{\"value\":5}", "{\"test\":[{\"value\":1},{\"value\":2}]}", "test[1]");
     }
 
     @Test

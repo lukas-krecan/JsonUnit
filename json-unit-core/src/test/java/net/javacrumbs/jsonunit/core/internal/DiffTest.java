@@ -24,36 +24,42 @@ import java.io.IOException;
 import static org.junit.Assert.assertEquals;
 
 public class DiffTest {
-	private static final ObjectMapper MAPPER = new ObjectMapper();
-	@Test
-	public void testGetStartNodeRoot() throws IOException {
-		JsonNode startNode = Diff.getStartNode(MAPPER.readTree("{\"test\":{\"value\":1}}"), "");
-		assertEquals("{\"test\":{\"value\":1}}", MAPPER.writeValueAsString(startNode));
-	}
-	@Test
-	public void testGetStartNodeSimple() throws IOException {
-		JsonNode startNode = Diff.getStartNode(MAPPER.readTree("{\"test\":{\"value\":1}}"), "test");
-		assertEquals("{\"value\":1}", MAPPER.writeValueAsString(startNode));
-	}
-	@Test
-	public void testGetStartNodeTwoSteps() throws IOException {
-		JsonNode startNode = Diff.getStartNode(MAPPER.readTree("{\"test\":{\"value\":1}}"), "test.value");
-		assertEquals("1", MAPPER.writeValueAsString(startNode));
-	}
-	@Test
-	public void testGetStartNodeArrays() throws IOException {
-		JsonNode startNode = Diff.getStartNode(MAPPER.readTree("{\"test\":{\"values\":[1,2]}}"), "test.values[1]");
-		assertEquals("2", MAPPER.writeValueAsString(startNode));
-	}
-	@Test
-	public void testGetStartNodeArrays2() throws IOException {
-		JsonNode startNode = Diff.getStartNode(MAPPER.readTree("{\"test\":[{\"values\":[1,2]}, {\"values\":[3,4]}]}"), "test[1].values[1]");
-		assertEquals("4", MAPPER.writeValueAsString(startNode));
-	}
-	@Test
-	public void testGetStartNodeNonexisting() throws IOException {
-		JsonNode startNode = Diff.getStartNode(MAPPER.readTree("{\"test\":{\"value\":1}}"), "test.bogus");
-		assertEquals(true, startNode.isMissingNode());
-	}
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    @Test
+    public void testGetStartNodeRoot() throws IOException {
+        JsonNode startNode = Diff.getStartNode(MAPPER.readTree("{\"test\":{\"value\":1}}"), "");
+        assertEquals("{\"test\":{\"value\":1}}", MAPPER.writeValueAsString(startNode));
+    }
+
+    @Test
+    public void testGetStartNodeSimple() throws IOException {
+        JsonNode startNode = Diff.getStartNode(MAPPER.readTree("{\"test\":{\"value\":1}}"), "test");
+        assertEquals("{\"value\":1}", MAPPER.writeValueAsString(startNode));
+    }
+
+    @Test
+    public void testGetStartNodeTwoSteps() throws IOException {
+        JsonNode startNode = Diff.getStartNode(MAPPER.readTree("{\"test\":{\"value\":1}}"), "test.value");
+        assertEquals("1", MAPPER.writeValueAsString(startNode));
+    }
+
+    @Test
+    public void testGetStartNodeArrays() throws IOException {
+        JsonNode startNode = Diff.getStartNode(MAPPER.readTree("{\"test\":{\"values\":[1,2]}}"), "test.values[1]");
+        assertEquals("2", MAPPER.writeValueAsString(startNode));
+    }
+
+    @Test
+    public void testGetStartNodeArrays2() throws IOException {
+        JsonNode startNode = Diff.getStartNode(MAPPER.readTree("{\"test\":[{\"values\":[1,2]}, {\"values\":[3,4]}]}"), "test[1].values[1]");
+        assertEquals("4", MAPPER.writeValueAsString(startNode));
+    }
+
+    @Test
+    public void testGetStartNodeNonexisting() throws IOException {
+        JsonNode startNode = Diff.getStartNode(MAPPER.readTree("{\"test\":{\"value\":1}}"), "test.bogus");
+        assertEquals(true, startNode.isMissingNode());
+    }
 
 }

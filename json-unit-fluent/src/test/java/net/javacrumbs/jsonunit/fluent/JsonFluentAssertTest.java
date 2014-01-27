@@ -50,6 +50,16 @@ public class JsonFluentAssertTest {
     }
 
     @Test
+    public void testAssertDifferentTypeInt() {
+        try {
+            assertThatJson("{\"test\":\"1\"}").node("test").isEqualTo(1);
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("JSON documents have different values:\nDifferent value found in node \"test\". Expected '1', got '\"1\"'.\n", e.getMessage());
+        }
+    }
+
+    @Test
     public void testAssertNode() throws IOException {
         try {
             assertThatJson(mapper.readTree("{\"test\":1}")).isEqualTo(mapper.readTree("{\"test\":2}"));
@@ -82,6 +92,21 @@ public class JsonFluentAssertTest {
     @Test
     public void testOk() throws IOException {
         assertThatJson("{\"test\":1}").isEqualTo("{\"test\":1}");
+    }
+
+    @Test
+    public void testOkNumber() throws IOException {
+        assertThatJson("{\"test\":1}").node("test").isEqualTo(1);
+    }
+
+    @Test
+    public void testOkFloat() throws IOException {
+        assertThatJson("{\"test\":1.1}").node("test").isEqualTo(1.1);
+    }
+
+    @Test
+    public void testOkNull() throws IOException {
+        assertThatJson("{\"test\":null}").node("test").isEqualTo(null);
     }
 
     @Test

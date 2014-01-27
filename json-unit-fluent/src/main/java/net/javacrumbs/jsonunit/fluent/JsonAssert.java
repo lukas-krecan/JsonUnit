@@ -17,8 +17,6 @@ package net.javacrumbs.jsonunit.fluent;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
-
 
 /**
  * Contains JSON related fluent assertions inspired by FEST or AssertJ. Typical usage is:
@@ -31,12 +29,11 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
  * <p/>
  * Please note that the method name is assertThatJson and not assertThat. The reason is that we need to accept String parameter
  * and do not want to override standard FEST or AssertJ assertThat(String) method.
+ *
  * @deprecated use JsonFluentAssert instead
  */
 @Deprecated
 public class JsonAssert extends JsonFluentAssert {
-    private static final String ACTUAL = "actual";
-
     protected JsonAssert(JsonNode actual, String path, String description, String ignorePlaceholder) {
         super(actual, path, description, ignorePlaceholder);
     }

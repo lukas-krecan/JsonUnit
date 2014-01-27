@@ -98,17 +98,30 @@ public class JsonUtils {
      * @param source
      * @return
      */
-    public static String quoteIfNeeded(String source) {
+    static String quoteIfNeeded(String source) {
         String trimmed = source.trim();
 
         if (isObject(trimmed) || isArray(trimmed) || isString(trimmed)
                 || isBoolean(trimmed) || isNull(trimmed)
-                || isNumber(source)) {
+                || isNumber(trimmed)) {
             return source;
         } else {
             return "\"" + source + "\"";
         }
+    }
 
+    /**
+     * Add quotes around the object iff it's not a JSON object.
+     *
+     * @param source
+     * @return
+     */
+    public static Object quoteIfNeeded(Object source) {
+        if (source instanceof String) {
+            return quoteIfNeeded((String) source);
+        } else {
+            return source;
+        }
     }
 
     private static boolean isNull(String trimmed) {

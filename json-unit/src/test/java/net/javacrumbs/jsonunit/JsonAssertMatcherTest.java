@@ -25,14 +25,14 @@ import static org.junit.Assert.fail;
 
 public class JsonAssertMatcherTest {
 
-	@Test
-	public void testEquals() {
-		assertThat("{\"test\":1}", jsonEquals("{\n\"test\": 1\n}"));
-		assertThat("{\"test\":1}", jsonPartEquals("test", "1"));
-		assertThat("{\"test\":[1, 2, 3]}", jsonPartEquals("test[0]", "1"));
-		assertThat("{\"foo\":\"bar\",\"test\": 2}", jsonEquals("{\n\"test\": 2,\n\"foo\":\"bar\"}"));
-		assertThat("{}", jsonEquals("{}"));
-	}
+    @Test
+    public void testEquals() {
+        assertThat("{\"test\":1}", jsonEquals("{\n\"test\": 1\n}"));
+        assertThat("{\"test\":1}", jsonPartEquals("test", "1"));
+        assertThat("{\"test\":[1, 2, 3]}", jsonPartEquals("test[0]", "1"));
+        assertThat("{\"foo\":\"bar\",\"test\": 2}", jsonEquals("{\n\"test\": 2,\n\"foo\":\"bar\"}"));
+        assertThat("{}", jsonEquals("{}"));
+    }
 
 
     @Test
@@ -41,7 +41,7 @@ public class JsonAssertMatcherTest {
             assertThat("{\"test\":1}", jsonEquals("{\n\"test\": 2\n}"));
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("\nExpected: {\"test\":2}\n" +
+            assertEquals("\nExpected: {\n\"test\": 2\n}\n" +
                     "     but: JSON documents have different values:\n" +
                     "Different value found in node \"test\". Expected 2, got 1.\n", e.getMessage());
         }
@@ -53,7 +53,7 @@ public class JsonAssertMatcherTest {
             assertThat("{\"test\":1}", jsonEquals("{\n\"test2\": 2\n}"));
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("\nExpected: {\"test2\":2}\n" +
+            assertEquals("\nExpected: {\n\"test2\": 2\n}\n" +
                     "     but: JSON documents have different structures:\n" +
                     "Different keys found in node \"\". Expected [test2], got [test]. Missing: \"test2\" Extra: \"test\"\n", e.getMessage());
         }

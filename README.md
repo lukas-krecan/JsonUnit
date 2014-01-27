@@ -28,8 +28,8 @@ You use Hamcrest matchers in the following way
     ...
 
     assertThat("{\"test\":1}", jsonEquals("{\"test\": 1}"));
-    assertThat("{\"test\":1}", jsonPartEquals("test", "1"));
-    assertThat("{\"test\":[1, 2, 3]}", jsonPartEquals("test[0]", "1"));
+    assertThat("{\"test\":1}", jsonPartEquals("test", 1));
+    assertThat("{\"test\":[1, 2, 3]}", jsonPartEquals("test[0]", 1));
 
 Ignoring values
 ----------------
