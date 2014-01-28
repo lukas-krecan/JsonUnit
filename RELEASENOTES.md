@@ -1,3 +1,6 @@
+## 1.1.1 + 0.1.1
+* Generics in JsonMatchers fixed
+
 ## 1.1.0 + 0.1.0
 * Simplified API
 * Invalid JSONs in String comparison quoted
