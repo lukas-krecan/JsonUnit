@@ -41,8 +41,8 @@ public class JsonMatchers {
      * @param expected
      * @return
      */
-    public static Matcher<Object> jsonEquals(Object expected) {
-        return new JsonPartMatcher<Object>("", expected);
+    public static <T> Matcher<T> jsonEquals(Object expected) {
+        return new JsonPartMatcher<T>("", expected);
     }
 
     /**
@@ -51,8 +51,8 @@ public class JsonMatchers {
      * @param expected
      * @return
      */
-    public static Matcher<Object> jsonPartEquals(String path, Object expected) {
-        return new JsonPartMatcher<Object>(path, expected);
+    public static <T> Matcher<T> jsonPartEquals(String path, Object expected) {
+        return new JsonPartMatcher<T>(path, expected);
     }
 
     private static final class JsonPartMatcher<T> extends BaseMatcher<T> {

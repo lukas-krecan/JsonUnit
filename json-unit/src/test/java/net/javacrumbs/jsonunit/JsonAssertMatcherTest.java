@@ -15,16 +15,19 @@
  */
 package net.javacrumbs.jsonunit;
 
+import org.hamcrest.Matcher;
 import org.junit.Test;
+
+import java.io.IOException;
 
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 public class JsonAssertMatcherTest {
-
     @Test
     public void testEquals() {
         assertThat("{\"test\":1}", jsonEquals("{\n\"test\": 1\n}"));
@@ -34,6 +37,28 @@ public class JsonAssertMatcherTest {
         assertThat("{}", jsonEquals("{}"));
     }
 
+    @Test
+    public void testGenericsString() {
+        Matcher<String> stringMatcher = jsonPartEquals("test", "1");
+        assertThat("{\"test\":1}", stringMatcher);
+    }
+
+    @Test
+    public void testJsonNode() throws IOException {
+        assertThat(readValue("{\"test\":1}", ""), jsonEquals("{\"test\":1}"));
+    }
+
+    @Test
+    public void testGenericsInt() {
+        Matcher<Integer> stringMatcher = jsonEquals(1);
+        assertThat(1, stringMatcher);
+    }
+
+    @Test
+    public void testGenericsIntAndString() {
+        Matcher<String> stringMatcher = jsonPartEquals("test", 1);
+        assertThat("{\"test\":1}", stringMatcher);
+    }
 
     @Test
     public void testDifferentValue() {
