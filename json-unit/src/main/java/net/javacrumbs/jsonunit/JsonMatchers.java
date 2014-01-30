@@ -36,7 +36,7 @@ import static net.javacrumbs.jsonunit.core.internal.Diff.create;
  */
 public class JsonMatchers {
     /**
-     * Are the JSON structures equivalent?
+     * Are the JSONs equivalent?
      *
      * @param expected
      * @return
@@ -46,13 +46,39 @@ public class JsonMatchers {
     }
 
     /**
-     * Is the part of JSON structures equivalent?
+     * Is the part of the JSON equivalent?
      *
      * @param expected
      * @return
      */
     public static <T> Matcher<T> jsonPartEquals(String path, Object expected) {
         return new JsonPartMatcher<T>(path, expected);
+    }
+
+    /**
+     * Are the JSONs equivalent?
+     *
+     * This method exist only for those cases, when you need to use it as Matcher&lt;String&gt; and Java refuses to
+     * do the type inference correctly.
+     *
+     * @param expected
+     * @return
+     */
+    public static Matcher<String> jsonStringEquals(Object expected) {
+        return jsonEquals(expected);
+    }
+
+    /**
+     * Is the part of the JSON equivalent?
+     *
+     * This method exist only for those cases, when you need to use it as Matcher&lt;String&gt; and Java refuses to
+     * do the type inference correctly.
+     *
+     * @param expected
+     * @return
+     */
+    public static Matcher<String> jsonStringPartEquals(String path, Object expected) {
+        return jsonPartEquals(path, expected);
     }
 
     private static final class JsonPartMatcher<T> extends BaseMatcher<T> {

@@ -1,3 +1,6 @@
+## 1.1.2 + 0.1.2
+* jsonStringEquals and jsonStringPartEquals added
+
 ## 1.1.1 + 0.1.1
 * Generics in JsonMatchers fixed
 
