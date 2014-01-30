@@ -22,6 +22,8 @@ import java.io.IOException;
 
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
+import static net.javacrumbs.jsonunit.JsonMatchers.jsonStringEquals;
+import static net.javacrumbs.jsonunit.JsonMatchers.jsonStringPartEquals;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -38,9 +40,14 @@ public class JsonAssertMatcherTest {
     }
 
     @Test
-    public void testGenericsString() {
-        Matcher<String> stringMatcher = jsonPartEquals("test", "1");
-        assertThat("{\"test\":1}", stringMatcher);
+    public void testGenericsStringInference() {
+         doAssertThat("{\"test\":1}", jsonStringPartEquals("test", "1"));
+         doAssertThat("{\"test\":1}", jsonStringEquals("{\"test\" : 1}"));
+         //doAssertThat("{\"test\":1}", jsonPartEquals("test", "1")); //does not compile in Java 7
+    }
+
+    private void doAssertThat(String text, Matcher<String> matcher) {
+        assertThat(text, matcher);
     }
 
     @Test
@@ -50,8 +57,8 @@ public class JsonAssertMatcherTest {
 
     @Test
     public void testGenericsInt() {
-        Matcher<Integer> stringMatcher = jsonEquals(1);
-        assertThat(1, stringMatcher);
+        Matcher<Integer> intMatcher = jsonEquals(1);
+        assertThat(1, intMatcher);
     }
 
     @Test
@@ -59,6 +66,7 @@ public class JsonAssertMatcherTest {
         Matcher<String> stringMatcher = jsonPartEquals("test", 1);
         assertThat("{\"test\":1}", stringMatcher);
     }
+
 
     @Test
     public void testDifferentValue() {
