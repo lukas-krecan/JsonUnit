@@ -17,6 +17,8 @@ package net.javacrumbs.jsonunit;
 
 import net.javacrumbs.jsonunit.core.internal.Diff;
 
+import java.math.BigDecimal;
+
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 
 /**
@@ -34,11 +36,10 @@ import static net.javacrumbs.jsonunit.core.internal.Diff.create;
  * @author Lukas Krecan
  */
 public class JsonAssert {
-
-    private static final String EXPECTED = "expected";
     private static final String FULL_JSON = "fullJson";
     private static final String ACTUAL = "actual";
     private static String ignorePlaceholder = "${json-unit.ignore}";
+    private static BigDecimal numericComparisonTolerance = null;
 
     private JsonAssert() {
         //nothing
@@ -51,26 +52,9 @@ public class JsonAssert {
      * @param actual
      */
     public static void assertJsonEquals(Object expected, Object actual) {
-        assertJsonPartEquals(expected, actual, "",null);
+        assertJsonPartEquals(expected, actual, "");
     }
 
-    /**
-     * Compares two JSON documents, making sure all Number values are within the given tolerance. Throws {@link AssertionError} if they are different.
-     * @param expected
-     * @param actual
-     * @param tolerance
-     */
-    public static void assertJsonEquals(Object expected, Object actual, Double tolerance) {
-        assertJsonPartEquals(expected, actual, "",tolerance);
-
-    }
-
-    public static void assertJsonPartEquals(Object expected, Object fullJson, String path,Double tolerance) {
-        Diff diff = create(expected, fullJson, FULL_JSON, path, ignorePlaceholder,tolerance);
-        if (!diff.similar()) {
-            doFail(diff.toString());
-        }
-    }
     /**
      * Compares part of the JSON. Path has this format "root.array[0].value".
      *
@@ -79,7 +63,10 @@ public class JsonAssert {
      * @param path
      */
     public static void assertJsonPartEquals(Object expected, Object fullJson, String path) {
-        assertJsonPartEquals(expected,fullJson,path,null);
+        Diff diff = create(expected, fullJson, FULL_JSON, path, ignorePlaceholder, numericComparisonTolerance);
+        if (!diff.similar()) {
+            doFail(diff.toString());
+        }
     }
 
     /**
@@ -90,7 +77,7 @@ public class JsonAssert {
      * @param actual
      */
     public static void assertJsonStructureEquals(Object expected, Object actual) {
-        Diff diff = create(expected, actual, ACTUAL, "", ignorePlaceholder,null);
+        Diff diff = create(expected, actual, ACTUAL, "", ignorePlaceholder, numericComparisonTolerance);
         if (!diff.similarStructure()) {
             doFail(diff.structureDifferences());
         }
@@ -104,7 +91,7 @@ public class JsonAssert {
      * @param path
      */
     public static void assertJsonPartStructureEquals(Object expected, Object fullJson, String path) {
-        Diff diff = create(expected, fullJson, FULL_JSON, path, ignorePlaceholder,null);
+        Diff diff = create(expected, fullJson, FULL_JSON, path, ignorePlaceholder, numericComparisonTolerance);
         if (!diff.similarStructure()) {
             doFail(diff.structureDifferences());
         }
@@ -128,5 +115,29 @@ public class JsonAssert {
 
     public static String getIgnorePlaceholder() {
         return ignorePlaceholder;
+    }
+
+    /**
+     * Sets the tolerance for floating number comparison. If set to null, requires exact match of the values.
+     * For example, if set to 0.01, ignores all differences lower than 0.01, so 1 and 0.9999 are considered equal.
+     *
+     * @param numericComparisonTolerance
+     */
+    public static void setNumericComparisonTolerance(BigDecimal numericComparisonTolerance) {
+        JsonAssert.numericComparisonTolerance = numericComparisonTolerance;
+    }
+
+    /**
+     * Sets the tolerance for floating number comparison. If set to null, requires exact match of the values.
+     * For example, if set to 0.01, ignores all differences lower than 0.01, so 1 and 0.9999 are considered equal.
+     *
+     * @param numberComparisonTolerance
+     */
+    public static void setNumericComparisonTolerance(double numberComparisonTolerance) {
+        JsonAssert.numericComparisonTolerance = BigDecimal.valueOf(numberComparisonTolerance);
+    }
+
+    public static BigDecimal getNumericComparisonTolerance() {
+        return numericComparisonTolerance;
     }
 }

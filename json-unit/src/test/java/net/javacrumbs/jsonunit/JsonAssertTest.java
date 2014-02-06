@@ -17,6 +17,7 @@ package net.javacrumbs.jsonunit;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.junit.After;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -26,12 +27,18 @@ import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartStructureEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonStructureEquals;
+import static net.javacrumbs.jsonunit.JsonAssert.setNumericComparisonTolerance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class JsonAssertTest {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
+
+    @After
+    public void reset() {
+        setNumericComparisonTolerance(null);
+    }
 
     @Test
     public void testEquals() {
@@ -58,6 +65,16 @@ public class JsonAssertTest {
     @Test
     public void testSimple() {
         assertJsonEquals("1", "1");
+    }
+
+    @Test
+    public void testNumberAndString() {
+        try {
+            setNumericComparisonTolerance(0.001);
+            assertJsonEquals(1, "\"hi\"");
+        } catch (AssertionError e) {
+            assertEquals("JSON documents have different values:\nDifferent value found in node \"\". Expected '1', got '\"hi\"'.\n", e.getMessage());
+        }
     }
 
     @Test
@@ -131,22 +148,25 @@ public class JsonAssertTest {
 
     @Test
     public void testComparisonWhenWithinTolerance() {
-        assertJsonEquals("1", "\n1.009\n",0.01);
+        setNumericComparisonTolerance(0.01);
+        assertJsonEquals("1", "\n1.009\n");
     }
 
     @Test
     public void testComparisonWhenWithinToleranceNegative() {
-        assertJsonEquals("1", "\n0.9999\n",0.01);
+        setNumericComparisonTolerance(0.01);
+        assertJsonEquals("1", "\n0.9999\n");
     }
-
-
 
     @Test
     public void testComparisonWhenOverTolerance() {
         try {
-            assertJsonEquals("1", "\n1.1\n",0.1);
+            setNumericComparisonTolerance(0.01);
+            assertJsonEquals("1", "\n1.1\n");
             fail("Exception expected");
         } catch (AssertionError e) {
+            assertEquals("JSON documents have different values:\n" +
+                    "Different value found in node \"\". Expected 1, got 1.1, difference is 0.1, tolerance is 0.01\n", e.getMessage());
         }
     }
 

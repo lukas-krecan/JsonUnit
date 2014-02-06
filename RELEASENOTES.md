@@ -1,3 +1,6 @@
+## 1.1.3 + 0.1.3
+* Numeric comparison tolerance added
+
 ## 1.1.2 + 0.1.2
 * jsonStringEquals and jsonStringPartEquals added
 
