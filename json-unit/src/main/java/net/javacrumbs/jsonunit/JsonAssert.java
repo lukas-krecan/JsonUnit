@@ -51,9 +51,26 @@ public class JsonAssert {
      * @param actual
      */
     public static void assertJsonEquals(Object expected, Object actual) {
-        assertJsonPartEquals(expected, actual, "");
+        assertJsonPartEquals(expected, actual, "",null);
     }
 
+    /**
+     * Compares two JSON documents, making sure all Number values are within the given tolerance. Throws {@link AssertionError} if they are different.
+     * @param expected
+     * @param actual
+     * @param tolerance
+     */
+    public static void assertJsonEquals(Object expected, Object actual, Double tolerance) {
+        assertJsonPartEquals(expected, actual, "",tolerance);
+
+    }
+
+    public static void assertJsonPartEquals(Object expected, Object fullJson, String path,Double tolerance) {
+        Diff diff = create(expected, fullJson, FULL_JSON, path, ignorePlaceholder,tolerance);
+        if (!diff.similar()) {
+            doFail(diff.toString());
+        }
+    }
     /**
      * Compares part of the JSON. Path has this format "root.array[0].value".
      *
@@ -62,10 +79,7 @@ public class JsonAssert {
      * @param path
      */
     public static void assertJsonPartEquals(Object expected, Object fullJson, String path) {
-        Diff diff = create(expected, fullJson, FULL_JSON, path, ignorePlaceholder);
-        if (!diff.similar()) {
-            doFail(diff.toString());
-        }
+        assertJsonPartEquals(expected,fullJson,path,null);
     }
 
     /**
@@ -76,7 +90,7 @@ public class JsonAssert {
      * @param actual
      */
     public static void assertJsonStructureEquals(Object expected, Object actual) {
-        Diff diff = create(expected, actual, ACTUAL, "", ignorePlaceholder);
+        Diff diff = create(expected, actual, ACTUAL, "", ignorePlaceholder,null);
         if (!diff.similarStructure()) {
             doFail(diff.structureDifferences());
         }
@@ -90,7 +104,7 @@ public class JsonAssert {
      * @param path
      */
     public static void assertJsonPartStructureEquals(Object expected, Object fullJson, String path) {
-        Diff diff = create(expected, fullJson, FULL_JSON, path, ignorePlaceholder);
+        Diff diff = create(expected, fullJson, FULL_JSON, path, ignorePlaceholder,null);
         if (!diff.similarStructure()) {
             doFail(diff.structureDifferences());
         }
