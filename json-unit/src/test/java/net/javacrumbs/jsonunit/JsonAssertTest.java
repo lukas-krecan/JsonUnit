@@ -121,6 +121,36 @@ public class JsonAssertTest {
     }
 
     @Test
+    public void testNotEqualWhenToleranceNotSet() {
+        try {
+            assertJsonEquals("1", "\n1.0\n");
+            fail("Exception expected");
+        } catch (AssertionError e) {
+        }
+    }
+
+    @Test
+    public void testComparisonWhenWithinTolerance() {
+        assertJsonEquals("1", "\n1.009\n",0.01);
+    }
+
+    @Test
+    public void testComparisonWhenWithinToleranceNegative() {
+        assertJsonEquals("1", "\n0.9999\n",0.01);
+    }
+
+
+
+    @Test
+    public void testComparisonWhenOverTolerance() {
+        try {
+            assertJsonEquals("1", "\n1.1\n",0.1);
+            fail("Exception expected");
+        } catch (AssertionError e) {
+        }
+    }
+
+    @Test
     public void testNullOk() {
         assertJsonEquals("{\"test\":null}", "{\n\"test\": null\n}");
     }
