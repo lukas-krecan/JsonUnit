@@ -57,6 +57,20 @@ public class JsonFluentAssertTest {
     }
 
     @Test
+    public void testAssertTolerance() {
+        assertThatJson("{\"test\":1.00001}").node("test").withComparisonTolerance(0.001).isEqualTo(1);
+    }
+
+    @Test
+    public void testAssertToleranceFailure() {
+        try {
+            assertThatJson("{\"test\":1.1}").node("test").withComparisonTolerance(0.001).isEqualTo(1);
+        } catch (AssertionError e) {
+            assertEquals("JSON documents have different values:\nDifferent value found in node \"test\". Expected 1, got 1.1, difference is 0.1, tolerance is 0.001\n", e.getMessage());
+        }
+    }
+
+    @Test
     public void testAssertNode() throws IOException {
         try {
             assertThatJson(readValue("{\"test\":1}","")).isEqualTo(readValue("{\"test\":2}", ""));

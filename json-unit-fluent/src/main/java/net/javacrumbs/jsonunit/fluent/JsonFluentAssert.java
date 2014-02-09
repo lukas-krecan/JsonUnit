@@ -17,6 +17,8 @@ package net.javacrumbs.jsonunit.fluent;
 
 import net.javacrumbs.jsonunit.core.internal.Diff;
 
+import java.math.BigDecimal;
+
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 
@@ -50,8 +52,9 @@ public class JsonFluentAssert {
     private final Object actual;
     private final String description;
     private final String ignorePlaceholder;
+    private final BigDecimal numericComparisonTolerance;
 
-    protected JsonFluentAssert(Object actual, String path, String description, String ignorePlaceholder) {
+    protected JsonFluentAssert(Object actual, String path, String description, String ignorePlaceholder, BigDecimal numericComparisonTolerance) {
         if (actual == null) {
             throw new IllegalArgumentException("Can not make assertions about null JSON.");
         }
@@ -59,10 +62,11 @@ public class JsonFluentAssert {
         this.actual = actual;
         this.description = description;
         this.ignorePlaceholder = ignorePlaceholder;
+        this.numericComparisonTolerance = numericComparisonTolerance;
     }
 
     protected JsonFluentAssert(Object actual) {
-        this(actual, "", "", DEFAULT_IGNORE_PLACEHOLDER);
+        this(actual, "", "", DEFAULT_IGNORE_PLACEHOLDER, null);
     }
 
     /**
@@ -133,12 +137,12 @@ public class JsonFluentAssert {
      * @return object comparing only node given by path.
      */
     public JsonFluentAssert node(String path) {
-        return new JsonFluentAssert(actual, path, description, ignorePlaceholder);
+        return new JsonFluentAssert(actual, path, description, ignorePlaceholder, numericComparisonTolerance);
     }
 
 
     private Diff createDiff(Object expected) {
-        return create(expected, actual, ACTUAL, path, ignorePlaceholder);
+        return create(expected, actual, ACTUAL, path, ignorePlaceholder, numericComparisonTolerance);
     }
 
     private void failWithMessage(String message) {
@@ -166,7 +170,7 @@ public class JsonFluentAssert {
      * @return
      */
     public JsonFluentAssert describedAs(String description) {
-        return new JsonFluentAssert(actual, path, description, ignorePlaceholder);
+        return new JsonFluentAssert(actual, path, description, ignorePlaceholder, numericComparisonTolerance);
     }
 
     /**
@@ -177,6 +181,26 @@ public class JsonFluentAssert {
      * @return
      */
     public JsonFluentAssert ignoring(String ignorePlaceholder) {
-        return new JsonFluentAssert(actual, path, description, ignorePlaceholder);
+        return new JsonFluentAssert(actual, path, description, ignorePlaceholder, numericComparisonTolerance);
+    }
+
+    /**
+     * Sets the tolerance for floating number comparison. If set to null, requires exact match of the values.
+     * For example, if set to 0.01, ignores all differences lower than 0.01, so 1 and 0.9999 are considered equal.
+     *
+     * @param tolerance
+     */
+    public JsonFluentAssert withComparisonTolerance(double tolerance) {
+        return withComparisonTolerance(BigDecimal.valueOf(tolerance));
+    }
+
+    /**
+     * Sets the tolerance for floating number comparison. If set to null, requires exact match of the values.
+     * For example, if set to 0.01, ignores all differences lower than 0.01, so 1 and 0.9999 are considered equal.
+     *
+     * @param tolerance
+     */
+    public JsonFluentAssert withComparisonTolerance(BigDecimal tolerance) {
+        return new JsonFluentAssert(actual, path, description, ignorePlaceholder, tolerance);
     }
 }

@@ -16,10 +16,12 @@
 package net.javacrumbs.jsonunit;
 
 import org.hamcrest.Matcher;
+import org.junit.After;
 import org.junit.Test;
 
 import java.io.IOException;
 
+import static net.javacrumbs.jsonunit.JsonAssert.setNumericComparisonTolerance;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonStringEquals;
@@ -29,7 +31,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-public class JsonAssertMatcherTest {
+public class JsonMatchersTest {
+
+    @After
+    public void reset() {
+        setNumericComparisonTolerance(null);
+    }
+
     @Test
     public void testEquals() {
         assertThat("{\"test\":1}", jsonEquals("{\n\"test\": 1\n}"));
@@ -53,6 +61,12 @@ public class JsonAssertMatcherTest {
     @Test
     public void testJsonNode() throws IOException {
         assertThat(readValue("{\"test\":1}", ""), jsonEquals("{\"test\":1}"));
+    }
+
+    @Test
+    public void testTolerance() throws IOException {
+        JsonAssert.setNumericComparisonTolerance(0.001);
+        assertThat("{\"test\":1.00001}", jsonEquals("{\"test\":1}"));
     }
 
     @Test
