@@ -21,6 +21,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -52,6 +53,7 @@ public class Diff {
     private final Differences structureDifferences = new Differences("structures");
     private final Differences valueDifferences = new Differences("values");
     private final String startPath;
+    private final BigDecimal numericComparisonTolerance;
     private boolean compared = false;
     private final String ignorePlaceholder;
 
@@ -60,16 +62,32 @@ public class Diff {
 
     private enum NodeType {OBJECT, ARRAY, STRING, NUMBER, BOOLEAN, NULL}
 
+    public Diff(JsonNode expected, JsonNode actual, String startPath, String ignorePlaceholder, BigDecimal numericComparisonTolerance) {
+        super();
+        this.expectedRoot = expected;
+        this.actualRoot = actual;
+        this.startPath = startPath;
+        this.ignorePlaceholder = ignorePlaceholder;
+        this.numericComparisonTolerance = numericComparisonTolerance;
+    }
+
+    @Deprecated
     public Diff(JsonNode expected, JsonNode actual, String startPath, String ignorePlaceholder) {
         super();
         this.expectedRoot = expected;
         this.actualRoot = actual;
         this.startPath = startPath;
         this.ignorePlaceholder = ignorePlaceholder;
+        this.numericComparisonTolerance = null;
     }
 
+    public static Diff create(Object expected, Object actual, String actualName, String startPath, String ignorePlaceholder, BigDecimal numericComparisonTolerance) {
+        return new Diff(convertToJson(quoteIfNeeded(expected), "expected"), convertToJson(actual, actualName), startPath, ignorePlaceholder, numericComparisonTolerance);
+    }
+
+    @Deprecated
     public static Diff create(Object expected, Object actual, String actualName, String startPath, String ignorePlaceholder) {
-        return new Diff(convertToJson(quoteIfNeeded(expected), "expected"), convertToJson(actual, actualName), startPath, ignorePlaceholder);
+        return create(expected, actual, actualName, startPath, ignorePlaceholder, null);
     }
 
 
@@ -122,8 +140,6 @@ public class Diff {
         if (!expectedKeys.equals(actualKeys)) {
             String missingKeys = getMissingKeys(expectedKeys, actualKeys, path);
             String extraKeys = getExtraKeys(expectedKeys, actualKeys, path);
-
-
             structureDifferenceFound("Different keys found in node \"%s\". Expected %s, got %s. %s %s", path, sort(expectedFields.keySet()), sort(actualFields.keySet()), missingKeys, extraKeys);
         }
 
@@ -158,9 +174,9 @@ public class Diff {
 
     static String appendKeysToPrefix(Iterable<String> keys, String prefix) {
         Iterator<String> iterator = keys.iterator();
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         while (iterator.hasNext()) {
-            String key = (String) iterator.next();
+            String key = iterator.next();
             buffer.append("\"").append(getPath(prefix, key)).append("\"");
             if (iterator.hasNext()) {
                 buffer.append(",");
@@ -200,7 +216,15 @@ public class Diff {
                     compareValues(expectedNode.asText(), actualNode.asText(), fieldPath);
                     break;
                 case NUMBER:
-                    compareValues(expectedNode.getNumberValue(), actualNode.getNumberValue(), fieldPath);
+                    if (numericComparisonTolerance != null) {
+                        BigDecimal diff = expectedNode.getDecimalValue().subtract(actualNode.getDecimalValue()).abs();
+                        if (diff.compareTo(numericComparisonTolerance) > 0) {
+                            valueDifferenceFound("Different value found in node \"%s\". Expected %s, got %s, difference is %s, tolerance is %s",
+                                    fieldPath, quoteTextValue(expectedNode.getNumberValue()), quoteTextValue(actualNode.getNumberValue()), diff.toString(), numericComparisonTolerance);
+                        }
+                    } else {
+                        compareValues(expectedNode.getNumberValue(), actualNode.getNumberValue(), fieldPath);
+                    }
                     break;
                 case BOOLEAN:
                     compareValues(expectedNode.asBoolean(), actualNode.asBoolean(), fieldPath);

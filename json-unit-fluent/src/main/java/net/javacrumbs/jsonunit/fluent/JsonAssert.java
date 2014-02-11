@@ -35,7 +35,7 @@ import org.codehaus.jackson.JsonNode;
 @Deprecated
 public class JsonAssert extends JsonFluentAssert {
     protected JsonAssert(JsonNode actual, String path, String description, String ignorePlaceholder) {
-        super(actual, path, description, ignorePlaceholder);
+        super(actual, path, description, ignorePlaceholder, null);
     }
 
     public JsonAssert(JsonNode actual) {
