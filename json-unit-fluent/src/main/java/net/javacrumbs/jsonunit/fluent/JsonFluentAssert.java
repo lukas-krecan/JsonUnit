@@ -190,8 +190,8 @@ public class JsonFluentAssert {
      *
      * @param tolerance
      */
-    public JsonFluentAssert withComparisonTolerance(double tolerance) {
-        return withComparisonTolerance(BigDecimal.valueOf(tolerance));
+    public JsonFluentAssert withTolerance(double tolerance) {
+        return withTolerance(BigDecimal.valueOf(tolerance));
     }
 
     /**
@@ -200,7 +200,7 @@ public class JsonFluentAssert {
      *
      * @param tolerance
      */
-    public JsonFluentAssert withComparisonTolerance(BigDecimal tolerance) {
+    public JsonFluentAssert withTolerance(BigDecimal tolerance) {
         return new JsonFluentAssert(actual, path, description, ignorePlaceholder, tolerance);
     }
 }

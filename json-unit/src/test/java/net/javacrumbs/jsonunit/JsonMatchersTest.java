@@ -21,7 +21,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static net.javacrumbs.jsonunit.JsonAssert.setNumericComparisonTolerance;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonStringEquals;
@@ -35,7 +34,7 @@ public class JsonMatchersTest {
 
     @After
     public void reset() {
-        setNumericComparisonTolerance(null);
+        JsonAssert.setTolerance(null);
     }
 
     @Test
@@ -65,7 +64,7 @@ public class JsonMatchersTest {
 
     @Test
     public void testTolerance() throws IOException {
-        JsonAssert.setNumericComparisonTolerance(0.001);
+        JsonAssert.setTolerance(0.001);
         assertThat("{\"test\":1.00001}", jsonEquals("{\"test\":1}"));
     }
 

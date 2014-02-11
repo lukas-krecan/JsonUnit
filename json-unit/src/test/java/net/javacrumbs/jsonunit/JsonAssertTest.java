@@ -27,7 +27,7 @@ import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartStructureEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonStructureEquals;
-import static net.javacrumbs.jsonunit.JsonAssert.setNumericComparisonTolerance;
+import static net.javacrumbs.jsonunit.JsonAssert.setTolerance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -37,7 +37,7 @@ public class JsonAssertTest {
 
     @After
     public void reset() {
-        setNumericComparisonTolerance(null);
+        JsonAssert.setTolerance(null);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class JsonAssertTest {
     @Test
     public void testNumberAndString() {
         try {
-            setNumericComparisonTolerance(0.001);
+            setTolerance(0.001);
             assertJsonEquals(1, "\"hi\"");
         } catch (AssertionError e) {
             assertEquals("JSON documents have different values:\nDifferent value found in node \"\". Expected '1', got '\"hi\"'.\n", e.getMessage());
@@ -148,20 +148,20 @@ public class JsonAssertTest {
 
     @Test
     public void testComparisonWhenWithinTolerance() {
-        setNumericComparisonTolerance(0.01);
+        setTolerance(0.01);
         assertJsonEquals("1", "\n1.009\n");
     }
 
     @Test
     public void testComparisonWhenWithinToleranceNegative() {
-        setNumericComparisonTolerance(0.01);
+        setTolerance(0.01);
         assertJsonEquals("1", "\n0.9999\n");
     }
 
     @Test
     public void testComparisonWhenOverTolerance() {
         try {
-            setNumericComparisonTolerance(0.01);
+            setTolerance(0.01);
             assertJsonEquals("1", "\n1.1\n");
             fail("Exception expected");
         } catch (AssertionError e) {

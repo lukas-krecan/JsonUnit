@@ -123,7 +123,7 @@ public class JsonAssert {
      *
      * @param numericComparisonTolerance
      */
-    public static void setNumericComparisonTolerance(BigDecimal numericComparisonTolerance) {
+    public static void setTolerance(BigDecimal numericComparisonTolerance) {
         JsonAssert.numericComparisonTolerance = numericComparisonTolerance;
     }
 
@@ -133,11 +133,11 @@ public class JsonAssert {
      *
      * @param numberComparisonTolerance
      */
-    public static void setNumericComparisonTolerance(double numberComparisonTolerance) {
+    public static void setTolerance(double numberComparisonTolerance) {
         JsonAssert.numericComparisonTolerance = BigDecimal.valueOf(numberComparisonTolerance);
     }
 
-    public static BigDecimal getNumericComparisonTolerance() {
+    public static BigDecimal getTolerance() {
         return numericComparisonTolerance;
     }
 }
