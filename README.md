@@ -67,6 +67,22 @@ Fluent (FEST or AssertJ like) assertions are supported by a special module json-
     assertThatJson("{\"test\":1}").ignoring("##IGNORE##").isEqualTo("{\"test\":\"##IGNORE##\"}")
 
 
+Numeric comparison
+--------------------
+Numbers are by default compared in the following way:
+
+* If the type differs, the number is different. So 1 and 1.0 are different (int vs. float)
+* Floating number comparison is exact
+
+You can change this behavior by setting tolerance
+
+    setTolerance(0.01);
+    assertJsonEquals("1", "\n1.009\n");
+
+Or for fluent assertions
+
+    assertThatJson("{\"test\":1.00001}").node("test").withTolerance(0.001).isEqualTo(1);
+
 Logging
 -------
 Although the differences are printed out by the assert statement, sometimes you use JsonUnit with other libraries like
@@ -82,9 +98,9 @@ JsonUnit is accessible in Maven central repository
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit</artifactId>
     	<!-- Jackson 2.x -->
-        <version>1.1.1</version>
+        <version>1.1.3</version>
         <!-- Jackson 1.x -->
-        <!--<version>0.1.1</version>-->
+        <!--<version>0.1.3</version>-->
     	<scope>test</scope>
 	</dependency>
 
@@ -94,9 +110,9 @@ To use fluent assertions:
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit-fluent</artifactId>
         <!-- Jackson 2.x -->
-        <version>1.1.1</version>
+        <version>1.1.3</version>
         <!-- Jackson 1.x -->
-        <!--<version>0.1.1</version>-->
+        <!--<version>0.1.3</version>-->
     	<scope>test</scope>
 	</dependency>
 
@@ -106,7 +122,3 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 of [Jackson](http://jackson.codehaus.org/)
 
 
-Known limitations
------------------
-1. It's not much extensible. The interface is intentionally simple, extensibility might be added in the future. 
-2. It's not possible to change number comparison strategy. 
