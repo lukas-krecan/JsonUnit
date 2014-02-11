@@ -11,7 +11,7 @@
     <parent>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit-parent</artifactId>
-        <version>0.1.3</version>
+        <version>0.1.4-SNAPSHOT</version>
     </parent>
 
     <dependencies>
