@@ -47,7 +47,7 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
  * @author Lukas Krecan
  */
 public class Diff {
-    private static final Pattern ARRAY_PATTERN = Pattern.compile("(\\w+)\\[(\\d+)\\]");
+    private static final Pattern ARRAY_PATTERN = Pattern.compile("(\\w*)\\[(\\d+)\\]");
     private final JsonNode expectedRoot;
     private final JsonNode actualRoot;
     private final Differences structureDifferences = new Differences("structures");
@@ -116,7 +116,9 @@ public class Diff {
             if (!matcher.matches()) {
                 startNode = startNode.path(step);
             } else {
-                startNode = startNode.path(matcher.group(1));
+                if (matcher.group(1).length() != 0) {
+                    startNode = startNode.path(matcher.group(1));
+                }
                 startNode = startNode.path(Integer.valueOf(matcher.group(2)));
             }
         }

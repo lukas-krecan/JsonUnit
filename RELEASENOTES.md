@@ -1,3 +1,6 @@
+## 1.1.4 + 0.1.4
+* Path to array in root fixed
+
 ## 1.1.3 + 0.1.3
 * Numeric comparison tolerance added
 

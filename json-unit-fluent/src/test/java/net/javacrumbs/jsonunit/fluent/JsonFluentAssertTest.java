@@ -116,6 +116,11 @@ public class JsonFluentAssertTest {
     }
 
     @Test
+    public void testArray() throws IOException {
+        assertThatJson("[1, 2]").node("[0]").isEqualTo(1);
+    }
+
+    @Test
     public void testOkNumber() throws IOException {
         assertThatJson("{\"test\":1}").node("test").isEqualTo(1);
     }
