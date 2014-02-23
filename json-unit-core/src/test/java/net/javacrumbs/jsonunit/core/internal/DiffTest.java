@@ -57,6 +57,24 @@ public class DiffTest {
     }
 
     @Test
+    public void testGetStartNodeArraysRootComplex() throws IOException {
+        JsonNode startNode = Diff.getStartNode(MAPPER.readTree("[{\"values\":[1,2]}, {\"values\":[3,4]}]"), "[1].values[1]");
+        assertEquals("4", MAPPER.writeValueAsString(startNode));
+    }
+
+    @Test
+    public void testGetStartNodeArraysConvoluted() throws IOException {
+        JsonNode startNode = Diff.getStartNode(MAPPER.readTree("{\"test\":[{\"values\":[1,2]}, {\"values\":[3,4]}]}"), "test.[1].values.[1]");
+        assertEquals("4", MAPPER.writeValueAsString(startNode));
+    }
+
+    @Test
+    public void testGetStartNodeArraysRoot() throws IOException {
+        JsonNode startNode = Diff.getStartNode(MAPPER.readTree("[1,2]"), "[0]");
+        assertEquals("1", MAPPER.writeValueAsString(startNode));
+    }
+
+    @Test
     public void testGetStartNodeNonexisting() throws IOException {
         JsonNode startNode = Diff.getStartNode(MAPPER.readTree("{\"test\":{\"value\":1}}"), "test.bogus");
         assertEquals(true, startNode.isMissingNode());

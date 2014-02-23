@@ -68,7 +68,7 @@ public class JsonFluentAssertTest {
 
     @Test
     public void testAssertToleranceDirect() {
-        assertThatJson("{\"test\":1.00001}").withTolerance(0.001).isEqualTo("{\"test\":1.00001}");
+        assertThatJson("{\"test\":1.00001}").withTolerance(0.001).isEqualTo("{\"test\":1}");
     }
 
     @Test
@@ -113,6 +113,11 @@ public class JsonFluentAssertTest {
     @Test
     public void testOk() throws IOException {
         assertThatJson("{\"test\":1}").isEqualTo("{\"test\":1}");
+    }
+
+    @Test
+    public void testArray() throws IOException {
+        assertThatJson("[1, 2]").node("[0]").isEqualTo(1);
     }
 
     @Test
