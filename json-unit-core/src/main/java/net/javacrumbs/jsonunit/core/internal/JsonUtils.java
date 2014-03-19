@@ -23,12 +23,18 @@ import com.fasterxml.jackson.databind.node.NullNode;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Internal utility class to parse JSON values.
  */
 public class JsonUtils {
-    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper();
+
+    private static final Pattern arrayPattern = Pattern.compile("(\\w*)\\[(\\d+)\\]");
+
 
     /**
      * Parses value from String.
@@ -50,7 +56,7 @@ public class JsonUtils {
      */
     public static JsonNode readValue(Reader value, String label) {
         try {
-            return MAPPER.readTree(value);
+            return mapper.readTree(value);
         } catch (IOException e) {
             throw new IllegalArgumentException("Can not parse " + label + " value.", e);
         }
@@ -73,7 +79,7 @@ public class JsonUtils {
         } else if (source instanceof Reader) {
             return readValue((Reader) source, label);
         } else {
-            return MAPPER.convertValue(source, JsonNode.class);
+            return mapper.convertValue(source, JsonNode.class);
         }
     }
 
@@ -90,6 +96,57 @@ public class JsonUtils {
         } else {
             return convertToJson(source, label);
         }
+    }
+
+    /**
+     * Returns node with given path.
+     *
+     * @param root
+     * @param path
+     * @return
+     */
+    static JsonNode getNode(JsonNode root, String path) {
+        if (path.length() == 0) {
+            return root;
+        }
+
+        JsonNode startNode = root;
+        StringTokenizer stringTokenizer = new StringTokenizer(path, ".");
+        while (stringTokenizer.hasMoreElements()) {
+            String step = stringTokenizer.nextToken();
+            Matcher matcher = arrayPattern.matcher(step);
+            if (!matcher.matches()) {
+                startNode = startNode.path(step);
+            } else {
+                if (matcher.group(1).length() != 0) {
+                    startNode = startNode.path(matcher.group(1));
+                }
+                startNode = startNode.path(Integer.valueOf(matcher.group(2)));
+            }
+        }
+        return startNode;
+    }
+
+    /**
+     * Returns node with given path.
+     *
+     * @param root
+     * @param path
+     * @return
+     */
+    public static JsonNode getNode(Object root, String path) {
+        return getNode(convertToJson(root, "actual"), path);
+    }
+
+    /**
+     * Returns true if the node exists.
+     *
+     * @param root
+     * @param path
+     * @return
+     */
+    public static boolean nodeExists(Object json, String path) {
+        return !getNode(json, path).isMissingNode();
     }
 
     /**

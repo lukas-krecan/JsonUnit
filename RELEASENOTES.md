@@ -1,3 +1,6 @@
+## 1.1.5 + 0.1.5
+* Absence/presence tests added
+
 ## 1.1.4 + 0.1.4
 * Path to array in root fixed
 

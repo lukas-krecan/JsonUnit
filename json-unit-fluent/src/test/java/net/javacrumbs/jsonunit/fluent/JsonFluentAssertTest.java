@@ -83,7 +83,7 @@ public class JsonFluentAssertTest {
     @Test
     public void testAssertNode() throws IOException {
         try {
-            assertThatJson(readValue("{\"test\":1}","")).isEqualTo(readValue("{\"test\":2}", ""));
+            assertThatJson(readValue("{\"test\":1}", "")).isEqualTo(readValue("{\"test\":2}", ""));
             fail("Exception expected");
         } catch (AssertionError e) {
             assertEquals("JSON documents have different values:\nDifferent value found in node \"test\". Expected 2, got 1.\n", e.getMessage());
@@ -204,6 +204,36 @@ public class JsonFluentAssertTest {
         } catch (AssertionError e) {
             assertEquals("JSON documents have different values:\nDifferent value found in node \"test2\". Expected 2, got 1.\n", e.getMessage());
         }
+    }
+
+    @Test
+    public void testNodeAbsent() {
+        try {
+            assertThatJson("{\"test1\":2, \"test2\":1}").node("test2").isAbsent();
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("Node \"test2\" is present.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testNodeAbsentOk() {
+        assertThatJson("{\"test1\":2, \"test2\":1}").node("test3").isAbsent();
+    }
+
+    @Test
+    public void testNodePresent() {
+        try {
+            assertThatJson("{\"test1\":2, \"test2\":1}").node("test3").isPresent();
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("Node \"test3\" is missing.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testNodePresentOk() {
+        assertThatJson("{\"test1\":2, \"test2\":1}").node("test2").isPresent();
     }
 
     @Test

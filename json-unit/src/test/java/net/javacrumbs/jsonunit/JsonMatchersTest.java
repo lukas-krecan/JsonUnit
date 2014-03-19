@@ -22,6 +22,8 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
+import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodeAbsent;
+import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodePresent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonStringEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonStringPartEquals;
@@ -48,9 +50,9 @@ public class JsonMatchersTest {
 
     @Test
     public void testGenericsStringInference() {
-         doAssertThat("{\"test\":1}", jsonStringPartEquals("test", "1"));
-         doAssertThat("{\"test\":1}", jsonStringEquals("{\"test\" : 1}"));
-         //doAssertThat("{\"test\":1}", jsonPartEquals("test", "1")); //does not compile in Java 7
+        doAssertThat("{\"test\":1}", jsonStringPartEquals("test", "1"));
+        doAssertThat("{\"test\":1}", jsonStringEquals("{\"test\" : 1}"));
+        //doAssertThat("{\"test\":1}", jsonPartEquals("test", "1")); //does not compile in Java 7
     }
 
     private void doAssertThat(String text, Matcher<String> matcher) {
@@ -115,5 +117,39 @@ public class JsonMatchersTest {
                     "     but: JSON documents have different values:\n" +
                     "Different value found in node \"test\". Expected 2, got 1.\n", e.getMessage());
         }
+    }
+
+    @Test
+    public void testAbsent() {
+        try {
+            assertThat("{\"test\":1}", jsonNodeAbsent("test"));
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("\n" +
+                    "Expected: Node \"test\" is absent.\n" +
+                    "     but: Node \"test\" is \"1\".", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAbsentOk() {
+        assertThat("{\"test\":1}", jsonNodeAbsent("different"));
+    }
+
+    @Test
+    public void testPresent() {
+        try {
+            assertThat("{\"test\":1}", jsonNodePresent("test.a"));
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("\n" +
+                    "Expected: Node \"test.a\" is present.\n" +
+                    "     but: Node \"test.a\" is missing.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testPresentOk() {
+        assertThat("{\"test\":1}", jsonNodePresent("test"));
     }
 }

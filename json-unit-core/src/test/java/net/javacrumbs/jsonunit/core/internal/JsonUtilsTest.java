@@ -15,14 +15,23 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
+import java.io.IOException;
+
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class JsonUtilsTest {
+
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     @Test
     public void testConvertToJson() {
@@ -57,5 +66,66 @@ public class JsonUtilsTest {
         assertEquals("\"123 b\"", quoteIfNeeded("123 b"));
     }
 
+    @Test
+    public void testGetStartNodeRoot() throws IOException {
+        JsonNode startNode = getNode(mapper.readTree("{\"test\":{\"value\":1}}"), "");
+        assertEquals("{\"test\":{\"value\":1}}", mapper.writeValueAsString(startNode));
+    }
+
+    @Test
+    public void testGetStartNodeSimple() throws IOException {
+        JsonNode startNode = getNode(mapper.readTree("{\"test\":{\"value\":1}}"), "test");
+        assertEquals("{\"value\":1}", mapper.writeValueAsString(startNode));
+    }
+
+    @Test
+    public void testGetStartNodeTwoSteps() throws IOException {
+        JsonNode startNode = getNode(mapper.readTree("{\"test\":{\"value\":1}}"), "test.value");
+        assertEquals("1", mapper.writeValueAsString(startNode));
+    }
+
+    @Test
+    public void testGetStartNodeArrays() throws IOException {
+        JsonNode startNode = getNode(mapper.readTree("{\"test\":{\"values\":[1,2]}}"), "test.values[1]");
+        assertEquals("2", mapper.writeValueAsString(startNode));
+    }
+
+    @Test
+    public void testGetStartNodeArrays2() throws IOException {
+        JsonNode startNode = getNode(mapper.readTree("{\"test\":[{\"values\":[1,2]}, {\"values\":[3,4]}]}"), "test[1].values[1]");
+        assertEquals("4", mapper.writeValueAsString(startNode));
+    }
+
+    @Test
+    public void testGetStartNodeArraysRootComplex() throws IOException {
+        JsonNode startNode = getNode(mapper.readTree("[{\"values\":[1,2]}, {\"values\":[3,4]}]"), "[1].values[1]");
+        assertEquals("4", mapper.writeValueAsString(startNode));
+    }
+
+    @Test
+    public void testGetStartNodeArraysConvoluted() throws IOException {
+        JsonNode startNode = getNode(mapper.readTree("{\"test\":[{\"values\":[1,2]}, {\"values\":[3,4]}]}"), "test.[1].values.[1]");
+        assertEquals("4", mapper.writeValueAsString(startNode));
+    }
+
+    @Test
+    public void testGetStartNodeArraysRoot() throws IOException {
+        JsonNode startNode = getNode(mapper.readTree("[1,2]"), "[0]");
+        assertEquals("1", mapper.writeValueAsString(startNode));
+    }
+
+    @Test
+    public void testGetStartNodeNonexisting() throws IOException {
+        JsonNode startNode = getNode(mapper.readTree("{\"test\":{\"value\":1}}"), "test.bogus");
+        assertEquals(true, startNode.isMissingNode());
+    }
+    @Test
+    public void testNodeExists() throws IOException {
+        String json = "{\"test\":{\"value\":1}}";
+        assertTrue(nodeExists(json, "test"));
+        assertTrue(nodeExists(json, "test.value"));
+        assertFalse(nodeExists(json, "test.nonsense"));
+        assertFalse(nodeExists(json, "root"));
+    }
 
 }

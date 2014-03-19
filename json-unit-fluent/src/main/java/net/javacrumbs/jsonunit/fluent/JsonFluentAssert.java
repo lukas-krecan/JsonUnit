@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
 
 
 /**
@@ -202,5 +203,27 @@ public class JsonFluentAssert {
      */
     public JsonFluentAssert withTolerance(BigDecimal tolerance) {
         return new JsonFluentAssert(actual, path, description, ignorePlaceholder, tolerance);
+    }
+
+    /**
+     * Fails if the node exists.
+     *
+     * @return
+     */
+    public JsonFluentAssert isAbsent() {
+        if (nodeExists(actual, path)) {
+            failWithMessage("Node \"" + path + "\" is present.");
+        }
+        return this;
+    }
+
+    /**
+     * Fails if the node is missing.
+     */
+    public JsonFluentAssert isPresent() {
+        if (!nodeExists(actual, path)) {
+            failWithMessage("Node \"" + path + "\" is missing.");
+        }
+        return this;
     }
 }

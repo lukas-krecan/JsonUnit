@@ -20,6 +20,7 @@ import net.javacrumbs.jsonunit.core.internal.Diff;
 import java.math.BigDecimal;
 
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
 
 /**
  * Assertions for comparing JSON. The comparison ignores white-spaces and order of nodes.
@@ -94,6 +95,32 @@ public class JsonAssert {
         Diff diff = create(expected, fullJson, FULL_JSON, path, ignorePlaceholder, numericComparisonTolerance);
         if (!diff.similarStructure()) {
             doFail(diff.structureDifferences());
+        }
+    }
+
+    /**
+     * Fails if node in given path exists.
+     *
+     * @param expected
+     * @param actual
+     * @param path
+     */
+    public static void assertJsonNodeAbsent(Object actual, String path) {
+        if (nodeExists(actual, path)) {
+            doFail("Node \""+path+"\" is present.");
+        }
+    }
+
+    /**
+     * Fails if node in given does not exist.
+     *
+     * @param expected
+     * @param actual
+     * @param path
+     */
+    public static void assertJsonNodePresent(Object actual, String path) {
+        if (!nodeExists(actual, path)) {
+            doFail("Node \""+path+"\" is missing.");
         }
     }
 
