@@ -21,6 +21,8 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
 
 /**
  * Contains Hamcrest matchers to be used with Hamcrest assertThat and other tools.
@@ -57,7 +59,7 @@ public class JsonMatchers {
 
     /**
      * Are the JSONs equivalent?
-     *
+     * <p/>
      * This method exist only for those cases, when you need to use it as Matcher&lt;String&gt; and Java refuses to
      * do the type inference correctly.
      *
@@ -70,7 +72,7 @@ public class JsonMatchers {
 
     /**
      * Is the part of the JSON equivalent?
-     *
+     * <p/>
      * This method exist only for those cases, when you need to use it as Matcher&lt;String&gt; and Java refuses to
      * do the type inference correctly.
      *
@@ -80,6 +82,26 @@ public class JsonMatchers {
     public static Matcher<String> jsonStringPartEquals(String path, Object expected) {
         return jsonPartEquals(path, expected);
     }
+
+    /**
+     * Is the node in path absent?
+     *
+     * @param expected
+     * @return
+     */
+    public static <T> Matcher<T> jsonNodeAbsent(String path) {
+        return new JsonNodeAbsenceMatcher<T>(path);
+    }
+    /**
+     * Is the node in path present?
+     *
+     * @param expected
+     * @return
+     */
+    public static <T> Matcher<T> jsonNodePresent(String path) {
+        return new JsonNodePresenceMatcher<T>(path);
+    }
+
 
     private static final class JsonPartMatcher<T> extends BaseMatcher<T> {
         private final Object expected;
@@ -101,15 +123,61 @@ public class JsonMatchers {
 
         public void describeTo(Description description) {
             if ("".equals(path)) {
-                description.appendText(expected.toString());
+                description.appendText(safeToString());
             } else {
-                description.appendText(expected.toString()).appendText(" in \"").appendText(path).appendText("\"");
+                description.appendText(safeToString()).appendText(" in \"").appendText(path).appendText("\"");
             }
+        }
+
+        private String safeToString() {
+            return expected != null ? expected.toString() : "null";
         }
 
         @Override
         public void describeMismatch(Object item, Description description) {
             description.appendText(differences);
+        }
+    }
+
+    private static final class JsonNodeAbsenceMatcher<T> extends BaseMatcher<T> {
+        private final String path;
+
+        JsonNodeAbsenceMatcher(String path) {
+            this.path = path;
+        }
+
+        public boolean matches(Object item) {
+            return !nodeExists(item, path);
+        }
+
+        public void describeTo(Description description) {
+            description.appendText("Node \"" + path + "\" is absent.");
+        }
+
+        @Override
+        public void describeMismatch(Object item, Description description) {
+            description.appendText("Node \"" + path + "\" is \"" + getNode(item, path) + "\".");
+        }
+    }
+
+    private static final class JsonNodePresenceMatcher<T> extends BaseMatcher<T> {
+        private final String path;
+
+        JsonNodePresenceMatcher(String path) {
+            this.path = path;
+        }
+
+        public boolean matches(Object item) {
+            return nodeExists(item, path);
+        }
+
+        public void describeTo(Description description) {
+            description.appendText("Node \"" + path + "\" is present.");
+        }
+
+        @Override
+        public void describeMismatch(Object item, Description description) {
+            description.appendText("Node \"" + path + "\" is missing.");
         }
     }
 }

@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.StringReader;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonNodeAbsent;
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonNodePresent;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartStructureEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonStructureEquals;
@@ -286,23 +288,23 @@ public class JsonAssertTest {
     public void testComplexErrors() {
         try {
             assertJsonEquals("{\n" +
-                    "   \"test\":[\n" +
-                    "      1,\n" +
-                    "      2,\n" +
-                    "      {\n" +
-                    "         \"child\":{\n" +
-                    "            \"value1\":1,\n" +
-                    "            \"value2\":true,\n" +
-                    "            \"value3\":\"test\",\n" +
-                    "            \"value4\":{\n" +
-                    "               \"leaf\":5\n" +
-                    "            }\n" +
-                    "         }\n" +
-                    "      }\n" +
-                    "   ],\n" +
-                    "   \"root2\":false,\n" +
-                    "   \"root3\":1\n" +
-                    "}",
+                            "   \"test\":[\n" +
+                            "      1,\n" +
+                            "      2,\n" +
+                            "      {\n" +
+                            "         \"child\":{\n" +
+                            "            \"value1\":1,\n" +
+                            "            \"value2\":true,\n" +
+                            "            \"value3\":\"test\",\n" +
+                            "            \"value4\":{\n" +
+                            "               \"leaf\":5\n" +
+                            "            }\n" +
+                            "         }\n" +
+                            "      }\n" +
+                            "   ],\n" +
+                            "   \"root2\":false,\n" +
+                            "   \"root3\":1\n" +
+                            "}",
                     "{\n" +
                             "   \"test\":[\n" +
                             "      5,\n" +
@@ -322,7 +324,8 @@ public class JsonAssertTest {
                             "      }\n" +
                             "   ],\n" +
                             "   \"root4\":\"bar\"\n" +
-                            "}");
+                            "}"
+            );
             fail("Exception expected");
         } catch (AssertionError e) {
             assertEquals(
@@ -335,7 +338,8 @@ public class JsonAssertTest {
                             "Different value found in node \"test[1]\". Expected '2', got 'false'.\n" +
                             "Different value found in node \"test[2].child.value1\". Expected 1, got 5.\n" +
                             "Different value found in node \"test[2].child.value2\". Expected 'true', got '\"true\"'.\n"
-                    , e.getMessage());
+                    , e.getMessage()
+            );
         }
 
     }
@@ -438,6 +442,36 @@ public class JsonAssertTest {
     }
 
     @Test
+    public void testAssertJsonNodeAbsent() {
+        try {
+            assertJsonNodeAbsent("{\"test\":{\"value\":1}}", "test.value");
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("Node \"test.value\" is present.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAssertJsonNodeAbsentOk() {
+        assertJsonNodeAbsent("{\"test\":{\"value\":1}}", "test.different");
+    }
+
+    @Test
+    public void testAssertJsonNodePresent() {
+        try {
+            assertJsonNodePresent("{\"test\":{\"value\":1}}", "test.different");
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("Node \"test.different\" is missing.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAssertJsonNodePresentOk() {
+        assertJsonNodePresent("{\"test\":{\"value\":1}}", "test.value");
+    }
+
+    @Test
     public void testAssertPartComplex() {
         try {
             assertJsonPartEquals("{\"value\":2}", "{\"test\":{\"value\":1}}", "test");
@@ -485,23 +519,23 @@ public class JsonAssertTest {
     @Test
     public void testComplexStructureOk() {
         assertJsonStructureEquals("{\n" +
-                "   \"test\":[\n" +
-                "      1,\n" +
-                "      2,\n" +
-                "      {\n" +
-                "         \"child\":{\n" +
-                "            \"value1\":1,\n" +
-                "            \"value2\":true,\n" +
-                "            \"value3\":\"test\",\n" +
-                "            \"value4\":{\n" +
-                "               \"leaf\":5\n" +
-                "            }\n" +
-                "         }\n" +
-                "      }\n" +
-                "   ],\n" +
-                "   \"root2\":false,\n" +
-                "   \"root3\":1\n" +
-                "}",
+                        "   \"test\":[\n" +
+                        "      1,\n" +
+                        "      2,\n" +
+                        "      {\n" +
+                        "         \"child\":{\n" +
+                        "            \"value1\":1,\n" +
+                        "            \"value2\":true,\n" +
+                        "            \"value3\":\"test\",\n" +
+                        "            \"value4\":{\n" +
+                        "               \"leaf\":5\n" +
+                        "            }\n" +
+                        "         }\n" +
+                        "      }\n" +
+                        "   ],\n" +
+                        "   \"root2\":false,\n" +
+                        "   \"root3\":1\n" +
+                        "}",
                 "{\n" +
                         "   \"test\":[\n" +
                         "      4,\n" +
@@ -519,7 +553,8 @@ public class JsonAssertTest {
                         "   ],\n" +
                         "   \"root2\":true,\n" +
                         "   \"root3\":2\n" +
-                        "}");
+                        "}"
+        );
     }
 
     @Test

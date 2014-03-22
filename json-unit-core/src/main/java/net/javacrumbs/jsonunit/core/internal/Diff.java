@@ -32,12 +32,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.StringTokenizer;
 import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
 
 
@@ -47,7 +45,6 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
  * @author Lukas Krecan
  */
 public class Diff {
-    private static final Pattern ARRAY_PATTERN = Pattern.compile("(\\w*)\\[(\\d+)\\]");
     private final JsonNode expectedRoot;
     private final JsonNode actualRoot;
     private final Differences structureDifferences = new Differences("structures");
@@ -93,7 +90,7 @@ public class Diff {
 
     private void compare() {
         if (!compared) {
-            JsonNode part = getStartNode(actualRoot, startPath);
+            JsonNode part = getNode(actualRoot, startPath);
             if (part.isMissingNode()) {
                 structureDifferenceFound("Missing node in path \"%s\".", startPath);
             } else {
@@ -102,29 +99,6 @@ public class Diff {
             compared = true;
         }
     }
-
-    static JsonNode getStartNode(JsonNode actualRoot, String startPath) {
-        if (startPath.length() == 0) {
-            return actualRoot;
-        }
-
-        JsonNode startNode = actualRoot;
-        StringTokenizer stringTokenizer = new StringTokenizer(startPath, ".");
-        while (stringTokenizer.hasMoreElements()) {
-            String step = stringTokenizer.nextToken();
-            Matcher matcher = ARRAY_PATTERN.matcher(step);
-            if (!matcher.matches()) {
-                startNode = startNode.path(step);
-            } else {
-                if (matcher.group(1).length() != 0) {
-                    startNode = startNode.path(matcher.group(1));
-                }
-                startNode = startNode.path(Integer.valueOf(matcher.group(2)));
-            }
-        }
-        return startNode;
-    }
-
 
     /**
      * Compares object nodes.
@@ -382,7 +356,7 @@ public class Diff {
                 diffLogger.debug(getDifferences().trim());
             }
             if (valuesLogger.isDebugEnabled()) {
-                valuesLogger.debug("Comparing expected:\n{}\n------------\nwith actual:\n{}\n", expectedRoot, getStartNode(actualRoot, startPath));
+                valuesLogger.debug("Comparing expected:\n{}\n------------\nwith actual:\n{}\n", expectedRoot, getNode(actualRoot, startPath));
             }
         }
     }
