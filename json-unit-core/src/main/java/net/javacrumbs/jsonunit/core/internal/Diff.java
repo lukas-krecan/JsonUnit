@@ -51,6 +51,7 @@ public class Diff {
     private final Differences valueDifferences = new Differences("values");
     private final String startPath;
     private final BigDecimal numericComparisonTolerance;
+    private final boolean treatNullAsAbsent;
     private boolean compared = false;
     private final String ignorePlaceholder;
 
@@ -59,27 +60,22 @@ public class Diff {
 
     private enum NodeType {OBJECT, ARRAY, STRING, NUMBER, BOOLEAN, NULL}
 
-    public Diff(JsonNode expected, JsonNode actual, String startPath, String ignorePlaceholder, BigDecimal numericComparisonTolerance) {
-        super();
+    private Diff(JsonNode expected, JsonNode actual, String startPath, String ignorePlaceholder, BigDecimal numericComparisonTolerance, boolean treatNullAsAbsent) {
         this.expectedRoot = expected;
         this.actualRoot = actual;
         this.startPath = startPath;
         this.ignorePlaceholder = ignorePlaceholder;
         this.numericComparisonTolerance = numericComparisonTolerance;
+        this.treatNullAsAbsent = treatNullAsAbsent;
+    }
+
+    public static Diff create(Object expected, Object actual, String actualName, String startPath, String ignorePlaceholder, BigDecimal numericComparisonTolerance, boolean treatNullAsAbsent) {
+        return new Diff(convertToJson(quoteIfNeeded(expected), "expected"), convertToJson(actual, actualName), startPath, ignorePlaceholder, numericComparisonTolerance, treatNullAsAbsent);
     }
 
     @Deprecated
-    public Diff(JsonNode expected, JsonNode actual, String startPath, String ignorePlaceholder) {
-        super();
-        this.expectedRoot = expected;
-        this.actualRoot = actual;
-        this.startPath = startPath;
-        this.ignorePlaceholder = ignorePlaceholder;
-        this.numericComparisonTolerance = null;
-    }
-
     public static Diff create(Object expected, Object actual, String actualName, String startPath, String ignorePlaceholder, BigDecimal numericComparisonTolerance) {
-        return new Diff(convertToJson(quoteIfNeeded(expected), "expected"), convertToJson(actual, actualName), startPath, ignorePlaceholder, numericComparisonTolerance);
+        return create(expected, actual, actualName, startPath, ignorePlaceholder, numericComparisonTolerance, false);
     }
 
     @Deprecated
@@ -113,10 +109,19 @@ public class Diff {
 
         Set<String> expectedKeys = expectedFields.keySet();
         Set<String> actualKeys = actualFields.keySet();
+
         if (!expectedKeys.equals(actualKeys)) {
-            String missingKeys = getMissingKeys(expectedKeys, actualKeys, path);
-            String extraKeys = getExtraKeys(expectedKeys, actualKeys, path);
-            structureDifferenceFound("Different keys found in node \"%s\". Expected %s, got %s. %s %s", path, sort(expectedFields.keySet()), sort(actualFields.keySet()), missingKeys, extraKeys);
+            Set<String> missingKeys = getMissingKeys(expectedKeys, actualKeys);
+            Set<String> extraKeys = getExtraKeys(expectedKeys, actualKeys);
+            if (treatNullAsAbsent) {
+                extraKeys = getNotNullExtraKeys(actual, extraKeys);
+            }
+
+            if (!missingKeys.isEmpty() || !extraKeys.isEmpty()) {
+                String missingKeysMessage = getMissingKeysMessage(missingKeys, path);
+                String extraKeysMessage = getExtraKeysMessage(extraKeys, path);
+                structureDifferenceFound("Different keys found in node \"%s\". Expected %s, got %s. %s %s", path, sort(expectedFields.keySet()), sort(actualFields.keySet()), missingKeysMessage, extraKeysMessage);
+            }
         }
 
         for (String fieldName : commonFields(expectedFields, actualFields)) {
@@ -127,10 +132,24 @@ public class Diff {
         }
     }
 
+    /**
+     * Returns extra keys that are not null.
+     * @param actual
+     * @param extraKeys
+     * @return
+     */
+    private Set<String> getNotNullExtraKeys(ObjectNode actual, Set<String> extraKeys) {
+        Set<String> notNullExtraKeys = new TreeSet<String>();
+        for (String extraKey: extraKeys) {
+            if (!actual.get(extraKey).isNull()) {
+                notNullExtraKeys.add(extraKey);
+            }
+        }
+        return notNullExtraKeys;
+    }
 
-    static String getMissingKeys(Set<String> expectedKeys, Collection<String> actualKeys, String path) {
-        Set<String> missingKeys = new TreeSet<String>(expectedKeys);
-        missingKeys.removeAll(actualKeys);
+
+    static String getMissingKeysMessage(Set<String> missingKeys, String path) {
         if (!missingKeys.isEmpty()) {
             return "Missing: " + appendKeysToPrefix(missingKeys, path);
         } else {
@@ -138,14 +157,24 @@ public class Diff {
         }
     }
 
-    static String getExtraKeys(Set<String> expectedKeys, Collection<String> actualKeys, String path) {
-        Set<String> extraKeys = new TreeSet<String>(actualKeys);
-        extraKeys.removeAll(expectedKeys);
+    private static Set<String> getMissingKeys(Set<String> expectedKeys, Collection<String> actualKeys) {
+        Set<String> missingKeys = new TreeSet<String>(expectedKeys);
+        missingKeys.removeAll(actualKeys);
+        return missingKeys;
+    }
+
+    static String getExtraKeysMessage(Set<String> extraKeys, String path) {
         if (!extraKeys.isEmpty()) {
             return "Extra: " + appendKeysToPrefix(extraKeys, path);
         } else {
             return "";
         }
+    }
+
+    private static Set<String> getExtraKeys(Set<String> expectedKeys, Collection<String> actualKeys) {
+        Set<String> extraKeys = new TreeSet<String>(actualKeys);
+        extraKeys.removeAll(expectedKeys);
+        return extraKeys;
     }
 
     static String appendKeysToPrefix(Iterable<String> keys, String prefix) {

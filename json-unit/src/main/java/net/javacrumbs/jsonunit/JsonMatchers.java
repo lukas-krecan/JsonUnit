@@ -86,7 +86,7 @@ public class JsonMatchers {
     /**
      * Is the node in path absent?
      *
-     * @param expected
+     * @param path
      * @return
      */
     public static <T> Matcher<T> jsonNodeAbsent(String path) {
@@ -95,7 +95,7 @@ public class JsonMatchers {
     /**
      * Is the node in path present?
      *
-     * @param expected
+     * @param path
      * @return
      */
     public static <T> Matcher<T> jsonNodePresent(String path) {
@@ -114,7 +114,7 @@ public class JsonMatchers {
         }
 
         public boolean matches(Object item) {
-            Diff diff = create(expected, item, "fullJson", path, JsonAssert.getIgnorePlaceholder(), JsonAssert.getTolerance());
+            Diff diff = create(expected, item, "fullJson", path, JsonAssert.getIgnorePlaceholder(), JsonAssert.getTolerance(), JsonAssert.getTreatNullAsAbsent());
             if (!diff.similar()) {
                 differences = diff.differences();
             }

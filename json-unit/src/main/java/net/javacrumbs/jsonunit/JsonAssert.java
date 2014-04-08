@@ -41,6 +41,7 @@ public class JsonAssert {
     private static final String ACTUAL = "actual";
     private static String ignorePlaceholder = "${json-unit.ignore}";
     private static BigDecimal numericComparisonTolerance = null;
+    private static boolean treatNullAsAbsent;
 
     private JsonAssert() {
         //nothing
@@ -64,7 +65,7 @@ public class JsonAssert {
      * @param path
      */
     public static void assertJsonPartEquals(Object expected, Object fullJson, String path) {
-        Diff diff = create(expected, fullJson, FULL_JSON, path, ignorePlaceholder, numericComparisonTolerance);
+        Diff diff = create(expected, fullJson, FULL_JSON, path, ignorePlaceholder, numericComparisonTolerance, treatNullAsAbsent);
         if (!diff.similar()) {
             doFail(diff.toString());
         }
@@ -78,7 +79,7 @@ public class JsonAssert {
      * @param actual
      */
     public static void assertJsonStructureEquals(Object expected, Object actual) {
-        Diff diff = create(expected, actual, ACTUAL, "", ignorePlaceholder, numericComparisonTolerance);
+        Diff diff = create(expected, actual, ACTUAL, "", ignorePlaceholder, numericComparisonTolerance, treatNullAsAbsent);
         if (!diff.similarStructure()) {
             doFail(diff.structureDifferences());
         }
@@ -92,7 +93,7 @@ public class JsonAssert {
      * @param path
      */
     public static void assertJsonPartStructureEquals(Object expected, Object fullJson, String path) {
-        Diff diff = create(expected, fullJson, FULL_JSON, path, ignorePlaceholder, numericComparisonTolerance);
+        Diff diff = create(expected, fullJson, FULL_JSON, path, ignorePlaceholder, numericComparisonTolerance, treatNullAsAbsent);
         if (!diff.similarStructure()) {
             doFail(diff.structureDifferences());
         }
@@ -101,7 +102,6 @@ public class JsonAssert {
     /**
      * Fails if node in given path exists.
      *
-     * @param expected
      * @param actual
      * @param path
      */
@@ -114,7 +114,6 @@ public class JsonAssert {
     /**
      * Fails if node in given does not exist.
      *
-     * @param expected
      * @param actual
      * @param path
      */
@@ -166,5 +165,19 @@ public class JsonAssert {
 
     public static BigDecimal getTolerance() {
         return numericComparisonTolerance;
+    }
+
+    /**
+     * When set to true, treats null nodes in actual value as absent. In other words
+     * if you expect {"test":{"a":1}} this {"test":{"a":1, "b": null}} will pass the test.
+     *
+     * @param treatNullAsAbsent
+     */
+    public static void setTreatNullAsAbsent(boolean treatNullAsAbsent) {
+        JsonAssert.treatNullAsAbsent = treatNullAsAbsent;
+    }
+
+    public static boolean getTreatNullAsAbsent() {
+        return treatNullAsAbsent;
     }
 }

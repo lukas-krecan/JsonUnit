@@ -40,6 +40,7 @@ public class JsonAssertTest {
     @After
     public void reset() {
         JsonAssert.setTolerance(null);
+        JsonAssert.setTreatNullAsAbsent(false);
     }
 
     @Test
@@ -574,6 +575,39 @@ public class JsonAssertTest {
             fail("Exception expected");
         } catch (AssertionError e) {
             assertEquals("JSON documents have different structures:\nArray \"\" has different length. Expected 2, got 3.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testNullAndAbsent() {
+        try {
+            assertJsonEquals("{\"test\":{\"a\":1}}", "{\"test\":{\"a\":1, \"b\": null}}");
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("JSON documents have different structures:\nDifferent keys found in node \"test\". Expected [a], got [a, b].  Extra: \"test.b\"\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testTreatNullAsAbsent() {
+        JsonAssert.setTreatNullAsAbsent(true);
+        assertJsonEquals("{\"test\":{\"a\":1}}", "{\"test\":{\"a\":1, \"b\": null}}");
+    }
+
+    @Test
+    public void testTreatNullAsAbsentTwoValues() {
+        JsonAssert.setTreatNullAsAbsent(true);
+        assertJsonEquals("{\"test\":{\"a\":1}}", "{\"test\":{\"a\":1, \"b\": null, \"c\": null}}");
+    }
+
+    @Test
+    public void testTreatNullAsNullInExpected() {
+        JsonAssert.setTreatNullAsAbsent(true);
+        try {
+            assertJsonEquals("{\"test\":{\"a\":1, \"b\": null}}", "{\"test\":{\"a\":1}}");
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("JSON documents have different structures:\nDifferent keys found in node \"test\". Expected [a, b], got [a]. Missing: \"test.b\" \n", e.getMessage());
         }
     }
 }

@@ -54,8 +54,9 @@ public class JsonFluentAssert {
     private final String description;
     private final String ignorePlaceholder;
     private final BigDecimal numericComparisonTolerance;
+    private final boolean treatNullAsAbsent;
 
-    protected JsonFluentAssert(Object actual, String path, String description, String ignorePlaceholder, BigDecimal numericComparisonTolerance) {
+    protected JsonFluentAssert(Object actual, String path, String description, String ignorePlaceholder, BigDecimal numericComparisonTolerance, boolean treatNullAsAbsent) {
         if (actual == null) {
             throw new IllegalArgumentException("Can not make assertions about null JSON.");
         }
@@ -64,10 +65,11 @@ public class JsonFluentAssert {
         this.description = description;
         this.ignorePlaceholder = ignorePlaceholder;
         this.numericComparisonTolerance = numericComparisonTolerance;
+        this.treatNullAsAbsent = treatNullAsAbsent;
     }
 
     protected JsonFluentAssert(Object actual) {
-        this(actual, "", "", DEFAULT_IGNORE_PLACEHOLDER, null);
+        this(actual, "", "", DEFAULT_IGNORE_PLACEHOLDER, null, false);
     }
 
     /**
@@ -138,12 +140,12 @@ public class JsonFluentAssert {
      * @return object comparing only node given by path.
      */
     public JsonFluentAssert node(String path) {
-        return new JsonFluentAssert(actual, path, description, ignorePlaceholder, numericComparisonTolerance);
+        return new JsonFluentAssert(actual, path, description, ignorePlaceholder, numericComparisonTolerance, false);
     }
 
 
     private Diff createDiff(Object expected) {
-        return create(expected, actual, ACTUAL, path, ignorePlaceholder, numericComparisonTolerance);
+        return create(expected, actual, ACTUAL, path, ignorePlaceholder, numericComparisonTolerance, treatNullAsAbsent);
     }
 
     private void failWithMessage(String message) {
@@ -171,7 +173,7 @@ public class JsonFluentAssert {
      * @return
      */
     public JsonFluentAssert describedAs(String description) {
-        return new JsonFluentAssert(actual, path, description, ignorePlaceholder, numericComparisonTolerance);
+        return new JsonFluentAssert(actual, path, description, ignorePlaceholder, numericComparisonTolerance, false);
     }
 
     /**
@@ -182,7 +184,7 @@ public class JsonFluentAssert {
      * @return
      */
     public JsonFluentAssert ignoring(String ignorePlaceholder) {
-        return new JsonFluentAssert(actual, path, description, ignorePlaceholder, numericComparisonTolerance);
+        return new JsonFluentAssert(actual, path, description, ignorePlaceholder, numericComparisonTolerance, false);
     }
 
     /**
@@ -202,7 +204,17 @@ public class JsonFluentAssert {
      * @param tolerance
      */
     public JsonFluentAssert withTolerance(BigDecimal tolerance) {
-        return new JsonFluentAssert(actual, path, description, ignorePlaceholder, tolerance);
+        return new JsonFluentAssert(actual, path, description, ignorePlaceholder, tolerance, false);
+    }
+
+    /**
+     * When set to true, treats null nodes in actual value as absent. In other words
+     * if you expect {"test":{"a":1}} this {"test":{"a":1, "b": null}} will pass the test.
+     *
+     * @return
+     */
+    public JsonFluentAssert treatingNullAsAbsent() {
+        return new JsonFluentAssert(actual, path, description, ignorePlaceholder, numericComparisonTolerance, true);
     }
 
     /**

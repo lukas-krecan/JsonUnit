@@ -302,8 +302,23 @@ public class JsonFluentAssertTest {
     }
 
     @Test
-
     public void testIssue3Original() throws IOException {
         assertThatJson("{\"someKey\":\"111 text\"}").node("someKey").isEqualTo("111 text");
+    }
+
+    @Test
+    public void testNullAndAbsent() throws IOException {
+        try {
+            assertThatJson("{\"test\":{\"a\":1, \"b\": null}}").isEqualTo("{\"test\":{\"a\":1}}");
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("JSON documents have different structures:\n" +
+                    "Different keys found in node \"test\". Expected [a], got [a, b].  Extra: \"test.b\"\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testTreatNullAsAbsent() {
+        assertThatJson("{\"test\":{\"a\":1, \"b\": null}}").treatingNullAsAbsent().isEqualTo("{\"test\":{\"a\":1}}");
     }
 }
