@@ -152,4 +152,23 @@ public class JsonMatchersTest {
     public void testPresentOk() {
         assertThat("{\"test\":1}", jsonNodePresent("test"));
     }
+
+    @Test
+    public void testNullAndAbsent() throws IOException {
+        try {
+            assertThat("{\"test\":{\"a\":1, \"b\": null}}", jsonEquals("{\"test\":{\"a\":1}}"));
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("\n" +
+                    "Expected: {\"test\":{\"a\":1}}\n" +
+                    "     but: JSON documents have different structures:\n" +
+                    "Different keys found in node \"test\". Expected [a], got [a, b].  Extra: \"test.b\"\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testTreatNullAsAbsent() {
+        JsonAssert.setTreatNullAsAbsent(true);
+        assertThat("{\"test\":{\"a\":1, \"b\": null}}", jsonEquals("{\"test\":{\"a\":1}}"));
+    }
 }

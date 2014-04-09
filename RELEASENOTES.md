@@ -1,4 +1,7 @@
 ## 1.1.5 + 0.1.5
+* Treat null as absent added
+
+## 1.1.5 + 0.1.5
 * Absence/presence tests added
 
 ## 1.1.4 + 0.1.4
