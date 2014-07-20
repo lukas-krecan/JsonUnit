@@ -17,7 +17,7 @@ simple:
     // compares only the structure, not the values
     assertJsonStructureEquals("[{\"test\":1}, {\"test\":2}]", "[{\n\"test\": 1\n}, {\"TEST\": 4}]")
     
-When the values are compared, order of elements and whitespaces are ignored. On the other hand values 1 and 1.0 are considered to be different.
+When the values are compared, order of elements and whitespaces are ignored. 
 
 Hamcrests matchers
 ----------------
