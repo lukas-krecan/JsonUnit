@@ -28,7 +28,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -128,13 +127,14 @@ public class Diff {
 
     /**
      * Returns extra keys that are not null.
+     *
      * @param actual
      * @param extraKeys
      * @return
      */
     private Set<String> getNotNullExtraKeys(ObjectNode actual, Set<String> extraKeys) {
         Set<String> notNullExtraKeys = new TreeSet<String>();
-        for (String extraKey: extraKeys) {
+        for (String extraKey : extraKeys) {
             if (!actual.get(extraKey).isNull()) {
                 notNullExtraKeys.add(extraKey);
             }
@@ -273,12 +273,17 @@ public class Diff {
         if (expectedElements.size() != actualElements.size()) {
             structureDifferenceFound("Array \"%s\" has different length. Expected %d, got %d.", path, expectedElements.size(), actualElements.size());
         }
+        List<JsonNode> extraValues = new ArrayList<JsonNode>();
+        List<JsonNode> missingValues = new ArrayList<JsonNode>(expectedElements);
         if (hasOption(Option.IGNORE_ARRAY_ORDER)) {
-            Set<JsonNode> missingValues = new HashSet<JsonNode>(expectedElements);
-            missingValues.removeAll(actualElements);
-
-            Set<JsonNode> extraValues = new HashSet<JsonNode>(actualElements);
-            extraValues.removeAll(expectedElements);
+            for (JsonNode actual : actualElements) {
+                int index = indexOf(missingValues, actual);
+                if (index != -1) {
+                    missingValues.remove(index);
+                } else {
+                    extraValues.add(actual);
+                }
+            }
 
             if (!missingValues.isEmpty() || !extraValues.isEmpty()) {
                 valueDifferenceFound("Array \"%s\" has different content. Missing values %s, extra values %s", path, missingValues, extraValues);
@@ -289,6 +294,25 @@ public class Diff {
                 compareNodes(expectedElements.get(i), actualElements.get(i), getArrayPath(path, i));
             }
         }
+    }
+
+    /**
+     * Finds element in the expected elements. Can not use Jackson comparison since we need to take Options into account
+     *
+     * @param expectedElements
+     * @param actual
+     * @return
+     */
+    private int indexOf(List<JsonNode> expectedElements, JsonNode actual) {
+        int i = 0;
+        for (JsonNode expected : expectedElements) {
+            Diff diff = new Diff(expected, actual, "", ignorePlaceholder, numericComparisonTolerance, options);
+            if (diff.similar()) {
+                return i;
+            }
+            i++;
+        }
+        return -1;
     }
 
 
