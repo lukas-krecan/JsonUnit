@@ -143,7 +143,7 @@ public class Diff {
     }
 
 
-    static String getMissingKeysMessage(Set<String> missingKeys, String path) {
+    private static String getMissingKeysMessage(Set<String> missingKeys, String path) {
         if (!missingKeys.isEmpty()) {
             return "Missing: " + appendKeysToPrefix(missingKeys, path);
         } else {
@@ -157,7 +157,7 @@ public class Diff {
         return missingKeys;
     }
 
-    static String getExtraKeysMessage(Set<String> extraKeys, String path) {
+    private static String getExtraKeysMessage(Set<String> extraKeys, String path) {
         if (!extraKeys.isEmpty()) {
             return "Extra: " + appendKeysToPrefix(extraKeys, path);
         } else {
@@ -179,7 +179,7 @@ public class Diff {
         return options.contains(option);
     }
 
-    static String appendKeysToPrefix(Iterable<String> keys, String prefix) {
+    private static String appendKeysToPrefix(Iterable<String> keys, String prefix) {
         Iterator<String> iterator = keys.iterator();
         StringBuilder buffer = new StringBuilder();
         while (iterator.hasNext()) {

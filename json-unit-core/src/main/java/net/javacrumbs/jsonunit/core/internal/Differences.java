@@ -20,16 +20,16 @@ import java.util.List;
 
 class Differences {
 
-    private List<String> messages = new ArrayList<String>();
+    private final List<String> messages = new ArrayList<String>();
 
-    protected Differences() {
+    Differences() {
     }
 
     public void add(String message, Object... args) {
         add(String.format(message, args));
     }
 
-    public void add(String message) {
+    void add(String message) {
         messages.add(message);
     }
 
