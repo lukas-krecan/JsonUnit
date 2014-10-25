@@ -43,7 +43,6 @@ public class JsonAssertTest {
     @After
     public void reset() {
         JsonAssert.setTolerance(null);
-        JsonAssert.setTreatNullAsAbsent(false);
         JsonAssert.resetOptions();
     }
 
@@ -65,7 +64,7 @@ public class JsonAssertTest {
             assertJsonEquals("[{\"test\":1}, {\"test\":2}]", "[{\n\"test\": 1\n}, {\"test\": 4}]");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different values:\nDifferent value found in node \"[1].test\". Expected 2, got 4.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"[1].test\". Expected 2, got 4.\n", e.getMessage());
         }
     }
 
@@ -80,7 +79,7 @@ public class JsonAssertTest {
             setTolerance(0.001);
             assertJsonEquals(1, "\"hi\"");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different values:\nDifferent value found in node \"\". Expected '1', got '\"hi\"'.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"\". Expected '1', got '\"hi\"'.\n", e.getMessage());
         }
     }
 
@@ -90,7 +89,7 @@ public class JsonAssertTest {
             assertJsonEquals("1", "\n2\n");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different values:\nDifferent value found in node \"\". Expected 1, got 2.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"\". Expected 1, got 2.\n", e.getMessage());
         }
     }
 
@@ -115,7 +114,7 @@ public class JsonAssertTest {
             assertJsonEquals(MAPPER.readValue("{\"test\":1}", ObjectNode.class), MAPPER.readValue("{\"test\": 2}", ObjectNode.class));
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different values:\nDifferent value found in node \"test\". Expected 1, got 2.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected 1, got 2.\n", e.getMessage());
         }
     }
 
@@ -125,7 +124,7 @@ public class JsonAssertTest {
             assertJsonEquals(MAPPER.readValue("{\"test\":\"a\"}", ObjectNode.class), MAPPER.readValue("{\"test\": \"b\"}", ObjectNode.class));
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different values:\nDifferent value found in node \"test\". Expected \"a\", got \"b\".\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected \"a\", got \"b\".\n", e.getMessage());
         }
     }
 
@@ -140,7 +139,7 @@ public class JsonAssertTest {
             assertJsonEquals("{\"test\":1}", "{\n\"foo\": 1\n}");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different structures:\nDifferent keys found in node \"\". Expected [test], got [foo]. Missing: \"test\" Extra: \"foo\"\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent keys found in node \"\". Expected [test], got [foo]. Missing: \"test\" Extra: \"foo\"\n", e.getMessage());
         }
     }
 
@@ -150,7 +149,7 @@ public class JsonAssertTest {
             assertJsonEquals("1", "\n1.0\n");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different values:\n" +
+            assertEquals("JSON documents are different:\n" +
                     "Different value found in node \"\". Expected 1, got 1.0.\n", e.getMessage());
         }
     }
@@ -174,7 +173,7 @@ public class JsonAssertTest {
             assertJsonEquals("1", "\n1.1\n");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different values:\n" +
+            assertEquals("JSON documents are different:\n" +
                     "Different value found in node \"\". Expected 1, got 1.1, difference is 0.1, tolerance is 0.01\n", e.getMessage());
         }
     }
@@ -190,7 +189,7 @@ public class JsonAssertTest {
             assertJsonEquals("{\"test\":null}", "{\n\"test\": 1\n}");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different values:\nDifferent value found in node \"test\". Expected 'null', got '1'.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected 'null', got '1'.\n", e.getMessage());
         }
     }
 
@@ -200,7 +199,7 @@ public class JsonAssertTest {
             assertJsonEquals("{\"test\":1}", "{\n\"test\": 1\n, \"foo\": 2}");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different structures:\nDifferent keys found in node \"\". Expected [test], got [foo, test].  Extra: \"foo\"\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent keys found in node \"\". Expected [test], got [foo, test].  Extra: \"foo\"\n", e.getMessage());
         }
     }
 
@@ -210,7 +209,7 @@ public class JsonAssertTest {
             assertJsonEquals("{\"test\":\"${json-unit.ignore}\"}", "{\n\"test\": 1\n, \"foo\": 2}");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different structures:\nDifferent keys found in node \"\". Expected [test], got [foo, test].  Extra: \"foo\"\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent keys found in node \"\". Expected [test], got [foo, test].  Extra: \"foo\"\n", e.getMessage());
         }
     }
 
@@ -220,7 +219,7 @@ public class JsonAssertTest {
             assertJsonEquals("{\"test\":1, \"foo\": 2}", "{\n\"test\": 1\n}");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different structures:\nDifferent keys found in node \"\". Expected [foo, test], got [test]. Missing: \"foo\" \n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent keys found in node \"\". Expected [foo, test], got [test]. Missing: \"foo\" \n", e.getMessage());
         }
     }
 
@@ -230,7 +229,7 @@ public class JsonAssertTest {
             assertJsonEquals("{\"test\":1}", "{\n\"test\": 2\n}");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different values:\nDifferent value found in node \"test\". Expected 1, got 2.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected 1, got 2.\n", e.getMessage());
         }
     }
 
@@ -240,7 +239,7 @@ public class JsonAssertTest {
             assertJsonEquals("{\"test\":true}", "{\n\"test\": false\n}");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different values:\nDifferent value found in node \"test\". Expected true, got false.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected true, got false.\n", e.getMessage());
         }
     }
 
@@ -260,7 +259,7 @@ public class JsonAssertTest {
             assertJsonEquals("{\"test\":[1, 2, 3]}", "{\n\"test\": [1, 2]\n}");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different structures:\nArray \"test\" has different length. Expected 3, got 2.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nArray \"test\" has different length. Expected 3, got 2.\n", e.getMessage());
         }
     }
 
@@ -270,7 +269,7 @@ public class JsonAssertTest {
             assertJsonEquals("{\"test\":[1, 2, 3]}", "{\n\"test\": [1, 2, 5]\n}");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different values:\nDifferent value found in node \"test[2]\". Expected 3, got 5.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test[2]\". Expected 3, got 5.\n", e.getMessage());
         }
     }
 
@@ -280,7 +279,7 @@ public class JsonAssertTest {
             assertJsonEquals("{\"test\":[1, 2, 3]}", "{\n\"test\": [1, false, 3]\n}");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different values:\nDifferent value found in node \"test[1]\". Expected '2', got 'false'.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test[1]\". Expected '2', got 'false'.\n", e.getMessage());
         }
     }
 
@@ -336,15 +335,14 @@ public class JsonAssertTest {
             fail("Exception expected");
         } catch (AssertionError e) {
             assertEquals(
-                    "JSON documents have different structures:\n" +
+                    "JSON documents are different:\n" +
                             "Different keys found in node \"\". Expected [root2, root3, test], got [root4, test]. Missing: \"root2\",\"root3\" Extra: \"root4\"\n" +
-                            "Different keys found in node \"test[2]\". Expected [child], got [child, child2].  Extra: \"test[2].child2\"\n" +
-                            "Different keys found in node \"test[2].child.value4\". Expected [leaf], got [leaf2]. Missing: \"test[2].child.value4.leaf\" Extra: \"test[2].child.value4.leaf2\"\n" +
-                            "JSON documents have different values:\n" +
                             "Different value found in node \"test[0]\". Expected 1, got 5.\n" +
                             "Different value found in node \"test[1]\". Expected '2', got 'false'.\n" +
+                            "Different keys found in node \"test[2]\". Expected [child], got [child, child2].  Extra: \"test[2].child2\"\n" +
                             "Different value found in node \"test[2].child.value1\". Expected 1, got 5.\n" +
-                            "Different value found in node \"test[2].child.value2\". Expected 'true', got '\"true\"'.\n"
+                            "Different value found in node \"test[2].child.value2\". Expected 'true', got '\"true\"'.\n" +
+                            "Different keys found in node \"test[2].child.value4\". Expected [leaf], got [leaf2]. Missing: \"test[2].child.value4.leaf\" Extra: \"test[2].child.value4.leaf2\"\n"
                     , e.getMessage()
             );
         }
@@ -369,7 +367,7 @@ public class JsonAssertTest {
             assertJsonEquals("{\"test\":{\"object\": \"${json-unit.ignore}\"}, \"sibling\":1}", "{\n\"test\": {\"object\" : {\"another\" : 1}}, \"sibling\" : 2}");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different values:\nDifferent value found in node \"sibling\". Expected 1, got 2.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"sibling\". Expected 1, got 2.\n", e.getMessage());
         }
     }
 
@@ -379,7 +377,7 @@ public class JsonAssertTest {
             assertJsonEquals("{\"test\":1}", "{\n\"test\": 1.0\n}");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different values:\nDifferent value found in node \"test\". Expected 1, got 1.0.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected 1, got 1.0.\n", e.getMessage());
         }
     }
 
@@ -389,7 +387,7 @@ public class JsonAssertTest {
             assertJsonEquals("{\"test\":1}", "{\n\"test\": \"something\"\n}");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different values:\nDifferent value found in node \"test\". Expected '1', got '\"something\"'.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected '1', got '\"something\"'.\n", e.getMessage());
         }
     }
 
@@ -399,7 +397,7 @@ public class JsonAssertTest {
             assertJsonEquals("{\"test\":{}}", "{\n\"test\": \"something\"\n}");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different values:\nDifferent value found in node \"test\". Expected '{}', got '\"something\"'.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected '{}', got '\"something\"'.\n", e.getMessage());
         }
     }
 
@@ -444,7 +442,7 @@ public class JsonAssertTest {
             assertJsonPartEquals("2", "{\"test\":{\"value\":1}}", "test.value");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different values:\nDifferent value found in node \"test.value\". Expected 2, got 1.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test.value\". Expected 2, got 1.\n", e.getMessage());
         }
     }
 
@@ -484,7 +482,7 @@ public class JsonAssertTest {
             assertJsonPartEquals("{\"value\":2}", "{\"test\":{\"value\":1}}", "test");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different values:\nDifferent value found in node \"test.value\". Expected 2, got 1.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test.value\". Expected 2, got 1.\n", e.getMessage());
         }
     }
 
@@ -499,7 +497,7 @@ public class JsonAssertTest {
             assertJsonPartEquals(3, "{\"test\":[{\"value\":1},{\"value\":2}]}", "test[1].value");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different values:\nDifferent value found in node \"test[1].value\". Expected 3, got 2.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test[1].value\". Expected 3, got 2.\n", e.getMessage());
         }
     }
 
@@ -514,7 +512,7 @@ public class JsonAssertTest {
             assertJsonPartEquals("2", "{\"test\":{\"value\":1}}", "test.bogus");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different structures:\nMissing node in path \"test.bogus\".\n", e.getMessage());
+            assertEquals("JSON documents are different:\nMissing node in path \"test.bogus\".\n", e.getMessage());
         }
     }
 
@@ -570,7 +568,7 @@ public class JsonAssertTest {
             assertJsonStructureEquals("[{\"test\":1}, {\"test\":2}]", "[{\n\"test\": 1\n}, {\"TEST\": 4}]");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different structures:\nDifferent keys found in node \"[1]\". Expected [test], got [TEST]. Missing: \"[1].test\" Extra: \"[1].TEST\"\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent keys found in node \"[1]\". Expected [test], got [TEST]. Missing: \"[1].test\" Extra: \"[1].TEST\"\n", e.getMessage());
         }
     }
 
@@ -580,7 +578,7 @@ public class JsonAssertTest {
             assertJsonStructureEquals("[1, 2]", "[1, 2, 3]");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different structures:\nArray \"\" has different length. Expected 2, got 3.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nArray \"\" has different length. Expected 2, got 3.\n", e.getMessage());
         }
     }
 
@@ -590,7 +588,7 @@ public class JsonAssertTest {
             assertJsonEquals("{\"test\":{\"a\":1}}", "{\"test\":{\"a\":1, \"b\": null}}");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different structures:\nDifferent keys found in node \"test\". Expected [a], got [a, b].  Extra: \"test.b\"\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent keys found in node \"test\". Expected [a], got [a, b].  Extra: \"test.b\"\n", e.getMessage());
         }
     }
 
@@ -613,7 +611,7 @@ public class JsonAssertTest {
             assertJsonEquals("{\"test\":{\"a\":1, \"b\": null}}", "{\"test\":{\"a\":1}}");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different structures:\nDifferent keys found in node \"test\". Expected [a, b], got [a]. Missing: \"test.b\" \n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent keys found in node \"test\". Expected [a, b], got [a]. Missing: \"test.b\" \n", e.getMessage());
         }
     }
 
@@ -636,7 +634,7 @@ public class JsonAssertTest {
             assertJsonEquals("{\"test\":[1,2,3]}", "{\"test\":[3,2,4]}");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different values:\n" +
+            assertEquals("JSON documents are different:\n" +
                     "Array \"test\" has different content. Missing values [1], extra values [4]\n", e.getMessage());
         }
     }
@@ -648,7 +646,7 @@ public class JsonAssertTest {
             assertJsonEquals("{\"test\":[{\"key\":1},{\"key\":2},{\"key\":3}]}", "{\"test\":[{\"key\":3},{\"key\":2},{\"key\":4}]}");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents have different values:\n" +
+            assertEquals("JSON documents are different:\n" +
                     "Array \"test\" has different content. Missing values [{\"key\":1}], extra values [{\"key\":4}]\n", e.getMessage());
         }
     }

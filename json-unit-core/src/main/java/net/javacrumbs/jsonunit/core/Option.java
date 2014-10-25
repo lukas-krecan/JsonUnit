@@ -33,5 +33,10 @@ public enum Option {
     /**
      * Ignores extra fields in the actual value.
      */
-    IGNORE_EXTRA_FIELDS
+    IGNORE_EXTRA_FIELDS,
+
+    /**
+     * Compares only structures
+     */
+    COMPARE_ONLY_STRUCTURE
 }

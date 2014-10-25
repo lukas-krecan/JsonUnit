@@ -17,10 +17,11 @@ package net.javacrumbs.jsonunit.fluent;
 
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
+import net.javacrumbs.jsonunit.core.internal.Options;
 
 import java.math.BigDecimal;
-import java.util.EnumSet;
 
+import static net.javacrumbs.jsonunit.core.Option.COMPARE_ONLY_STRUCTURE;
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
@@ -56,9 +57,9 @@ public class JsonFluentAssert {
     private final String description;
     private final String ignorePlaceholder;
     private final BigDecimal numericComparisonTolerance;
-    private final EnumSet<Option> options;
+    private final Options options;
 
-    protected JsonFluentAssert(Object actual, String path, String description, String ignorePlaceholder, BigDecimal numericComparisonTolerance, EnumSet<Option> options) {
+    protected JsonFluentAssert(Object actual, String path, String description, String ignorePlaceholder, BigDecimal numericComparisonTolerance, Options options) {
         if (actual == null) {
             throw new IllegalArgumentException("Can not make assertions about null JSON.");
         }
@@ -71,7 +72,7 @@ public class JsonFluentAssert {
     }
 
     protected JsonFluentAssert(Object actual) {
-        this(actual, "", "", DEFAULT_IGNORE_PLACEHOLDER, null, EnumSet.noneOf(Option.class));
+        this(actual, "", "", DEFAULT_IGNORE_PLACEHOLDER, null, Options.empty());
     }
 
     /**
@@ -94,7 +95,7 @@ public class JsonFluentAssert {
      * @return {@code this} object.
      */
     public JsonFluentAssert isEqualTo(Object expected) {
-        Diff diff = createDiff(expected);
+        Diff diff = createDiff(expected, options);
         if (!diff.similar()) {
             failWithMessage(diff.differences());
         }
@@ -109,7 +110,7 @@ public class JsonFluentAssert {
      * @return {@code this} object.
      */
     public JsonFluentAssert isNotEqualTo(Object expected) {
-        Diff diff = createDiff(expected);
+        Diff diff = createDiff(expected, options);
         if (diff.similar()) {
             failWithMessage("JSON is equal.");
         }
@@ -123,9 +124,9 @@ public class JsonFluentAssert {
      * @return {@code this} object.
      */
     public JsonFluentAssert hasSameStructureAs(Object expected) {
-        Diff diff = createDiff(expected);
-        if (!diff.similarStructure()) {
-            failWithMessage(diff.structureDifferences());
+        Diff diff = createDiff(expected, options.with(COMPARE_ONLY_STRUCTURE));
+        if (!diff.similar()) {
+            failWithMessage(diff.differences());
         }
         return this;
     }
@@ -146,7 +147,7 @@ public class JsonFluentAssert {
     }
 
 
-    private Diff createDiff(Object expected) {
+    private Diff createDiff(Object expected, Options options) {
         return create(expected, actual, ACTUAL, path, ignorePlaceholder, numericComparisonTolerance, options);
     }
 
@@ -229,8 +230,7 @@ public class JsonFluentAssert {
      * @see net.javacrumbs.jsonunit.core.Option
      */
     public JsonFluentAssert when(Option firstOption, Option ...otherOptions) {
-        EnumSet<Option> newOptions = EnumSet.copyOf(options);
-        newOptions.addAll(EnumSet.of(firstOption, otherOptions));
+        Options newOptions = options.with(firstOption, otherOptions);
         return new JsonFluentAssert(actual, path, description, ignorePlaceholder, numericComparisonTolerance, newOptions);
     }
 

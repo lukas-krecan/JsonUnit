@@ -26,7 +26,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -37,6 +36,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import static java.util.Collections.emptySet;
+import static net.javacrumbs.jsonunit.core.Option.COMPARE_ONLY_STRUCTURE;
 import static net.javacrumbs.jsonunit.core.Option.IGNORE_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
@@ -51,11 +51,10 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
 public class Diff {
     private final JsonNode expectedRoot;
     private final JsonNode actualRoot;
-    private final Differences structureDifferences = new Differences("structures");
-    private final Differences valueDifferences = new Differences("values");
+    private final Differences differences = new Differences();
     private final String startPath;
     private final BigDecimal numericComparisonTolerance;
-    private final EnumSet<Option> options;
+    private final Options options;
     private boolean compared = false;
     private final String ignorePlaceholder;
 
@@ -64,7 +63,7 @@ public class Diff {
 
     private enum NodeType {OBJECT, ARRAY, STRING, NUMBER, BOOLEAN, NULL}
 
-    private Diff(JsonNode expected, JsonNode actual, String startPath, String ignorePlaceholder, BigDecimal numericComparisonTolerance, EnumSet<Option> options) {
+    private Diff(JsonNode expected, JsonNode actual, String startPath, String ignorePlaceholder, BigDecimal numericComparisonTolerance, Options options) {
         this.expectedRoot = expected;
         this.actualRoot = actual;
         this.startPath = startPath;
@@ -73,7 +72,7 @@ public class Diff {
         this.options = options;
     }
 
-    public static Diff create(Object expected, Object actual, String actualName, String startPath, String ignorePlaceholder, BigDecimal numericComparisonTolerance, EnumSet<Option> options) {
+    public static Diff create(Object expected, Object actual, String actualName, String startPath, String ignorePlaceholder, BigDecimal numericComparisonTolerance, Options options) {
         return new Diff(convertToJson(quoteIfNeeded(expected), "expected"), convertToJson(actual, actualName), startPath, ignorePlaceholder, numericComparisonTolerance, options);
     }
 
@@ -382,11 +381,13 @@ public class Diff {
     }
 
     private void structureDifferenceFound(String message, Object... arguments) {
-        structureDifferences.add(message, arguments);
+        differences.add(message, arguments);
     }
 
     private void valueDifferenceFound(String message, Object... arguments) {
-        valueDifferences.add(message, arguments);
+        if (!hasOption(COMPARE_ONLY_STRUCTURE)) {
+            differences.add(message, arguments);
+        }
     }
 
 
@@ -401,19 +402,9 @@ public class Diff {
         return new TreeSet<String>(set);
     }
 
-    private boolean hasSimilarStructure() {
-        compare();
-        return structureDifferences.isEmpty();
-    }
-
-    public boolean similarStructure() {
-        boolean result = hasSimilarStructure();
-        logDifferences(result);
-        return result;
-    }
-
     public boolean similar() {
-        boolean result = hasSimilarStructure() && valueDifferences.isEmpty();
+        compare();
+        boolean result = differences.isEmpty();
         logDifferences(result);
         return result;
     }
@@ -459,18 +450,7 @@ public class Diff {
 
     private String getDifferences() {
         StringBuilder message = new StringBuilder();
-        structureDifferences.appendDifferences(message);
-        valueDifferences.appendDifferences(message);
+        differences.appendDifferences(message);
         return message.toString();
     }
-
-    public String structureDifferences() {
-        if (similarStructure()) {
-            return "JSON documents have the same structure.";
-        }
-        StringBuilder message = new StringBuilder();
-        structureDifferences.appendDifferences(message);
-        return message.toString();
-    }
-
 }

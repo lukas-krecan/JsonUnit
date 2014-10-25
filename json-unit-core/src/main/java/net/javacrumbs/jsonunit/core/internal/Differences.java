@@ -20,15 +20,9 @@ import java.util.List;
 
 class Differences {
 
-    private String differenceType;
     private List<String> messages = new ArrayList<String>();
 
-    protected Differences(String differenceType) {
-        this.differenceType = differenceType;
-    }
-
-    public String getDifferenceType() {
-        return differenceType;
+    protected Differences() {
     }
 
     public void add(String message, Object... args) {
@@ -45,7 +39,7 @@ class Differences {
 
     public void appendDifferences(StringBuilder builder) {
         if (!messages.isEmpty()) {
-            builder.append("JSON documents have different ").append(getDifferenceType()).append(":\n");
+            builder.append("JSON documents are different:\n");
             for (String message : messages) {
                 builder.append(message).append("\n");
             }

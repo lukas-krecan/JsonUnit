@@ -15,6 +15,7 @@
  */
 package net.javacrumbs.jsonunit;
 
+import net.javacrumbs.jsonunit.core.Option;
 import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Test;
@@ -90,7 +91,7 @@ public class JsonMatchersTest {
             fail("Exception expected");
         } catch (AssertionError e) {
             assertEquals("\nExpected: {\n\"test\": 2\n}\n" +
-                    "     but: JSON documents have different values:\n" +
+                    "     but: JSON documents are different:\n" +
                     "Different value found in node \"test\". Expected 2, got 1.\n", e.getMessage());
         }
     }
@@ -102,7 +103,7 @@ public class JsonMatchersTest {
             fail("Exception expected");
         } catch (AssertionError e) {
             assertEquals("\nExpected: {\n\"test2\": 2\n}\n" +
-                    "     but: JSON documents have different structures:\n" +
+                    "     but: JSON documents are different:\n" +
                     "Different keys found in node \"\". Expected [test2], got [test]. Missing: \"test2\" Extra: \"test\"\n", e.getMessage());
         }
     }
@@ -114,7 +115,7 @@ public class JsonMatchersTest {
             fail("Exception expected");
         } catch (AssertionError e) {
             assertEquals("\nExpected: 2 in \"test\"\n" +
-                    "     but: JSON documents have different values:\n" +
+                    "     but: JSON documents are different:\n" +
                     "Different value found in node \"test\". Expected 2, got 1.\n", e.getMessage());
         }
     }
@@ -161,14 +162,14 @@ public class JsonMatchersTest {
         } catch (AssertionError e) {
             assertEquals("\n" +
                     "Expected: {\"test\":{\"a\":1}}\n" +
-                    "     but: JSON documents have different structures:\n" +
+                    "     but: JSON documents are different:\n" +
                     "Different keys found in node \"test\". Expected [a], got [a, b].  Extra: \"test.b\"\n", e.getMessage());
         }
     }
 
     @Test
     public void testTreatNullAsAbsent() {
-        JsonAssert.setTreatNullAsAbsent(true);
+        JsonAssert.setOptions(Option.TREAT_NULL_AS_ABSENT);
         assertThat("{\"test\":{\"a\":1, \"b\": null}}", jsonEquals("{\"test\":{\"a\":1}}"));
     }
 }
