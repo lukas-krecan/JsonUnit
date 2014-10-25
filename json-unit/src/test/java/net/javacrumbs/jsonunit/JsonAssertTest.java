@@ -672,6 +672,17 @@ public class JsonAssertTest {
     }
 
     @Test
+    public void shouldIgnoreValuesInArray() {
+        setOptions(IGNORE_VALUES);
+        try {
+            assertJsonEquals("{\"test\":[{\"a\":1},{\"b\":2},{\"c\":3}]}", "{\"test\":[{\"a\":3},{\"b\":2},{\"c\":1}]}");
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                    "Different value found in node \"test[1].b\". Expected '2', got '\"2\"'.\n", e.getMessage());
+        }
+    }
+
+    @Test
     public void shouldFailIfIgnoringValuesButTypesAreDifferent() {
         setOptions(IGNORE_VALUES);
         try {
@@ -679,6 +690,17 @@ public class JsonAssertTest {
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\n" +
                     "Different value found in node \"test.b\". Expected '2', got '\"2\"'.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void shouldFailIfIgnoringValuesButTypesAreDifferentInArray() {
+        setOptions(IGNORE_VALUES);
+        try {
+            assertJsonEquals("{\"test\":[{\"a\":1},{\"b\":2},{\"c\":3}]}", "{\"test\":[{\"a\":1},{\"b\":\"2\"},{\"c\":3}]}");
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                    "Different value found in node \"test[1].b\". Expected '2', got '\"2\"'.\n", e.getMessage());
         }
     }
 
