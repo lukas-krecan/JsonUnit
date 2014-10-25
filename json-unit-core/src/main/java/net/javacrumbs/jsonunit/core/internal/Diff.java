@@ -18,6 +18,7 @@ package net.javacrumbs.jsonunit.core.internal;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import net.javacrumbs.jsonunit.core.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +26,9 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -34,13 +37,15 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import static java.util.Collections.emptySet;
+import static net.javacrumbs.jsonunit.core.Option.IGNORE_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
 
 
 /**
- * Compares JSON structures. Mainly for internal use, the API might be mre volatile than the rest.
+ * Compares JSON structures. Mainly for internal use, the API might be more volatile than the rest.
  *
  * @author Lukas Krecan
  */
@@ -51,7 +56,7 @@ public class Diff {
     private final Differences valueDifferences = new Differences("values");
     private final String startPath;
     private final BigDecimal numericComparisonTolerance;
-    private final boolean treatNullAsAbsent;
+    private final EnumSet<Option> options;
     private boolean compared = false;
     private final String ignorePlaceholder;
 
@@ -60,29 +65,18 @@ public class Diff {
 
     private enum NodeType {OBJECT, ARRAY, STRING, NUMBER, BOOLEAN, NULL}
 
-    private Diff(JsonNode expected, JsonNode actual, String startPath, String ignorePlaceholder, BigDecimal numericComparisonTolerance, boolean treatNullAsAbsent) {
+    private Diff(JsonNode expected, JsonNode actual, String startPath, String ignorePlaceholder, BigDecimal numericComparisonTolerance, EnumSet<Option> options) {
         this.expectedRoot = expected;
         this.actualRoot = actual;
         this.startPath = startPath;
         this.ignorePlaceholder = ignorePlaceholder;
         this.numericComparisonTolerance = numericComparisonTolerance;
-        this.treatNullAsAbsent = treatNullAsAbsent;
+        this.options = options;
     }
 
-    public static Diff create(Object expected, Object actual, String actualName, String startPath, String ignorePlaceholder, BigDecimal numericComparisonTolerance, boolean treatNullAsAbsent) {
-        return new Diff(convertToJson(quoteIfNeeded(expected), "expected"), convertToJson(actual, actualName), startPath, ignorePlaceholder, numericComparisonTolerance, treatNullAsAbsent);
+    public static Diff create(Object expected, Object actual, String actualName, String startPath, String ignorePlaceholder, BigDecimal numericComparisonTolerance, EnumSet<Option> options) {
+        return new Diff(convertToJson(quoteIfNeeded(expected), "expected"), convertToJson(actual, actualName), startPath, ignorePlaceholder, numericComparisonTolerance, options);
     }
-
-    @Deprecated
-    public static Diff create(Object expected, Object actual, String actualName, String startPath, String ignorePlaceholder, BigDecimal numericComparisonTolerance) {
-        return create(expected, actual, actualName, startPath, ignorePlaceholder, numericComparisonTolerance, false);
-    }
-
-    @Deprecated
-    public static Diff create(Object expected, Object actual, String actualName, String startPath, String ignorePlaceholder) {
-        return create(expected, actual, actualName, startPath, ignorePlaceholder, null);
-    }
-
 
     private void compare() {
         if (!compared) {
@@ -113,7 +107,7 @@ public class Diff {
         if (!expectedKeys.equals(actualKeys)) {
             Set<String> missingKeys = getMissingKeys(expectedKeys, actualKeys);
             Set<String> extraKeys = getExtraKeys(expectedKeys, actualKeys);
-            if (treatNullAsAbsent) {
+            if (hasOption(Option.TREAT_NULL_AS_ABSENT)) {
                 extraKeys = getNotNullExtraKeys(actual, extraKeys);
             }
 
@@ -171,10 +165,18 @@ public class Diff {
         }
     }
 
-    private static Set<String> getExtraKeys(Set<String> expectedKeys, Collection<String> actualKeys) {
-        Set<String> extraKeys = new TreeSet<String>(actualKeys);
-        extraKeys.removeAll(expectedKeys);
-        return extraKeys;
+    private Set<String> getExtraKeys(Set<String> expectedKeys, Collection<String> actualKeys) {
+        if (!hasOption(IGNORE_EXTRA_FIELDS)) {
+            Set<String> extraKeys = new TreeSet<String>(actualKeys);
+            extraKeys.removeAll(expectedKeys);
+            return extraKeys;
+        } else {
+            return emptySet();
+        }
+    }
+
+    private boolean hasOption(Option option) {
+        return options.contains(option);
     }
 
     static String appendKeysToPrefix(Iterable<String> keys, String prefix) {
@@ -271,8 +273,21 @@ public class Diff {
         if (expectedElements.size() != actualElements.size()) {
             structureDifferenceFound("Array \"%s\" has different length. Expected %d, got %d.", path, expectedElements.size(), actualElements.size());
         }
-        for (int i = 0; i < Math.min(expectedElements.size(), actualElements.size()); i++) {
-            compareNodes(expectedElements.get(i), actualElements.get(i), getArrayPath(path, i));
+        if (hasOption(Option.IGNORE_ARRAY_ORDER)) {
+            Set<JsonNode> missingValues = new HashSet<JsonNode>(expectedElements);
+            missingValues.removeAll(actualElements);
+
+            Set<JsonNode> extraValues = new HashSet<JsonNode>(actualElements);
+            extraValues.removeAll(expectedElements);
+
+            if (!missingValues.isEmpty() || !extraValues.isEmpty()) {
+                valueDifferenceFound("Array \"%s\" has different content. Missing values %s, extra values %s", path, missingValues, extraValues);
+            }
+
+        } else {
+            for (int i = 0; i < Math.min(expectedElements.size(), actualElements.size()); i++) {
+                compareNodes(expectedElements.get(i), actualElements.get(i), getArrayPath(path, i));
+            }
         }
     }
 

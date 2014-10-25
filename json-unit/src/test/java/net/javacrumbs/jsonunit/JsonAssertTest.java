@@ -30,6 +30,9 @@ import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartStructureEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonStructureEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.setTolerance;
+import static net.javacrumbs.jsonunit.core.Option.IGNORE_ARRAY_ORDER;
+import static net.javacrumbs.jsonunit.core.Option.IGNORE_EXTRA_FIELDS;
+import static net.javacrumbs.jsonunit.core.Option.TREAT_NULL_AS_ABSENT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -41,6 +44,7 @@ public class JsonAssertTest {
     public void reset() {
         JsonAssert.setTolerance(null);
         JsonAssert.setTreatNullAsAbsent(false);
+        JsonAssert.resetOptions();
     }
 
     @Test
@@ -146,6 +150,8 @@ public class JsonAssertTest {
             assertJsonEquals("1", "\n1.0\n");
             fail("Exception expected");
         } catch (AssertionError e) {
+            assertEquals("JSON documents have different values:\n" +
+                    "Different value found in node \"\". Expected 1, got 1.0.\n", e.getMessage());
         }
     }
 
@@ -590,19 +596,19 @@ public class JsonAssertTest {
 
     @Test
     public void testTreatNullAsAbsent() {
-        JsonAssert.setTreatNullAsAbsent(true);
+        JsonAssert.setOptions(TREAT_NULL_AS_ABSENT);
         assertJsonEquals("{\"test\":{\"a\":1}}", "{\"test\":{\"a\":1, \"b\": null}}");
     }
 
     @Test
     public void testTreatNullAsAbsentTwoValues() {
-        JsonAssert.setTreatNullAsAbsent(true);
+        JsonAssert.setOptions(TREAT_NULL_AS_ABSENT);
         assertJsonEquals("{\"test\":{\"a\":1}}", "{\"test\":{\"a\":1, \"b\": null, \"c\": null}}");
     }
 
     @Test
     public void testTreatNullAsNullInExpected() {
-        JsonAssert.setTreatNullAsAbsent(true);
+        JsonAssert.setOptions(TREAT_NULL_AS_ABSENT);
         try {
             assertJsonEquals("{\"test\":{\"a\":1, \"b\": null}}", "{\"test\":{\"a\":1}}");
             fail("Exception expected");
@@ -610,4 +616,47 @@ public class JsonAssertTest {
             assertEquals("JSON documents have different structures:\nDifferent keys found in node \"test\". Expected [a, b], got [a]. Missing: \"test.b\" \n", e.getMessage());
         }
     }
+
+    @Test
+    public void shouldIgnoreArrayOrderIfRequested() {
+        JsonAssert.setOptions(IGNORE_ARRAY_ORDER);
+        assertJsonEquals("{\"test\":[1,2,3]}", "{\"test\":[3,2,1]}");
+    }
+
+    @Test
+    public void shouldIgnoreArrayOrderIfRequestedOnObjectArrays() {
+        JsonAssert.setOptions(IGNORE_ARRAY_ORDER);
+        assertJsonEquals("{\"test\":[{\"key\":1},{\"key\":2},{\"key\":3}]}", "{\"test\":[{\"key\":3},{\"key\":2},{\"key\":1}]}");
+    }
+
+    @Test
+    public void shouldFailIfArrayContentIsDifferent() {
+        JsonAssert.setOptions(IGNORE_ARRAY_ORDER);
+        try {
+            assertJsonEquals("{\"test\":[1,2,3]}", "{\"test\":[3,2,4]}");
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("JSON documents have different values:\n" +
+                    "Array \"test\" has different content. Missing values [1], extra values [4]\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void shouldFailIfArrayContentIsDifferentOnObjectArrays() {
+        JsonAssert.setOptions(IGNORE_ARRAY_ORDER);
+        try {
+            assertJsonEquals("{\"test\":[{\"key\":1},{\"key\":2},{\"key\":3}]}", "{\"test\":[{\"key\":3},{\"key\":2},{\"key\":4}]}");
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("JSON documents have different values:\n" +
+                    "Array \"test\" has different content. Missing values [{\"key\":1}], extra values [{\"key\":4}]\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void shouldIgnoreExtraFieldsIfRequested() {
+        JsonAssert.setOptions(IGNORE_EXTRA_FIELDS);
+        assertJsonEquals("{\"test\":{\"b\":2}}", "{\"test\":{\"a\":1, \"b\":2, \"c\":3}}");
+    }
+
 }

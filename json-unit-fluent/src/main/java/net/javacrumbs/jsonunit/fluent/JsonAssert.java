@@ -16,6 +16,9 @@
 package net.javacrumbs.jsonunit.fluent;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import net.javacrumbs.jsonunit.core.Option;
+
+import java.util.EnumSet;
 
 
 /**
@@ -35,7 +38,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 @Deprecated
 public class JsonAssert extends JsonFluentAssert {
     protected JsonAssert(JsonNode actual, String path, String description, String ignorePlaceholder) {
-        super(actual, path, description, ignorePlaceholder, null, false);
+        super(actual, path, description, ignorePlaceholder, null, EnumSet.noneOf(Option.class));
     }
 
     public JsonAssert(JsonNode actual) {

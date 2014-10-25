@@ -20,6 +20,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.StringReader;
 
+import static net.javacrumbs.jsonunit.core.Option.IGNORE_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static org.junit.Assert.assertEquals;
@@ -320,5 +321,10 @@ public class JsonFluentAssertTest {
     @Test
     public void testTreatNullAsAbsent() {
         assertThatJson("{\"test\":{\"a\":1, \"b\": null}}").treatingNullAsAbsent().isEqualTo("{\"test\":{\"a\":1}}");
+    }
+
+    @Test
+    public void shouldIgnoreExtraFields() {
+        assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}").when(IGNORE_EXTRA_FIELDS).isEqualTo("{\"test\":{\"b\":2}}");
     }
 }
