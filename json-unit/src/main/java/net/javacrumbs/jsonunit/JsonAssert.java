@@ -212,7 +212,7 @@ public class JsonAssert {
         options = new Options(firstOption, rest);
     }
 
-    public static Options getOptions() {
+    static Options getOptions() {
         return options;
     }
 

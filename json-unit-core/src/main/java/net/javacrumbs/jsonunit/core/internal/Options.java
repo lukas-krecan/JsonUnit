@@ -18,6 +18,7 @@ package net.javacrumbs.jsonunit.core.internal;
 import net.javacrumbs.jsonunit.core.Option;
 
 import java.util.EnumSet;
+import java.util.Set;
 
 /**
  * Options enum set wrapper
@@ -54,7 +55,7 @@ public class Options {
         return new Options(optionsWithout);
     }
 
-    public EnumSet<Option> values() {
+    public Set<Option> values() {
         return EnumSet.copyOf(options);
     }
 }
