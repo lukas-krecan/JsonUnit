@@ -38,6 +38,7 @@ import java.util.TreeSet;
 import static java.util.Collections.emptySet;
 import static net.javacrumbs.jsonunit.core.Option.COMPARE_ONLY_STRUCTURE;
 import static net.javacrumbs.jsonunit.core.Option.IGNORE_EXTRA_FIELDS;
+import static net.javacrumbs.jsonunit.core.Option.IGNORE_VALUES;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
@@ -222,7 +223,7 @@ public class Diff {
                     compareValues(expectedNode.asText(), actualNode.asText(), fieldPath);
                     break;
                 case NUMBER:
-                    if (numericComparisonTolerance != null) {
+                    if (numericComparisonTolerance != null && !hasOption(IGNORE_VALUES)) {
                         BigDecimal diff = expectedNode.decimalValue().subtract(actualNode.decimalValue()).abs();
                         if (diff.compareTo(numericComparisonTolerance) > 0) {
                             valueDifferenceFound("Different value found in node \"%s\". Expected %s, got %s, difference is %s, tolerance is %s",
@@ -246,8 +247,10 @@ public class Diff {
 
 
     private void compareValues(Object expectedValue, Object actualValue, String path) {
-        if (!expectedValue.equals(actualValue)) {
-            valueDifferenceFound("Different value found in node \"%s\". Expected %s, got %s.", path, quoteTextValue(expectedValue), quoteTextValue(actualValue));
+        if (!hasOption(IGNORE_VALUES)) {
+            if (!expectedValue.equals(actualValue)) {
+                valueDifferenceFound("Different value found in node \"%s\". Expected %s, got %s.", path, quoteTextValue(expectedValue), quoteTextValue(actualValue));
+            }
         }
     }
 

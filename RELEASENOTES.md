@@ -1,3 +1,10 @@
+## 1.2.0 + 0.2.0
+* Error messages changed a bit when comparing structures
+* Refactoring of internal classes
+* Support for ignoring array order
+* Support for ignoring values
+* Support for ignoring extra fields
+
 ## 1.1.6 + 0.1.6
 * Treat null as absent added
 
