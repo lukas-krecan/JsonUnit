@@ -114,7 +114,7 @@ public class JsonMatchers {
         }
 
         public boolean matches(Object item) {
-            Diff diff = create(expected, item, "fullJson", path, JsonAssert.getIgnorePlaceholder(), JsonAssert.getTolerance(), JsonAssert.getTreatNullAsAbsent());
+            Diff diff = create(expected, item, "fullJson", path, JsonAssert.getIgnorePlaceholder(), JsonAssert.getTolerance(), JsonAssert.getOptions());
             if (!diff.similar()) {
                 differences = diff.differences();
             }

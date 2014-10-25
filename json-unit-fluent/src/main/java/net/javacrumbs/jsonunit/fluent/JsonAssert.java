@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit.fluent;
 
 import org.codehaus.jackson.JsonNode;
+import net.javacrumbs.jsonunit.core.internal.Options;
 
 
 /**
@@ -35,7 +36,7 @@ import org.codehaus.jackson.JsonNode;
 @Deprecated
 public class JsonAssert extends JsonFluentAssert {
     protected JsonAssert(JsonNode actual, String path, String description, String ignorePlaceholder) {
-        super(actual, path, description, ignorePlaceholder, null, false);
+        super(actual, path, description, ignorePlaceholder, null, Options.empty());
     }
 
     public JsonAssert(JsonNode actual) {

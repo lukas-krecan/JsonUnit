@@ -1,5 +1,5 @@
 /**
- * Copyright 2009-2012 the original author or authors.
+ * Copyright 2009-2014 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,14 @@
  */
 package net.javacrumbs.jsonunit;
 
+import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
+import net.javacrumbs.jsonunit.core.internal.Options;
 
 import java.math.BigDecimal;
 
+import static net.javacrumbs.jsonunit.core.Option.COMPARE_ONLY_STRUCTURE;
+import static net.javacrumbs.jsonunit.core.Option.TREAT_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
 
@@ -41,7 +45,7 @@ public class JsonAssert {
     private static final String ACTUAL = "actual";
     private static String ignorePlaceholder = "${json-unit.ignore}";
     private static BigDecimal numericComparisonTolerance = null;
-    private static boolean treatNullAsAbsent;
+    private static Options options = Options.empty();
 
     private JsonAssert() {
         //nothing
@@ -65,7 +69,7 @@ public class JsonAssert {
      * @param path
      */
     public static void assertJsonPartEquals(Object expected, Object fullJson, String path) {
-        Diff diff = create(expected, fullJson, FULL_JSON, path, ignorePlaceholder, numericComparisonTolerance, treatNullAsAbsent);
+        Diff diff = create(expected, fullJson, FULL_JSON, path, ignorePlaceholder, numericComparisonTolerance, options);
         if (!diff.similar()) {
             doFail(diff.toString());
         }
@@ -79,9 +83,9 @@ public class JsonAssert {
      * @param actual
      */
     public static void assertJsonStructureEquals(Object expected, Object actual) {
-        Diff diff = create(expected, actual, ACTUAL, "", ignorePlaceholder, numericComparisonTolerance, treatNullAsAbsent);
-        if (!diff.similarStructure()) {
-            doFail(diff.structureDifferences());
+        Diff diff = create(expected, actual, ACTUAL, "", ignorePlaceholder, numericComparisonTolerance, optionsWithCompareOnlyStructure());
+        if (!diff.similar()) {
+            doFail(diff.differences());
         }
     }
 
@@ -93,10 +97,14 @@ public class JsonAssert {
      * @param path
      */
     public static void assertJsonPartStructureEquals(Object expected, Object fullJson, String path) {
-        Diff diff = create(expected, fullJson, FULL_JSON, path, ignorePlaceholder, numericComparisonTolerance, treatNullAsAbsent);
-        if (!diff.similarStructure()) {
-            doFail(diff.structureDifferences());
+        Diff diff = create(expected, fullJson, FULL_JSON, path, ignorePlaceholder, numericComparisonTolerance, optionsWithCompareOnlyStructure());
+        if (!diff.similar()) {
+            doFail(diff.differences());
         }
+    }
+
+    private static Options optionsWithCompareOnlyStructure() {
+        return options.with(COMPARE_ONLY_STRUCTURE);
     }
 
     /**
@@ -107,7 +115,7 @@ public class JsonAssert {
      */
     public static void assertJsonNodeAbsent(Object actual, String path) {
         if (nodeExists(actual, path)) {
-            doFail("Node \""+path+"\" is present.");
+            doFail("Node \"" + path + "\" is present.");
         }
     }
 
@@ -119,7 +127,7 @@ public class JsonAssert {
      */
     public static void assertJsonNodePresent(Object actual, String path) {
         if (!nodeExists(actual, path)) {
-            doFail("Node \""+path+"\" is missing.");
+            doFail("Node \"" + path + "\" is missing.");
         }
     }
 
@@ -172,12 +180,46 @@ public class JsonAssert {
      * if you expect {"test":{"a":1}} this {"test":{"a":1, "b": null}} will pass the test.
      *
      * @param treatNullAsAbsent
+     * @deprecated use setOptions(Option.TREAT_NULL_AS_ABSENT)
      */
+    @Deprecated
     public static void setTreatNullAsAbsent(boolean treatNullAsAbsent) {
-        JsonAssert.treatNullAsAbsent = treatNullAsAbsent;
+        if (treatNullAsAbsent) {
+            options = options.with(TREAT_NULL_AS_ABSENT);
+        } else {
+            options = options.without(TREAT_NULL_AS_ABSENT);
+        }
     }
 
+    /**
+     * @return
+     * @deprecated use getOptions().contains(Option.TREAT_NULL_AS_ABSENT)
+     */
+    @Deprecated
     public static boolean getTreatNullAsAbsent() {
-        return treatNullAsAbsent;
+        return options.contains(TREAT_NULL_AS_ABSENT);
+    }
+
+    /**
+     * Sets options changing comparison behavior. For more
+     * details see {@link net.javacrumbs.jsonunit.core.Option}
+     *
+     * @param firstOption
+     * @param rest
+     * @see net.javacrumbs.jsonunit.core.Option
+     */
+    public static void setOptions(Option firstOption, Option... rest) {
+        options = new Options(firstOption, rest);
+    }
+
+    static Options getOptions() {
+        return options;
+    }
+
+    /**
+     * Cleans all options.
+     */
+    public static void resetOptions() {
+        options = Options.empty();
     }
 }

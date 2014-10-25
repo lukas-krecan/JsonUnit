@@ -17,7 +17,7 @@ simple:
     // compares only the structure, not the values
     assertJsonStructureEquals("[{\"test\":1}, {\"test\":2}]", "[{\n\"test\": 1\n}, {\"TEST\": 4}]")
     
-When the values are compared, order of elements and whitespaces are ignored. On the other hand values 1 and 1.0 are considered to be different.
+When the values are compared, order of elements and whitespaces are ignored. 
 
 Hamcrests matchers
 ----------------
@@ -66,6 +66,38 @@ Fluent (FEST or AssertJ like) assertions are supported by a special module json-
     // ignores a value with a different placeholder
     assertThatJson("{\"test\":1}").ignoring("##IGNORE##").isEqualTo("{\"test\":\"##IGNORE##\"}")
 
+Options
+---------------
+There are multiple options how you can configure the comparison
+
+**TREAT_NULL_AS_ABSENT** - fields with null values are equivalent to absent fields. For example, this test passes
+  
+    JsonAssert.setOptions(TREAT_NULL_AS_ABSENT);
+    assertJsonEquals("{\"test\":{\"a\":1}}", "{\"test\":{\"a\":1, \"b\": null, \"c\": null}}");
+    
+**IGNORE_ARRAY_ORDER** - ignores order in arrays
+
+    JsonAssert.setOptions(IGNORE_ARRAY_ORDER);
+    assertJsonEquals("{\"test\":[1,2,3]}", "{\"test\":[3,2,1]}");
+    
+**IGNORE_EXTRA_FIELDS** - ignores extra fileds in the compared value
+
+    JsonAssert.setOptions(IGNORE_EXTRA_FIELDS);
+    assertJsonEquals("{\"test\":{\"b\":2}}", "{\"test\":{\"a\":1, \"b\":2, \"c\":3}}");
+    
+**IGNORE_VALUES** - ignores values and compares only types
+
+    JsonAssert.setOptions(IGNORE_VALUES);
+    assertJsonEquals("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}", "{\"test\":{\"a\":3,\"b\":2,\"c\":1}}");
+    
+It is possible to combine options. 
+
+    JsonAssert.setOptions(IGNORE_ARRAY_ORDER, IGNORE_EXTRA_FIELDS);
+    assertJsonEquals("{\"test\":[{\"key\":1},{\"key\":2},{\"key\":3}]}", "{\"test\":[{\"key\":3},{\"key\":2, \"extraField\":2},{\"key\":1}]}");
+
+In fluent assertion, you can set options like this
+
+    assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}").when(IGNORE_EXTRA_FIELDS).isEqualTo("{\"test\":{\"b\":2}}");
 
 Numeric comparison
 --------------------
@@ -98,9 +130,9 @@ JsonUnit is accessible in Maven central repository
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit</artifactId>
     	<!-- Jackson 2.x -->
-        <version>1.1.4</version>
+        <version>1.2.0</version>
         <!-- Jackson 1.x -->
-        <!--<version>0.1.4</version>-->
+        <!--<version>0.2.0</version>-->
     	<scope>test</scope>
 	</dependency>
 
@@ -110,9 +142,9 @@ To use fluent assertions:
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit-fluent</artifactId>
         <!-- Jackson 2.x -->
-        <version>1.1.5</version>
+        <version>1.2.0</version>
         <!-- Jackson 1.x -->
-        <!--<version>0.1.5</version>-->
+        <!--<version>0.2.0</version>-->
     	<scope>test</scope>
 	</dependency>
 
