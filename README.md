@@ -101,7 +101,7 @@ It is possible to combine options.
                      "{\"test\":[{\"key\":3},{\"key\":2, \"extraField\":2},{\"key\":1}]}",
                      when(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_FIELDS));
                      
-In Hamcrest assertion you can set the global option like this
+In Hamcrest assertion you can set the option like this
 
     assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
                jsonEquals("{\"test\":{\"b\":2}}").when(IGNORING_EXTRA_FIELDS));
