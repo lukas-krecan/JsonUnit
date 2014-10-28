@@ -24,6 +24,7 @@ import java.util.Set;
  * Options enum set wrapper
  */
 public class Options {
+    private static final Options EMPTY_OPTIONS = new Options(EnumSet.noneOf(Option.class));
     private final EnumSet<Option> options;
 
     private Options(EnumSet<Option> options) {
@@ -35,7 +36,7 @@ public class Options {
     }
 
     public static Options empty() {
-        return new Options(EnumSet.noneOf(Option.class));
+        return EMPTY_OPTIONS;
     }
 
     public boolean contains(Option option) {

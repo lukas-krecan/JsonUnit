@@ -20,8 +20,8 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.StringReader;
 
-import static net.javacrumbs.jsonunit.core.Option.IGNORE_EXTRA_FIELDS;
-import static net.javacrumbs.jsonunit.core.Option.TREAT_NULL_AS_ABSENT;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
+import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static org.junit.Assert.assertEquals;
@@ -125,6 +125,11 @@ public class JsonFluentAssertTest {
     @Test
     public void testOkNumber() throws IOException {
         assertThatJson("{\"test\":1}").node("test").isEqualTo(1);
+    }
+
+    @Test
+    public void testOkNumberInString() throws IOException {
+        assertThatJson("{\"test\":1}").node("test").isEqualTo("1");
     }
 
     @Test
@@ -321,11 +326,11 @@ public class JsonFluentAssertTest {
 
     @Test
     public void testTreatNullAsAbsent() {
-        assertThatJson("{\"test\":{\"a\":1, \"b\": null}}").when(TREAT_NULL_AS_ABSENT).isEqualTo("{\"test\":{\"a\":1}}");
+        assertThatJson("{\"test\":{\"a\":1, \"b\": null}}").when(TREATING_NULL_AS_ABSENT).isEqualTo("{\"test\":{\"a\":1}}");
     }
 
     @Test
     public void shouldIgnoreExtraFields() {
-        assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}").when(IGNORE_EXTRA_FIELDS).isEqualTo("{\"test\":{\"b\":2}}");
+        assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}").when(IGNORING_EXTRA_FIELDS).isEqualTo("{\"test\":{\"b\":2}}");
     }
 }

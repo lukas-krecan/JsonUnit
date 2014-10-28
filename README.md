@@ -73,31 +73,37 @@ There are multiple options how you can configure the comparison
 **TREAT_NULL_AS_ABSENT** - fields with null values are equivalent to absent fields. For example, this test passes
   
     JsonAssert.setOptions(TREAT_NULL_AS_ABSENT);
-    assertJsonEquals("{\"test\":{\"a\":1}}", "{\"test\":{\"a\":1, \"b\": null, \"c\": null}}");
+    assertJsonEquals("{\"test\":{\"a\":1}}",
+                     "{\"test\":{\"a\":1, \"b\": null, \"c\": null}}");
     
 **IGNORE_ARRAY_ORDER** - ignores order in arrays
 
     JsonAssert.setOptions(IGNORE_ARRAY_ORDER);
-    assertJsonEquals("{\"test\":[1,2,3]}", "{\"test\":[3,2,1]}");
+    assertJsonEquals("{\"test\":[1,2,3]}", 
+                     "{\"test\":[3,2,1]}");
     
 **IGNORE_EXTRA_FIELDS** - ignores extra fileds in the compared value
 
     JsonAssert.setOptions(IGNORE_EXTRA_FIELDS);
-    assertJsonEquals("{\"test\":{\"b\":2}}", "{\"test\":{\"a\":1, \"b\":2, \"c\":3}}");
+    assertJsonEquals("{\"test\":{\"b\":2}}", 
+                     "{\"test\":{\"a\":1, \"b\":2, \"c\":3}}");
     
 **IGNORE_VALUES** - ignores values and compares only types
 
     JsonAssert.setOptions(IGNORE_VALUES);
-    assertJsonEquals("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}", "{\"test\":{\"a\":3,\"b\":2,\"c\":1}}");
+    assertJsonEquals("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}", 
+                     "{\"test\":{\"a\":3,\"b\":2,\"c\":1}}");
     
 It is possible to combine options. 
 
     JsonAssert.setOptions(IGNORE_ARRAY_ORDER, IGNORE_EXTRA_FIELDS);
-    assertJsonEquals("{\"test\":[{\"key\":1},{\"key\":2},{\"key\":3}]}", "{\"test\":[{\"key\":3},{\"key\":2, \"extraField\":2},{\"key\":1}]}");
+    assertJsonEquals("{\"test\":[{\"key\":1},{\"key\":2},{\"key\":3}]}", 
+                     "{\"test\":[{\"key\":3},{\"key\":2, \"extraField\":2},{\"key\":1}]}");
 
 In fluent assertion, you can set options like this
 
-    assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}").when(IGNORE_EXTRA_FIELDS).isEqualTo("{\"test\":{\"b\":2}}");
+    assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}")
+        .when(IGNORE_EXTRA_FIELDS).isEqualTo("{\"test\":{\"b\":2}}");
 
 Numeric comparison
 --------------------

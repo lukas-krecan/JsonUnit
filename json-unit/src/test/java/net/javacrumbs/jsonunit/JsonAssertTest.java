@@ -26,15 +26,19 @@ import java.io.StringReader;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonNodeAbsent;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonNodePresent;
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonNotEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartEquals;
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartNotEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartStructureEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonStructureEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.setOptions;
 import static net.javacrumbs.jsonunit.JsonAssert.setTolerance;
-import static net.javacrumbs.jsonunit.core.Option.IGNORE_ARRAY_ORDER;
-import static net.javacrumbs.jsonunit.core.Option.IGNORE_EXTRA_FIELDS;
-import static net.javacrumbs.jsonunit.core.Option.IGNORE_VALUES;
-import static net.javacrumbs.jsonunit.core.Option.TREAT_NULL_AS_ABSENT;
+import static net.javacrumbs.jsonunit.JsonAssert.when;
+import static net.javacrumbs.jsonunit.JsonAssert.withTolerance;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
+import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -159,7 +163,12 @@ public class JsonAssertTest {
     @Test
     public void testComparisonWhenWithinTolerance() {
         setTolerance(0.01);
-        assertJsonEquals("1", "\n1.009\n");
+        assertJsonEquals("{\"test\":1}", "{\"test\":1.009}");
+    }
+
+    @Test
+    public void testComparisonWhenWithinToleranceInlineConfig() {
+        assertJsonEquals("{\"test\":1}", "{\"test\":1.009}", withTolerance(0.01));
     }
 
     @Test
@@ -596,19 +605,19 @@ public class JsonAssertTest {
 
     @Test
     public void testTreatNullAsAbsent() {
-        setOptions(TREAT_NULL_AS_ABSENT);
+        setOptions(TREATING_NULL_AS_ABSENT);
         assertJsonEquals("{\"test\":{\"a\":1}}", "{\"test\":{\"a\":1, \"b\": null}}");
     }
 
     @Test
     public void testTreatNullAsAbsentTwoValues() {
-        setOptions(TREAT_NULL_AS_ABSENT);
+        setOptions(TREATING_NULL_AS_ABSENT);
         assertJsonEquals("{\"test\":{\"a\":1}}", "{\"test\":{\"a\":1, \"b\": null, \"c\": null}}");
     }
 
     @Test
     public void testTreatNullAsNullInExpected() {
-        setOptions(TREAT_NULL_AS_ABSENT);
+        setOptions(TREATING_NULL_AS_ABSENT);
         try {
             assertJsonEquals("{\"test\":{\"a\":1, \"b\": null}}", "{\"test\":{\"a\":1}}");
             fail("Exception expected");
@@ -618,20 +627,30 @@ public class JsonAssertTest {
     }
 
     @Test
+    public void testTreatNullAsNullInExpectedInline() {
+        try {
+            assertJsonEquals("{\"test\":{\"a\":1, \"b\": null}}", "{\"test\":{\"a\":1}}", when(TREATING_NULL_AS_ABSENT));
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent keys found in node \"test\". Expected [a, b], got [a]. Missing: \"test.b\" \n", e.getMessage());
+        }
+    }
+
+    @Test
     public void shouldIgnoreArrayOrder() {
-        setOptions(IGNORE_ARRAY_ORDER);
+        setOptions(IGNORING_ARRAY_ORDER);
         assertJsonEquals("{\"test\":[1,2,3]}", "{\"test\":[3,2,1]}");
     }
 
     @Test
     public void shouldIgnoreArrayOrderOnObjectArrays() {
-        setOptions(IGNORE_ARRAY_ORDER);
+        setOptions(IGNORING_ARRAY_ORDER);
         assertJsonEquals("{\"test\":[{\"key\":1},{\"key\":2},{\"key\":3}]}", "{\"test\":[{\"key\":3},{\"key\":2},{\"key\":1}]}");
     }
 
     @Test
     public void shouldFailIfArrayContentIsDifferent() {
-        setOptions(IGNORE_ARRAY_ORDER);
+        setOptions(IGNORING_ARRAY_ORDER);
         try {
             assertJsonEquals("{\"test\":[1,2,3]}", "{\"test\":[3,2,4]}");
             fail("Exception expected");
@@ -643,7 +662,7 @@ public class JsonAssertTest {
 
     @Test
     public void shouldFailIfArrayContentIsDifferentOnObjectArrays() {
-        setOptions(IGNORE_ARRAY_ORDER);
+        setOptions(IGNORING_ARRAY_ORDER);
         try {
             assertJsonEquals("{\"test\":[{\"key\":1},{\"key\":2},{\"key\":3}]}", "{\"test\":[{\"key\":3},{\"key\":2},{\"key\":4}]}");
             fail("Exception expected");
@@ -655,25 +674,25 @@ public class JsonAssertTest {
 
     @Test
     public void shouldIgnoreExtraFieldsIfRequested() {
-        setOptions(IGNORE_EXTRA_FIELDS);
+        setOptions(IGNORING_EXTRA_FIELDS);
         assertJsonEquals("{\"test\":{\"b\":2}}", "{\"test\":{\"a\":1, \"b\":2, \"c\":3}}");
     }
 
     @Test
     public void shouldIgnoreExtraFieldsInArray() {
-        setOptions(IGNORE_ARRAY_ORDER, IGNORE_EXTRA_FIELDS);
+        setOptions(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_FIELDS);
         assertJsonEquals("{\"test\":[{\"key\":1},{\"key\":2},{\"key\":3}]}", "{\"test\":[{\"key\":3},{\"key\":2, \"extraField\":2},{\"key\":1}]}");
     }
 
     @Test
     public void shouldIgnoreValues() {
-        setOptions(IGNORE_VALUES);
+        setOptions(IGNORING_VALUES);
         assertJsonEquals("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}", "{\"test\":{\"a\":3,\"b\":2,\"c\":1}}");
     }
 
     @Test
     public void shouldIgnoreValuesInArray() {
-        setOptions(IGNORE_VALUES);
+        setOptions(IGNORING_VALUES);
         try {
             assertJsonEquals("{\"test\":[{\"a\":1},{\"b\":2},{\"c\":3}]}", "{\"test\":[{\"a\":3},{\"b\":2},{\"c\":1}]}");
         } catch (AssertionError e) {
@@ -684,7 +703,7 @@ public class JsonAssertTest {
 
     @Test
     public void shouldFailIfIgnoringValuesButTypesAreDifferent() {
-        setOptions(IGNORE_VALUES);
+        setOptions(IGNORING_VALUES);
         try {
             assertJsonEquals("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}", "{\"test\":{\"a\":3,\"b\":\"2\",\"c\":1}}");
         } catch (AssertionError e) {
@@ -695,7 +714,7 @@ public class JsonAssertTest {
 
     @Test
     public void shouldFailIfIgnoringValuesButTypesAreDifferentInArray() {
-        setOptions(IGNORE_VALUES);
+        setOptions(IGNORING_VALUES);
         try {
             assertJsonEquals("{\"test\":[{\"a\":1},{\"b\":2},{\"c\":3}]}", "{\"test\":[{\"a\":1},{\"b\":\"2\"},{\"c\":3}]}");
         } catch (AssertionError e) {
@@ -707,9 +726,37 @@ public class JsonAssertTest {
     @Test
     public void shouldIgnoreValuesWhenToleranceSet() {
         setTolerance(0.01);
-        setOptions(IGNORE_VALUES);
+        setOptions(IGNORING_VALUES);
         assertJsonEquals("5", "\n0.9999\n");
     }
 
+    @Test
+    public void assertPartNotEqualsShouldPass() {
+        assertJsonPartNotEquals("2", "{\"test\":{\"value\":1}}", "test.value");
+    }
 
+    @Test
+    public void assertPartNotEqualsShouldFailWithCorrectMessage() {
+        try {
+            assertJsonPartNotEquals("1", "{\"test\":{\"value\":1}}", "test.value");
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("Expected different values in node \"test.value\" but the values were equal.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void assertNotEqualsShouldPass() {
+        assertJsonNotEquals("{\"test\":{\"value\":2}}", "{\"test\":{\"value\":1}}");
+    }
+
+    @Test
+    public void assertNotEqualsShouldFailWithCorrectMessage() {
+        try {
+            assertJsonNotEquals("{\"test\":{\"value\":1}}", "{\"test\":{\"value\":1}}");
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("Expected different values but the values were equal.", e.getMessage());
+        }
+    }
 }
