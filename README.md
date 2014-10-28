@@ -85,14 +85,12 @@ There are multiple options how you can configure the comparison
     
 **IGNORING_EXTRA_FIELDS** - ignores extra fileds in the compared value
 
-    JsonAssert.setOptions(IGNORING_EXTRA_FIELDS);
     assertJsonEquals("{\"test\":{\"b\":2}}", 
                      "{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
                      when(IGNORING_EXTRA_FIELDS));
     
 **IGNORE_VALUES** - ignores values and compares only types
 
-    JsonAssert.setOptions(IGNORING_VALUES);
     assertJsonEquals("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}", 
                      "{\"test\":{\"a\":3,\"b\":2,\"c\":1}}",
                      when(IGNORING_VALUES));
