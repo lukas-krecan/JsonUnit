@@ -15,8 +15,8 @@
  */
 package net.javacrumbs.jsonunit;
 
+import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
-import net.javacrumbs.jsonunit.core.internal.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Options;
 import org.hamcrest.BaseMatcher;

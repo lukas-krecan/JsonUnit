@@ -15,8 +15,8 @@
  */
 package net.javacrumbs.jsonunit.fluent;
 
+import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
-import net.javacrumbs.jsonunit.core.internal.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 
 import java.math.BigDecimal;

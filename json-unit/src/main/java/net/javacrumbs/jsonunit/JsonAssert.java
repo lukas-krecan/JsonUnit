@@ -15,8 +15,8 @@
  */
 package net.javacrumbs.jsonunit;
 
+import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
-import net.javacrumbs.jsonunit.core.internal.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Options;
 
@@ -58,7 +58,17 @@ public class JsonAssert {
      * @param actual
      */
     public static void assertJsonEquals(Object expected, Object actual) {
-        assertJsonPartEquals(expected, actual, ROOT);
+        assertJsonEquals(expected, actual, configuration);
+    }
+
+    /**
+     * Compares to JSON documents. Throws {@link AssertionError} if they are different.
+     *
+     * @param expected
+     * @param actual
+     */
+    public static void assertJsonEquals(Object expected, Object actual, Configuration configuration) {
+        assertJsonPartEquals(expected, actual, ROOT, configuration);
     }
 
     /**
@@ -69,6 +79,18 @@ public class JsonAssert {
      * @param path
      */
     public static void assertJsonPartEquals(Object expected, Object fullJson, String path) {
+        assertJsonPartEquals(expected, fullJson, path, configuration);
+    }
+
+    /**
+     * Compares part of the JSON. Path has this format "root.array[0].value".
+     *
+     * @param expected
+     * @param fullJson
+     * @param path
+     * @param configuration
+     */
+    public static void assertJsonPartEquals(Object expected, Object fullJson, String path, Configuration configuration) {
         Diff diff = create(expected, fullJson, FULL_JSON, path, configuration);
         if (!diff.similar()) {
             doFail(diff.toString());
@@ -83,7 +105,18 @@ public class JsonAssert {
      * @param path
      */
     public static void assertJsonNotEquals(Object expected, Object fullJson) {
-        assertJsonPartNotEquals(expected, fullJson, ROOT);
+        assertJsonNotEquals(expected, fullJson, configuration);
+    }
+
+    /**
+     * Compares JSONs and fails if they are equal.
+     *
+     * @param expected
+     * @param fullJson
+     * @param path
+     */
+    public static void assertJsonNotEquals(Object expected, Object fullJson, Configuration configuration) {
+        assertJsonPartNotEquals(expected, fullJson, ROOT, configuration);
     }
 
     /**
@@ -95,6 +128,18 @@ public class JsonAssert {
      * @param path
      */
     public static void assertJsonPartNotEquals(Object expected, Object fullJson, String path) {
+        assertJsonPartNotEquals(expected, fullJson, path, configuration);
+    }
+
+    /**
+     * Compares part of the JSON and fails if they are equal.
+     * Path has this format "root.array[0].value".
+     *
+     * @param expected
+     * @param fullJson
+     * @param path
+     */
+    public static void assertJsonPartNotEquals(Object expected, Object fullJson, String path, Configuration configuration) {
         Diff diff = create(expected, fullJson, FULL_JSON, path, configuration);
         if (diff.similar()) {
             if (ROOT.equals(path)) {
@@ -132,6 +177,7 @@ public class JsonAssert {
             doFail(diff.differences());
         }
     }
+
     /**
      * Fails if node in given path exists.
      *
@@ -246,5 +292,32 @@ public class JsonAssert {
 
     static Configuration getConfiguration() {
         return configuration;
+    }
+
+    /**
+     * Creates empty configuration and sets numerical comparison tolerance.
+     *
+     * @param tolerance
+     */
+    public static Configuration withTolerance(double tolerance) {
+        return Configuration.empty().withTolerance(tolerance);
+    }
+
+    /**
+     * Creates empty configuration and sets numerical comparison tolerance.
+     *
+     * @param tolerance
+     */
+    public static Configuration withTolerance(BigDecimal tolerance) {
+        return Configuration.empty().withTolerance(tolerance);
+    }
+
+    /**
+     * Creates empty configuration and sets options.
+     *
+     * @param tolerance
+     */
+    public static Configuration withOptions(Option first, Option ...next) {
+        return Configuration.empty().withOptions(first, next);
     }
 }

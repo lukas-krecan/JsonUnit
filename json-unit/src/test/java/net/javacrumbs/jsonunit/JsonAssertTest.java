@@ -33,6 +33,8 @@ import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartStructureEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonStructureEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.setOptions;
 import static net.javacrumbs.jsonunit.JsonAssert.setTolerance;
+import static net.javacrumbs.jsonunit.JsonAssert.withOptions;
+import static net.javacrumbs.jsonunit.JsonAssert.withTolerance;
 import static net.javacrumbs.jsonunit.core.Option.IGNORE_ARRAY_ORDER;
 import static net.javacrumbs.jsonunit.core.Option.IGNORE_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORE_VALUES;
@@ -162,6 +164,11 @@ public class JsonAssertTest {
     public void testComparisonWhenWithinTolerance() {
         setTolerance(0.01);
         assertJsonEquals("{\"test\":1}", "{\"test\":1.009}");
+    }
+
+    @Test
+    public void testComparisonWhenWithinToleranceInlineConfig() {
+        assertJsonEquals("{\"test\":1}", "{\"test\":1.009}", withTolerance(0.01));
     }
 
     @Test
@@ -613,6 +620,16 @@ public class JsonAssertTest {
         setOptions(TREAT_NULL_AS_ABSENT);
         try {
             assertJsonEquals("{\"test\":{\"a\":1, \"b\": null}}", "{\"test\":{\"a\":1}}");
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent keys found in node \"test\". Expected [a, b], got [a]. Missing: \"test.b\" \n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testTreatNullAsNullInExpectedInline() {
+        try {
+            assertJsonEquals("{\"test\":{\"a\":1, \"b\": null}}", "{\"test\":{\"a\":1}}", withOptions(TREAT_NULL_AS_ABSENT));
             fail("Exception expected");
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\nDifferent keys found in node \"test\". Expected [a, b], got [a]. Missing: \"test.b\" \n", e.getMessage());
