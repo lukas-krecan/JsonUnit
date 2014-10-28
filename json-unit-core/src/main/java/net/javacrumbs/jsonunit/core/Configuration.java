@@ -20,7 +20,7 @@ import net.javacrumbs.jsonunit.core.internal.Options;
 import java.math.BigDecimal;
 
 /**
- * Comparison configuration
+ * Comparison configuration. Immutable.
  */
 public class Configuration {
     private static final Configuration EMPTY_CONFIGURATION = new Configuration(null, Options.empty(), "${json-unit.ignore}");
@@ -34,26 +34,66 @@ public class Configuration {
         this.ignorePlaceholder = ignorePlaceholder;
     }
 
+    /**
+     * Returns an empty configuration.
+     * @return
+     */
     public static Configuration empty() {
         return EMPTY_CONFIGURATION;
     }
 
+    /**
+     * Sets numerical comparison tolerance.
+     * @param tolerance
+     * @return
+     */
     public Configuration withTolerance(BigDecimal tolerance) {
         return new Configuration(tolerance, options, ignorePlaceholder);
     }
 
+    /**
+     * Sets numerical comparison tolerance.
+     * @param tolerance
+     * @return
+     */
     public Configuration withTolerance(double tolerance) {
         return withTolerance(BigDecimal.valueOf(tolerance));
     }
 
+    /**
+     * Adds comparison options.
+     * @param first
+     * @param next
+     * @return
+     */
+    public Configuration when(Option first, Option... next) {
+        return withOptions(first, next);
+    }
+
+    /**
+     * Adds comparison options.
+     * @param first
+     * @param next
+     * @return
+     */
     public Configuration withOptions(Option first, Option... next) {
         return new Configuration(tolerance, options.with(first, next), ignorePlaceholder);
     }
 
+    /**
+     * Sets comparison options.
+     * @param options
+     * @return
+     */
     public Configuration withOptions(Options options) {
         return new Configuration(tolerance, options, ignorePlaceholder);
     }
 
+    /**
+     * Sets ignore placeholder.
+     * @param ignorePlaceholder
+     * @return
+     */
     public Configuration withIgnorePlaceholder(String ignorePlaceholder) {
         return new Configuration(tolerance, options, ignorePlaceholder);
     }
