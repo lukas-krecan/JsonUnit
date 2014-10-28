@@ -15,7 +15,8 @@ simple:
     assertJsonPartEquals("2", "{\"test\":[{\"value\":1},{\"value\":2}]}", "test[1].value");
 
     // compares only the structure, not the values
-    assertJsonStructureEquals("[{\"test\":1}, {\"test\":2}]", "[{\n\"test\": 1\n}, {\"TEST\": 4}]")
+    assertJsonStructureEquals("[{\"test\":1}, {\"test\":2}]", 
+    			      "[{\n\"test\": 1\n}, {\"TEST\": 4}]")
     
 When the values are compared, order of elements and whitespaces are ignored. 
 
@@ -107,7 +108,7 @@ In Hamcrest assertion you can set the global option like this
     assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
                jsonEquals("{\"test\":{\"b\":2}}").when(IGNORING_EXTRA_FIELDS));
                
-For standards assert and Hamcrest matchers, it is possible to set the configuration globally
+For standard asserts and Hamcrest matchers, it is possible to set the configuration globally
 
     JsonAssert.setOptions(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_FIELDS);
 
@@ -131,7 +132,7 @@ or globally
 
     JsonAssert.setTolerance(0.01);
 
-Or for fluent assertions
+or for fluent assertions
 
     assertThatJson("{\"test\":1.00001}").node("test").withTolerance(0.001).isEqualTo(1);
 
