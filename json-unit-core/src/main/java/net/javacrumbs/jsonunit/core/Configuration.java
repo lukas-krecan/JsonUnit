@@ -23,6 +23,7 @@ import java.math.BigDecimal;
  * Comparison configuration
  */
 public class Configuration {
+    private static final Configuration EMPTY_CONFIGURATION = new Configuration(null, Options.empty(), "${json-unit.ignore}");
     private final BigDecimal tolerance;
     private final Options options;
     private final String ignorePlaceholder;
@@ -34,7 +35,7 @@ public class Configuration {
     }
 
     public static Configuration empty() {
-        return new Configuration(null, Options.empty(), "${json-unit.ignore}");
+        return EMPTY_CONFIGURATION;
     }
 
     public Configuration withTolerance(BigDecimal tolerance) {
