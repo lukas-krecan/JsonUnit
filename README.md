@@ -70,40 +70,51 @@ Options
 ---------------
 There are multiple options how you can configure the comparison
 
-**TREAT_NULL_AS_ABSENT** - fields with null values are equivalent to absent fields. For example, this test passes
+**TREATING_NULL_AS_ABSENT** - fields with null values are equivalent to absent fields. For example, this test passes
   
-    JsonAssert.setOptions(TREAT_NULL_AS_ABSENT);
     assertJsonEquals("{\"test\":{\"a\":1}}",
-                     "{\"test\":{\"a\":1, \"b\": null, \"c\": null}}");
+                     "{\"test\":{\"a\":1, \"b\": null, \"c\": null}}",
+                     when(TREATING_NULL_AS_ABSENT));
     
-**IGNORE_ARRAY_ORDER** - ignores order in arrays
+**IGNORING_ARRAY_ORDER** - ignores order in arrays
 
-    JsonAssert.setOptions(IGNORE_ARRAY_ORDER);
     assertJsonEquals("{\"test\":[1,2,3]}", 
-                     "{\"test\":[3,2,1]}");
+                     "{\"test\":[3,2,1]}",
+                     when(IGNORING_ARRAY_ORDER));
     
-**IGNORE_EXTRA_FIELDS** - ignores extra fileds in the compared value
+**IGNORING_EXTRA_FIELDS** - ignores extra fileds in the compared value
 
-    JsonAssert.setOptions(IGNORE_EXTRA_FIELDS);
+    JsonAssert.setOptions(IGNORING_EXTRA_FIELDS);
     assertJsonEquals("{\"test\":{\"b\":2}}", 
-                     "{\"test\":{\"a\":1, \"b\":2, \"c\":3}}");
+                     "{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
+                     when(IGNORING_EXTRA_FIELDS));
     
 **IGNORE_VALUES** - ignores values and compares only types
 
-    JsonAssert.setOptions(IGNORE_VALUES);
+    JsonAssert.setOptions(IGNORING_VALUES);
     assertJsonEquals("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}", 
-                     "{\"test\":{\"a\":3,\"b\":2,\"c\":1}}");
+                     "{\"test\":{\"a\":3,\"b\":2,\"c\":1}}",
+                     when(IGNORING_VALUES));
     
 It is possible to combine options. 
 
-    JsonAssert.setOptions(IGNORE_ARRAY_ORDER, IGNORE_EXTRA_FIELDS);
     assertJsonEquals("{\"test\":[{\"key\":1},{\"key\":2},{\"key\":3}]}", 
-                     "{\"test\":[{\"key\":3},{\"key\":2, \"extraField\":2},{\"key\":1}]}");
+                     "{\"test\":[{\"key\":3},{\"key\":2, \"extraField\":2},{\"key\":1}]}",
+                     when(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_FIELDS));
+                     
+In Hamcrest assertion you can set the global option like this
+
+    assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
+               jsonEquals("{\"test\":{\"b\":2}}").when(IGNORING_EXTRA_FIELDS));
+               
+For standards assert and Hamcrest matchers, it is possible to set the configuration globally
+
+    JsonAssert.setOptions(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_FIELDS);
 
 In fluent assertion, you can set options like this
 
     assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}")
-        .when(IGNORE_EXTRA_FIELDS).isEqualTo("{\"test\":{\"b\":2}}");
+        .when(IGNORING_EXTRA_FIELDS).isEqualTo("{\"test\":{\"b\":2}}");
 
 Numeric comparison
 --------------------
@@ -114,8 +125,11 @@ Numbers are by default compared in the following way:
 
 You can change this behavior by setting tolerance
 
-    setTolerance(0.01);
-    assertJsonEquals("1", "\n1.009\n");
+    assertJsonEquals("1", "\n1.009\n", withTolerance(0.01));
+    
+or globally 
+
+    JsonAssert.setTolerance(0.01);
 
 Or for fluent assertions
 
@@ -136,9 +150,9 @@ JsonUnit is accessible in Maven central repository
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit</artifactId>
     	<!-- Jackson 2.x -->
-        <version>1.2.0</version>
+        <version>1.3.0</version>
         <!-- Jackson 1.x -->
-        <!--<version>0.2.0</version>-->
+        <!--<version>0.3.0</version>-->
     	<scope>test</scope>
 	</dependency>
 
@@ -148,9 +162,9 @@ To use fluent assertions:
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit-fluent</artifactId>
         <!-- Jackson 2.x -->
-        <version>1.2.0</version>
+        <version>1.3.0</version>
         <!-- Jackson 1.x -->
-        <!--<version>0.2.0</version>-->
+        <!--<version>0.3.0</version>-->
     	<scope>test</scope>
 	</dependency>
 
