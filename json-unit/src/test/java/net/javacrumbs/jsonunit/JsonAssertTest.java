@@ -159,7 +159,7 @@ public class JsonAssertTest {
     @Test
     public void testComparisonWhenWithinTolerance() {
         setTolerance(0.01);
-        assertJsonEquals("1", "\n1.009\n");
+        assertJsonEquals("{\"test\":1}", "{\"test\":1.009}");
     }
 
     @Test

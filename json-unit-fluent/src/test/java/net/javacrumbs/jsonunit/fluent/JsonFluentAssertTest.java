@@ -128,6 +128,11 @@ public class JsonFluentAssertTest {
     }
 
     @Test
+    public void testOkNumberInString() throws IOException {
+        assertThatJson("{\"test\":1}").node("test").isEqualTo("1");
+    }
+
+    @Test
     public void testOkFloat() throws IOException {
         assertThatJson("{\"test\":1.1}").node("test").isEqualTo(1.1);
     }

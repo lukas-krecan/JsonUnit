@@ -22,13 +22,17 @@ import org.junit.Test;
 
 import java.io.IOException;
 
+import static java.util.Arrays.asList;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodeAbsent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodePresent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonStringEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonStringPartEquals;
+import static net.javacrumbs.jsonunit.core.Option.IGNORE_VALUES;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -43,7 +47,9 @@ public class JsonMatchersTest {
     @Test
     public void testEquals() {
         assertThat("{\"test\":1}", jsonEquals("{\n\"test\": 1\n}"));
+        assertThat("{\"test\":1}", not(jsonEquals("{\n\"test\": 2\n}")));
         assertThat("{\"test\":1}", jsonPartEquals("test", "1"));
+        assertThat("{\"test\":1}", jsonPartEquals("test", 1));
         assertThat("{\"test\":[1, 2, 3]}", jsonPartEquals("test[0]", "1"));
         assertThat("{\"foo\":\"bar\",\"test\": 2}", jsonEquals("{\n\"test\": 2,\n\"foo\":\"bar\"}"));
         assertThat("{}", jsonEquals("{}"));
@@ -66,9 +72,33 @@ public class JsonMatchersTest {
     }
 
     @Test
-    public void testTolerance() throws IOException {
+    public void testToleranceStatic() throws IOException {
         JsonAssert.setTolerance(0.001);
         assertThat("{\"test\":1.00001}", jsonEquals("{\"test\":1}"));
+    }
+
+    @Test
+    public void testTolerance() throws IOException {
+        assertThat("{\"test\":1.00001}", jsonEquals("{\"test\":1}").withTolerance(0.001).withOptions(Option.IGNORE_EXTRA_FIELDS));
+    }
+
+    @Test
+    public void hasItemShouldWork() throws IOException {
+        //assertThat(asList("{\"test\":1}"), hasItem(jsonEquals("{\"test\":1}"))); //does not compile
+        assertThat(asList("{\"test\":1}"), contains(jsonEquals("{\"test\":1}")));
+    }
+
+    @Test
+    public void testAssertDifferentTypeInt() {
+        try {
+            assertThat("{\"test\":\"1\"}", jsonPartEquals("test", 1));
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("\n" +
+                    "Expected: 1 in \"test\"\n" +
+                    "     but: JSON documents are different:\n" +
+                    "Different value found in node \"test\". Expected '1', got '\"1\"'.\n", e.getMessage());
+        }
     }
 
     @Test
@@ -165,6 +195,11 @@ public class JsonMatchersTest {
                     "     but: JSON documents are different:\n" +
                     "Different keys found in node \"test\". Expected [a], got [a, b].  Extra: \"test.b\"\n", e.getMessage());
         }
+    }
+
+    @Test
+    public void shouldIgnoreValues() {
+        assertThat("{\"test\":{\"a\":3,\"b\":2,\"c\":1}}", jsonEquals("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}").withOptions(IGNORE_VALUES));
     }
 
     @Test

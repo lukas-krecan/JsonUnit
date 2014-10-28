@@ -16,8 +16,8 @@
 package net.javacrumbs.jsonunit.fluent;
 
 import net.javacrumbs.jsonunit.core.Option;
+import net.javacrumbs.jsonunit.core.internal.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Diff;
-import net.javacrumbs.jsonunit.core.internal.Options;
 
 import java.math.BigDecimal;
 
@@ -50,29 +50,24 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
  */
 public class JsonFluentAssert {
     private static final String ACTUAL = "actual";
-    private static final String DEFAULT_IGNORE_PLACEHOLDER = "${json-unit.ignore}";
 
     private final String path;
     private final Object actual;
     private final String description;
-    private final String ignorePlaceholder;
-    private final BigDecimal numericComparisonTolerance;
-    private final Options options;
+    private final Configuration configuration;
 
-    protected JsonFluentAssert(Object actual, String path, String description, String ignorePlaceholder, BigDecimal numericComparisonTolerance, Options options) {
+    protected JsonFluentAssert(Object actual, String path, String description, Configuration configuration) {
         if (actual == null) {
             throw new IllegalArgumentException("Can not make assertions about null JSON.");
         }
         this.path = path;
         this.actual = actual;
         this.description = description;
-        this.ignorePlaceholder = ignorePlaceholder;
-        this.numericComparisonTolerance = numericComparisonTolerance;
-        this.options = options;
+        this.configuration = configuration;
     }
 
     protected JsonFluentAssert(Object actual) {
-        this(actual, "", "", DEFAULT_IGNORE_PLACEHOLDER, null, Options.empty());
+        this(actual, "", "", Configuration.empty());
     }
 
     /**
@@ -95,7 +90,7 @@ public class JsonFluentAssert {
      * @return {@code this} object.
      */
     public JsonFluentAssert isEqualTo(Object expected) {
-        Diff diff = createDiff(expected, options);
+        Diff diff = createDiff(expected, configuration);
         if (!diff.similar()) {
             failWithMessage(diff.differences());
         }
@@ -110,7 +105,7 @@ public class JsonFluentAssert {
      * @return {@code this} object.
      */
     public JsonFluentAssert isNotEqualTo(Object expected) {
-        Diff diff = createDiff(expected, options);
+        Diff diff = createDiff(expected, configuration);
         if (diff.similar()) {
             failWithMessage("JSON is equal.");
         }
@@ -124,7 +119,7 @@ public class JsonFluentAssert {
      * @return {@code this} object.
      */
     public JsonFluentAssert hasSameStructureAs(Object expected) {
-        Diff diff = createDiff(expected, options.with(COMPARE_ONLY_STRUCTURE));
+        Diff diff = createDiff(expected, configuration.withOptions(COMPARE_ONLY_STRUCTURE));
         if (!diff.similar()) {
             failWithMessage(diff.differences());
         }
@@ -143,12 +138,12 @@ public class JsonFluentAssert {
      * @return object comparing only node given by path.
      */
     public JsonFluentAssert node(String path) {
-        return new JsonFluentAssert(actual, path, description, ignorePlaceholder, numericComparisonTolerance, options);
+        return new JsonFluentAssert(actual, path, description, configuration);
     }
 
 
-    private Diff createDiff(Object expected, Options options) {
-        return create(expected, actual, ACTUAL, path, ignorePlaceholder, numericComparisonTolerance, options);
+    private Diff createDiff(Object expected, Configuration configuration) {
+        return create(expected, actual, ACTUAL, path, configuration);
     }
 
     private void failWithMessage(String message) {
@@ -176,7 +171,7 @@ public class JsonFluentAssert {
      * @return
      */
     public JsonFluentAssert describedAs(String description) {
-        return new JsonFluentAssert(actual, path, description, ignorePlaceholder, numericComparisonTolerance, options);
+        return new JsonFluentAssert(actual, path, description, configuration);
     }
 
     /**
@@ -187,7 +182,7 @@ public class JsonFluentAssert {
      * @return
      */
     public JsonFluentAssert ignoring(String ignorePlaceholder) {
-        return new JsonFluentAssert(actual, path, description, ignorePlaceholder, numericComparisonTolerance, options);
+        return new JsonFluentAssert(actual, path, description, configuration.withIgnorePlaceholder(ignorePlaceholder));
     }
 
     /**
@@ -207,7 +202,7 @@ public class JsonFluentAssert {
      * @param tolerance
      */
     public JsonFluentAssert withTolerance(BigDecimal tolerance) {
-        return new JsonFluentAssert(actual, path, description, ignorePlaceholder, tolerance, options);
+        return new JsonFluentAssert(actual, path, description, configuration.withTolerance(tolerance));
     }
 
     /**
@@ -230,8 +225,7 @@ public class JsonFluentAssert {
      * @see net.javacrumbs.jsonunit.core.Option
      */
     public JsonFluentAssert when(Option firstOption, Option ...otherOptions) {
-        Options newOptions = options.with(firstOption, otherOptions);
-        return new JsonFluentAssert(actual, path, description, ignorePlaceholder, numericComparisonTolerance, newOptions);
+        return new JsonFluentAssert(actual, path, description, configuration.withOptions(firstOption, otherOptions));
     }
 
     /**

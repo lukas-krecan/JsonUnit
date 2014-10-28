@@ -54,27 +54,24 @@ public class Diff {
     private final JsonNode actualRoot;
     private final Differences differences = new Differences();
     private final String startPath;
-    private final BigDecimal numericComparisonTolerance;
-    private final Options options;
     private boolean compared = false;
-    private final String ignorePlaceholder;
+    private final Configuration configuration;
+
 
     private static final Logger diffLogger = LoggerFactory.getLogger("net.javacrumbs.jsonunit.difference.diff");
     private static final Logger valuesLogger = LoggerFactory.getLogger("net.javacrumbs.jsonunit.difference.values");
 
     private enum NodeType {OBJECT, ARRAY, STRING, NUMBER, BOOLEAN, NULL}
 
-    private Diff(JsonNode expected, JsonNode actual, String startPath, String ignorePlaceholder, BigDecimal numericComparisonTolerance, Options options) {
+    private Diff(JsonNode expected, JsonNode actual, String startPath, Configuration configuration) {
         this.expectedRoot = expected;
         this.actualRoot = actual;
         this.startPath = startPath;
-        this.ignorePlaceholder = ignorePlaceholder;
-        this.numericComparisonTolerance = numericComparisonTolerance;
-        this.options = options;
+        this.configuration = configuration;
     }
 
-    public static Diff create(Object expected, Object actual, String actualName, String startPath, String ignorePlaceholder, BigDecimal numericComparisonTolerance, Options options) {
-        return new Diff(convertToJson(quoteIfNeeded(expected), "expected"), convertToJson(actual, actualName), startPath, ignorePlaceholder, numericComparisonTolerance, options);
+    public static Diff create(Object expected, Object actual, String actualName, String startPath, Configuration configuration) {
+        return new Diff(convertToJson(quoteIfNeeded(expected), "expected"), convertToJson(actual, actualName), startPath, configuration);
     }
 
     private void compare() {
@@ -176,7 +173,7 @@ public class Diff {
     }
 
     private boolean hasOption(Option option) {
-        return options.contains(option);
+        return configuration.getOptions().contains(option);
     }
 
     private static String appendKeysToPrefix(Iterable<String> keys, String prefix) {
@@ -205,7 +202,7 @@ public class Diff {
         NodeType actualNodeType = getNodeType(actualNode);
 
         //ignoring value
-        if (expectedNodeType == NodeType.STRING && ignorePlaceholder.equals(expectedNode.asText())) {
+        if (expectedNodeType == NodeType.STRING && configuration.getIgnorePlaceholder().equals(expectedNode.asText())) {
             return;
         }
 
@@ -223,11 +220,11 @@ public class Diff {
                     compareValues(expectedNode.asText(), actualNode.asText(), fieldPath);
                     break;
                 case NUMBER:
-                    if (numericComparisonTolerance != null && !hasOption(IGNORE_VALUES)) {
+                    if (configuration.getTolerance() != null && !hasOption(IGNORE_VALUES)) {
                         BigDecimal diff = expectedNode.decimalValue().subtract(actualNode.decimalValue()).abs();
-                        if (diff.compareTo(numericComparisonTolerance) > 0) {
+                        if (diff.compareTo(configuration.getTolerance()) > 0) {
                             valueDifferenceFound("Different value found in node \"%s\". Expected %s, got %s, difference is %s, tolerance is %s",
-                                    fieldPath, quoteTextValue(expectedNode.numberValue()), quoteTextValue(actualNode.numberValue()), diff.toString(), numericComparisonTolerance);
+                                    fieldPath, quoteTextValue(expectedNode.numberValue()), quoteTextValue(actualNode.numberValue()), diff.toString(), configuration.getTolerance());
                         }
                     } else {
                         compareValues(expectedNode.numberValue(), actualNode.numberValue(), fieldPath);
@@ -308,7 +305,7 @@ public class Diff {
     private int indexOf(List<JsonNode> expectedElements, JsonNode actual) {
         int i = 0;
         for (JsonNode expected : expectedElements) {
-            Diff diff = new Diff(expected, actual, "", ignorePlaceholder, numericComparisonTolerance, options);
+            Diff diff = new Diff(expected, actual, "", configuration);
             if (diff.similar()) {
                 return i;
             }
