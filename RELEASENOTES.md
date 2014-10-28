@@ -1,3 +1,8 @@
+## 1.3.0 + 0.3.0
+* Options renamed
+* assertJsonNot* asserts added
+* Support for online configuration in Hamcrest and standard asserts added
+
 ## 1.2.0 + 0.2.0
 * Error messages changed a bit when comparing structures
 * Refactoring of internal classes

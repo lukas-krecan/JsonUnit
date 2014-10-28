@@ -125,7 +125,7 @@ public class JsonMatchers {
             return this;
         }
 
-        public ConfigurableJsonMatcher<T> withOptions(Option first, Option... next) {
+        public ConfigurableJsonMatcher<T> when(Option first, Option... next) {
             configuration = configuration.withOptions(first, next);
             return this;
         }

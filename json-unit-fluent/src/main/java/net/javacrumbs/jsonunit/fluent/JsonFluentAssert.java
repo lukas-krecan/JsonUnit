@@ -21,7 +21,7 @@ import net.javacrumbs.jsonunit.core.internal.Diff;
 
 import java.math.BigDecimal;
 
-import static net.javacrumbs.jsonunit.core.Option.COMPARE_ONLY_STRUCTURE;
+import static net.javacrumbs.jsonunit.core.Option.COMPARING_ONLY_STRUCTURE;
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
@@ -119,7 +119,7 @@ public class JsonFluentAssert {
      * @return {@code this} object.
      */
     public JsonFluentAssert hasSameStructureAs(Object expected) {
-        Diff diff = createDiff(expected, configuration.withOptions(COMPARE_ONLY_STRUCTURE));
+        Diff diff = createDiff(expected, configuration.withOptions(COMPARING_ONLY_STRUCTURE));
         if (!diff.similar()) {
             failWithMessage(diff.differences());
         }
@@ -210,11 +210,11 @@ public class JsonFluentAssert {
      * if you expect {"test":{"a":1}} this {"test":{"a":1, "b": null}} will pass the test.
      *
      * @return
-     * @deprecated Use when(Option.TREAT_NULL_AS_ABSENT)
+     * @deprecated Use when(Option.TREATING_NULL_AS_ABSENT)
      */
     @Deprecated
     public JsonFluentAssert treatingNullAsAbsent() {
-        return when(Option.TREAT_NULL_AS_ABSENT);
+        return when(Option.TREATING_NULL_AS_ABSENT);
     }
 
     /**

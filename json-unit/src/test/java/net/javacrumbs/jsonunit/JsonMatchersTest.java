@@ -29,7 +29,8 @@ import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodePresent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonStringEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonStringPartEquals;
-import static net.javacrumbs.jsonunit.core.Option.IGNORE_VALUES;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.contains;
@@ -79,8 +80,13 @@ public class JsonMatchersTest {
 
     @Test
     public void testTolerance() throws IOException {
-        assertThat("{\"test\":1.00001}", jsonEquals("{\"test\":1}").withTolerance(0.001).withOptions(Option.IGNORE_EXTRA_FIELDS));
+        assertThat("{\"test\":1.00001}", jsonEquals("{\"test\":1}").withTolerance(0.001).when(IGNORING_EXTRA_FIELDS));
     }
+
+    @Test
+     public void shouldIgnoreExtraFields() {
+        assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}", jsonEquals("{\"test\":{\"b\":2}}").when(IGNORING_EXTRA_FIELDS));
+     }
 
     @Test
     public void hasItemShouldWork() throws IOException {
@@ -199,12 +205,12 @@ public class JsonMatchersTest {
 
     @Test
     public void shouldIgnoreValues() {
-        assertThat("{\"test\":{\"a\":3,\"b\":2,\"c\":1}}", jsonEquals("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}").withOptions(IGNORE_VALUES));
+        assertThat("{\"test\":{\"a\":3,\"b\":2,\"c\":1}}", jsonEquals("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}").when(IGNORING_VALUES));
     }
 
     @Test
     public void testTreatNullAsAbsent() {
-        JsonAssert.setOptions(Option.TREAT_NULL_AS_ABSENT);
+        JsonAssert.setOptions(Option.TREATING_NULL_AS_ABSENT);
         assertThat("{\"test\":{\"a\":1, \"b\": null}}", jsonEquals("{\"test\":{\"a\":1}}"));
     }
 }

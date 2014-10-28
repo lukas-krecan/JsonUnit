@@ -23,25 +23,25 @@ public enum Option {
      * Treats null nodes in actual value as absent. In other words
      * if you expect {"test":{"a":1}} this {"test":{"a":1, "b": null}} will pass the test.
      */
-    TREAT_NULL_AS_ABSENT,
+    TREATING_NULL_AS_ABSENT,
 
     /**
      * When comparing arrays, ignores array order. In other words, treats arrays as sets.
      */
-    IGNORE_ARRAY_ORDER,
+    IGNORING_ARRAY_ORDER,
 
     /**
      * Ignores extra fields in the actual value.
      */
-    IGNORE_EXTRA_FIELDS,
+    IGNORING_EXTRA_FIELDS,
 
     /**
      * Compares only structures. Completely ignores values.
      */
-    COMPARE_ONLY_STRUCTURE,
+    COMPARING_ONLY_STRUCTURE,
 
     /**
      * Ignores values but fails if value types are different.
      */
-    IGNORE_VALUES
+    IGNORING_VALUES
 }

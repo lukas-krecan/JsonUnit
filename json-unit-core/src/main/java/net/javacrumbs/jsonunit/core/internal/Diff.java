@@ -37,9 +37,9 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import static java.util.Collections.emptySet;
-import static net.javacrumbs.jsonunit.core.Option.COMPARE_ONLY_STRUCTURE;
-import static net.javacrumbs.jsonunit.core.Option.IGNORE_EXTRA_FIELDS;
-import static net.javacrumbs.jsonunit.core.Option.IGNORE_VALUES;
+import static net.javacrumbs.jsonunit.core.Option.COMPARING_ONLY_STRUCTURE;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
@@ -104,7 +104,7 @@ public class Diff {
         if (!expectedKeys.equals(actualKeys)) {
             Set<String> missingKeys = getMissingKeys(expectedKeys, actualKeys);
             Set<String> extraKeys = getExtraKeys(expectedKeys, actualKeys);
-            if (hasOption(Option.TREAT_NULL_AS_ABSENT)) {
+            if (hasOption(Option.TREATING_NULL_AS_ABSENT)) {
                 extraKeys = getNotNullExtraKeys(actual, extraKeys);
             }
 
@@ -164,7 +164,7 @@ public class Diff {
     }
 
     private Set<String> getExtraKeys(Set<String> expectedKeys, Collection<String> actualKeys) {
-        if (!hasOption(IGNORE_EXTRA_FIELDS)) {
+        if (!hasOption(IGNORING_EXTRA_FIELDS)) {
             Set<String> extraKeys = new TreeSet<String>(actualKeys);
             extraKeys.removeAll(expectedKeys);
             return extraKeys;
@@ -221,7 +221,7 @@ public class Diff {
                     compareValues(expectedNode.asText(), actualNode.asText(), fieldPath);
                     break;
                 case NUMBER:
-                    if (configuration.getTolerance() != null && !hasOption(IGNORE_VALUES)) {
+                    if (configuration.getTolerance() != null && !hasOption(IGNORING_VALUES)) {
                         BigDecimal diff = expectedNode.decimalValue().subtract(actualNode.decimalValue()).abs();
                         if (diff.compareTo(configuration.getTolerance()) > 0) {
                             valueDifferenceFound("Different value found in node \"%s\". Expected %s, got %s, difference is %s, tolerance is %s",
@@ -245,7 +245,7 @@ public class Diff {
 
 
     private void compareValues(Object expectedValue, Object actualValue, String path) {
-        if (!hasOption(IGNORE_VALUES)) {
+        if (!hasOption(IGNORING_VALUES)) {
             if (!expectedValue.equals(actualValue)) {
                 valueDifferenceFound("Different value found in node \"%s\". Expected %s, got %s.", path, quoteTextValue(expectedValue), quoteTextValue(actualValue));
             }
@@ -275,7 +275,7 @@ public class Diff {
         }
         List<JsonNode> extraValues = new ArrayList<JsonNode>();
         List<JsonNode> missingValues = new ArrayList<JsonNode>(expectedElements);
-        if (hasOption(Option.IGNORE_ARRAY_ORDER)) {
+        if (hasOption(Option.IGNORING_ARRAY_ORDER)) {
             for (JsonNode actual : actualElements) {
                 int index = indexOf(missingValues, actual);
                 if (index != -1) {
@@ -386,7 +386,7 @@ public class Diff {
     }
 
     private void valueDifferenceFound(String message, Object... arguments) {
-        if (!hasOption(COMPARE_ONLY_STRUCTURE)) {
+        if (!hasOption(COMPARING_ONLY_STRUCTURE)) {
             differences.add(message, arguments);
         }
     }

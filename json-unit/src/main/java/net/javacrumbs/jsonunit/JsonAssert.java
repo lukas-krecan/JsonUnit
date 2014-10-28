@@ -22,8 +22,8 @@ import net.javacrumbs.jsonunit.core.internal.Options;
 
 import java.math.BigDecimal;
 
-import static net.javacrumbs.jsonunit.core.Option.COMPARE_ONLY_STRUCTURE;
-import static net.javacrumbs.jsonunit.core.Option.TREAT_NULL_AS_ABSENT;
+import static net.javacrumbs.jsonunit.core.Option.COMPARING_ONLY_STRUCTURE;
+import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
 
@@ -158,7 +158,7 @@ public class JsonAssert {
      * @param actual
      */
     public static void assertJsonStructureEquals(Object expected, Object actual) {
-        Diff diff = create(expected, actual, ACTUAL, ROOT, configuration.withOptions(COMPARE_ONLY_STRUCTURE));
+        Diff diff = create(expected, actual, ACTUAL, ROOT, configuration.withOptions(COMPARING_ONLY_STRUCTURE));
         if (!diff.similar()) {
             doFail(diff.differences());
         }
@@ -172,7 +172,7 @@ public class JsonAssert {
      * @param path
      */
     public static void assertJsonPartStructureEquals(Object expected, Object fullJson, String path) {
-        Diff diff = create(expected, fullJson, FULL_JSON, path, configuration.withOptions(COMPARE_ONLY_STRUCTURE));
+        Diff diff = create(expected, fullJson, FULL_JSON, path, configuration.withOptions(COMPARING_ONLY_STRUCTURE));
         if (!diff.similar()) {
             doFail(diff.differences());
         }
@@ -251,24 +251,24 @@ public class JsonAssert {
      * if you expect {"test":{"a":1}} this {"test":{"a":1, "b": null}} will pass the test.
      *
      * @param treatNullAsAbsent
-     * @deprecated use setOptions(Option.TREAT_NULL_AS_ABSENT)
+     * @deprecated use setOptions(Option.TREATING_NULL_AS_ABSENT)
      */
     @Deprecated
     public static void setTreatNullAsAbsent(boolean treatNullAsAbsent) {
         if (treatNullAsAbsent) {
-            configuration = configuration.withOptions(TREAT_NULL_AS_ABSENT);
+            configuration = configuration.withOptions(TREATING_NULL_AS_ABSENT);
         } else {
-            configuration = configuration.withOptions(configuration.getOptions().without(TREAT_NULL_AS_ABSENT));
+            configuration = configuration.withOptions(configuration.getOptions().without(TREATING_NULL_AS_ABSENT));
         }
     }
 
     /**
      * @return
-     * @deprecated use getOptions().contains(Option.TREAT_NULL_AS_ABSENT)
+     * @deprecated use getOptions().contains(Option.TREATING_NULL_AS_ABSENT)
      */
     @Deprecated
     public static boolean getTreatNullAsAbsent() {
-        return configuration.getOptions().contains(TREAT_NULL_AS_ABSENT);
+        return configuration.getOptions().contains(TREATING_NULL_AS_ABSENT);
     }
 
     /**
@@ -317,7 +317,7 @@ public class JsonAssert {
      *
      * @param tolerance
      */
-    public static Configuration withOptions(Option first, Option ...next) {
+    public static Configuration when(Option first, Option... next) {
         return Configuration.empty().withOptions(first, next);
     }
 }

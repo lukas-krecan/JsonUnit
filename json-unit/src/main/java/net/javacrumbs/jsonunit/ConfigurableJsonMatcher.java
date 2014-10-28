@@ -51,7 +51,7 @@ public interface ConfigurableJsonMatcher<T> extends Matcher<T> {
      * @param next
      * @return
      */
-    ConfigurableJsonMatcher<T> withOptions(Option first, Option... next);
+    ConfigurableJsonMatcher<T> when(Option first, Option... next);
 
     /**
      * Sets options.
