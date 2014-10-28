@@ -26,7 +26,9 @@ import java.io.StringReader;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonNodeAbsent;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonNodePresent;
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonNotEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartEquals;
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartNotEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartStructureEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonStructureEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.setOptions;
@@ -711,5 +713,33 @@ public class JsonAssertTest {
         assertJsonEquals("5", "\n0.9999\n");
     }
 
+    @Test
+    public void assertPartNotEqualsShouldPass() {
+        assertJsonPartNotEquals("2", "{\"test\":{\"value\":1}}", "test.value");
+    }
 
+    @Test
+    public void assertPartNotEqualsShouldFailWithCorrectMessage() {
+        try {
+            assertJsonPartNotEquals("1", "{\"test\":{\"value\":1}}", "test.value");
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("Expected different values in node \"test.value\" but the values were equal.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void assertNotEqualsShouldPass() {
+        assertJsonNotEquals("{\"test\":{\"value\":2}}", "{\"test\":{\"value\":1}}");
+    }
+
+    @Test
+    public void assertNotEqualsShouldFailWithCorrectMessage() {
+        try {
+            assertJsonNotEquals("{\"test\":{\"value\":1}}", "{\"test\":{\"value\":1}}");
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("Expected different values but the values were equal.", e.getMessage());
+        }
+    }
 }

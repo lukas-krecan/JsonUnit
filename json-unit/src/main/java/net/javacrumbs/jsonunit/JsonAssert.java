@@ -44,6 +44,7 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
 public class JsonAssert {
     private static final String FULL_JSON = "fullJson";
     private static final String ACTUAL = "actual";
+    public static final String ROOT = "";
     private static Configuration configuration = Configuration.empty();
 
     private JsonAssert() {
@@ -57,7 +58,7 @@ public class JsonAssert {
      * @param actual
      */
     public static void assertJsonEquals(Object expected, Object actual) {
-        assertJsonPartEquals(expected, actual, "");
+        assertJsonPartEquals(expected, actual, ROOT);
     }
 
     /**
@@ -75,6 +76,36 @@ public class JsonAssert {
     }
 
     /**
+     * Compares JSONs and fails if they are equal.
+     *
+     * @param expected
+     * @param fullJson
+     * @param path
+     */
+    public static void assertJsonNotEquals(Object expected, Object fullJson) {
+        assertJsonPartNotEquals(expected, fullJson, ROOT);
+    }
+
+    /**
+     * Compares part of the JSON and fails if they are equal.
+     * Path has this format "root.array[0].value".
+     *
+     * @param expected
+     * @param fullJson
+     * @param path
+     */
+    public static void assertJsonPartNotEquals(Object expected, Object fullJson, String path) {
+        Diff diff = create(expected, fullJson, FULL_JSON, path, configuration);
+        if (diff.similar()) {
+            if (ROOT.equals(path)) {
+                doFail("Expected different values but the values were equal.");
+            } else {
+                doFail(String.format("Expected different values in node \"%s\" but the values were equal.", path));
+            }
+        }
+    }
+
+    /**
      * Compares structures of two JSON documents.
      * Throws {@link AssertionError} if they are different.
      *
@@ -82,7 +113,7 @@ public class JsonAssert {
      * @param actual
      */
     public static void assertJsonStructureEquals(Object expected, Object actual) {
-        Diff diff = create(expected, actual, ACTUAL, "", configuration.withOptions(COMPARE_ONLY_STRUCTURE));
+        Diff diff = create(expected, actual, ACTUAL, ROOT, configuration.withOptions(COMPARE_ONLY_STRUCTURE));
         if (!diff.similar()) {
             doFail(diff.differences());
         }
