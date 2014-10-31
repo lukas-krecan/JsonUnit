@@ -15,7 +15,6 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
@@ -25,6 +24,11 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.ARRAY;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.BOOLEAN;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NUMBER;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -35,17 +39,17 @@ public class JsonUtilsTest {
 
     @Test
     public void testConvertToJson() {
-        assertTrue(convertToJson("\"a\"", "x").isTextual());
-        assertTrue(convertToJson(1, "x").isNumber());
-        assertTrue(convertToJson("1", "x").isNumber());
-        assertTrue(convertToJson(1.0, "x").isNumber());
-        assertTrue(convertToJson("1.0", "x").isNumber());
-        assertTrue(convertToJson("{\"a\":1}", "x").isObject());
-        assertTrue(convertToJson("[1 ,2, 3]", "x").isArray());
-        assertTrue(convertToJson("true", "x").isBoolean());
-        assertTrue(convertToJson(true, "x").isBoolean());
-        assertTrue(convertToJson("false", "x").isBoolean());
-        assertTrue(convertToJson(false, "x").isBoolean());
+        assertEquals(STRING, convertToJson("\"a\"", "x").getNodeType());
+        assertEquals(NUMBER, convertToJson(1, "x").getNodeType());
+        assertEquals(NUMBER, convertToJson("1", "x").getNodeType());
+        assertEquals(NUMBER, convertToJson(1.0, "x").getNodeType());
+        assertEquals(NUMBER, convertToJson("1.0", "x").getNodeType());
+        assertEquals(OBJECT, convertToJson("{\"a\":1}", "x").getNodeType());
+        assertEquals(ARRAY, convertToJson("[1 ,2, 3]", "x").getNodeType());
+        assertEquals(BOOLEAN, convertToJson("true", "x").getNodeType());
+        assertEquals(BOOLEAN, convertToJson(true, "x").getNodeType());
+        assertEquals(BOOLEAN, convertToJson("false", "x").getNodeType());
+        assertEquals(BOOLEAN, convertToJson(false, "x").getNodeType());
         assertTrue(convertToJson("null", "x").isNull());
         assertTrue(convertToJson(null, "x").isNull());
     }
@@ -68,57 +72,58 @@ public class JsonUtilsTest {
 
     @Test
     public void testGetStartNodeRoot() throws IOException {
-        JsonNode startNode = getNode(mapper.readTree("{\"test\":{\"value\":1}}"), "");
-        assertEquals("{\"test\":{\"value\":1}}", mapper.writeValueAsString(startNode));
+        Node startNode = getNode(mapper.readTree("{\"test\":{\"value\":1}}"), "");
+        assertEquals("{\"test\":{\"value\":1}}", startNode.toString());
     }
 
     @Test
     public void testGetStartNodeSimple() throws IOException {
-        JsonNode startNode = getNode(mapper.readTree("{\"test\":{\"value\":1}}"), "test");
-        assertEquals("{\"value\":1}", mapper.writeValueAsString(startNode));
+        Node startNode = getNode(mapper.readTree("{\"test\":{\"value\":1}}"), "test");
+        assertEquals("{\"value\":1}", startNode.toString());
     }
 
     @Test
     public void testGetStartNodeTwoSteps() throws IOException {
-        JsonNode startNode = getNode(mapper.readTree("{\"test\":{\"value\":1}}"), "test.value");
-        assertEquals("1", mapper.writeValueAsString(startNode));
+        Node startNode = getNode(mapper.readTree("{\"test\":{\"value\":1}}"), "test.value");
+        assertEquals(1, startNode.numberValue());
     }
 
     @Test
     public void testGetStartNodeArrays() throws IOException {
-        JsonNode startNode = getNode(mapper.readTree("{\"test\":{\"values\":[1,2]}}"), "test.values[1]");
-        assertEquals("2", mapper.writeValueAsString(startNode));
+        Node startNode = getNode(mapper.readTree("{\"test\":{\"values\":[1,2]}}"), "test.values[1]");
+        assertEquals(2, startNode.numberValue());
     }
 
     @Test
     public void testGetStartNodeArrays2() throws IOException {
-        JsonNode startNode = getNode(mapper.readTree("{\"test\":[{\"values\":[1,2]}, {\"values\":[3,4]}]}"), "test[1].values[1]");
-        assertEquals("4", mapper.writeValueAsString(startNode));
+        Node startNode = getNode(mapper.readTree("{\"test\":[{\"values\":[1,2]}, {\"values\":[3,4]}]}"), "test[1].values[1]");
+        assertEquals(4, startNode.numberValue());
     }
 
     @Test
     public void testGetStartNodeArraysRootComplex() throws IOException {
-        JsonNode startNode = getNode(mapper.readTree("[{\"values\":[1,2]}, {\"values\":[3,4]}]"), "[1].values[1]");
-        assertEquals("4", mapper.writeValueAsString(startNode));
+        Node startNode = getNode(mapper.readTree("[{\"values\":[1,2]}, {\"values\":[3,4]}]"), "[1].values[1]");
+        assertEquals(4, startNode.numberValue());
     }
 
     @Test
     public void testGetStartNodeArraysConvoluted() throws IOException {
-        JsonNode startNode = getNode(mapper.readTree("{\"test\":[{\"values\":[1,2]}, {\"values\":[3,4]}]}"), "test.[1].values.[1]");
-        assertEquals("4", mapper.writeValueAsString(startNode));
+        Node startNode = getNode(mapper.readTree("{\"test\":[{\"values\":[1,2]}, {\"values\":[3,4]}]}"), "test.[1].values.[1]");
+        assertEquals(4, startNode.numberValue());
     }
 
     @Test
     public void testGetStartNodeArraysRoot() throws IOException {
-        JsonNode startNode = getNode(mapper.readTree("[1,2]"), "[0]");
-        assertEquals("1", mapper.writeValueAsString(startNode));
+        Node startNode = getNode(mapper.readTree("[1,2]"), "[0]");
+        assertEquals(1, startNode.numberValue());
     }
 
     @Test
     public void testGetStartNodeNonexisting() throws IOException {
-        JsonNode startNode = getNode(mapper.readTree("{\"test\":{\"value\":1}}"), "test.bogus");
+        Node startNode = getNode(mapper.readTree("{\"test\":{\"value\":1}}"), "test.bogus");
         assertEquals(true, startNode.isMissingNode());
     }
+
     @Test
     public void testNodeExists() throws IOException {
         String json = "{\"test\":{\"value\":1}}";
@@ -127,5 +132,4 @@ public class JsonUtilsTest {
         assertFalse(nodeExists(json, "test.nonsense"));
         assertFalse(nodeExists(json, "root"));
     }
-
 }

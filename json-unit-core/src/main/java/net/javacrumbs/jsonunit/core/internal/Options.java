@@ -31,7 +31,7 @@ public class Options {
         this.options = options;
     }
 
-    public Options(Option first, Option ...rest) {
+    public Options(Option first, Option... rest) {
         this(EnumSet.of(first, rest));
     }
 
@@ -43,7 +43,7 @@ public class Options {
         return options.contains(option);
     }
 
-    public Options with(Option option, Option ...otherOptions) {
+    public Options with(Option option, Option... otherOptions) {
         EnumSet<Option> optionsWith = EnumSet.copyOf(options);
         optionsWith.addAll(EnumSet.of(option, otherOptions));
         return new Options(optionsWith);

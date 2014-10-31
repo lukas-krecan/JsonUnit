@@ -96,6 +96,7 @@ public class JsonMatchers {
     public static <T> ConfigurableJsonMatcher<T> jsonNodeAbsent(String path) {
         return new JsonNodeAbsenceMatcher<T>(path);
     }
+
     /**
      * Is the node in path present?
      *
@@ -107,7 +108,7 @@ public class JsonMatchers {
     }
 
 
-    private static abstract class AbstractJsonMatcher<T> extends BaseMatcher<T>  implements ConfigurableJsonMatcher<T> {
+    private static abstract class AbstractJsonMatcher<T> extends BaseMatcher<T> implements ConfigurableJsonMatcher<T> {
         protected final String path;
         protected Configuration configuration = JsonAssert.getConfiguration();
 

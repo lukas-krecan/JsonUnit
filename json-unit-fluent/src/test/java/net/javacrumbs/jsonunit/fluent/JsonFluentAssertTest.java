@@ -15,6 +15,7 @@
  */
 package net.javacrumbs.jsonunit.fluent;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -22,12 +23,13 @@ import java.io.StringReader;
 
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 public class JsonFluentAssertTest {
+    private final ObjectMapper mapper = new ObjectMapper();
+
     @Test
     public void testAssertString() {
         try {
@@ -85,7 +87,7 @@ public class JsonFluentAssertTest {
     @Test
     public void testAssertNode() throws IOException {
         try {
-            assertThatJson(readValue("{\"test\":1}", "")).isEqualTo(readValue("{\"test\":2}", ""));
+            assertThatJson(readValue("{\"test\":1}")).isEqualTo(readValue("{\"test\":2}"));
             fail("Exception expected");
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected 2, got 1.\n", e.getMessage());
@@ -95,7 +97,7 @@ public class JsonFluentAssertTest {
     @Test
     public void testAssertNodeInExpectOnly() throws IOException {
         try {
-            assertThatJson("{\"test\":1}").isEqualTo(readValue("{\"test\":2}", ""));
+            assertThatJson("{\"test\":1}").isEqualTo(readValue("{\"test\":2}"));
             fail("Exception expected");
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected 2, got 1.\n", e.getMessage());
@@ -332,5 +334,14 @@ public class JsonFluentAssertTest {
     @Test
     public void shouldIgnoreExtraFields() {
         assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}").when(IGNORING_EXTRA_FIELDS).isEqualTo("{\"test\":{\"b\":2}}");
+    }
+
+
+    private Object readValue(String value) {
+        try {
+            return mapper.readTree(value);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 }

@@ -47,6 +47,7 @@ public interface ConfigurableJsonMatcher<T> extends Matcher<T> {
     /**
      * Add options. Note that options are ADDED to those returned
      * by {@link JsonAssert#getOptions()}
+     *
      * @param first
      * @param next
      * @return
@@ -55,6 +56,7 @@ public interface ConfigurableJsonMatcher<T> extends Matcher<T> {
 
     /**
      * Sets options.
+     *
      * @param first
      * @param next
      * @return

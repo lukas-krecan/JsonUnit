@@ -15,9 +15,6 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 import org.slf4j.Logger;
@@ -31,7 +28,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -43,6 +39,8 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
+import static net.javacrumbs.jsonunit.core.internal.Node.KeyValue;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType;
 
 
 /**
@@ -51,8 +49,8 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
  * @author Lukas Krecan
  */
 public class Diff {
-    private final JsonNode expectedRoot;
-    private final JsonNode actualRoot;
+    private final Node expectedRoot;
+    private final Node actualRoot;
     private final Differences differences = new Differences();
     private final String startPath;
     private boolean compared = false;
@@ -62,9 +60,7 @@ public class Diff {
     private static final Logger diffLogger = LoggerFactory.getLogger("net.javacrumbs.jsonunit.difference.diff");
     private static final Logger valuesLogger = LoggerFactory.getLogger("net.javacrumbs.jsonunit.difference.values");
 
-    private enum NodeType {OBJECT, ARRAY, STRING, NUMBER, BOOLEAN, NULL}
-
-    private Diff(JsonNode expected, JsonNode actual, String startPath, Configuration configuration) {
+    private Diff(Node expected, Node actual, String startPath, Configuration configuration) {
         this.expectedRoot = expected;
         this.actualRoot = actual;
         this.startPath = startPath;
@@ -77,7 +73,7 @@ public class Diff {
 
     private void compare() {
         if (!compared) {
-            JsonNode part = getNode(actualRoot, startPath);
+            Node part = getNode(actualRoot, startPath);
             if (part.isMissingNode()) {
                 structureDifferenceFound("Missing node in path \"%s\".", startPath);
             } else {
@@ -94,9 +90,9 @@ public class Diff {
      * @param actual
      * @param path
      */
-    private void compareObjectNodes(ObjectNode expected, ObjectNode actual, String path) {
-        Map<String, JsonNode> expectedFields = getFields(expected);
-        Map<String, JsonNode> actualFields = getFields(actual);
+    private void compareObjectNodes(Node expected, Node actual, String path) {
+        Map<String, Node> expectedFields = getFields(expected);
+        Map<String, Node> actualFields = getFields(actual);
 
         Set<String> expectedKeys = expectedFields.keySet();
         Set<String> actualKeys = actualFields.keySet();
@@ -116,8 +112,8 @@ public class Diff {
         }
 
         for (String fieldName : commonFields(expectedFields, actualFields)) {
-            JsonNode expectedNode = expectedFields.get(fieldName);
-            JsonNode actualNode = actualFields.get(fieldName);
+            Node expectedNode = expectedFields.get(fieldName);
+            Node actualNode = actualFields.get(fieldName);
             String fieldPath = getPath(path, fieldName);
             compareNodes(expectedNode, actualNode, fieldPath);
         }
@@ -130,7 +126,7 @@ public class Diff {
      * @param extraKeys
      * @return
      */
-    private Set<String> getNotNullExtraKeys(ObjectNode actual, Set<String> extraKeys) {
+    private Set<String> getNotNullExtraKeys(Node actual, Set<String> extraKeys) {
         Set<String> notNullExtraKeys = new TreeSet<String>();
         for (String extraKey : extraKeys) {
             if (!actual.get(extraKey).isNull()) {
@@ -198,9 +194,9 @@ public class Diff {
      * @param actualNode
      * @param fieldPath
      */
-    private void compareNodes(JsonNode expectedNode, JsonNode actualNode, String fieldPath) {
-        NodeType expectedNodeType = getNodeType(expectedNode);
-        NodeType actualNodeType = getNodeType(actualNode);
+    private void compareNodes(Node expectedNode, Node actualNode, String fieldPath) {
+        NodeType expectedNodeType = expectedNode.getNodeType();
+        NodeType actualNodeType = actualNode.getNodeType();
 
         //ignoring value
         if (expectedNodeType == NodeType.STRING && configuration.getIgnorePlaceholder().equals(expectedNode.asText())) {
@@ -212,10 +208,10 @@ public class Diff {
         } else {
             switch (expectedNodeType) {
                 case OBJECT:
-                    compareObjectNodes((ObjectNode) expectedNode, (ObjectNode) actualNode, fieldPath);
+                    compareObjectNodes(expectedNode, actualNode, fieldPath);
                     break;
                 case ARRAY:
-                    compareArrayNodes((ArrayNode) expectedNode, (ArrayNode) actualNode, fieldPath);
+                    compareArrayNodes(expectedNode, actualNode, fieldPath);
                     break;
                 case STRING:
                     compareValues(expectedNode.asText(), actualNode.asText(), fieldPath);
@@ -267,16 +263,16 @@ public class Diff {
     }
 
 
-    private void compareArrayNodes(ArrayNode expectedNode, ArrayNode actualNode, String path) {
-        List<JsonNode> expectedElements = asList(expectedNode.elements());
-        List<JsonNode> actualElements = asList(actualNode.elements());
+    private void compareArrayNodes(Node expectedNode, Node actualNode, String path) {
+        List<Node> expectedElements = asList(expectedNode.elements());
+        List<Node> actualElements = asList(actualNode.elements());
         if (expectedElements.size() != actualElements.size()) {
             structureDifferenceFound("Array \"%s\" has different length. Expected %d, got %d.", path, expectedElements.size(), actualElements.size());
         }
-        List<JsonNode> extraValues = new ArrayList<JsonNode>();
-        List<JsonNode> missingValues = new ArrayList<JsonNode>(expectedElements);
+        List<Node> extraValues = new ArrayList<Node>();
+        List<Node> missingValues = new ArrayList<Node>(expectedElements);
         if (hasOption(Option.IGNORING_ARRAY_ORDER)) {
-            for (JsonNode actual : actualElements) {
+            for (Node actual : actualElements) {
                 int index = indexOf(missingValues, actual);
                 if (index != -1) {
                     missingValues.remove(index);
@@ -303,9 +299,9 @@ public class Diff {
      * @param actual
      * @return
      */
-    private int indexOf(List<JsonNode> expectedElements, JsonNode actual) {
+    private int indexOf(List<Node> expectedElements, Node actual) {
         int i = 0;
-        for (JsonNode expected : expectedElements) {
+        for (Node expected : expectedElements) {
             Diff diff = new Diff(expected, actual, "", configuration);
             if (diff.similar()) {
                 return i;
@@ -316,38 +312,13 @@ public class Diff {
     }
 
 
-    private List<JsonNode> asList(Iterator<JsonNode> elements) {
-        List<JsonNode> result = new ArrayList<JsonNode>();
+    private List<Node> asList(Iterator<Node> elements) {
+        List<Node> result = new ArrayList<Node>();
         while (elements.hasNext()) {
-            JsonNode jsonNode = elements.next();
-            result.add(jsonNode);
+            Node Node = elements.next();
+            result.add(Node);
         }
         return Collections.unmodifiableList(result);
-    }
-
-
-    /**
-     * Returns NodeType of the node.
-     *
-     * @param node
-     * @return
-     */
-    private NodeType getNodeType(JsonNode node) {
-        if (node.isObject()) {
-            return NodeType.OBJECT;
-        } else if (node.isArray()) {
-            return NodeType.ARRAY;
-        } else if (node.isTextual()) {
-            return NodeType.STRING;
-        } else if (node.isNumber()) {
-            return NodeType.NUMBER;
-        } else if (node.isBoolean()) {
-            return NodeType.BOOLEAN;
-        } else if (node.isNull()) {
-            return NodeType.NULL;
-        } else {
-            throw new IllegalStateException("Unexpected node type " + node);
-        }
     }
 
 
@@ -392,7 +363,7 @@ public class Diff {
     }
 
 
-    private Set<String> commonFields(Map<String, JsonNode> expectedFields, Map<String, JsonNode> actualFields) {
+    private Set<String> commonFields(Map<String, Node> expectedFields, Map<String, Node> actualFields) {
         Set<String> result = new TreeSet<String>(expectedFields.keySet());
         result.retainAll(actualFields.keySet());
         return Collections.unmodifiableSet(result);
@@ -427,11 +398,11 @@ public class Diff {
      * @param node
      * @return
      */
-    private static Map<String, JsonNode> getFields(ObjectNode node) {
-        Map<String, JsonNode> result = new HashMap<String, JsonNode>();
-        Iterator<Entry<String, JsonNode>> fields = node.fields();
+    private static Map<String, Node> getFields(Node node) {
+        Map<String, Node> result = new HashMap<String, Node>();
+        Iterator<KeyValue> fields = node.fields();
         while (fields.hasNext()) {
-            Map.Entry<String, JsonNode> field = fields.next();
+            KeyValue field = fields.next();
             result.put(field.getKey(), field.getValue());
         }
         return Collections.unmodifiableMap(result);

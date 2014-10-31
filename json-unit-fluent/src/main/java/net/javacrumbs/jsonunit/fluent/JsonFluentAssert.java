@@ -220,11 +220,12 @@ public class JsonFluentAssert {
     /**
      * Sets options changing comparison behavior. For more
      * details see {@link net.javacrumbs.jsonunit.core.Option}
+     *
      * @param firstOption
      * @param rest
      * @see net.javacrumbs.jsonunit.core.Option
      */
-    public JsonFluentAssert when(Option firstOption, Option ...otherOptions) {
+    public JsonFluentAssert when(Option firstOption, Option... otherOptions) {
         return new JsonFluentAssert(actual, path, description, configuration.withOptions(firstOption, otherOptions));
     }
 

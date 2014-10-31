@@ -29,9 +29,10 @@ import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodePresent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonStringEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonStringPartEquals;
+import static net.javacrumbs.jsonunit.JsonUtils.readByJackson1;
+import static net.javacrumbs.jsonunit.JsonUtils.readByJackson2;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.readValue;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertEquals;
@@ -39,7 +40,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 public class JsonMatchersTest {
-
     @After
     public void reset() {
         JsonAssert.setTolerance(null);
@@ -68,8 +68,13 @@ public class JsonMatchersTest {
     }
 
     @Test
-    public void testJsonNode() throws IOException {
-        assertThat(readValue("{\"test\":1}", ""), jsonEquals("{\"test\":1}"));
+    public void testJsonNodeJackson2() throws IOException {
+        assertThat(readByJackson2("{\"test\":1}"), jsonEquals("{\"test\":1}"));
+    }
+
+    @Test
+    public void testJsonNodeJackson1() throws IOException {
+        assertThat(readByJackson1("{\"test\":1}"), jsonEquals("{\"test\":1}"));
     }
 
     @Test
@@ -84,9 +89,9 @@ public class JsonMatchersTest {
     }
 
     @Test
-     public void shouldIgnoreExtraFields() {
+    public void shouldIgnoreExtraFields() {
         assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}", jsonEquals("{\"test\":{\"b\":2}}").when(IGNORING_EXTRA_FIELDS));
-     }
+    }
 
     @Test
     public void hasItemShouldWork() throws IOException {

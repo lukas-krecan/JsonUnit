@@ -16,13 +16,6 @@
 package net.javacrumbs.jsonunit.core.internal;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.NullNode;
-
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,36 +24,11 @@ import java.util.regex.Pattern;
  * Internal utility class to parse JSON values.
  */
 public class JsonUtils {
-    private static final ObjectMapper mapper = new ObjectMapper();
 
     private static final Pattern arrayPattern = Pattern.compile("(\\w*)\\[(\\d+)\\]");
 
+    private static final Converter converter = Converter.createDefaultConverter();
 
-    /**
-     * Parses value from String.
-     *
-     * @param value
-     * @param label label to be logged in case of error.
-     * @return
-     */
-    public static JsonNode readValue(String value, String label) {
-        return readValue(new StringReader(value), label);
-    }
-
-    /**
-     * Parses value from Reader.
-     *
-     * @param value
-     * @param label label to be logged in case of error.
-     * @return
-     */
-    public static JsonNode readValue(Reader value, String label) {
-        try {
-            return mapper.readTree(value);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Can not parse " + label + " value.", e);
-        }
-    }
 
     /**
      * Converts object to JSON.
@@ -69,34 +37,10 @@ public class JsonUtils {
      * @param label  label to be logged in case of error.
      * @return
      */
-    public static JsonNode convertToJson(Object source, String label) {
-        if (source == null) {
-            return NullNode.instance;
-        } else if (source instanceof JsonNode) {
-            return (JsonNode) source;
-        } else if (source instanceof String) {
-            return readValue((String) source, label);
-        } else if (source instanceof Reader) {
-            return readValue((Reader) source, label);
-        } else {
-            return mapper.convertValue(source, JsonNode.class);
-        }
+    public static Node convertToJson(Object source, String label) {
+        return converter.convertToNode(source, label);
     }
 
-    /**
-     * Converts object to JSON, quotes the String value if it is needed (not a valid JSON object)
-     *
-     * @param source
-     * @param label  label to be logged in case of error.
-     * @return
-     */
-    public static JsonNode convertToJsonQuoteIfNeeded(Object source, String label) {
-        if (source instanceof String) {
-            return convertToJson(quoteIfNeeded((String) source), label);
-        } else {
-            return convertToJson(source, label);
-        }
-    }
 
     /**
      * Returns node with given path.
@@ -105,12 +49,12 @@ public class JsonUtils {
      * @param path
      * @return
      */
-    static JsonNode getNode(JsonNode root, String path) {
+    static Node getNode(Node root, String path) {
         if (path.length() == 0) {
             return root;
         }
 
-        JsonNode startNode = root;
+        Node startNode = root;
         StringTokenizer stringTokenizer = new StringTokenizer(path, ".");
         while (stringTokenizer.hasMoreElements()) {
             String step = stringTokenizer.nextToken();
@@ -134,7 +78,7 @@ public class JsonUtils {
      * @param path
      * @return
      */
-    public static JsonNode getNode(Object root, String path) {
+    public static Node getNode(Object root, String path) {
         return getNode(convertToJson(root, "actual"), path);
     }
 
@@ -173,7 +117,7 @@ public class JsonUtils {
      * @param source
      * @return
      */
-    public static Object quoteIfNeeded(Object source) {
+    static Object quoteIfNeeded(Object source) {
         if (source instanceof String) {
             return quoteIfNeeded((String) source);
         } else {
@@ -209,5 +153,4 @@ public class JsonUtils {
         }
         return true;
     }
-
 }

@@ -36,6 +36,7 @@ public class Configuration {
 
     /**
      * Returns an empty configuration.
+     *
      * @return
      */
     public static Configuration empty() {
@@ -44,6 +45,7 @@ public class Configuration {
 
     /**
      * Sets numerical comparison tolerance.
+     *
      * @param tolerance
      * @return
      */
@@ -53,6 +55,7 @@ public class Configuration {
 
     /**
      * Sets numerical comparison tolerance.
+     *
      * @param tolerance
      * @return
      */
@@ -62,6 +65,7 @@ public class Configuration {
 
     /**
      * Adds comparison options.
+     *
      * @param first
      * @param next
      * @return
@@ -72,6 +76,7 @@ public class Configuration {
 
     /**
      * Adds comparison options.
+     *
      * @param first
      * @param next
      * @return
@@ -82,6 +87,7 @@ public class Configuration {
 
     /**
      * Sets comparison options.
+     *
      * @param options
      * @return
      */
@@ -91,6 +97,7 @@ public class Configuration {
 
     /**
      * Sets ignore placeholder.
+     *
      * @param ignorePlaceholder
      * @return
      */
