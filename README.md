@@ -1,7 +1,7 @@
 JsonUnit
 ===========
 
-JsonUnit is a library that simplifies JSON comparison in unit tests. It's strongly inspired by XmlUnit, although it much more primitive. The usage is
+JsonUnit is a library that simplifies JSON comparison in unit tests. It's strongly inspired by XmlUnit. The usage is
 simple:
 
     import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
@@ -110,7 +110,7 @@ For standard asserts and Hamcrest matchers, it is possible to set the configurat
 
     JsonAssert.setOptions(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_FIELDS);
 
-In fluent assertion, you can set options like this
+In fluent assertion, you can set options in the following way
 
     assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}")
         .when(IGNORING_EXTRA_FIELDS).isEqualTo("{\"test\":{\"b\":2}}");
@@ -143,15 +143,13 @@ framework to log `net.javacrumbs.jsonunit.difference` on DEBUG level.
 
 Maven dependency
 ----------------
-JsonUnit is accessible in Maven central repository
+JsonUnit is accessible in Maven central repository. In order for it to work, you need either, [Jackson](http://jackson.codehaus.org/) 1.x or 
+Jackson 2.x or [Gson](https://code.google.com/p/google-gson/) on the classpath.
 	
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit</artifactId>
-    	<!-- Jackson 2.x -->
-        <version>1.3.0</version>
-        <!-- Jackson 1.x -->
-        <!--<version>0.3.0</version>-->
+        <version>1.5.0</version>
     	<scope>test</scope>
 	</dependency>
 
@@ -160,16 +158,12 @@ To use fluent assertions:
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit-fluent</artifactId>
-        <!-- Jackson 2.x -->
-        <version>1.3.0</version>
-        <!-- Jackson 1.x -->
-        <!--<version>0.3.0</version>-->
+        <version>1.5.0</version>
     	<scope>test</scope>
 	</dependency>
 
 Licence
 -------
-JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/LICENSE-2.0). It's built on top 
-of [Jackson](http://jackson.codehaus.org/)
+JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/LICENSE-2.0).
 
 
