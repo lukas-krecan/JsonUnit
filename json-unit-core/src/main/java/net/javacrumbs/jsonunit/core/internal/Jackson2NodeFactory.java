@@ -29,7 +29,7 @@ import java.util.Map;
  * Deserializes node using Jackson 2
  */
 class Jackson2NodeFactory extends AbstractNodeFactory {
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     protected Node convertValue(Object source) {
@@ -49,8 +49,12 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
         }
     }
 
-    private static Jackson2Node newNode(JsonNode jsonNode) {
-        return new Jackson2Node(jsonNode);
+    private static Node newNode(JsonNode jsonNode) {
+        if (jsonNode != null) {
+            return new Jackson2Node(jsonNode);
+        } else {
+            return Node.MISSING_NODE;
+        }
     }
 
     public boolean isPreferredFor(Object source) {
@@ -64,16 +68,8 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
             this.jsonNode = jsonNode;
         }
 
-        public Node path(int index) {
+        public Node element(int index) {
             return newNode(jsonNode.path(index));
-        }
-
-        public Node path(String path) {
-            return newNode(jsonNode.path(path));
-        }
-
-        public boolean isMissingNode() {
-            return jsonNode.isMissingNode();
         }
 
         public Iterator<KeyValue> fields() {
@@ -98,11 +94,15 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
             return newNode(jsonNode.get(key));
         }
 
+        public boolean isMissingNode() {
+            return false;
+        }
+
         public boolean isNull() {
             return jsonNode.isNull();
         }
 
-        public Iterator<Node> elements() {
+        public Iterator<Node> arrayElements() {
             final Iterator<JsonNode> elements = jsonNode.elements();
             return new Iterator<Node>() {
                 public boolean hasNext() {
@@ -143,10 +143,6 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
 
         public BigDecimal decimalValue() {
             return jsonNode.decimalValue();
-        }
-
-        public Number numberValue() {
-            return jsonNode.numberValue();
         }
 
         public Boolean asBoolean() {

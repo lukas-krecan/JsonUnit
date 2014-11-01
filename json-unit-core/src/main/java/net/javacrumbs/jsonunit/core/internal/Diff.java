@@ -217,14 +217,16 @@ public class Diff {
                     compareValues(expectedNode.asText(), actualNode.asText(), fieldPath);
                     break;
                 case NUMBER:
+                    BigDecimal actualValue = actualNode.decimalValue();
+                    BigDecimal expectedValue = expectedNode.decimalValue();
                     if (configuration.getTolerance() != null && !hasOption(IGNORING_VALUES)) {
-                        BigDecimal diff = expectedNode.decimalValue().subtract(actualNode.decimalValue()).abs();
+                        BigDecimal diff = expectedValue.subtract(actualValue).abs();
                         if (diff.compareTo(configuration.getTolerance()) > 0) {
                             valueDifferenceFound("Different value found in node \"%s\". Expected %s, got %s, difference is %s, tolerance is %s",
-                                    fieldPath, quoteTextValue(expectedNode.numberValue()), quoteTextValue(actualNode.numberValue()), diff.toString(), configuration.getTolerance());
+                                    fieldPath, quoteTextValue(expectedValue), quoteTextValue(actualValue), diff.toString(), configuration.getTolerance());
                         }
                     } else {
-                        compareValues(expectedNode.numberValue(), actualNode.numberValue(), fieldPath);
+                        compareValues(expectedValue, actualValue, fieldPath);
                     }
                     break;
                 case BOOLEAN:
@@ -264,8 +266,8 @@ public class Diff {
 
 
     private void compareArrayNodes(Node expectedNode, Node actualNode, String path) {
-        List<Node> expectedElements = asList(expectedNode.elements());
-        List<Node> actualElements = asList(actualNode.elements());
+        List<Node> expectedElements = asList(expectedNode.arrayElements());
+        List<Node> actualElements = asList(actualNode.arrayElements());
         if (expectedElements.size() != actualElements.size()) {
             structureDifferenceFound("Array \"%s\" has different length. Expected %d, got %d.", path, expectedElements.size(), actualElements.size());
         }

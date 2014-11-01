@@ -85,37 +85,37 @@ public class JsonUtilsTest {
     @Test
     public void testGetStartNodeTwoSteps() throws IOException {
         Node startNode = getNode(mapper.readTree("{\"test\":{\"value\":1}}"), "test.value");
-        assertEquals(1, startNode.numberValue());
+        assertEquals(1, startNode.decimalValue().intValue());
     }
 
     @Test
     public void testGetStartNodeArrays() throws IOException {
         Node startNode = getNode(mapper.readTree("{\"test\":{\"values\":[1,2]}}"), "test.values[1]");
-        assertEquals(2, startNode.numberValue());
+        assertEquals(2, startNode.decimalValue().intValue());
     }
 
     @Test
     public void testGetStartNodeArrays2() throws IOException {
         Node startNode = getNode(mapper.readTree("{\"test\":[{\"values\":[1,2]}, {\"values\":[3,4]}]}"), "test[1].values[1]");
-        assertEquals(4, startNode.numberValue());
+        assertEquals(4, startNode.decimalValue().intValue());
     }
 
     @Test
     public void testGetStartNodeArraysRootComplex() throws IOException {
         Node startNode = getNode(mapper.readTree("[{\"values\":[1,2]}, {\"values\":[3,4]}]"), "[1].values[1]");
-        assertEquals(4, startNode.numberValue());
+        assertEquals(4, startNode.decimalValue().intValue());
     }
 
     @Test
     public void testGetStartNodeArraysConvoluted() throws IOException {
         Node startNode = getNode(mapper.readTree("{\"test\":[{\"values\":[1,2]}, {\"values\":[3,4]}]}"), "test.[1].values.[1]");
-        assertEquals(4, startNode.numberValue());
+        assertEquals(4, startNode.decimalValue().intValue());
     }
 
     @Test
     public void testGetStartNodeArraysRoot() throws IOException {
         Node startNode = getNode(mapper.readTree("[1,2]"), "[0]");
-        assertEquals(1, startNode.numberValue());
+        assertEquals(1, startNode.decimalValue().intValue());
     }
 
     @Test

@@ -15,29 +15,21 @@
  */
 package net.javacrumbs.jsonunit.test.all;
 
-import net.javacrumbs.jsonunit.test.base.AbstractJsonMatchersTest;
+import net.javacrumbs.jsonunit.test.base.AbstractJsonFluentAssertTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
 import org.junit.Test;
 
-import java.io.IOException;
-
-import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
-import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson1;
+import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
+import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByGson;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson2;
-import static org.junit.Assert.assertThat;
 
-public class AllJsonMatchersTest extends AbstractJsonMatchersTest {
+public class AllJsonFluentAssertTest extends AbstractJsonFluentAssertTest {
     @Test
-    public void testJsonNodeJackson1() throws IOException {
-        assertThat(readByJackson1("{\"test\":1}"), jsonEquals("{\"test\":1}"));
-    }
-
-    @Test
-    public void testJsonNodeJackson2() throws IOException {
-        assertThat(readByJackson2("{\"test\":1}"), jsonEquals("{\"test\":1}"));
+    public void testMixedGsonAndJackson() {
+        assertThatJson(readByGson("{\"test\":1}")).isEqualTo(readByJackson2("{\"test\": 1}"));
     }
 
     protected Object readValue(String value) {
-            return JsonTestUtils.readByJackson1(value);
-        }
+        return JsonTestUtils.readByJackson1(value);
+    }
 }

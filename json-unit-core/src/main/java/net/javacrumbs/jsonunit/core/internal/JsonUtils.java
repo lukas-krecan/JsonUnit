@@ -60,12 +60,12 @@ public class JsonUtils {
             String step = stringTokenizer.nextToken();
             Matcher matcher = arrayPattern.matcher(step);
             if (!matcher.matches()) {
-                startNode = startNode.path(step);
+                startNode = startNode.get(step);
             } else {
                 if (matcher.group(1).length() != 0) {
-                    startNode = startNode.path(matcher.group(1));
+                    startNode = startNode.get(matcher.group(1));
                 }
-                startNode = startNode.path(Integer.valueOf(matcher.group(2)));
+                startNode = startNode.element(Integer.valueOf(matcher.group(2)));
             }
         }
         return startNode;

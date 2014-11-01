@@ -33,6 +33,9 @@ class Converter {
             isClassPresent("com.fasterxml.jackson.databind.ObjectMapper") &&
                     isClassPresent("com.fasterxml.jackson.core.JsonGenerator");
 
+    private static final boolean gsonPresent =
+            isClassPresent("com.google.gson.Gson");
+
     Converter(List<NodeFactory> factories) {
         if (factories.isEmpty()) {
             throw new IllegalStateException("List of factories can not be empty");
@@ -52,11 +55,15 @@ class Converter {
             factories.add(new Jackson1NodeFactory());
         }
 
+        if (gsonPresent) {
+            factories.add(new GsonNodeFactory());
+        }
+
         if (jackson2Present) {
             factories.add(new Jackson2NodeFactory());
         }
         if (factories.isEmpty()) {
-            throw new IllegalStateException("Please add either Jackson 1.x or Jackson 2.x to the classpath");
+            throw new IllegalStateException("Please add either Jackson 1.x, Jackson 2.x or Gson to the classpath");
         }
         return new Converter(factories);
     }
@@ -84,7 +91,7 @@ class Converter {
      */
     static boolean isClassPresent(String className) {
         try {
-            JsonUtils.class.getClassLoader().loadClass(className);
+            Converter.class.getClassLoader().loadClass(className);
             return true;
         } catch (Throwable e) {
             return false;
