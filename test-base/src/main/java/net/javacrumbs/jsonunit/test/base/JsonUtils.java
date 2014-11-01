@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit;
+package net.javacrumbs.jsonunit.test.base;
 
 import java.io.IOException;
 

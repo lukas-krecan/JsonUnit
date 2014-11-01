@@ -5,6 +5,10 @@
     <artifactId>json-unit-parent</artifactId>
     <version>1.3.1-SNAPSHOT</version>
     <url>https://github.com/lukas-krecan/JsonUnit</url>
+    <properties>
+        <jackson1.version>1.9.13</jackson1.version>
+        <jackson2.version>2.3.1</jackson2.version>
+    </properties>
     <packaging>pom</packaging>
 
     <description>Unit testing library that can decide if to JSON documents are equal. Strongly inspired by XmlUnit.
@@ -28,14 +32,15 @@
         <module>json-unit-core</module>
         <module>json-unit</module>
         <module>json-unit-fluent</module>
+        <module>test-base</module>
+        <module>test-jackson1</module>
+        <module>test-jackson2</module>
     </modules>
 
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -48,16 +53,22 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-mapper-asl</artifactId>
-                <version>1.9.13</version>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>4.11</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-core</artifactId>
+                <version>1.3</version>
                 <optional>true</optional>
             </dependency>
             <dependency>
-                <groupId>com.fasterxml.jackson.core</groupId>
-                <artifactId>jackson-databind</artifactId>
-                <version>2.3.1</version>
-                <optional>true</optional>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-library</artifactId>
+                <version>1.3</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

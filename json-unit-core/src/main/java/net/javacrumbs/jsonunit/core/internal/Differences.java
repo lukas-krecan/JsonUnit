@@ -18,6 +18,9 @@ package net.javacrumbs.jsonunit.core.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * List of differences
+ */
 class Differences {
 
     private final List<String> messages = new ArrayList<String>();

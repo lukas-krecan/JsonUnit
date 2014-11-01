@@ -25,6 +25,9 @@ import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.Map;
 
+/**
+ * Deserializes node using Jackson 2
+ */
 class Jackson2NodeFactory extends AbstractNodeFactory {
     private static final ObjectMapper mapper = new ObjectMapper();
 

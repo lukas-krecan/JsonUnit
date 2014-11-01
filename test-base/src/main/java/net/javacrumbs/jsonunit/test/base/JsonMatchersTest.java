@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit;
+package net.javacrumbs.jsonunit.test.base;
 
-import net.javacrumbs.jsonunit.core.Option;
+import net.javacrumbs.jsonunit.JsonAssert;
 import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Test;
@@ -29,10 +29,9 @@ import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodePresent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonStringEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonStringPartEquals;
-import static net.javacrumbs.jsonunit.JsonUtils.readByJackson1;
-import static net.javacrumbs.jsonunit.JsonUtils.readByJackson2;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
+import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertEquals;
@@ -65,16 +64,6 @@ public class JsonMatchersTest {
 
     private void doAssertThat(String text, Matcher<String> matcher) {
         assertThat(text, matcher);
-    }
-
-    @Test
-    public void testJsonNodeJackson2() throws IOException {
-        assertThat(readByJackson2("{\"test\":1}"), jsonEquals("{\"test\":1}"));
-    }
-
-    @Test
-    public void testJsonNodeJackson1() throws IOException {
-        assertThat(readByJackson1("{\"test\":1}"), jsonEquals("{\"test\":1}"));
     }
 
     @Test
@@ -215,7 +204,7 @@ public class JsonMatchersTest {
 
     @Test
     public void testTreatNullAsAbsent() {
-        JsonAssert.setOptions(Option.TREATING_NULL_AS_ABSENT);
+        JsonAssert.setOptions(TREATING_NULL_AS_ABSENT);
         assertThat("{\"test\":{\"a\":1, \"b\": null}}", jsonEquals("{\"test\":{\"a\":1}}"));
     }
 }
