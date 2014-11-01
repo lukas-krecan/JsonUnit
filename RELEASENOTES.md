@@ -1,3 +1,7 @@
+## 1.5.0
+* One runtime now supports Jackson 1.x, Jackson 2.x and Gson
+* Internal JsonUnit class changed in backwards incompatible way
+
 ## 1.3.0 + 0.3.0
 * Options renamed
 * assertJsonNot* asserts added
