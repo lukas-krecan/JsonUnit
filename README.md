@@ -153,7 +153,7 @@ framework to log `net.javacrumbs.jsonunit.difference` on DEBUG level.
 Maven dependency
 ----------------
 JsonUnit is accessible in Maven central repository. In order for it to work, you need either, [Jackson](http://jackson.codehaus.org/) 1.x or 
-Jackson 2.x or [Gson](https://code.google.com/p/google-gson/) on the classpath.
+Jackson 2.x or [Gson](https://code.google.com/p/google-gson/) on the classpath. **Since 1.5.0 there is only one version for both versions of Jackson**
 	
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
