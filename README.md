@@ -13,7 +13,12 @@ simple:
 
     // compares only part
     assertJsonPartEquals("2", "{\"test\":[{\"value\":1},{\"value\":2}]}", "test[1].value");
-
+    
+    # extra options can be specified
+    assertJsonEquals("{\"test\":{\"a\":1}}",
+    		     "{\"test\":{\"a\":1, \"b\": null}}",
+        	     when(TREATING_NULL_AS_ABSENT));
+    
     // compares only the structure, not the values
     assertJsonStructureEquals("[{\"test\":1}, {\"test\":2}]", 
     			      "[{\n\"test\": 1\n}, {\"TEST\": 4}]")
@@ -31,6 +36,9 @@ You use Hamcrest matchers in the following way
     assertThat("{\"test\":1}", jsonEquals("{\"test\": 1}"));
     assertThat("{\"test\":1}", jsonPartEquals("test", 1));
     assertThat("{\"test\":[1, 2, 3]}", jsonPartEquals("test[0]", 1));
+    
+    assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
+               jsonEquals("{\"test\":{\"b\":2}}").when(IGNORING_EXTRA_FIELDS));
 
 Ignoring values
 ----------------
@@ -64,8 +72,9 @@ Fluent (FEST or AssertJ like) assertions are supported by a special module json-
     // ignores a value
     assertThatJson("{\"test\":1}").isEqualTo("{\"test\":\"${json-unit.ignore}\"}");
 
-    // ignores a value with a different placeholder
-    assertThatJson("{\"test\":1}").ignoring("##IGNORE##").isEqualTo("{\"test\":\"##IGNORE##\"}")
+    // ignores extra fields
+    assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}")
+    	.when(IGNORING_EXTRA_FIELDS).isEqualTo("{\"test\":{\"b\":2}}");
 
 Options
 ---------------
