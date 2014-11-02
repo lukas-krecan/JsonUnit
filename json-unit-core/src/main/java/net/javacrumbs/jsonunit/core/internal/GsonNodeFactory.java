@@ -35,7 +35,7 @@ import java.util.Map;
  * Deserializes node using Gson
  */
 class GsonNodeFactory extends AbstractNodeFactory {
-    private Gson gson = new Gson();
+    private final Gson gson = new Gson();
 
     @Override
     protected Node convertValue(Object source) {

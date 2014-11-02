@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 
 public class ConverterTest {
 
-    public static final String JSON = "{\"test\":1}";
+    private static final String JSON = "{\"test\":1}";
 
     @Test(expected = IllegalStateException.class)
     public void shouldFailIfNoConverterSet() {

@@ -44,7 +44,7 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
 public class JsonAssert {
     private static final String FULL_JSON = "fullJson";
     private static final String ACTUAL = "actual";
-    public static final String ROOT = "";
+    private static final String ROOT = "";
     private static Configuration configuration = Configuration.empty();
 
     private JsonAssert() {
