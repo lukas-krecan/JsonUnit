@@ -14,7 +14,7 @@ simple:
     // compares only part
     assertJsonPartEquals("2", "{\"test\":[{\"value\":1},{\"value\":2}]}", "test[1].value");
     
-    # extra options can be specified
+    // extra options can be specified
     assertJsonEquals("{\"test\":{\"a\":1}}",
     		     "{\"test\":{\"a\":1, \"b\": null}}",
         	     when(TREATING_NULL_AS_ABSENT));
