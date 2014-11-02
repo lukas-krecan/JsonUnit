@@ -32,7 +32,6 @@
         <module>json-unit-core</module>
         <module>json-unit</module>
         <module>json-unit-fluent</module>
-        <module>test-base</module>
         <module>tests</module>
     </modules>
 

@@ -7,12 +7,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>tests</artifactId>
     <version>1.5.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
+        <module>test-base</module>
         <module>test-jackson1</module>
         <module>test-jackson2</module>
         <module>test-gson</module>
