@@ -22,10 +22,9 @@ import java.util.Set;
 
 
 /**
- * Abstract node representation
+ * For internal use only!!! Abstract node representation.
  */
-interface Node {
-
+public interface Node {
 
     enum NodeType {OBJECT, ARRAY, STRING, NUMBER, BOOLEAN, NULL}
 
@@ -68,6 +67,10 @@ interface Node {
     }
 
     static final Node MISSING_NODE = new Node() {
+
+        public boolean isArray() {
+            return false;
+        }
 
         public Node element(int index) {
             return null;

@@ -18,13 +18,20 @@ package net.javacrumbs.jsonunit.fluent;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
+import net.javacrumbs.jsonunit.core.internal.Node;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import static net.javacrumbs.jsonunit.core.Option.COMPARING_ONLY_STRUCTURE;
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.ARRAY;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
 
 
 /**
@@ -85,9 +92,18 @@ public class JsonFluentAssert {
     /**
      * Compares JSON for equality. The expected object is converted to JSON
      * before comparison. Ignores order of sibling nodes and whitespaces.
+     * <p/>
+     * Please note that if you pass a String, it's parsed as JSON which can lead to an
+     * unexpected behavior. If you pass in "1" it is parsed as a JSON containing
+     * integer 1. If you compare it with a string it fails due to a different type.
+     * If you want to pass in real string you have to quote it "\"1\"" or use
+     * {@link #isStringEqualTo(String)}.
+     * <p/>
+     * If the string parameter is not a valid JSON, it is quoted automatically.
      *
      * @param expected
      * @return {@code this} object.
+     * @see #isStringEqualTo(String)
      */
     public JsonFluentAssert isEqualTo(Object expected) {
         Diff diff = createDiff(expected, configuration);
@@ -95,6 +111,19 @@ public class JsonFluentAssert {
             failWithMessage(diff.differences());
         }
         return this;
+    }
+
+
+    /**
+     * Fails if the selected JSON is not a String or is not present or the value
+     * is not equal to expected value.
+     */
+    public void isStringEqualTo(String expected) {
+        isString();
+        Node node = getNode(actual, path);
+        if (!node.asText().equals(expected)) {
+            failWithMessage("Node \"" + path + "\" is not equal to \"" + expected + "\".");
+        }
     }
 
     /**
@@ -249,5 +278,61 @@ public class JsonFluentAssert {
             failWithMessage("Node \"" + path + "\" is missing.");
         }
         return this;
+    }
+
+    /**
+     * Fails if the selected JSON is not an Array or is not present.
+     *
+     * @return
+     */
+    public ArrayAssert isArray() {
+        isPresent();
+        Node node = getNode(actual, path);
+        if (node.getNodeType() != ARRAY) {
+            failOnType(node, "an array");
+        }
+        return new ArrayAssert(node.arrayElements());
+    }
+
+    /**
+     * Fails if the selected JSON is not a String or is not present.
+     */
+    public void isString() {
+        isPresent();
+        Node node = getNode(actual, path);
+        if (node.getNodeType() != STRING) {
+            failOnType(node, "a string");
+        }
+    }
+
+    private void failOnType(Node node, final String type) {
+        failWithMessage("Node \"" + path + "\" is not " + type + ". The actual value is '" + node + "'.");
+    }
+
+    /**
+     * Array assertions
+     */
+    public class ArrayAssert {
+        private final List<Node> array;
+
+        public ArrayAssert(Iterator<Node> array) {
+            List<Node> list = new ArrayList<Node>();
+            while (array.hasNext()) {
+                list.add(array.next());
+            }
+            this.array = list;
+        }
+
+        /**
+         * Fails if the array has different length.
+         * @param expectedLength
+         * @return
+         */
+        public ArrayAssert ofLength(int expectedLength) {
+            if (array.size() != expectedLength) {
+                failWithMessage("Node \"" + path + "\" length is " + array.size() + ", expected length is " + expectedLength + ".");
+            }
+            return this;
+        }
     }
 }
