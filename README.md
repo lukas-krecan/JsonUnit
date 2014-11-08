@@ -75,6 +75,10 @@ Fluent (FEST or AssertJ like) assertions are supported by a special module json-
     // ignores extra fields
     assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}")
     	.when(IGNORING_EXTRA_FIELDS).isEqualTo("{\"test\":{\"b\":2}}");
+    	
+    // array length comparison
+    assertThatJson("{\"test\":[1,2,3]}").node("test")
+    	.isArray().ofLength(2);
 
 Options
 ---------------
@@ -158,7 +162,7 @@ Jackson 2.x or [Gson](https://code.google.com/p/google-gson/) on the classpath. 
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit</artifactId>
-        <version>1.5.0</version>
+        <version>1.5.1</version>
     	<scope>test</scope>
 	</dependency>
 
@@ -167,7 +171,7 @@ To use fluent assertions:
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit-fluent</artifactId>
-        <version>1.5.0</version>
+        <version>1.5.1</version>
     	<scope>test</scope>
 	</dependency>
 
