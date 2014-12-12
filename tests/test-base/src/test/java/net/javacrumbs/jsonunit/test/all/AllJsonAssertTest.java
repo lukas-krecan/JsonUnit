@@ -22,6 +22,9 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonStructureEquals;
+import static net.javacrumbs.jsonunit.JsonAssert.when;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByGson;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson1;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson2;
@@ -54,7 +57,7 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
     public void testEqualsNodeFailJackson1() throws IOException {
         try {
             assertJsonEquals(readByJackson1("{\"test\":1}"), "{\"test\": 2}");
-            fail("Exception expected");
+            failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected 1, got 2.\n", e.getMessage());
         }
@@ -64,9 +67,24 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
     public void testEqualsNodeFailGson() throws IOException {
         try {
             assertJsonEquals(readByGson("{\"test\":1}"), "{\"test\": 2}");
-            fail("Exception expected");
+            failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected 1, got 2.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAssertStructureEqualsDifferentValues() {
+        assertJsonStructureEquals("{\"test\": 3}", "{\"test\": {\"inner\": 5}}");
+    }
+
+    @Test
+    public void testAssertEqualsDifferentTypes() {
+        try {
+            assertJsonEquals("{\"test\": 3}", "{\"test\": {\"inner\": 5}}", when(IGNORING_VALUES));
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected '3', got '{\"inner\":5}'.\n", e.getMessage());
         }
     }
 
@@ -74,10 +92,14 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
     public void testEqualsNodeStringFail() throws IOException {
         try {
             assertJsonEquals("{\"test\":\"a\"}", readByJackson2("{\"test\": \"b\"}"));
-            fail("Exception expected");
+            failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected \"a\", got \"b\".\n", e.getMessage());
         }
+    }
+
+    private void failIfNoException() {
+        fail("Exception expected");
     }
 
     protected Object readValue(String value) {
