@@ -79,13 +79,18 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
     }
 
     @Test
-    public void testAssertEqualsDifferentTypes() {
+    public void assertEqualsDifferentTypesFailsOnDifferentTypes() {
         try {
             assertJsonEquals("{\"test\": 3}", "{\"test\": {\"inner\": 5}}", when(IGNORING_VALUES));
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected '3', got '{\"inner\":5}'.\n", e.getMessage());
         }
+    }
+
+    @Test
+    public void assertEqualsDifferentTypesPassesIfOnlyValuesDiffer() {
+        assertJsonEquals("{\"test\": {\"inner\": 3}}", "{\"test\": {\"inner\": 5}}", when(IGNORING_VALUES));
     }
 
     @Test
@@ -103,6 +108,6 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
     }
 
     protected Object readValue(String value) {
-            return JsonTestUtils.readByJackson1(value);
-        }
+        return JsonTestUtils.readByJackson1(value);
+    }
 }
