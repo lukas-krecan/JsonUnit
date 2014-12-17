@@ -203,7 +203,7 @@ public class Diff {
         }
 
         if (!expectedNodeType.equals(actualNodeType)) {
-            structureDifferenceFound("Different value found in node \"%s\". Expected '%s', got '%s'.", fieldPath, expectedNode, actualNode);
+            valueDifferenceFound("Different value found in node \"%s\". Expected '%s', got '%s'.", fieldPath, expectedNode, actualNode);
         } else {
             switch (expectedNodeType) {
                 case OBJECT:
