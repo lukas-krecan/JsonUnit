@@ -15,8 +15,10 @@
  */
 package net.javacrumbs.jsonunit.test.all;
 
+import net.javacrumbs.jsonunit.JsonAssert;
 import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
+
 import org.junit.Test;
 
 import java.io.IOException;
@@ -79,6 +81,29 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
             assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected \"a\", got \"b\".\n", e.getMessage());
         }
     }
+
+    @Test
+    public void testStructureEquals() {
+        JsonAssert.assertJsonStructureEquals( "{\"test\": 123}", "{\"test\": 412}");
+    }
+
+    @Test
+    public void testStructureNotEquals() {
+        try {
+            JsonAssert.assertJsonStructureEquals( "{\"test\": 123}", "{\"test\": {\"asd\": 23}}");
+
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected '123', got '{\"asd\":23}'.\n", e.getMessage());
+        }
+
+    }
+
+    @Test
+    public void testRegex() {
+        assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}", "{\"test\": \"ABCD\"}");
+    }
+
 
     protected Object readValue(String value) {
             return JsonTestUtils.readByJackson1(value);
