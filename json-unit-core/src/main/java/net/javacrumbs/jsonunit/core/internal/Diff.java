@@ -186,7 +186,6 @@ public class Diff {
         return buffer.toString();
     }
 
-
     /**
      * Compares two nodes.
      *
@@ -214,7 +213,7 @@ public class Diff {
                     compareArrayNodes(expectedNode, actualNode, fieldPath);
                     break;
                 case STRING:
-                    compareValues(expectedNode.asText(), actualNode.asText(), fieldPath);
+                    compareStringValues(expectedNode.asText(), actualNode.asText(), fieldPath);
                     break;
                 case NUMBER:
                     BigDecimal actualValue = actualNode.decimalValue();
@@ -241,6 +240,21 @@ public class Diff {
         }
     }
 
+    private void compareStringValues(String expectedValue, String actualValue, String path) {
+        if (hasOption(IGNORING_VALUES)) {
+            return;
+        }
+
+        if (expectedValue.startsWith(configuration.getRegexPlaceholder())) {
+            String pattern = expectedValue.substring(configuration.getRegexPlaceholder().length());
+            if (!actualValue.matches(pattern)) {
+                valueDifferenceFound("Different value found in node \"%s\". Pattern %s did not match against %s.", path, quoteTextValue(pattern), quoteTextValue(actualValue));
+            }
+        } else {
+            compareValues(expectedValue, actualValue, path);
+            return;
+        }
+    }
 
     private void compareValues(Object expectedValue, Object actualValue, String path) {
         if (!hasOption(IGNORING_VALUES)) {
