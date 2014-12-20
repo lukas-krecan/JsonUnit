@@ -223,19 +223,6 @@ public class JsonAssert {
     }
 
     /**
-     * Set's string that will be prefixed to a string marking it as a regex pattern. Default value is "${json-unit.regex}"
-     *
-     * @param ignorePlaceholder
-     */
-    public static void setRegexPlaceholder(String regexPlaceholder) {
-        configuration = configuration.withRegexPlaceholder(regexPlaceholder);
-    }
-
-    public static String getRegexPlaceholder() {
-        return configuration.getRegexPlaceholder();
-    }
-
-    /**
      * Sets the tolerance for floating number comparison. If set to null, requires exact match of the values.
      * For example, if set to 0.01, ignores all differences lower than 0.01, so 1 and 0.9999 are considered equal.
      *

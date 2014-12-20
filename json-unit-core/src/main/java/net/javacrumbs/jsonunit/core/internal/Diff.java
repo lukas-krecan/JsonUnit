@@ -20,6 +20,7 @@ import net.javacrumbs.jsonunit.core.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.String;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,6 +50,7 @@ import static net.javacrumbs.jsonunit.core.internal.Node.NodeType;
  * @author Lukas Krecan
  */
 public class Diff {
+    private static final String REGEX_PLACEHOLDER = "${json-unit.regex}";
     private final Node expectedRoot;
     private final Node actualRoot;
     private final Differences differences = new Differences();
@@ -244,16 +246,22 @@ public class Diff {
         if (hasOption(IGNORING_VALUES)) {
             return;
         }
-
-        if (expectedValue.startsWith(configuration.getRegexPlaceholder())) {
-            String pattern = expectedValue.substring(configuration.getRegexPlaceholder().length());
+        if (isRegexExpected(expectedValue)) {
+            String pattern = getRegexPattern(expectedValue);
             if (!actualValue.matches(pattern)) {
-                valueDifferenceFound("Different value found in node \"%s\". Pattern %s did not match against %s.", path, quoteTextValue(pattern), quoteTextValue(actualValue));
+                valueDifferenceFound("Different value found in node \"%s\". Pattern %s did not match %s.", path, quoteTextValue(pattern), quoteTextValue(actualValue));
             }
         } else {
             compareValues(expectedValue, actualValue, path);
-            return;
         }
+    }
+
+    private String getRegexPattern(String expectedValue) {
+        return expectedValue.substring(REGEX_PLACEHOLDER.length());
+    }
+
+    private boolean isRegexExpected(String expectedValue) {
+        return expectedValue.startsWith(REGEX_PLACEHOLDER);
     }
 
     private void compareValues(Object expectedValue, Object actualValue, String path) {

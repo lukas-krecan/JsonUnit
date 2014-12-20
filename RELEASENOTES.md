@@ -1,3 +1,6 @@
+## 1.5.2
+*  Added support for regular expressions
+
 ## 1.5.1
 * isStringEqualTo() added to fluent assertions
 * isArray  added to fluent assertions

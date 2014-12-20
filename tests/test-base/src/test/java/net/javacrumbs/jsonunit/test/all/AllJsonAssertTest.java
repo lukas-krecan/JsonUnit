@@ -18,7 +18,6 @@ package net.javacrumbs.jsonunit.test.all;
 import net.javacrumbs.jsonunit.JsonAssert;
 import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
-
 import org.junit.Test;
 
 import java.io.IOException;
@@ -105,25 +104,9 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
         }
     }
 
-    private void failIfNoException() {
-        fail("Exception expected");
-    }
-
     @Test
     public void testStructureEquals() {
-        JsonAssert.assertJsonStructureEquals( "{\"test\": 123}", "{\"test\": 412}");
-    }
-
-    @Test
-    public void testStructureNotEquals() {
-        try {
-            JsonAssert.assertJsonStructureEquals( "{\"test\": 123}", "{\"test\": {\"asd\": 23}}");
-
-            fail("Exception expected");
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected '123', got '{\"asd\":23}'.\n", e.getMessage());
-        }
-
+        JsonAssert.assertJsonStructureEquals("{\"test\": 123}", "{\"test\": 412}");
     }
 
     @Test
@@ -131,7 +114,55 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
         assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}", "{\"test\": \"ABCD\"}");
     }
 
+    @Test
+    public void regexShouldFail() {
+        try {
+            assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}", "{\"test\": \"123\"}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                    "Different value found in node \"test\". Pattern \"[A-Z]+\" did not match \"123\".\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void regexShouldFailOnNullGracefully() {
+        try {
+            assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}", "{\"test\": null}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                    "Different value found in node \"test\". Expected '\"${json-unit.regex}[A-Z]+\"', got 'null'.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void regexShouldFailOnNumberGracefully() {
+        try {
+            assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}", "{\"test\": 123}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                    "Different value found in node \"test\". Expected '\"${json-unit.regex}[A-Z]+\"', got '123'.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void regexShouldFailOnNonexistingGracefully() {
+        try {
+            assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}", "{\"test2\": 123}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                    "Different keys found in node \"\". Expected [test], got [test2]. Missing: \"test\" Extra: \"test2\"\n", e.getMessage());
+        }
+    }
+
     protected Object readValue(String value) {
         return JsonTestUtils.readByJackson1(value);
+    }
+
+    private void failIfNoException() {
+        fail("Exception expected");
     }
 }

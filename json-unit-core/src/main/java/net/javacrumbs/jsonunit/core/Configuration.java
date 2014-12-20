@@ -23,17 +23,15 @@ import java.math.BigDecimal;
  * Comparison configuration. Immutable.
  */
 public class Configuration {
-    private static final Configuration EMPTY_CONFIGURATION = new Configuration(null, Options.empty(), "${json-unit.ignore}", "${json-unit.regex}");
+    private static final Configuration EMPTY_CONFIGURATION = new Configuration(null, Options.empty(), "${json-unit.ignore}");
     private final BigDecimal tolerance;
     private final Options options;
     private final String ignorePlaceholder;
-    private final String regexPlaceholder;
 
-    public Configuration(BigDecimal tolerance, Options options, String ignorePlaceholder, String regexPlaceholder) {
+    public Configuration(BigDecimal tolerance, Options options, String ignorePlaceholder) {
         this.tolerance = tolerance;
         this.options = options;
         this.ignorePlaceholder = ignorePlaceholder;
-        this.regexPlaceholder = regexPlaceholder;
     }
 
     /**
@@ -52,7 +50,7 @@ public class Configuration {
      * @return
      */
     public Configuration withTolerance(BigDecimal tolerance) {
-        return new Configuration(tolerance, options, ignorePlaceholder, regexPlaceholder);
+        return new Configuration(tolerance, options, ignorePlaceholder);
     }
 
     /**
@@ -84,7 +82,7 @@ public class Configuration {
      * @return
      */
     public Configuration withOptions(Option first, Option... next) {
-        return new Configuration(tolerance, options.with(first, next), ignorePlaceholder, regexPlaceholder);
+        return new Configuration(tolerance, options.with(first, next), ignorePlaceholder);
     }
 
     /**
@@ -94,7 +92,7 @@ public class Configuration {
      * @return
      */
     public Configuration withOptions(Options options) {
-        return new Configuration(tolerance, options, ignorePlaceholder, regexPlaceholder);
+        return new Configuration(tolerance, options, ignorePlaceholder);
     }
 
     /**
@@ -104,17 +102,7 @@ public class Configuration {
      * @return
      */
     public Configuration withIgnorePlaceholder(String ignorePlaceholder) {
-        return new Configuration(tolerance, options, ignorePlaceholder, regexPlaceholder);
-    }
-
-    /**
-     * Set the regex placeholder
-     *
-     * @param ignorePlaceholder
-     * @return
-     */
-    public Configuration withRegexPlaceholder(String regexPlaceholder) {
-        return new Configuration(tolerance, options, ignorePlaceholder, regexPlaceholder);
+        return new Configuration(tolerance, options, ignorePlaceholder);
     }
 
     public BigDecimal getTolerance() {
@@ -127,9 +115,5 @@ public class Configuration {
 
     public String getIgnorePlaceholder() {
         return ignorePlaceholder;
-    }
-
-    public String getRegexPlaceholder() {
-        return regexPlaceholder;
     }
 }
