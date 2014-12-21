@@ -36,16 +36,16 @@ import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
 
 /**
  * Contains JSON related fluent assertions inspired by FEST or AssertJ. Typical usage is:
- * <p/>
+ *
  * <code>
  * assertThatJson("{\"test\":1}").isEqualTo("{\"test\":2}");
  * assertThatJson("{\"test\":1}").hasSameStructureAs("{\"test\":21}");
  * assertThatJson("{\"root\":{\"test\":1}}").node("root.test").isEqualTo("2");
  * </code>
- * <p/>
+ *
  * Please note that the method name is assertThatJson and not assertThat. The reason is that we need to accept String parameter
  * and do not want to override standard FEST or AssertJ assertThat(String) method.
- * <p/>
+ *
  * All the methods accept Objects as parameters. The supported types are:
  * <ol>
  * <li>Jackson JsonNode</li>
@@ -92,13 +92,13 @@ public class JsonFluentAssert {
     /**
      * Compares JSON for equality. The expected object is converted to JSON
      * before comparison. Ignores order of sibling nodes and whitespaces.
-     * <p/>
+     *
      * Please note that if you pass a String, it's parsed as JSON which can lead to an
      * unexpected behavior. If you pass in "1" it is parsed as a JSON containing
      * integer 1. If you compare it with a string it fails due to a different type.
      * If you want to pass in real string you have to quote it "\"1\"" or use
      * {@link #isStringEqualTo(String)}.
-     * <p/>
+     *
      * If the string parameter is not a valid JSON, it is quoted automatically.
      *
      * @param expected
@@ -158,7 +158,7 @@ public class JsonFluentAssert {
     /**
      * Creates an assert object that only compares given node.
      * The path is denoted by JSON path, for example.
-     * <p/>
+     *
      * <code>
      * assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[0]").isEqualTo("1");
      * </code>
@@ -251,7 +251,7 @@ public class JsonFluentAssert {
      * details see {@link net.javacrumbs.jsonunit.core.Option}
      *
      * @param firstOption
-     * @param rest
+     * @param otherOptions
      * @see net.javacrumbs.jsonunit.core.Option
      */
     public JsonFluentAssert when(Option firstOption, Option... otherOptions) {

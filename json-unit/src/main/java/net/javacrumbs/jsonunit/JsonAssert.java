@@ -29,7 +29,7 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
 
 /**
  * Assertions for comparing JSON. The comparison ignores white-spaces and order of nodes.
- * <p/>
+ *
  * All the methods accept Objects as parameters. The supported types are:
  * <ol>
  * <li>Jackson JsonNode</li>
@@ -102,7 +102,6 @@ public class JsonAssert {
      *
      * @param expected
      * @param fullJson
-     * @param path
      */
     public static void assertJsonNotEquals(Object expected, Object fullJson) {
         assertJsonNotEquals(expected, fullJson, configuration);
@@ -113,7 +112,7 @@ public class JsonAssert {
      *
      * @param expected
      * @param fullJson
-     * @param path
+     * @param configuration
      */
     public static void assertJsonNotEquals(Object expected, Object fullJson, Configuration configuration) {
         assertJsonPartNotEquals(expected, fullJson, ROOT, configuration);
@@ -315,7 +314,8 @@ public class JsonAssert {
     /**
      * Creates empty configuration and sets options.
      *
-     * @param tolerance
+     * @param first
+     * @param next
      */
     public static Configuration when(Option first, Option... next) {
         return Configuration.empty().withOptions(first, next);

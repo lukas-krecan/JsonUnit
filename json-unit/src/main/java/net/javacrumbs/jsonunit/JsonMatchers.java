@@ -30,7 +30,7 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
 
 /**
  * Contains Hamcrest matchers to be used with Hamcrest assertThat and other tools.
- * <p/>
+ *
  * All the methods accept Objects as parameters. The supported types are:
  * <ol>
  * <li>Jackson JsonNode</li>
@@ -63,7 +63,7 @@ public class JsonMatchers {
 
     /**
      * Are the JSONs equivalent?
-     * <p/>
+     *
      * This method exist only for those cases, when you need to use it as Matcher&lt;String&gt; and Java refuses to
      * do the type inference correctly.
      *
@@ -76,7 +76,7 @@ public class JsonMatchers {
 
     /**
      * Is the part of the JSON equivalent?
-     * <p/>
+     *
      * This method exist only for those cases, when you need to use it as Matcher&lt;String&gt; and Java refuses to
      * do the type inference correctly.
      *

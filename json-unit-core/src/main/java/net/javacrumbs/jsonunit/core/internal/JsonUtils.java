@@ -85,7 +85,7 @@ public class JsonUtils {
     /**
      * Returns true if the node exists.
      *
-     * @param root
+     * @param json
      * @param path
      * @return
      */
