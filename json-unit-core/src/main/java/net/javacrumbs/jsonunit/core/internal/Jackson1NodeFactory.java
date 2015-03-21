@@ -17,10 +17,16 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.introspect.AnnotatedClass;
+import org.codehaus.jackson.map.introspect.AnnotatedMethod;
+import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
+import org.codehaus.jackson.map.introspect.MethodFilter;
 import org.codehaus.jackson.node.NullNode;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.Map;
@@ -29,8 +35,10 @@ import java.util.Map;
  * Deserializes node using Jackson 1
  */
 class Jackson1NodeFactory extends AbstractNodeFactory {
-    private final ObjectMapper mapper = new ObjectMapper();
+    private static final JacksonAnnotationIntrospector ANNOTATION_INTROSPECTOR = new JacksonAnnotationIntrospector();
+    private static final MinimalMethodFilter MINIMAL_METHOD_FILTER = new MinimalMethodFilter();
 
+    private final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     protected Node convertValue(Object source) {
@@ -59,7 +67,26 @@ class Jackson1NodeFactory extends AbstractNodeFactory {
     }
 
     public boolean isPreferredFor(Object source) {
-        return source instanceof JsonNode;
+        return source instanceof JsonNode || hasJackson1Annotations(source);
+    }
+
+    private boolean hasJackson1Annotations(Object source) {
+        if (source == null) {
+            return false;
+        }
+        AnnotatedClass annotatedClass = AnnotatedClass.construct(source.getClass(), ANNOTATION_INTROSPECTOR, mapper.getSerializationConfig());
+        return annotatedClass.getAnnotations().size() > 0 || hasAnnotationOnMethod(annotatedClass);
+    }
+
+    private boolean hasAnnotationOnMethod(AnnotatedClass annotatedClass) {
+        annotatedClass.resolveMemberMethods(MINIMAL_METHOD_FILTER);
+        Iterable<AnnotatedMethod> annotatedMethods = annotatedClass.memberMethods();
+        for (AnnotatedMethod method : annotatedMethods) {
+            if (method.getAnnotationCount() > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     static final class Jackson1Node implements Node {
@@ -153,6 +180,16 @@ class Jackson1NodeFactory extends AbstractNodeFactory {
         @Override
         public String toString() {
             return jsonNode.toString();
+        }
+    }
+
+    private static class MinimalMethodFilter implements MethodFilter {
+        public boolean includeMethod(Method m) {
+            if (Modifier.isStatic(m.getModifiers())) {
+                return false;
+            }
+            int pcount = m.getParameterTypes().length;
+            return (pcount <= 2);
         }
     }
 }

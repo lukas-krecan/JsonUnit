@@ -18,6 +18,8 @@ package net.javacrumbs.jsonunit.test.all;
 import net.javacrumbs.jsonunit.JsonAssert;
 import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
+import net.javacrumbs.jsonunit.test.base.beans.Jackson1Bean;
+import net.javacrumbs.jsonunit.test.base.beans.Jackson1IgnorepropertyBean;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -156,6 +158,16 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
             assertEquals("JSON documents are different:\n" +
                     "Different keys found in node \"\". Expected [test], got [test2]. Missing: \"test\" Extra: \"test2\"\n", e.getMessage());
         }
+    }
+
+    @Test
+    public void shouldSerializeBasedOnAnnotation() {
+        assertJsonEquals("{\"bean\": {\"property\": \"value\"}}", new Jackson1Bean("value"));
+    }
+
+    @Test
+    public void shouldSerializeBasedOnMethodAnnotation() {
+        assertJsonEquals("{\"property\": \"value\"}", new Jackson1IgnorepropertyBean("value"));
     }
 
     protected Object readValue(String value) {

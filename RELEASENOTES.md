@@ -1,3 +1,6 @@
+## 1.5.3
+* Jackson 1 is preferred if the serialized class contains Jackson1 annotation
+
 ## 1.5.2
 *  Added support for regular expressions
 
