@@ -71,7 +71,7 @@ class Converter {
     public Node convertToNode(Object source, String label) {
         for (int i = 0; i < factories.size(); i++) {
             NodeFactory factory = factories.get(i);
-            if (factory.isPreferredFor(source) || isLastFactory(i)) {
+            if (isLastFactory(i) || factory.isPreferredFor(source)) {
                 return factory.convertToNode(source, label);
             }
         }
