@@ -372,6 +372,31 @@ public abstract class AbstractJsonFluentAssertTest {
         assertThatJson("{\"test\":[1,2,3]}").node("test").isArray().ofLength(3);
     }
 
+    @Test
+    public void isObjectShouldPassOnObject() {
+        assertThatJson("{\"test\":{\"a\":true}}").node("test").isObject();
+    }
+
+    @Test
+    public void isObjectShouldFailOnBoolean() {
+        try {
+            assertThatJson("{\"test\":{\"a\":true}}").node("test.a").isObject();
+            expectException();
+        } catch (AssertionError e) {
+            assertEquals("Node \"test.a\" is not an object. The actual value is 'true'.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void isObjectShouldFailOnMissing() {
+        try {
+            assertThatJson("{\"test\":{\"a\":true}}").node("test.b").isObject();
+            expectException();
+        } catch (AssertionError e) {
+            assertEquals("Node \"test.b\" is missing.", e.getMessage());
+        }
+    }
+
 
     @Test(expected = AssertionError.class)
     public void testNotEqualsToToArray() {

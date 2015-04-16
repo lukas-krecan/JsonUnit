@@ -31,6 +31,7 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.ARRAY;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
 
 
@@ -292,6 +293,19 @@ public class JsonFluentAssert {
             failOnType(node, "an array");
         }
         return new ArrayAssert(node.arrayElements());
+    }
+
+    /**
+     * Fails if the selected JSON is not an Object or is not present.
+     *
+     * @return
+     */
+    public void isObject() {
+        isPresent();
+        Node node = getNode(actual, path);
+        if (node.getNodeType() != OBJECT) {
+            failOnType(node, "an object");
+        }
     }
 
     /**

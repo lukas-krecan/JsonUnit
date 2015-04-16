@@ -1,3 +1,6 @@
+## 1.5.4
+* Added isObject method to fluent assertions
+
 ## 1.5.3
 * Jackson 1 is preferred if the serialized class contains Jackson1 annotation
 
