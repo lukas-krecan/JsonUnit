@@ -162,7 +162,7 @@ Jackson 2.x or [Gson](https://code.google.com/p/google-gson/) on the classpath. 
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit</artifactId>
-        <version>1.5.3</version>
+        <version>1.5.4</version>
     	<scope>test</scope>
 	</dependency>
 
@@ -171,7 +171,7 @@ To use fluent assertions:
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit-fluent</artifactId>
-        <version>1.5.3</version>
+        <version>1.5.4</version>
     	<scope>test</scope>
 	</dependency>
 
