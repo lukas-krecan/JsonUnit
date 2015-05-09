@@ -16,7 +16,6 @@
 package net.javacrumbs.jsonunit.core.internal;
 
 
-import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,12 +24,17 @@ import java.util.regex.Pattern;
  */
 public class JsonUtils {
 
-    private static final Pattern arrayPattern = Pattern.compile("(\\w*)\\[(\\d+)\\]");
+	private static final Pattern arrayPattern = Pattern.compile("(\\w*)\\[(\\d+)\\]");
+
+	/**
+	 * We need to ignore "\." when splitting path.
+	 */
+	public static final Pattern dotWithPreviousChar = Pattern.compile("[^\\\\]\\.");
 
     private static final Converter converter = Converter.createDefaultConverter();
 
 
-    /**
+	/**
      * Converts object to JSON.
      *
      * @param source
@@ -55,23 +59,32 @@ public class JsonUtils {
         }
 
         Node startNode = root;
-        StringTokenizer stringTokenizer = new StringTokenizer(path, ".");
-        while (stringTokenizer.hasMoreElements()) {
-            String step = stringTokenizer.nextToken();
-            Matcher matcher = arrayPattern.matcher(step);
-            if (!matcher.matches()) {
-                startNode = startNode.get(step);
-            } else {
-                if (matcher.group(1).length() != 0) {
-                    startNode = startNode.get(matcher.group(1));
-                }
-                startNode = startNode.element(Integer.valueOf(matcher.group(2)));
-            }
-        }
+		Matcher pathMatcher = dotWithPreviousChar.matcher(path);
+		int pos = 0;
+		while (pathMatcher.find()) {
+			String step = path.substring(pos, pathMatcher.end() - 1);
+			pos = pathMatcher.end();
+			startNode = doStep(step, startNode);
+		}
+		startNode = doStep(path.substring(pos), startNode);
         return startNode;
     }
 
-    /**
+	private static Node doStep(String step, Node startNode) {
+		step = step.replaceAll("\\\\.", ".");
+		Matcher matcher = arrayPattern.matcher(step);
+		if (!matcher.matches()) {
+			startNode = startNode.get(step);
+		} else {
+			if (matcher.group(1).length() != 0) {
+				startNode = startNode.get(matcher.group(1));
+			}
+			startNode = startNode.element(Integer.valueOf(matcher.group(2)));
+		}
+		return startNode;
+	}
+
+	/**
      * Returns node with given path.
      *
      * @param root

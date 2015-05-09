@@ -132,4 +132,9 @@ public class JsonUtilsTest {
         assertFalse(nodeExists(json, "test.nonsense"));
         assertFalse(nodeExists(json, "root"));
     }
+
+	@Test
+	public void shouldIgnoreEscapedDot() throws IOException {
+		assertTrue(nodeExists("{\"test.1\":{\"value\":1}}", "test\\.1"));
+	}
 }

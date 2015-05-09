@@ -397,7 +397,6 @@ public abstract class AbstractJsonFluentAssertTest {
         }
     }
 
-
     @Test(expected = AssertionError.class)
     public void testNotEqualsToToArray() {
         assertThatJson("{\"test\":[1,2,3]}").node("test").isNotEqualTo(new int[]{1, 2, 3});
@@ -464,6 +463,21 @@ public abstract class AbstractJsonFluentAssertTest {
         assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}").when(IGNORING_EXTRA_FIELDS).isEqualTo("{\"test\":{\"b\":2}}");
     }
 
+    @Test
+    public void shouldAcceptEscapedPath() {
+        assertThatJson("{\"foo.bar\":\"baz\"}").node("foo\\.bar").isEqualTo("baz");
+    }
+
+    @Test
+    public void shouldAcceptEscapedPathAndShowCorrectErrorMessage() {
+        try {
+            assertThatJson("{\"foo.bar\":\"boo\"}").node("foo\\.bar").isEqualTo("baz");
+            expectException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                    "Different value found in node \"foo\\.bar\". Expected \"baz\", got \"boo\".\n", e.getMessage());
+        }
+    }
 
     private void expectException() {
         fail("Exception expected");

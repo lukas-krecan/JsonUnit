@@ -1,3 +1,6 @@
+## 1.5.5
+* Support for dot in node name
+
 ## 1.5.4
 * Added isObject method to fluent assertions
 
