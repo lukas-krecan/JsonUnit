@@ -297,8 +297,6 @@ public class JsonFluentAssert {
 
     /**
      * Fails if the selected JSON is not an Object or is not present.
-     *
-     * @return
      */
     public void isObject() {
         isPresent();
