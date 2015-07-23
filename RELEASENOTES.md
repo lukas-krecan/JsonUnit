@@ -1,3 +1,6 @@
+## 1.5.6
+* Fixed handling of empty value in the expected parameter
+
 ## 1.5.5
 * Support for dot in node name
 

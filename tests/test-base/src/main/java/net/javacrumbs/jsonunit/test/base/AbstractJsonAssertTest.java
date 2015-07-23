@@ -113,6 +113,16 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
+    public void testEmptyValues() {
+        assertJsonEquals("", "");
+    }
+
+    @Test
+    public void testNulls() {
+        assertJsonEquals(null, null);
+    }
+
+    @Test
     public void testNotEqualWhenToleranceNotSet() {
         try {
             assertJsonEquals("1", "\n1.0\n");

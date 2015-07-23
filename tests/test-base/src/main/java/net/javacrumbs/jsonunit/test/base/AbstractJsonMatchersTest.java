@@ -56,6 +56,18 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
+    public void shouldNotFailOnEmptyInput() {
+        try {
+            assertThat("", jsonEquals("{\"test\":1}"));
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("\nExpected: {\"test\":1}\n" +
+                    "     but: JSON documents are different:\n" +
+                    "Different value found in node \"\". Expected '{\"test\":1}', got '\"\"'.\n", e.getMessage());
+        }
+    }
+
+    @Test
     public void testGenericsStringInference() {
         doAssertThat("{\"test\":1}", jsonStringPartEquals("test", "1"));
         doAssertThat("{\"test\":1}", jsonStringEquals("{\"test\" : 1}"));

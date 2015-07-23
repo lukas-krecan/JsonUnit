@@ -469,6 +469,11 @@ public abstract class AbstractJsonFluentAssertTest {
     }
 
     @Test
+    public void shouldAcceptEscapedPathWithTwoDots() {
+        assertThatJson("{\"foo.bar.baz\":\"baz\"}").node("foo\\.bar\\.baz").isEqualTo("baz");
+    }
+
+    @Test
     public void shouldAcceptEscapedPathAndShowCorrectErrorMessage() {
         try {
             assertThatJson("{\"foo.bar\":\"boo\"}").node("foo\\.bar").isEqualTo("baz");
