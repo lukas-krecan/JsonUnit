@@ -61,7 +61,7 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
         return source instanceof JsonNode;
     }
 
-    static final class Jackson2Node implements Node {
+    static final class Jackson2Node extends AbstractNode {
         private final JsonNode jsonNode;
 
         public Jackson2Node(JsonNode jsonNode) {

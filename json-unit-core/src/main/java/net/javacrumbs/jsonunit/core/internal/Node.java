@@ -18,7 +18,12 @@ package net.javacrumbs.jsonunit.core.internal;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.Set;
+
+import static java.util.Collections.unmodifiableMap;
 
 
 /**
@@ -26,7 +31,52 @@ import java.util.Set;
  */
 public interface Node {
 
-    enum NodeType {OBJECT, ARRAY, STRING, NUMBER, BOOLEAN, NULL}
+    enum NodeType implements ValueExtractor {
+        OBJECT {
+            public Object getValue(Node node) {
+                // custom conversion to map. We want be consistent and native mapping may have different rules for
+                // serializing numbers, dates etc.
+                Map<String, Object> result = new LinkedHashMap<String, Object>();
+                Iterator<KeyValue> fields = node.fields();
+                while (fields.hasNext()) {
+                    KeyValue keyValue = fields.next();
+                    result.put(keyValue.getKey(), keyValue.getValue().getValue());
+                }
+                return unmodifiableMap(result);
+            }
+        },
+        ARRAY {
+            public Object getValue(Node node) {
+                Iterator<Node> nodeIterator = node.arrayElements();
+                LinkedList<Object> result = new LinkedList<Object>();
+                while (nodeIterator.hasNext()) {
+                    Node arrayNode = nodeIterator.next();
+                    result.add(arrayNode.getValue());
+                }
+                return result;
+            }
+        },
+        STRING {
+            public Object getValue(Node node) {
+                return node.asText();
+            }
+        },
+        NUMBER {
+            public Object getValue(Node node) {
+                return node.decimalValue();
+            }
+        },
+        BOOLEAN {
+            public Object getValue(Node node) {
+                return node.asBoolean();
+            }
+        },
+        NULL {
+            public Object getValue(Node node) {
+                return null;
+            }
+        };
+    }
 
     Node element(int index);
 
@@ -48,6 +98,10 @@ public interface Node {
 
     Boolean asBoolean();
 
+    Object getValue();
+
+    void ___do_not_implement_this_interface_seriously();
+
     static class KeyValue {
         private final String key;
         private final Node value;
@@ -67,7 +121,6 @@ public interface Node {
     }
 
     static final Node MISSING_NODE = new Node() {
-
         public boolean isArray() {
             return false;
         }
@@ -113,5 +166,14 @@ public interface Node {
         public Boolean asBoolean() {
             throw new UnsupportedOperationException();
         }
+
+        public Object getValue() {
+            throw new UnsupportedOperationException();
+        }
+
+        public void ___do_not_implement_this_interface_seriously() {}
     };
+    static interface ValueExtractor {
+        public Object getValue(Node node);
+    }
 }

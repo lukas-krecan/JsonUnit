@@ -38,7 +38,7 @@ class Jackson1NodeFactory extends AbstractNodeFactory {
     private static final JacksonAnnotationIntrospector ANNOTATION_INTROSPECTOR = new JacksonAnnotationIntrospector();
     private static final MinimalMethodFilter MINIMAL_METHOD_FILTER = new MinimalMethodFilter();
 
-    private final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     protected Node convertValue(Object source) {
@@ -89,7 +89,7 @@ class Jackson1NodeFactory extends AbstractNodeFactory {
         return false;
     }
 
-    static final class Jackson1Node implements Node {
+    static final class Jackson1Node extends AbstractNode {
         private final JsonNode jsonNode;
 
         public Jackson1Node(JsonNode jsonNode) {

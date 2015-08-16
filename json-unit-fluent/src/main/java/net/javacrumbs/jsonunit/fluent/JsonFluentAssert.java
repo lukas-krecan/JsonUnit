@@ -19,6 +19,7 @@ import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Node;
+import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.ARRAY;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 
 /**
@@ -319,6 +321,30 @@ public class JsonFluentAssert {
 
     private void failOnType(Node node, final String type) {
         failWithMessage("Node \"" + path + "\" is not " + type + ". The actual value is '" + node + "'.");
+    }
+
+
+    /**
+     * Matches the node using Hamcrest matcher.
+     *
+     * <ul>
+     *     <li>Numbers are mapped to BigDecimal</li>
+     *     <li>Arrays are mapped to and Iterable</li>
+     *     <li>Objects are mapped to a map so you can use json(Part)Equals or a Map matcher</li>
+     * </ul>
+     *
+     * @param matcher
+     * @return
+     */
+    public JsonFluentAssert matches(Matcher<?> matcher) {
+        isPresent();
+        match(actual, path, matcher);
+        return this;
+    }
+
+    private static void match(Object value, String path, Matcher<?> matcher) {
+        Node node = getNode(value, path);
+        assertThat("Node \"" + path + "\" does not match.", node.getValue(), (Matcher<? super Object>) matcher);
     }
 
     /**

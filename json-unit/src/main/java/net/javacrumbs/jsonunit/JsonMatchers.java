@@ -18,9 +18,11 @@ package net.javacrumbs.jsonunit;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
+import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Options;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
 
@@ -30,7 +32,7 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
 
 /**
  * Contains Hamcrest matchers to be used with Hamcrest assertThat and other tools.
- *
+ * <p/>
  * All the methods accept Objects as parameters. The supported types are:
  * <ol>
  * <li>Jackson JsonNode</li>
@@ -62,8 +64,18 @@ public class JsonMatchers {
     }
 
     /**
-     * Are the JSONs equivalent?
+     * Applies matcher to the part of the JSON.
      *
+     * @param expected
+     * @return
+     */
+    public static <T> Matcher<T> jsonPartMatches(String path, Matcher<?> matcher) {
+        return new MatcherApplyingMatcher<T>(path, matcher);
+    }
+
+    /**
+     * Are the JSONs equivalent?
+     * <p/>
      * This method exist only for those cases, when you need to use it as Matcher&lt;String&gt; and Java refuses to
      * do the type inference correctly.
      *
@@ -76,7 +88,7 @@ public class JsonMatchers {
 
     /**
      * Is the part of the JSON equivalent?
-     *
+     * <p/>
      * This method exist only for those cases, when you need to use it as Matcher&lt;String&gt; and Java refuses to
      * do the type inference correctly.
      *
@@ -207,6 +219,41 @@ public class JsonMatchers {
         @Override
         public void describeMismatch(Object item, Description description) {
             description.appendText("Node \"" + path + "\" is missing.");
+        }
+    }
+
+    private static final class MatcherApplyingMatcher<T> extends BaseMatcher<T> {
+        private final String path;
+        private final Matcher<?> matcher;
+
+        public MatcherApplyingMatcher(String path, Matcher<?> matcher) {
+            this.path = path;
+            this.matcher = matcher;
+        }
+
+        public boolean matches(Object item) {
+            Node node = getNode(item, path);
+            if (!node.isMissingNode()) {
+                return matcher.matches(node.getValue());
+            } else {
+                // missing node does not match
+                return false;
+            }
+        }
+
+        public void describeTo(Description description) {
+            description.appendText("node \"" + path + "\" ");
+            matcher.describeTo(description);
+        }
+
+        @Override
+        public void describeMismatch(Object item, Description description) {
+            Node node = getNode(item, path);
+            if (!node.isMissingNode()) {
+                super.describeMismatch(node.getValue(), description);
+            } else {
+                description.appendText("Node \"" + path + "\" is missing.");
+            }
         }
     }
 }
