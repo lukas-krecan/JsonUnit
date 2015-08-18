@@ -164,7 +164,8 @@ Or you can use Hamcrest matcher
 
     import static java.math.BigDecimal.valueOf;
     ...
-    assertThatJson("{\"test\":1.10001}").node("test").matches(closeTo(valueOf(1.1), valueOf(0.001)));
+    assertThatJson("{\"test\":1.10001}").node("test")
+            .matches(closeTo(valueOf(1.1), valueOf(0.001)));
 
 Logging
 -------
