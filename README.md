@@ -161,6 +161,7 @@ or for fluent assertions
     assertThatJson("{\"test\":1.00001}").node("test").withTolerance(0.001).isEqualTo(1);
 
 Or you can use Hamcrest matcher
+
     import static java.math.BigDecimal.valueOf;
     ...
     assertThatJson("{\"test\":1.10001}").node("test").matches(closeTo(valueOf(1.1), valueOf(0.001)));
