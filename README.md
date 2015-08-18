@@ -12,7 +12,8 @@ simple:
     assertJsonEquals("{\"test\":1}", "{\n\"foo\": 1\n}");
 
     // compares only part
-    assertJsonPartEquals("2", "{\"test\":[{\"value\":1},{\"value\":2}]}", "test[1].value");
+    assertJsonPartEquals("2", "{\"test\":[{\"value\":1},{\"value\":2}]}",
+                 "test[1].value");
     
     // extra options can be specified
     assertJsonEquals("{\"test\":{\"a\":1}}",
@@ -91,7 +92,8 @@ Fluent (FEST or AssertJ like) assertions are supported by a special module json-
     import static java.math.BigDecimal.valueOf;
     ...
     assertThatJson("{\"test\":[{\"value\":1},{\"value\":2},{\"value\":3}]}")
-        .node("test").matches(everyItem(jsonPartMatches("value", lessThanOrEqualTo(valueOf(4)))));
+        .node("test")
+        .matches(everyItem(jsonPartMatches("value", lessThanOrEqualTo(valueOf(4)))));
 
 Options
 ---------------
