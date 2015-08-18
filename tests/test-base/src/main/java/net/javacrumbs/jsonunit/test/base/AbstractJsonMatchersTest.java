@@ -1,5 +1,5 @@
 /**
- * Copyright 2009-2012 the original author or authors.
+ * Copyright 2009-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,16 +22,20 @@ import org.junit.Test;
 
 import java.io.IOException;
 
+import static java.math.BigDecimal.valueOf;
 import static java.util.Arrays.asList;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodeAbsent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodePresent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
+import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartMatches;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonStringEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonStringPartEquals;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertEquals;
@@ -42,6 +46,7 @@ public abstract class AbstractJsonMatchersTest {
     @After
     public void reset() {
         JsonAssert.setTolerance(null);
+        JsonAssert.resetOptions();
     }
 
     @Test
@@ -56,10 +61,53 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
+    public void testJsonPartMatches() {
+        assertThat("{\"test\":1}", jsonPartMatches("test", is(valueOf(1))));
+    }
+
+    @Test
+    public void jsonPartMatchesShouldReturnNiceException() {
+        try {
+            assertThat("{\"test\":1}", jsonPartMatches("test", is(valueOf(2))));
+            expectException();
+        } catch (AssertionError e) {
+            assertEquals("\nExpected: node \"test\" is <2>\n" +
+                    "     but: was <1>", e.getMessage());
+        }
+    }
+
+    @Test
+    public void jsonPartMatchesShouldFailOnMissing() {
+        try {
+            assertThat("{\"test\":1}", jsonPartMatches("test2", is(valueOf(2))));
+            expectException();
+        } catch (AssertionError e) {
+            assertEquals("\nExpected: node \"test2\" is <2>\n" +
+                    "     but: Node \"test2\" is missing.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testJsonPartMatchesArray() {
+        assertThat("{\"test\":[1, 2, 3]}", jsonPartMatches("test", hasItems(valueOf(1), valueOf(2), valueOf(3))));
+    }
+
+    @Test
+    public void jsonPartMatchesShouldReturnNiceExceptionForArray() {
+        try {
+            assertThat("{\"test\":[1, 2, 3]}", jsonPartMatches("test", hasItems(valueOf(1), valueOf(2), valueOf(4))));
+            expectException();
+        } catch (AssertionError e) {
+            assertEquals("\nExpected: node \"test\" (a collection containing <1> and a collection containing <2> and a collection containing <4>)\n" +
+                    "     but: was <[1, 2, 3]>", e.getMessage());
+        }
+    }
+
+    @Test
     public void shouldNotFailOnEmptyInput() {
         try {
             assertThat("", jsonEquals("{\"test\":1}"));
-            fail("Exception expected");
+            expectException();
         } catch (AssertionError e) {
             assertEquals("\nExpected: {\"test\":1}\n" +
                     "     but: JSON documents are different:\n" +
@@ -104,7 +152,7 @@ public abstract class AbstractJsonMatchersTest {
     public void testAssertDifferentTypeInt() {
         try {
             assertThat("{\"test\":\"1\"}", jsonPartEquals("test", 1));
-            fail("Exception expected");
+            expectException();
         } catch (AssertionError e) {
             assertEquals("\n" +
                     "Expected: 1 in \"test\"\n" +
@@ -130,7 +178,7 @@ public abstract class AbstractJsonMatchersTest {
     public void testDifferentValue() {
         try {
             assertThat("{\"test\":1}", jsonEquals("{\n\"test\": 2\n}"));
-            fail("Exception expected");
+            expectException();
         } catch (AssertionError e) {
             assertEquals("\nExpected: {\n\"test\": 2\n}\n" +
                     "     but: JSON documents are different:\n" +
@@ -142,7 +190,7 @@ public abstract class AbstractJsonMatchersTest {
     public void testDifferentStructure() {
         try {
             assertThat("{\"test\":1}", jsonEquals("{\n\"test2\": 2\n}"));
-            fail("Exception expected");
+            expectException();
         } catch (AssertionError e) {
             assertEquals("\nExpected: {\n\"test2\": 2\n}\n" +
                     "     but: JSON documents are different:\n" +
@@ -154,7 +202,7 @@ public abstract class AbstractJsonMatchersTest {
     public void testDifferentPartValue() {
         try {
             assertThat("{\"test\":1}", jsonPartEquals("test", "2"));
-            fail("Exception expected");
+            expectException();
         } catch (AssertionError e) {
             assertEquals("\nExpected: 2 in \"test\"\n" +
                     "     but: JSON documents are different:\n" +
@@ -166,7 +214,7 @@ public abstract class AbstractJsonMatchersTest {
     public void testAbsent() {
         try {
             assertThat("{\"test\":1}", jsonNodeAbsent("test"));
-            fail("Exception expected");
+            expectException();
         } catch (AssertionError e) {
             assertEquals("\n" +
                     "Expected: Node \"test\" is absent.\n" +
@@ -183,7 +231,7 @@ public abstract class AbstractJsonMatchersTest {
     public void testPresent() {
         try {
             assertThat("{\"test\":1}", jsonNodePresent("test.a"));
-            fail("Exception expected");
+            expectException();
         } catch (AssertionError e) {
             assertEquals("\n" +
                     "Expected: Node \"test.a\" is present.\n" +
@@ -200,7 +248,7 @@ public abstract class AbstractJsonMatchersTest {
     public void testNullAndAbsent() throws IOException {
         try {
             assertThat("{\"test\":{\"a\":1, \"b\": null}}", jsonEquals("{\"test\":{\"a\":1}}"));
-            fail("Exception expected");
+            expectException();
         } catch (AssertionError e) {
             assertEquals("\n" +
                     "Expected: {\"test\":{\"a\":1}}\n" +
@@ -223,6 +271,10 @@ public abstract class AbstractJsonMatchersTest {
     @Test
     public void testJsonNode() throws IOException {
         assertThat(readValue("{\"test\":1}"), jsonEquals("{\"test\":1}"));
+    }
+
+    private void expectException() {
+        fail("Exception expected");
     }
 
     protected abstract Object readValue(String value);

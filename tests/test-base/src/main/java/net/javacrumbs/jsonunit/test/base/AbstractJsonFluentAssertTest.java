@@ -1,5 +1,5 @@
 /**
- * Copyright 2009-2012 the original author or authors.
+ * Copyright 2009-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,19 @@ import org.junit.Test;
 
 import java.io.StringReader;
 
+import static java.math.BigDecimal.valueOf;
+import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
+import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartMatches;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.everyItem;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -293,6 +303,137 @@ public abstract class AbstractJsonFluentAssertTest {
             expectException();
         } catch (AssertionError e) {
             assertEquals("Node \"test\" length is 3, expected length is 2.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void intValueShouldMatch() {
+        assertThatJson("{\"test\":1}").node("test").matches(equalTo(valueOf(1)));
+    }
+
+
+    @Test
+    public void intValueShouldFailIfDoesNotMatch() {
+        try {
+            assertThatJson("{\"test\":1}").node("test").matches(equalTo(valueOf(2)));
+            expectException();
+        } catch (AssertionError e) {
+            assertEquals("Node \"test\" does not match.\nExpected: <2>\n     but: was <1>", e.getMessage());
+        }
+    }
+
+    @Test
+    public void floatValueShouldMatch() {
+        assertThatJson("{\"test\":1.10001}").node("test").matches(closeTo(valueOf(1.1), valueOf(0.001)));
+    }
+
+
+    @Test
+    public void floatValueShouldFailIfDoesNotMatch() {
+        try {
+            assertThatJson("{\"test\":1}").node("test").matches(equalTo(valueOf(2)));
+            expectException();
+        } catch (AssertionError e) {
+            assertEquals("Node \"test\" does not match.\nExpected: <2>\n     but: was <1>", e.getMessage());
+        }
+    }
+
+
+    @Test
+    public void booleanValueShouldMatch() {
+        assertThatJson("{\"test\":true}").node("test").matches(equalTo(true));
+    }
+
+    @Test
+    public void booleanValueShouldFailIfDoesNotMatch() {
+        try {
+            assertThatJson("{\"test2\":true}").node("test2").matches(equalTo(false));
+            expectException();
+        } catch (AssertionError e) {
+            assertEquals("Node \"test2\" does not match.\nExpected: <false>\n     but: was <true>", e.getMessage());
+        }
+    }
+
+    @Test
+    public void missingValueShouldFail() {
+        try {
+            assertThatJson("{\"test2\":true}").node("test").matches(equalTo(false));
+            expectException();
+        } catch (AssertionError e) {
+            assertEquals("Node \"test\" is missing.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void stringValueShouldMatch() {
+        assertThatJson("{\"test\":\"one\"}").node("test").matches(equalTo("one"));
+    }
+
+    @Test
+    public void stringValueShouldFailIfDoesNotMatch() {
+        try {
+            assertThatJson("{\"test\":\"one\"}").node("test").matches(equalTo("two"));
+            expectException();
+        } catch (AssertionError e) {
+            assertEquals("Node \"test\" does not match.\nExpected: \"two\"\n     but: was \"one\"", e.getMessage());
+        }
+    }
+
+    @Test
+    public void nullValueShouldMatch() {
+        assertThatJson("{\"test\":null}").node("test").matches(nullValue());
+    }
+
+    @Test
+    public void nullValueShouldFailIfDoesNotMatch() {
+        try {
+            assertThatJson("{\"test\":\"one\"}").node("test").matches(equalTo(nullValue()));
+            expectException();
+        } catch (AssertionError e) {
+            assertEquals("Node \"test\" does not match.\nExpected: <null>\n     but: was \"one\"", e.getMessage());
+        }
+    }
+
+    @Test
+    public void arrayShouldMatch() {
+        assertThatJson("{\"test\":[1,2,3]}").node("test").matches(hasItem(valueOf(1)));
+    }
+
+    @Test
+    public void arrayMatcherShouldFailIfNotFound() {
+        try {
+            assertThatJson("{\"test\":[1,2,3]}").node("test").matches(hasItem(4));
+            expectException();
+        } catch (AssertionError e) {
+            assertEquals("Node \"test\" does not match.\nExpected: a collection containing <4>\n" +
+                    "     but: was <1>, was <2>, was <3>", e.getMessage());
+        }
+    }
+
+    @Test
+    public void objectShouldMatch() {
+        assertThatJson("{\"test\":[{\"value\":1},{\"value\":2},{\"value\":3}]}").node("test").matches(everyItem(jsonPartMatches("value", lessThanOrEqualTo(valueOf(4)))));
+    }
+
+    @Test
+    public void objectShouldMatchToMap() {
+        assertThatJson("{\"test\":[{\"value\":1},{\"value\":2},{\"value\":3}]}").node("test").matches(hasItem(hasEntry("value", valueOf(1))));
+    }
+
+    @Test
+    public void objectMatcherShouldFailIfNotFound() {
+        try {
+            assertThatJson("{\"test\":[{\"value\":1},{\"value\":2},{\"value\":3}]}").node("test").matches(hasItem(jsonPartEquals("value", 4)));
+            expectException();
+        } catch (AssertionError e) {
+            assertEquals("Node \"test\" does not match.\n" +
+                    "Expected: a collection containing 4 in \"value\"\n" +
+                    "     but: JSON documents are different:\n" +
+                    "Different value found in node \"value\". Expected 4, got 1.\n" +
+                    ", JSON documents are different:\n" +
+                    "Different value found in node \"value\". Expected 4, got 2.\n" +
+                    ", JSON documents are different:\n" +
+                    "Different value found in node \"value\". Expected 4, got 3.\n", e.getMessage());
         }
     }
 

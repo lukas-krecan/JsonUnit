@@ -1,5 +1,5 @@
 /**
- * Copyright 2009-2012 the original author or authors.
+ * Copyright 2009-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
         return source instanceof JsonNode;
     }
 
-    static final class Jackson2Node implements Node {
+    static final class Jackson2Node extends AbstractNode {
         private final JsonNode jsonNode;
 
         public Jackson2Node(JsonNode jsonNode) {

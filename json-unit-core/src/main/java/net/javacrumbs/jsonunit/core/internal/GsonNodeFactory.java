@@ -1,5 +1,5 @@
 /**
- * Copyright 2009-2012 the original author or authors.
+ * Copyright 2009-2015 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,7 +69,7 @@ class GsonNodeFactory extends AbstractNodeFactory {
         return source instanceof JsonElement;
     }
 
-    static final class GsonNode implements Node {
+    static final class GsonNode extends AbstractNode {
         private final JsonElement jsonNode;
 
         public GsonNode(JsonElement jsonNode) {

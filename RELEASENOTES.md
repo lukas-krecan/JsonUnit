@@ -1,3 +1,6 @@
+## 1.6.0
+* Added support for Hamcrest matchers
+
 ## 1.5.6
 * Fixed handling of empty value in the expected parameter
 

@@ -40,6 +40,9 @@ You use Hamcrest matchers in the following way
     assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
                jsonEquals("{\"test\":{\"b\":2}}").when(IGNORING_EXTRA_FIELDS));
 
+    // Can use other Hamcrest matchers too
+    assertThat("{\"test\":1}", jsonPartMatches("test", is(valueOf(1))))
+
 Ignoring values
 ----------------
 Sometimes you need to ignore certain values when comparing. It is possible to use ${json-unit.ignore}
@@ -79,6 +82,16 @@ Fluent (FEST or AssertJ like) assertions are supported by a special module json-
     // array length comparison
     assertThatJson("{\"test\":[1,2,3]}").node("test")
     	.isArray().ofLength(2);
+
+    // using Hamcrest matcher
+    assertThatJson("{\"test\":\"one\"}").node("test")
+        .matches(equalTo("one"));
+
+    // Numbers sent to matchers are BigDecimals.
+    import static java.math.BigDecimal.valueOf;
+    ...
+    assertThatJson("{\"test\":[{\"value\":1},{\"value\":2},{\"value\":3}]}")
+        .node("test").matches(everyItem(jsonPartMatches("value", lessThanOrEqualTo(valueOf(4)))));
 
 Options
 ---------------
@@ -147,6 +160,11 @@ or for fluent assertions
 
     assertThatJson("{\"test\":1.00001}").node("test").withTolerance(0.001).isEqualTo(1);
 
+Or you can use Hamcrest matcher
+    import static java.math.BigDecimal.valueOf;
+    ...
+    assertThatJson("{\"test\":1.10001}").node("test").matches(closeTo(valueOf(1.1), valueOf(0.001)));
+
 Logging
 -------
 Although the differences are printed out by the assert statement, sometimes you use JsonUnit with other libraries like
@@ -162,7 +180,7 @@ Jackson 2.x or [Gson](https://code.google.com/p/google-gson/) on the classpath. 
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit</artifactId>
-        <version>1.5.6</version>
+        <version>1.6.0</version>
     	<scope>test</scope>
 	</dependency>
 
@@ -171,7 +189,7 @@ To use fluent assertions:
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit-fluent</artifactId>
-        <version>1.5.6</version>
+        <version>1.6.0</version>
     	<scope>test</scope>
 	</dependency>
 
