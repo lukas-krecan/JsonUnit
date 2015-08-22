@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Collections.unmodifiableMap;
 
 
@@ -53,7 +54,7 @@ public interface Node {
                     Node arrayNode = nodeIterator.next();
                     result.add(arrayNode.getValue());
                 }
-                return result;
+                return unmodifiableCollection(result);
             }
         },
         STRING {

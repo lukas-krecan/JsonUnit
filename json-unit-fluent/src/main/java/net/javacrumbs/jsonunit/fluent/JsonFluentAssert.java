@@ -329,7 +329,7 @@ public class JsonFluentAssert {
      *
      * <ul>
      *     <li>Numbers are mapped to BigDecimal</li>
-     *     <li>Arrays are mapped to and Iterable</li>
+     *     <li>Arrays are mapped to a Collection</li>
      *     <li>Objects are mapped to a map so you can use json(Part)Equals or a Map matcher</li>
      * </ul>
      *

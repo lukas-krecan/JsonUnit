@@ -31,6 +31,7 @@ import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.closeTo;
 import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -398,6 +399,12 @@ public abstract class AbstractJsonFluentAssertTest {
     public void arrayShouldMatch() {
         assertThatJson("{\"test\":[1,2,3]}").node("test").matches(hasItem(valueOf(1)));
     }
+
+    @Test
+    public void arraySizeShouldMatch() {
+        assertThatJson("{\"test\":[1,2,3]}").node("test").matches(hasSize(3));
+    }
+
 
     @Test
     public void arrayMatcherShouldFailIfNotFound() {
