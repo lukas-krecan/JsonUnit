@@ -39,7 +39,11 @@ class GsonNodeFactory extends AbstractNodeFactory {
 
     @Override
     protected Node convertValue(Object source) {
-        return newNode(gson.toJsonTree(source));
+        if (source instanceof JsonElement) {
+            return newNode((JsonElement) source);
+        } else {
+            return newNode(gson.toJsonTree(source));
+        }
     }
 
     @Override
