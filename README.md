@@ -95,6 +95,19 @@ Fluent (FEST or AssertJ like) assertions are supported by a special module json-
         .node("test")
         .matches(everyItem(jsonPartMatches("value", lessThanOrEqualTo(valueOf(4)))));
 
+### Hamcrest matchers in fluent assertions
+
+It is possible to combine fluent assertions with hamcrest matchers using `matches` method. For example
+
+     assertThatJson("{\"test\":[1,2,3]}").node("test").matches(hasItem(valueOf(1)));
+
+     assertThatJson("{\"test\":[{\"value\":1},{\"value\":2},{\"value\":3}]}")
+        .node("test")
+        .matches(everyItem(jsonPartMatches("value", lessThanOrEqualTo(valueOf(4)))));
+
+
+If you want to specify options in fluent assertions (see below) you have to specify them **before** the actual comparison.
+
 Options
 ---------------
 There are multiple options how you can configure the comparison

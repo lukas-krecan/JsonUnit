@@ -15,11 +15,14 @@
  */
 package net.javacrumbs.jsonunit.test.base;
 
+import net.javacrumbs.jsonunit.core.Option;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.io.StringReader;
 
 import static java.math.BigDecimal.valueOf;
+import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartMatches;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
@@ -30,6 +33,7 @@ import static org.hamcrest.CoreMatchers.everyItem;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
@@ -312,6 +316,20 @@ public abstract class AbstractJsonFluentAssertTest {
         assertThatJson("{\"test\":1}").node("test").matches(equalTo(valueOf(1)));
     }
 
+    @Test
+    public void arrayContainsShouldMatch() {
+        assertThatJson("[{\"a\": 7},8]").matches(hasItem(jsonEquals("{\"a\": 7}")));
+    }
+
+    @Test
+    public void testArrayShouldMatchRegardlessOfOrder() {
+
+        final String actual = "{\"response\":[{\"attributes\":null,\"empolyees\":[{\"dob\":\"1987-03-21\",\"firstName\":\"Joe\",\"lastName\":\"Doe\"},{\"dob\":\"1986-02-12\",\"firstName\":\"Jason\",\"lastName\":\"Kowalski\"},{\"dob\":\"1985-01-11\",\"firstName\":\"Kate\",\"lastName\":\"Smith\"}],\"id\":123}]}";
+        final String expected = "{\"response\":[{\"attributes\":null,\"empolyees\":[{\"dob\":\"1985-01-11\",\"firstName\":\"Kate\",\"lastName\":\"Smith\"},{\"dob\":\"1986-02-12\",\"firstName\":\"Jason\",\"lastName\":\"Kowalski\"},{\"dob\":\"1987-03-21\",\"firstName\":\"Joe\",\"lastName\":\"Doe\"}],\"id\":123}]}";
+
+        assertThatJson(actual).when(Option.IGNORING_ARRAY_ORDER).isEqualTo(expected);
+    }
+
 
     @Test
     public void intValueShouldFailIfDoesNotMatch() {
@@ -413,7 +431,7 @@ public abstract class AbstractJsonFluentAssertTest {
             expectException();
         } catch (AssertionError e) {
             assertEquals("Node \"test\" does not match.\nExpected: a collection containing <4>\n" +
-                    "     but: was <1>, was <2>, was <3>", e.getMessage());
+                "     but: was <1>, was <2>, was <3>", e.getMessage());
         }
     }
 
@@ -434,13 +452,13 @@ public abstract class AbstractJsonFluentAssertTest {
             expectException();
         } catch (AssertionError e) {
             assertEquals("Node \"test\" does not match.\n" +
-                    "Expected: a collection containing 4 in \"value\"\n" +
-                    "     but: JSON documents are different:\n" +
-                    "Different value found in node \"value\". Expected 4, got 1.\n" +
-                    ", JSON documents are different:\n" +
-                    "Different value found in node \"value\". Expected 4, got 2.\n" +
-                    ", JSON documents are different:\n" +
-                    "Different value found in node \"value\". Expected 4, got 3.\n", e.getMessage());
+                "Expected: a collection containing 4 in \"value\"\n" +
+                "     but: JSON documents are different:\n" +
+                "Different value found in node \"value\". Expected 4, got 1.\n" +
+                ", JSON documents are different:\n" +
+                "Different value found in node \"value\". Expected 4, got 2.\n" +
+                ", JSON documents are different:\n" +
+                "Different value found in node \"value\". Expected 4, got 3.\n", e.getMessage());
         }
     }
 
@@ -496,7 +514,7 @@ public abstract class AbstractJsonFluentAssertTest {
             expectException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\n" +
-                    "Different value found in node \"test\". Expected '1', got '\"1\"'.\n", e.getMessage());
+                "Different value found in node \"test\". Expected '1', got '\"1\"'.\n", e.getMessage());
         }
     }
 
@@ -597,7 +615,7 @@ public abstract class AbstractJsonFluentAssertTest {
             expectException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\n" +
-                    "Different keys found in node \"test\". Expected [a], got [a, b].  Extra: \"test.b\"\n", e.getMessage());
+                "Different keys found in node \"test\". Expected [a], got [a, b].  Extra: \"test.b\"\n", e.getMessage());
         }
     }
 
@@ -628,7 +646,7 @@ public abstract class AbstractJsonFluentAssertTest {
             expectException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\n" +
-                    "Different value found in node \"foo\\.bar\". Expected \"baz\", got \"boo\".\n", e.getMessage());
+                "Different value found in node \"foo\\.bar\". Expected \"baz\", got \"boo\".\n", e.getMessage());
         }
     }
 
