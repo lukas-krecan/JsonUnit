@@ -44,14 +44,6 @@ You use Hamcrest matchers in the following way
     // Can use other Hamcrest matchers too
     assertThat("{\"test\":1}", jsonPartMatches("test", is(valueOf(1))))
 
-Ignoring values
-----------------
-Sometimes you need to ignore certain values when comparing. It is possible to use ${json-unit.ignore}
-placeholder like this
-
-    assertJsonEquals("{\"test\":\"${json-unit.ignore}\"}",
-        "{\n\"test\": {\"object\" : {\"another\" : 1}}}");
-
 Fluent assertions
 ---------------
 Fluent (FEST or AssertJ like) assertions are supported by a special module json-unit-fluent
@@ -107,6 +99,14 @@ It is possible to combine fluent assertions with hamcrest matchers using `matche
 
 
 If you want to specify options in fluent assertions (see below) you have to specify them **before** the actual comparison.
+
+Ignoring values
+----------------
+Sometimes you need to ignore certain values when comparing. It is possible to use ${json-unit.ignore}
+placeholder like this
+
+    assertJsonEquals("{\"test\":\"${json-unit.ignore}\"}",
+        "{\n\"test\": {\"object\" : {\"another\" : 1}}}");
 
 Options
 ---------------
