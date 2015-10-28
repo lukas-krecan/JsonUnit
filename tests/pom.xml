@@ -16,6 +16,7 @@
         <module>test-jackson1</module>
         <module>test-jackson2</module>
         <module>test-gson</module>
+        <module>test-jsonp</module>
     </modules>
 
     <build>

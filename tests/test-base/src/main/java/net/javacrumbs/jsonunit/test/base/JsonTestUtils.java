@@ -17,7 +17,9 @@ package net.javacrumbs.jsonunit.test.base;
 
 import com.google.gson.JsonParser;
 
+import javax.json.Json;
 import java.io.IOException;
+import java.io.StringReader;
 
 public class JsonTestUtils {
 
@@ -39,5 +41,9 @@ public class JsonTestUtils {
 
     public static Object readByGson(String value) {
         return new JsonParser().parse(value);
+    }
+
+    public static Object readByJsonp(String value) {
+        return Json.createReader(new StringReader(value)).read();
     }
 }

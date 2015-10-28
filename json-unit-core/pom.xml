@@ -30,6 +30,12 @@
             <optional>true</optional>
         </dependency>
         <dependency>
+           <groupId>org.glassfish</groupId>
+           <artifactId>javax.json</artifactId>
+           <version>${javax.json.version}</version>
+            <optional>true</optional>
+       </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.5</version>
