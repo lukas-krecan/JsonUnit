@@ -98,8 +98,6 @@ It is possible to combine fluent assertions with hamcrest matchers using `matche
         .matches(everyItem(jsonPartMatches("value", lessThanOrEqualTo(valueOf(4)))));
 
 
-If you want to specify options in fluent assertions (see below) you have to specify them **before** the actual comparison.
-
 Ignoring values
 ----------------
 Sometimes you need to ignore certain values when comparing. It is possible to use ${json-unit.ignore}
@@ -155,6 +153,8 @@ In fluent assertion, you can set options in the following way
 
     assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}")
         .when(IGNORING_EXTRA_FIELDS).isEqualTo("{\"test\":{\"b\":2}}");
+
+Please note that `when` method has to be called **before** the actual comparison.
 
 Numeric comparison
 --------------------
