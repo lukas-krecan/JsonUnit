@@ -45,6 +45,9 @@ class Converter {
     private static final boolean moshiPresent =
         isClassPresent("com.squareup.moshi.Moshi");
 
+    private static final boolean jsonpPresent =
+        isClassPresent("javax.json.JsonValue");
+
     Converter(List<NodeFactory> factories) {
         if (factories.isEmpty()) {
             throw new IllegalStateException("List of factories can not be empty");
@@ -85,6 +88,8 @@ class Converter {
                 factories.add(new Jackson2NodeFactory());
             } else if ("gson".equals(factoryName)) {
                 factories.add(new GsonNodeFactory());
+            } else if ("jsonp".equals(factoryName)) {
+                factories.add(new JsonpNodeFactory());
             } else {
                 throw new IllegalArgumentException("'" +factoryName + "' library name not recognized.");
             }
@@ -94,6 +99,10 @@ class Converter {
 
     private static List<NodeFactory> createDefaultFactories() {
         List<NodeFactory> factories = new ArrayList<NodeFactory>();
+        if (jsonpPresent) {
+            factories.add(new JsonpNodeFactory());
+        }
+
         if (moshiPresent) {
             factories.add(new MoshiNodeFactory());
         }

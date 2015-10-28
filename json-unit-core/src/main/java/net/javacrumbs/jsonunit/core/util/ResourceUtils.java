@@ -16,7 +16,6 @@
 package net.javacrumbs.jsonunit.core.util;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -42,14 +41,5 @@ public class ResourceUtils {
         }
 
         return new BufferedReader(new InputStreamReader(resourceStream));
-    }
-
-    static void closeQuietly(final Reader resourceReader) {
-        if (resourceReader != null) {
-            try {
-                resourceReader.close();
-            } catch (IOException ignored) {
-            }
-        }
     }
 }

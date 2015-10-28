@@ -19,10 +19,12 @@ import com.google.gson.JsonParser;
 import com.squareup.moshi.Moshi;
 import org.json.JSONTokener;
 
+import javax.json.Json;
 import java.io.IOException;
 import java.util.Map;
 
 import static org.junit.Assert.fail;
+import java.io.StringReader;
 
 public class JsonTestUtils {
 
@@ -61,5 +63,9 @@ public class JsonTestUtils {
 
     public static void failIfNoException() {
         fail("Exception expected");
+    }
+
+    public static Object readByJsonp(String value) {
+        return Json.createReader(new StringReader(value)).read();
     }
 }

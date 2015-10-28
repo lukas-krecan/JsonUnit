@@ -147,6 +147,7 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
         assertJsonEquals("{\"property\": \"value\"}", new Jackson1IgnorepropertyBean("value"));
     }
 
+
     protected Object readValue(String value) {
         return JsonTestUtils.readByJackson1(value);
     }
