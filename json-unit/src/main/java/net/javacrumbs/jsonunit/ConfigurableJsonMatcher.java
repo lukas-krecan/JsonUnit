@@ -30,35 +30,22 @@ public interface ConfigurableJsonMatcher<T> extends Matcher<T> {
 
     /**
      * Set's numeric comparison tolerance. If none set, value form {@link net.javacrumbs.jsonunit.JsonAssert#getTolerance()}  is used.
-     *
-     * @param tolerance
-     * @return
      */
     ConfigurableJsonMatcher<T> withTolerance(BigDecimal tolerance);
 
     /**
      * Set's numeric comparison tolerance. If none set, value form {@link net.javacrumbs.jsonunit.JsonAssert#getTolerance()}  is used.
-     *
-     * @param tolerance
-     * @return
      */
     ConfigurableJsonMatcher<T> withTolerance(double tolerance);
 
     /**
      * Add options. Note that options are ADDED to those set by
      * by net.javacrumbs.jsonunit.JsonAssert.setOptions()
-     *
-     * @param first
-     * @param next
-     * @return
      */
     ConfigurableJsonMatcher<T> when(Option first, Option... next);
 
     /**
      * Sets options.
-     *
-     * @param options
-     * @return
      */
     ConfigurableJsonMatcher<T> withOptions(Options options);
 }

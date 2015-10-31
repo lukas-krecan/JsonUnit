@@ -45,9 +45,6 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
 public class JsonMatchers {
     /**
      * Are the JSONs equivalent?
-     *
-     * @param expected
-     * @return
      */
     public static <T> ConfigurableJsonMatcher<T> jsonEquals(Object expected) {
         return new JsonPartMatcher<T>("", expected);
@@ -55,9 +52,6 @@ public class JsonMatchers {
 
     /**
      * Is the part of the JSON equivalent?
-     *
-     * @param expected
-     * @return
      */
     public static <T> ConfigurableJsonMatcher<T> jsonPartEquals(String path, Object expected) {
         return new JsonPartMatcher<T>(path, expected);
@@ -65,9 +59,6 @@ public class JsonMatchers {
 
     /**
      * Applies matcher to the part of the JSON.
-     *
-     * @param expected
-     * @return
      */
     public static <T> Matcher<T> jsonPartMatches(String path, Matcher<?> matcher) {
         return new MatcherApplyingMatcher<T>(path, matcher);
@@ -78,9 +69,6 @@ public class JsonMatchers {
      * <p/>
      * This method exist only for those cases, when you need to use it as Matcher&lt;String&gt; and Java refuses to
      * do the type inference correctly.
-     *
-     * @param expected
-     * @return
      */
     public static ConfigurableJsonMatcher<String> jsonStringEquals(Object expected) {
         return jsonEquals(expected);
@@ -91,9 +79,6 @@ public class JsonMatchers {
      * <p/>
      * This method exist only for those cases, when you need to use it as Matcher&lt;String&gt; and Java refuses to
      * do the type inference correctly.
-     *
-     * @param expected
-     * @return
      */
     public static ConfigurableJsonMatcher<String> jsonStringPartEquals(String path, Object expected) {
         return jsonPartEquals(path, expected);
@@ -101,9 +86,6 @@ public class JsonMatchers {
 
     /**
      * Is the node in path absent?
-     *
-     * @param path
-     * @return
      */
     public static <T> ConfigurableJsonMatcher<T> jsonNodeAbsent(String path) {
         return new JsonNodeAbsenceMatcher<T>(path);
@@ -111,9 +93,6 @@ public class JsonMatchers {
 
     /**
      * Is the node in path present?
-     *
-     * @param path
-     * @return
      */
     public static <T> ConfigurableJsonMatcher<T> jsonNodePresent(String path) {
         return new JsonNodePresenceMatcher<T>(path);
