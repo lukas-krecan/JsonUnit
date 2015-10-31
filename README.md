@@ -41,6 +41,8 @@ You use Hamcrest matchers in the following way
     assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
                jsonEquals("{\"test\":{\"b\":2}}").when(IGNORING_EXTRA_FIELDS));
 
+    assertThat("{\"test\":1}", jsonEqualsResource("test.json"));
+
     // Can use other Hamcrest matchers too
     assertThat("{\"test\":1}", jsonPartMatches("test", is(valueOf(1))))
 

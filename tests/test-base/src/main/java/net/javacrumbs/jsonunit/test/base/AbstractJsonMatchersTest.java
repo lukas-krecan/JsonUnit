@@ -25,6 +25,7 @@ import java.io.IOException;
 import static java.math.BigDecimal.valueOf;
 import static java.util.Arrays.asList;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
+import static net.javacrumbs.jsonunit.JsonMatchers.jsonEqualsResource;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodeAbsent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodePresent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
@@ -58,6 +59,8 @@ public abstract class AbstractJsonMatchersTest {
         assertThat("{\"test\":[1, 2, 3]}", jsonPartEquals("test[0]", "1"));
         assertThat("{\"foo\":\"bar\",\"test\": 2}", jsonEquals("{\n\"test\": 2,\n\"foo\":\"bar\"}"));
         assertThat("{}", jsonEquals("{}"));
+        assertThat("{\"test\":1}", jsonEqualsResource("test.json"));
+        assertThat("{\"test\":2}", not(jsonEqualsResource("test.json")));
     }
 
     @Test
@@ -271,6 +274,40 @@ public abstract class AbstractJsonMatchersTest {
     @Test
     public void testJsonNode() throws IOException {
         assertThat(readValue("{\"test\":1}"), jsonEquals("{\"test\":1}"));
+    }
+
+    @Test
+    public void jsonEqualsResourceShouldReturnReasonWhenDiffers() {
+        try {
+            assertThat("{\"test\":2}", jsonEqualsResource("test.json"));
+            expectException();
+        } catch (AssertionError e) {
+            assertEquals("\nExpected: {\"test\":1}\n" +
+                    "     but: JSON documents are different:\n" +
+                    "Different value found in node \"test\". Expected 1, got 2.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void jsonEqualsResourceShouldReturnReasonWhenResourceIsMissing() {
+        try {
+            assertThat("{\"test\":2}", jsonEqualsResource("nonsense"));
+            expectException();
+        } catch (AssertionError e) {
+            assertEquals("\nExpected: to read expected JSON value from resource\n" +
+                    "     but: resource 'nonsense' not found", e.getMessage());
+        }
+    }
+
+    @Test
+    public void jsonEqualsResourceShouldReturnReasonWhenNullPassedAsParameter() {
+        try {
+            assertThat("{\"test\":2}", jsonEqualsResource(null));
+            expectException();
+        } catch (AssertionError e) {
+            assertEquals("\nExpected: to read expected JSON value from resource\n" +
+                    "     but: 'null' passed instead of resource name", e.getMessage());
+        }
     }
 
     private void expectException() {
