@@ -24,8 +24,13 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 
+import static java.lang.String.format;
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
@@ -43,11 +48,15 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
  * </ol>
  */
 public class JsonMatchers {
+
+    private static final String EMPTY_PATH = "";
+    private static final String FULL_JSON = "fullJson";
+
     /**
      * Are the JSONs equivalent?
      */
     public static <T> ConfigurableJsonMatcher<T> jsonEquals(Object expected) {
-        return new JsonPartMatcher<T>("", expected);
+        return new JsonPartMatcher<T>(EMPTY_PATH, expected);
     }
 
     /**
@@ -98,6 +107,16 @@ public class JsonMatchers {
         return new JsonNodePresenceMatcher<T>(path);
     }
 
+    /**
+     * Is the JSON equivalent to JSON from the resource of the specified name
+     * (from the search path used to load classes)?
+     *
+     * @param expectedResourceName The resource name (e.g. relative path in resource folder)
+     * @return matcher that matches if examined object serialized to JSON is equivalent to JSON from given resource
+     */
+    public static <T> ConfigurableJsonMatcher<T> jsonEqualsResource(final String expectedResourceName) {
+        return new JsonResourceMatcher<T>(expectedResourceName);
+    }
 
     private static abstract class AbstractJsonMatcher<T> extends BaseMatcher<T> implements ConfigurableJsonMatcher<T> {
         protected final String path;
@@ -138,7 +157,7 @@ public class JsonMatchers {
         }
 
         public boolean matches(Object item) {
-            Diff diff = create(expected, item, "fullJson", path, configuration);
+            Diff diff = create(expected, item, FULL_JSON, path, configuration);
             if (!diff.similar()) {
                 differences = diff.differences();
             }
@@ -146,7 +165,7 @@ public class JsonMatchers {
         }
 
         public void describeTo(Description description) {
-            if ("".equals(path)) {
+            if (EMPTY_PATH.equals(path)) {
                 description.appendText(safeToString());
             } else {
                 description.appendText(safeToString()).appendText(" in \"").appendText(path).appendText("\"");
@@ -160,6 +179,86 @@ public class JsonMatchers {
         @Override
         public void describeMismatch(Object item, Description description) {
             description.appendText(differences);
+        }
+    }
+
+    private static final class JsonResourceMatcher<T> extends AbstractJsonMatcher<T> {
+
+        private static final String EXPECTED_STRING_WHEN_ERROR = "to read expected JSON value from resource";
+
+        private final String expectedResourceName;
+        private String expectedJsonString;
+        private String differences;
+
+        JsonResourceMatcher(final String expectedResourceName) {
+            super(EMPTY_PATH);
+            this.expectedResourceName = expectedResourceName;
+        }
+
+        public boolean matches(final Object item) {
+            BufferedReader resourceReader = null;
+            try {
+                if (expectedResourceName == null) {
+                    return fail("'null' passed instead of resource name");
+                }
+
+                final InputStream resourceStream = ClassLoader.getSystemResourceAsStream(expectedResourceName);
+                if (resourceStream == null) {
+                    return fail(format("resource '%s' not found", expectedResourceName));
+                }
+
+                resourceReader = new BufferedReader(new InputStreamReader(resourceStream));
+                expectedJsonString = readResource(resourceReader);
+            } catch (Exception e) {
+                return fail(format(
+                        "exception thrown when trying to read resource. Exception class: '%s', message: '%s'",
+                        e.getClass(), e.getMessage()));
+            } finally {
+                closeQuietly(resourceReader);
+            }
+
+            return evaluateDiff(item);
+        }
+
+        public void describeTo(Description description) {
+            description.appendText(expectedJsonString);
+        }
+
+        @Override
+        public void describeMismatch(Object item, Description description) {
+            description.appendText(differences);
+        }
+
+        private boolean fail(final String reason) {
+            expectedJsonString = EXPECTED_STRING_WHEN_ERROR;
+            differences = reason;
+            return false;
+        }
+
+        private String readResource(final BufferedReader resourceReader) throws IOException {
+            final StringBuilder result = new StringBuilder();
+            String line;
+            while ((line = resourceReader.readLine()) != null) {
+                result.append(line);
+            }
+            return result.toString();
+        }
+
+        private void closeQuietly(final BufferedReader resourceReader) {
+            if (resourceReader != null) {
+                try {
+                    resourceReader.close();
+                } catch (IOException ignored) {
+                }
+            }
+        }
+
+        private boolean evaluateDiff(final Object item) {
+            final Diff diff = create(expectedJsonString, item, FULL_JSON, EMPTY_PATH, configuration);
+            if (!diff.similar()) {
+                differences = diff.differences();
+            }
+            return diff.similar();
         }
     }
 

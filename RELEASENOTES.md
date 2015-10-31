@@ -1,3 +1,6 @@
+## 1.7.0
+* Add jsonEqualsResource matcher
+
 ## 1.6.1
 * Gson nodes are not reconverted
 
