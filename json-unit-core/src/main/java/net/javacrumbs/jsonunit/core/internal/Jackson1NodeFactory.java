@@ -50,7 +50,7 @@ class Jackson1NodeFactory extends AbstractNodeFactory {
         return newNode(NullNode.getInstance());
     }
 
-    protected Node readValue(Reader value, String label) {
+    protected Node doReadValue(Reader value, String label) {
         try {
             return newNode(mapper.readTree(value));
         } catch (IOException e) {

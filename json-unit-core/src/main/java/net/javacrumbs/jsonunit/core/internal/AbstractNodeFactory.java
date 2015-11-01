@@ -35,10 +35,17 @@ abstract class AbstractNodeFactory implements NodeFactory {
             return convertValue(source);
         }
     }
+    protected Node readValue(Reader reader, String label) {
+        try {
+            return doReadValue(reader, label);
+        } finally {
+            ResourceUtils.closeQuietly(reader);
+        }
+    }
 
     protected abstract Node convertValue(Object source);
 
-    protected abstract Node readValue(Reader reader, String label);
+    protected abstract Node doReadValue(Reader reader, String label);
 
     protected abstract Node nullNode();
 }

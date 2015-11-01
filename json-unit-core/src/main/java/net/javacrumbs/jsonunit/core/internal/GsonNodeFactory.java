@@ -51,7 +51,7 @@ class GsonNodeFactory extends AbstractNodeFactory {
         return newNode(JsonNull.INSTANCE);
     }
 
-    protected Node readValue(Reader value, String label) {
+    protected Node doReadValue(Reader value, String label) {
         try {
             return newNode(new JsonParser().parse(value));
         } catch (JsonIOException e) {

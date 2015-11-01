@@ -25,13 +25,13 @@ import java.io.IOException;
 import static java.math.BigDecimal.valueOf;
 import static java.util.Arrays.asList;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
-import static net.javacrumbs.jsonunit.JsonMatchers.jsonEqualsResource;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodeAbsent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodePresent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartMatches;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonStringEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonStringPartEquals;
+import static net.javacrumbs.jsonunit.JsonMatchers.resource;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
@@ -59,8 +59,8 @@ public abstract class AbstractJsonMatchersTest {
         assertThat("{\"test\":[1, 2, 3]}", jsonPartEquals("test[0]", "1"));
         assertThat("{\"foo\":\"bar\",\"test\": 2}", jsonEquals("{\n\"test\": 2,\n\"foo\":\"bar\"}"));
         assertThat("{}", jsonEquals("{}"));
-        assertThat("{\"test\":1}", jsonEqualsResource("test.json"));
-        assertThat("{\"test\":2}", not(jsonEqualsResource("test.json")));
+        assertThat("{\"test\":1}", jsonEquals(resource("test.json")));
+        assertThat("{\"test\":2}", not(jsonEquals(resource("test.json"))));
     }
 
     @Test
@@ -279,7 +279,7 @@ public abstract class AbstractJsonMatchersTest {
     @Test
     public void jsonEqualsResourceShouldReturnReasonWhenDiffers() {
         try {
-            assertThat("{\"test\":2}", jsonEqualsResource("test.json"));
+            assertThat("{\"test\":2}", jsonEquals(resource("test.json")));
             expectException();
         } catch (AssertionError e) {
             assertEquals("\nExpected: {\"test\":1}\n" +
@@ -291,22 +291,20 @@ public abstract class AbstractJsonMatchersTest {
     @Test
     public void jsonEqualsResourceShouldReturnReasonWhenResourceIsMissing() {
         try {
-            assertThat("{\"test\":2}", jsonEqualsResource("nonsense"));
+            assertThat("{\"test\":2}", jsonEquals(resource("nonsense")));
             expectException();
-        } catch (AssertionError e) {
-            assertEquals("\nExpected: to read expected JSON value from resource\n" +
-                    "     but: resource 'nonsense' not found", e.getMessage());
+        } catch (IllegalArgumentException e) {
+            assertEquals("resource 'nonsense' not found", e.getMessage());
         }
     }
 
     @Test
     public void jsonEqualsResourceShouldReturnReasonWhenNullPassedAsParameter() {
         try {
-            assertThat("{\"test\":2}", jsonEqualsResource(null));
+            assertThat("{\"test\":2}", jsonEquals(resource(null)));
             expectException();
-        } catch (AssertionError e) {
-            assertEquals("\nExpected: to read expected JSON value from resource\n" +
-                    "     but: 'null' passed instead of resource name", e.getMessage());
+        } catch (NullPointerException e) {
+            assertEquals("'null' passed instead of resource name", e.getMessage());
         }
     }
 
