@@ -53,9 +53,6 @@ public class JsonAssert {
 
     /**
      * Compares to JSON documents. Throws {@link AssertionError} if they are different.
-     *
-     * @param expected
-     * @param actual
      */
     public static void assertJsonEquals(Object expected, Object actual) {
         assertJsonEquals(expected, actual, configuration);
@@ -63,9 +60,6 @@ public class JsonAssert {
 
     /**
      * Compares to JSON documents. Throws {@link AssertionError} if they are different.
-     *
-     * @param expected
-     * @param actual
      */
     public static void assertJsonEquals(Object expected, Object actual, Configuration configuration) {
         assertJsonPartEquals(expected, actual, ROOT, configuration);
@@ -73,10 +67,6 @@ public class JsonAssert {
 
     /**
      * Compares part of the JSON. Path has this format "root.array[0].value".
-     *
-     * @param expected
-     * @param fullJson
-     * @param path
      */
     public static void assertJsonPartEquals(Object expected, Object fullJson, String path) {
         assertJsonPartEquals(expected, fullJson, path, configuration);
@@ -84,11 +74,6 @@ public class JsonAssert {
 
     /**
      * Compares part of the JSON. Path has this format "root.array[0].value".
-     *
-     * @param expected
-     * @param fullJson
-     * @param path
-     * @param configuration
      */
     public static void assertJsonPartEquals(Object expected, Object fullJson, String path, Configuration configuration) {
         Diff diff = create(expected, fullJson, FULL_JSON, path, configuration);
@@ -99,9 +84,6 @@ public class JsonAssert {
 
     /**
      * Compares JSONs and fails if they are equal.
-     *
-     * @param expected
-     * @param fullJson
      */
     public static void assertJsonNotEquals(Object expected, Object fullJson) {
         assertJsonNotEquals(expected, fullJson, configuration);
@@ -109,10 +91,6 @@ public class JsonAssert {
 
     /**
      * Compares JSONs and fails if they are equal.
-     *
-     * @param expected
-     * @param fullJson
-     * @param configuration
      */
     public static void assertJsonNotEquals(Object expected, Object fullJson, Configuration configuration) {
         assertJsonPartNotEquals(expected, fullJson, ROOT, configuration);
@@ -121,10 +99,6 @@ public class JsonAssert {
     /**
      * Compares part of the JSON and fails if they are equal.
      * Path has this format "root.array[0].value".
-     *
-     * @param expected
-     * @param fullJson
-     * @param path
      */
     public static void assertJsonPartNotEquals(Object expected, Object fullJson, String path) {
         assertJsonPartNotEquals(expected, fullJson, path, configuration);
@@ -133,10 +107,6 @@ public class JsonAssert {
     /**
      * Compares part of the JSON and fails if they are equal.
      * Path has this format "root.array[0].value".
-     *
-     * @param expected
-     * @param fullJson
-     * @param path
      */
     public static void assertJsonPartNotEquals(Object expected, Object fullJson, String path, Configuration configuration) {
         Diff diff = create(expected, fullJson, FULL_JSON, path, configuration);
@@ -152,9 +122,6 @@ public class JsonAssert {
     /**
      * Compares structures of two JSON documents.
      * Throws {@link AssertionError} if they are different.
-     *
-     * @param expected
-     * @param actual
      */
     public static void assertJsonStructureEquals(Object expected, Object actual) {
         Diff diff = create(expected, actual, ACTUAL, ROOT, configuration.withOptions(COMPARING_ONLY_STRUCTURE));
@@ -165,10 +132,6 @@ public class JsonAssert {
 
     /**
      * Compares structure of part of the JSON. Path has this format "root.array[0].value".
-     *
-     * @param expected
-     * @param fullJson
-     * @param path
      */
     public static void assertJsonPartStructureEquals(Object expected, Object fullJson, String path) {
         Diff diff = create(expected, fullJson, FULL_JSON, path, configuration.withOptions(COMPARING_ONLY_STRUCTURE));
@@ -179,9 +142,6 @@ public class JsonAssert {
 
     /**
      * Fails if node in given path exists.
-     *
-     * @param actual
-     * @param path
      */
     public static void assertJsonNodeAbsent(Object actual, String path) {
         if (nodeExists(actual, path)) {
@@ -191,9 +151,6 @@ public class JsonAssert {
 
     /**
      * Fails if node in given does not exist.
-     *
-     * @param actual
-     * @param path
      */
     public static void assertJsonNodePresent(Object actual, String path) {
         if (!nodeExists(actual, path)) {
@@ -210,8 +167,6 @@ public class JsonAssert {
 
     /**
      * Set's string that will be ignored in comparison. Default value is "${json-unit.ignore}"
-     *
-     * @param ignorePlaceholder
      */
     public static void setIgnorePlaceholder(String ignorePlaceholder) {
         configuration = configuration.withIgnorePlaceholder(ignorePlaceholder);
@@ -224,8 +179,6 @@ public class JsonAssert {
     /**
      * Sets the tolerance for floating number comparison. If set to null, requires exact match of the values.
      * For example, if set to 0.01, ignores all differences lower than 0.01, so 1 and 0.9999 are considered equal.
-     *
-     * @param numericComparisonTolerance
      */
     public static void setTolerance(BigDecimal numericComparisonTolerance) {
         configuration = configuration.withTolerance(numericComparisonTolerance);
@@ -234,8 +187,6 @@ public class JsonAssert {
     /**
      * Sets the tolerance for floating number comparison. If set to null, requires exact match of the values.
      * For example, if set to 0.01, ignores all differences lower than 0.01, so 1 and 0.9999 are considered equal.
-     *
-     * @param numberComparisonTolerance
      */
     public static void setTolerance(double numberComparisonTolerance) {
         configuration = configuration.withTolerance(numberComparisonTolerance);
@@ -249,7 +200,6 @@ public class JsonAssert {
      * When set to true, treats null nodes in actual value as absent. In other words
      * if you expect {"test":{"a":1}} this {"test":{"a":1, "b": null}} will pass the test.
      *
-     * @param treatNullAsAbsent
      * @deprecated use setOptions(Option.TREATING_NULL_AS_ABSENT)
      */
     @Deprecated
@@ -262,7 +212,6 @@ public class JsonAssert {
     }
 
     /**
-     * @return
      * @deprecated use getOptions().contains(Option.TREATING_NULL_AS_ABSENT)
      */
     @Deprecated
@@ -274,8 +223,6 @@ public class JsonAssert {
      * Sets options changing comparison behavior. For more
      * details see {@link net.javacrumbs.jsonunit.core.Option}
      *
-     * @param firstOption
-     * @param rest
      * @see net.javacrumbs.jsonunit.core.Option
      */
     public static void setOptions(Option firstOption, Option... rest) {
@@ -295,8 +242,6 @@ public class JsonAssert {
 
     /**
      * Creates empty configuration and sets numerical comparison tolerance.
-     *
-     * @param tolerance
      */
     public static Configuration withTolerance(double tolerance) {
         return Configuration.empty().withTolerance(tolerance);
@@ -304,8 +249,6 @@ public class JsonAssert {
 
     /**
      * Creates empty configuration and sets numerical comparison tolerance.
-     *
-     * @param tolerance
      */
     public static Configuration withTolerance(BigDecimal tolerance) {
         return Configuration.empty().withTolerance(tolerance);
@@ -313,9 +256,6 @@ public class JsonAssert {
 
     /**
      * Creates empty configuration and sets options.
-     *
-     * @param first
-     * @param next
      */
     public static Configuration when(Option first, Option... next) {
         return Configuration.empty().withOptions(first, next);
