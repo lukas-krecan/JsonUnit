@@ -32,6 +32,7 @@
         <module>json-unit-core</module>
         <module>json-unit</module>
         <module>json-unit-fluent</module>
+        <module>json-unit-spring</module>
         <module>tests</module>
     </modules>
 
