@@ -104,10 +104,18 @@ Since version 1.7.0 JsonUnit supports Spring MVC test assertions. For example
     import static net.javacrumbs.jsonunit.spring.JsonUnitResultMatchers.json;
     ...
 
-    this.mockMvc.perform(get("/sample").andExpect(json().isEqualTo("{\"result\":{\"string\":\"stringValue\", \"array\":[1, 2, 3],\"decimal\":1.00001}}"));
-    this.mockMvc.perform(get("/sample").andExpect(json().node("result.string2").isAbsent());
-    this.mockMvc.perform(get("/sample").andExpect(json().node("result.array").when(Option.IGNORING_ARRAY_ORDER).isEqualTo(new int[]{3, 2, 1}));
-    this.mockMvc.perform(get("/sample").andExpect(json().node("result.array").matches(everyItem(lessThanOrEqualTo(valueOf(4)))));
+    this.mockMvc.perform(get("/sample").andExpect(
+        json().isEqualTo("{\"result\":{\"string\":\"stringValue\", \"array\":[1, 2, 3],\"decimal\":1.00001}}")
+    );
+    this.mockMvc.perform(get("/sample").andExpect(
+        json().node("result.string2").isAbsent()
+    );
+    this.mockMvc.perform(get("/sample").andExpect(
+        json().node("result.array").when(Option.IGNORING_ARRAY_ORDER).isEqualTo(new int[]{3, 2, 1})
+    );
+    this.mockMvc.perform(get("/sample").andExpect(
+        json().node("result.array").matches(everyItem(lessThanOrEqualTo(valueOf(4))))
+    );
 
 Ignoring values
 ----------------
