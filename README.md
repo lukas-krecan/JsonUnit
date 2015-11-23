@@ -229,6 +229,16 @@ To use fluent assertions:
     	<scope>test</scope>
 	</dependency>
 
+
+To use Spring MVC assertions:
+
+	<dependency>
+    	<groupId>net.javacrumbs.json-unit</groupId>
+    	<artifactId>json-unit-spring</artifactId>
+        <version>1.7.0</version>
+    	<scope>test</scope>
+	</dependency>
+
 Licence
 -------
 JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/LICENSE-2.0).
