@@ -97,6 +97,17 @@ It is possible to combine fluent assertions with hamcrest matchers using `matche
         .node("test")
         .matches(everyItem(jsonPartMatches("value", lessThanOrEqualTo(valueOf(4)))));
 
+Spring MVC assertions
+---------------------
+Since version 1.7.0 JsonUnit supports Spring MVC test assertions. For example
+
+    import static net.javacrumbs.jsonunit.spring.JsonUnitResultMatchers.json;
+    ...
+
+    this.mockMvc.perform(get("/sample").andExpect(json().isEqualTo("{\"result\":{\"string\":\"stringValue\", \"array\":[1, 2, 3],\"decimal\":1.00001}}"));
+    this.mockMvc.perform(get("/sample").andExpect(json().node("result.string2").isAbsent());
+    this.mockMvc.perform(get("/sample").andExpect(json().node("result.array").when(Option.IGNORING_ARRAY_ORDER).isEqualTo(new int[]{3, 2, 1}));
+    this.mockMvc.perform(get("/sample").andExpect(json().node("result.array").matches(everyItem(lessThanOrEqualTo(valueOf(4)))));
 
 Ignoring values
 ----------------
@@ -197,7 +208,7 @@ Jackson 2.x or [Gson](https://code.google.com/p/google-gson/) on the classpath. 
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit</artifactId>
-        <version>1.6.1</version>
+        <version>1.7.0</version>
     	<scope>test</scope>
 	</dependency>
 
@@ -206,7 +217,7 @@ To use fluent assertions:
 	<dependency>
     	<groupId>net.javacrumbs.json-unit</groupId>
     	<artifactId>json-unit-fluent</artifactId>
-        <version>1.6.1</version>
+        <version>1.7.0</version>
     	<scope>test</scope>
 	</dependency>
 
