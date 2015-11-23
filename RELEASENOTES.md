@@ -1,3 +1,6 @@
+## 1.7.0
+* Support for Spring MVC tests assertions
+
 ## 1.6.1
 * Gson nodes are not reconverted
 
