@@ -1,4 +1,4 @@
-JsonUnit
+JsonUnit [![Build Status](https://travis-ci.org/lukas-krecan/JsonUnit.png?branch=master)](https://travis-ci.org/lukas-krecan/JsonUnit) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.javacrumbs.json-unit/json-unit/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.javacrumbs.json-unit/json-unit)
 ===========
 
 JsonUnit is a library that simplifies JSON comparison in unit tests. It's strongly inspired by XmlUnit. The usage is
