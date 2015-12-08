@@ -1,64 +1,65 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<artifactId>json-unit-core</artifactId>
-	<packaging>bundle</packaging>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>json-unit-core</artifactId>
+    <packaging>bundle</packaging>
 
-	<description>Core classes for JSON unit</description>
+    <description>Core classes for JSON unit</description>
 
-	<parent>
-		<groupId>net.javacrumbs.json-unit</groupId>
-		<artifactId>json-unit-parent</artifactId>
-		<version>1.7.1-SNAPSHOT</version>
-	</parent>
+    <parent>
+        <groupId>net.javacrumbs.json-unit</groupId>
+        <artifactId>json-unit-parent</artifactId>
+        <version>1.7.1-SNAPSHOT</version>
+    </parent>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>${jackson1.version}</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-			<version>${jackson2.version}</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>${gson.version}</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.5</version>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>${jackson1.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson2.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.5</version>
+        </dependency>
+    </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<version>3.0.0</version>
-				<configuration>
-					<instructions>
-						<Bundle-Name>JsonUnit Fluent</Bundle-Name>
-						<Bundle-SymbolicName>net.javacrumbs.jsonunit.core</Bundle-SymbolicName>
-						<Import-Package>
-							com.fasterxml.jackson.core;resolution:=optional,
-							*
-						</Import-Package>
-						<Export-Package>net.javacrumbs.jsonunit.core,net.javacrumbs.jsonunit.core.internal</Export-Package>
-						<Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
-						<_removeheaders>Bnd-LastModified</_removeheaders>
-					</instructions>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <version>3.0.0</version>
+                <configuration>
+                    <instructions>
+                        <Bundle-Name>${artifactId}</Bundle-Name>
+                        <Bundle-SymbolicName>${symbolic.name}</Bundle-SymbolicName>
+                        <Bundle-Description>${pom.description}</Bundle-Description>
+                        <Import-Package>*</Import-Package>
+                        <Export-Package>
+                            net.javacrumbs.jsonunit.core,
+                            net.javacrumbs.jsonunit.core.internal
+                        </Export-Package>
+                        <Bundle-RequiredExecutionEnvironment></Bundle-RequiredExecutionEnvironment>
+                        <_removeheaders>Bnd-LastModified</_removeheaders>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
