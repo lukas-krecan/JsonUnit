@@ -1,29 +1,51 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>json-unit</artifactId>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>json-unit</artifactId>
+	<packaging>bundle</packaging>
 
+	<description>Contains basic assertJsonEquals() and Hamcrest matchers.</description>
 
-    <description>Contains basic assertJsonEquals() and Hamcrest matchers.</description>
+	<parent>
+		<groupId>net.javacrumbs.json-unit</groupId>
+		<artifactId>json-unit-parent</artifactId>
+		<version>1.7.1-SNAPSHOT</version>
+	</parent>
 
-    <parent>
-        <groupId>net.javacrumbs.json-unit</groupId>
-        <artifactId>json-unit-parent</artifactId>
-        <version>1.7.1-SNAPSHOT</version>
-    </parent>
+	<dependencies>
+		<dependency>
+			<groupId>net.javacrumbs.json-unit</groupId>
+			<artifactId>json-unit-core</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hamcrest</groupId>
+			<artifactId>hamcrest-library</artifactId>
+		</dependency>
+	</dependencies>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<version>3.0.0</version>
+				<configuration>
+					<instructions>
+						<Bundle-Name>JsonUnit</Bundle-Name>
+						<Bundle-SymbolicName>net.javacrumbs.jsonunit</Bundle-SymbolicName>
+						<Export-Package>net.javacrumbs.jsonunit.*</Export-Package>
+						<Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
+						<_removeheaders>Bnd-LastModified</_removeheaders>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
-    <dependencies>
-        <dependency>
-            <groupId>net.javacrumbs.json-unit</groupId>
-            <artifactId>json-unit-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-library</artifactId>
-        </dependency>
-    </dependencies>
 </project>
