@@ -1,3 +1,6 @@
+## 1.8.0
+* OSGi support thanks to @amergey
+
 ## 1.7.0
 * Support for Spring MVC tests assertions
 

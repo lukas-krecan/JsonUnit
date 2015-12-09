@@ -9,6 +9,8 @@
         <jackson2.version>2.3.1</jackson2.version>
         <gson.version>2.3</gson.version>
         <symbolic.name>${pom.groupId}.${pom.artifactId}</symbolic.name>
+        <osgi.importPackage>*</osgi.importPackage>
+        <osgi.exportPackage/>
     </properties>
     <packaging>pom</packaging>
 
@@ -111,6 +113,23 @@
                     </signature>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <version>3.0.0</version>
+                <configuration>
+                    <instructions>
+                        <Bundle-Name>${artifactId}</Bundle-Name>
+                        <Bundle-SymbolicName>${symbolic.name}</Bundle-SymbolicName>
+                        <Bundle-Description>${pom.description}</Bundle-Description>
+                        <Import-Package>${osgi.importPackage}</Import-Package>
+                        <Export-Package>${osgi.exportPackage}</Export-Package>
+                        <Bundle-RequiredExecutionEnvironment></Bundle-RequiredExecutionEnvironment>
+                        <_removeheaders>Bnd-LastModified</_removeheaders>
+                    </instructions>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
     <licenses>
@@ -151,6 +170,7 @@
             </build>
         </profile>
     </profiles>
+
 
     <scm>
         <connection>scm:git:git@github.com:lukas-krecan/JsonUnit.git</connection>

@@ -5,6 +5,16 @@
     <packaging>bundle</packaging>
 
     <description>Core classes for JSON unit</description>
+    <properties>
+        <osgi.importPackage>
+            com.fasterxml.jackson.core;resolution:=optional,
+            *
+        </osgi.importPackage>
+        <osgi.exportPackage>
+            net.javacrumbs.jsonunit.core,
+            net.javacrumbs.jsonunit.core.internal
+        </osgi.exportPackage>
+    </properties>
 
     <parent>
         <groupId>net.javacrumbs.json-unit</groupId>
@@ -37,32 +47,4 @@
             <version>1.7.5</version>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <version>3.0.0</version>
-                <configuration>
-                    <instructions>
-                        <Bundle-Name>${artifactId}</Bundle-Name>
-                        <Bundle-SymbolicName>${symbolic.name}</Bundle-SymbolicName>
-                        <Bundle-Description>${pom.description}</Bundle-Description>
-                        <Import-Package>
-                            com.fasterxml.jackson.core;resolution:=optional,
-                            *
-                        </Import-Package>
-                        <Export-Package>
-                            net.javacrumbs.jsonunit.core,
-                            net.javacrumbs.jsonunit.core.internal
-                        </Export-Package>
-                        <Bundle-RequiredExecutionEnvironment></Bundle-RequiredExecutionEnvironment>
-                        <_removeheaders>Bnd-LastModified</_removeheaders>
-                    </instructions>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

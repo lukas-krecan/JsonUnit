@@ -12,6 +12,10 @@
 		<version>1.7.1-SNAPSHOT</version>
 	</parent>
 
+	<properties>
+		<osgi.exportPackage>net.javacrumbs.jsonunit</osgi.exportPackage>
+	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>net.javacrumbs.json-unit</groupId>
@@ -27,26 +31,4 @@
 			<artifactId>hamcrest-library</artifactId>
 		</dependency>
 	</dependencies>
-	
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<version>3.0.0</version>
-				<configuration>
-					<instructions>
-						<Bundle-Name>${artifactId}</Bundle-Name>
-						<Bundle-SymbolicName>${symbolic.name}</Bundle-SymbolicName>
-						<Bundle-Description>${pom.description}</Bundle-Description>
-						<Export-Package>net.javacrumbs.jsonunit</Export-Package>
-						<Bundle-RequiredExecutionEnvironment></Bundle-RequiredExecutionEnvironment>
-						<_removeheaders>Bnd-LastModified</_removeheaders>
-					</instructions>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
 </project>

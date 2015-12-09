@@ -5,8 +5,7 @@
     <packaging>bundle</packaging>
 
     <description>
-        JSON Assertions inspired by FEST and AssertJ. It actually does not
-        use any of these modules, but can be used together with any of them.
+        JSON Assertions inspired by FEST and AssertJ.
     </description>
 
     <parent>
@@ -14,6 +13,10 @@
         <artifactId>json-unit-parent</artifactId>
         <version>1.7.1-SNAPSHOT</version>
     </parent>
+
+    <properties>
+        <osgi.exportPackage>net.javacrumbs.jsonunit.fluent.*</osgi.exportPackage>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -33,25 +36,4 @@
             <optional>true</optional>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <version>3.0.0</version>
-                <configuration>
-                    <instructions>
-                        <Bundle-Name>${artifactId}</Bundle-Name>
-                        <Bundle-SymbolicName>${symbolic.name}</Bundle-SymbolicName>
-                        <Bundle-Description>${pom.description}</Bundle-Description>
-                        <Export-Package>net.javacrumbs.jsonunit.fluent.*</Export-Package>
-                        <Bundle-RequiredExecutionEnvironment></Bundle-RequiredExecutionEnvironment>
-                        <_removeheaders>Bnd-LastModified</_removeheaders>
-                    </instructions>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>
