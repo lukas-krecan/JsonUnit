@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-parent</artifactId>
-    <version>1.7.1-SNAPSHOT</version>
+    <version>1.8.0</version>
     <url>https://github.com/lukas-krecan/JsonUnit</url>
     <properties>
         <jackson1.version>1.9.13</jackson1.version>
@@ -10,7 +10,7 @@
         <gson.version>2.3</gson.version>
         <symbolic.name>${pom.groupId}.${pom.artifactId}</symbolic.name>
         <osgi.importPackage>*</osgi.importPackage>
-        <osgi.exportPackage/>
+        <osgi.exportPackage />
     </properties>
     <packaging>pom</packaging>
 
@@ -125,7 +125,7 @@
                         <Bundle-Description>${pom.description}</Bundle-Description>
                         <Import-Package>${osgi.importPackage}</Import-Package>
                         <Export-Package>${osgi.exportPackage}</Export-Package>
-                        <Bundle-RequiredExecutionEnvironment></Bundle-RequiredExecutionEnvironment>
+                        <Bundle-RequiredExecutionEnvironment />
                         <_removeheaders>Bnd-LastModified</_removeheaders>
                     </instructions>
                 </configuration>
