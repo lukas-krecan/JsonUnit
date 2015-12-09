@@ -37,10 +37,11 @@
 				<version>3.0.0</version>
 				<configuration>
 					<instructions>
-						<Bundle-Name>JsonUnit</Bundle-Name>
-						<Bundle-SymbolicName>net.javacrumbs.jsonunit</Bundle-SymbolicName>
-						<Export-Package>net.javacrumbs.jsonunit.*</Export-Package>
-						<Bundle-RequiredExecutionEnvironment>JavaSE-1.7</Bundle-RequiredExecutionEnvironment>
+						<Bundle-Name>${artifactId}</Bundle-Name>
+						<Bundle-SymbolicName>${symbolic.name}</Bundle-SymbolicName>
+						<Bundle-Description>${pom.description}</Bundle-Description>
+						<Export-Package>net.javacrumbs.jsonunit</Export-Package>
+						<Bundle-RequiredExecutionEnvironment></Bundle-RequiredExecutionEnvironment>
 						<_removeheaders>Bnd-LastModified</_removeheaders>
 					</instructions>
 				</configuration>
