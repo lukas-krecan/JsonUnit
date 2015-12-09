@@ -50,7 +50,10 @@
                         <Bundle-Name>${artifactId}</Bundle-Name>
                         <Bundle-SymbolicName>${symbolic.name}</Bundle-SymbolicName>
                         <Bundle-Description>${pom.description}</Bundle-Description>
-                        <Import-Package>*</Import-Package>
+                        <Import-Package>
+                            com.fasterxml.jackson.core;resolution:=optional,
+							*
+						</Import-Package>
                         <Export-Package>
                             net.javacrumbs.jsonunit.core,
                             net.javacrumbs.jsonunit.core.internal
