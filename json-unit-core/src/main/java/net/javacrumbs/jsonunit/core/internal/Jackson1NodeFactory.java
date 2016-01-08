@@ -29,7 +29,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Deserializes node using Jackson 1
@@ -75,11 +74,11 @@ class Jackson1NodeFactory extends AbstractNodeFactory {
             return false;
         }
         AnnotatedClass annotatedClass = AnnotatedClass.construct(source.getClass(), ANNOTATION_INTROSPECTOR, mapper.getSerializationConfig());
-        return annotatedClass.getAnnotations().size() > 0 || hasAnnotationOnMethod(annotatedClass);
+        return annotatedClass.hasAnnotations() || hasAnnotationOnMethod(annotatedClass);
     }
 
     private boolean hasAnnotationOnMethod(AnnotatedClass annotatedClass) {
-        annotatedClass.resolveMemberMethods(MINIMAL_METHOD_FILTER);
+        annotatedClass.resolveMemberMethods(MINIMAL_METHOD_FILTER, false);
         Iterable<AnnotatedMethod> annotatedMethods = annotatedClass.memberMethods();
         for (AnnotatedMethod method : annotatedMethods) {
             if (method.getAnnotationCount() > 0) {
@@ -101,7 +100,7 @@ class Jackson1NodeFactory extends AbstractNodeFactory {
         }
 
         public Iterator<KeyValue> fields() {
-            final Iterator<Map.Entry<String, JsonNode>> iterator = jsonNode.getFields();
+            final Iterator<String> iterator = jsonNode.getFieldNames();
             return new Iterator<KeyValue>() {
                 public boolean hasNext() {
                     return iterator.hasNext();
@@ -112,8 +111,8 @@ class Jackson1NodeFactory extends AbstractNodeFactory {
                 }
 
                 public KeyValue next() {
-                    Map.Entry<String, JsonNode> entry = iterator.next();
-                    return new KeyValue(entry.getKey(), newNode(entry.getValue()));
+                    String fieldName = iterator.next();
+                    return new KeyValue(fieldName, newNode(jsonNode.get(fieldName)));
                 }
             };
         }
@@ -148,7 +147,7 @@ class Jackson1NodeFactory extends AbstractNodeFactory {
         }
 
         public String asText() {
-            return jsonNode.asText();
+            return jsonNode.getValueAsText();
         }
 
         public NodeType getNodeType() {
@@ -174,7 +173,7 @@ class Jackson1NodeFactory extends AbstractNodeFactory {
         }
 
         public Boolean asBoolean() {
-            return jsonNode.asBoolean();
+            return jsonNode.getBooleanValue();
         }
 
         @Override

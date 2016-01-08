@@ -1,3 +1,6 @@
+## 1.9.0
+* Made compatible with Jackson 1.4
+
 ## 1.8.0
 * OSGi support thanks to @amergey
 
