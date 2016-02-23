@@ -123,7 +123,7 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\n" +
-                    "Different value found in node \"test\". Pattern \"[A-Z]+\" did not match \"123\".\n", e.getMessage());
+                "Different value found in node \"test\". Pattern \"[A-Z]+\" did not match \"123\".\n", e.getMessage());
         }
     }
 
@@ -134,7 +134,7 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\n" +
-                    "Different value found in node \"test\". Expected '\"${json-unit.regex}[A-Z]+\"', got 'null'.\n", e.getMessage());
+                "Different value found in node \"test\". Expected '\"${json-unit.regex}[A-Z]+\"', got 'null'.\n", e.getMessage());
         }
     }
 
@@ -145,7 +145,7 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\n" +
-                    "Different value found in node \"test\". Expected '\"${json-unit.regex}[A-Z]+\"', got '123'.\n", e.getMessage());
+                "Different value found in node \"test\". Expected '\"${json-unit.regex}[A-Z]+\"', got '123'.\n", e.getMessage());
         }
     }
 
@@ -156,7 +156,7 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\n" +
-                    "Different keys found in node \"\". Expected [test], got [test2]. Missing: \"test\" Extra: \"test2\"\n", e.getMessage());
+                "Different keys found in node \"\". Expected [test], got [test2]. Missing: \"test\" Extra: \"test2\"\n", e.getMessage());
         }
     }
 
@@ -172,9 +172,5 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
 
     protected Object readValue(String value) {
         return JsonTestUtils.readByJackson1(value);
-    }
-
-    private void failIfNoException() {
-        fail("Exception expected");
     }
 }

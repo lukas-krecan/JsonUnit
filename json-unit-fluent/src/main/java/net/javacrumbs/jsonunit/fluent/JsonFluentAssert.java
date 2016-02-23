@@ -146,6 +146,7 @@ public class JsonFluentAssert {
 
     /**
      * Compares JSON structure. Ignores values, only compares shape of the document and key names.
+     * Is too lenient, ignores types, prefer IGNORING_VALUES option instead.
      *
      * @param expected
      * @return {@code this} object.

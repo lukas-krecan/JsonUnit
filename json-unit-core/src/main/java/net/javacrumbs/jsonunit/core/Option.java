@@ -36,7 +36,8 @@ public enum Option {
     IGNORING_EXTRA_FIELDS,
 
     /**
-     * Compares only structures. Completely ignores values.
+     * Compares only structures. Completely ignores both values and types.
+     *  Is too lenient, ignores types, prefer {@link Option#IGNORING_VALUES} instead.
      */
     COMPARING_ONLY_STRUCTURE,
 

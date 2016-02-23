@@ -21,8 +21,8 @@ simple:
         	     when(TREATING_NULL_AS_ABSENT));
     
     // compares only the structure, not the values
-    assertJsonStructureEquals("[{\"test\":1}, {\"test\":2}]", 
-    			      "[{\n\"test\": 1\n}, {\"TEST\": 4}]")
+    assertJsonEquals("[{\"test\":1}, {\"test\":2}]",
+    			      "[{\n\"test\": 1\n}, {\"TEST\": 4}]", when(IGNORING_VALUES))
     
 When the values are compared, order of elements and whitespaces are ignored. 
 
@@ -63,7 +63,7 @@ Fluent (FEST or AssertJ like) assertions are supported by a special module json-
         .node("root.test[0]").isEqualTo(1);
 
     // compares only the structure
-    assertThatJson("{\"test\":1}").hasSameStructureAs("{\"test\":21}");
+    assertThatJson("{\"test\":1}").when(IGNORING_VALUES).isEqualTo("{\"test\":21}");
 
     // ignores a value
     assertThatJson("{\"test\":1}").isEqualTo("{\"test\":\"${json-unit.ignore}\"}");

@@ -120,7 +120,7 @@ public class JsonAssert {
     }
 
     /**
-     * Compares structures of two JSON documents.
+     * Compares structures of two JSON documents. Is too lenient, ignores types, prefer IGNORING_VALUES option instead.
      * Throws {@link AssertionError} if they are different.
      */
     public static void assertJsonStructureEquals(Object expected, Object actual) {
@@ -132,6 +132,7 @@ public class JsonAssert {
 
     /**
      * Compares structure of part of the JSON. Path has this format "root.array[0].value".
+     * Is too lenient, ignores types, prefer IGNORING_VALUES option instead.
      */
     public static void assertJsonPartStructureEquals(Object expected, Object fullJson, String path) {
         Diff diff = create(expected, fullJson, FULL_JSON, path, configuration.withOptions(COMPARING_ONLY_STRUCTURE));
