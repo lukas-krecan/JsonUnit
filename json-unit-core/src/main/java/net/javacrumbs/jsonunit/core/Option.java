@@ -42,6 +42,11 @@ public enum Option {
     COMPARING_ONLY_STRUCTURE,
 
     /**
+     * Ignores array size differences. Compares only first element if it exists.
+     */
+    IGNORING_ARRAY_SIZE,
+
+    /**
      * Ignores values but fails if value types are different.
      */
     IGNORING_VALUES

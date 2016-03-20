@@ -37,6 +37,8 @@ import static java.util.Collections.emptySet;
 import static net.javacrumbs.jsonunit.core.Option.COMPARING_ONLY_STRUCTURE;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_SIZE;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
@@ -290,12 +292,12 @@ public class Diff {
     private void compareArrayNodes(Node expectedNode, Node actualNode, String path) {
         List<Node> expectedElements = asList(expectedNode.arrayElements());
         List<Node> actualElements = asList(actualNode.arrayElements());
-        if (expectedElements.size() != actualElements.size()) {
+        if (!hasOption(IGNORING_ARRAY_SIZE) && expectedElements.size() != actualElements.size()) {
             structureDifferenceFound("Array \"%s\" has different length. Expected %d, got %d.", path, expectedElements.size(), actualElements.size());
         }
         List<Node> extraValues = new ArrayList<Node>();
         List<Node> missingValues = new ArrayList<Node>(expectedElements);
-        if (hasOption(Option.IGNORING_ARRAY_ORDER)) {
+        if (hasOption(IGNORING_ARRAY_ORDER)) {
             for (Node actual : actualElements) {
                 int index = indexOf(missingValues, actual);
                 if (index != -1) {
@@ -310,7 +312,11 @@ public class Diff {
             }
 
         } else {
-            for (int i = 0; i < Math.min(expectedElements.size(), actualElements.size()); i++) {
+            int elementsToCompare = Math.min(expectedElements.size(), actualElements.size());
+            if (hasOption(IGNORING_ARRAY_SIZE)) {
+                elementsToCompare = Math.min(elementsToCompare, 1);
+            }
+            for (int i = 0; i < elementsToCompare; i++) {
                 compareNodes(expectedElements.get(i), actualElements.get(i), getArrayPath(path, i));
             }
         }
