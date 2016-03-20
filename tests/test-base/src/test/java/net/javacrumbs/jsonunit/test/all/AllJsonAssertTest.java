@@ -28,11 +28,11 @@ import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonStructureEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.when;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
+import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.failIfNoException;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByGson;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson1;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson2;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public class AllJsonAssertTest extends AbstractJsonAssertTest {
 

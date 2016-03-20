@@ -36,6 +36,7 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
+import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.failIfNoException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -798,11 +799,6 @@ public abstract class AbstractJsonAssertTest {
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected \"a\", got \"b\".\n", e.getMessage());
         }
-    }
-
-
-    protected void failIfNoException() {
-        fail("Exception expected");
     }
 
     protected abstract Object readValue(String value);
