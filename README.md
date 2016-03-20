@@ -4,25 +4,27 @@ JsonUnit [![Build Status](https://travis-ci.org/lukas-krecan/JsonUnit.png?branch
 JsonUnit is a library that simplifies JSON comparison in unit tests. It's strongly inspired by XmlUnit. The usage is
 simple:
 
-    import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
-    
-    ...
+```java
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 
-    // compares two JSON documents
-    assertJsonEquals("{\"test\":1}", "{\n\"foo\": 1\n}");
+...
 
-    // compares only part
-    assertJsonPartEquals("2", "{\"test\":[{\"value\":1},{\"value\":2}]}",
-                 "test[1].value");
+// compares two JSON documents
+assertJsonEquals("{\"test\":1}", "{\n\"foo\": 1\n}");
+
+// compares only part
+assertJsonPartEquals("2", "{\"test\":[{\"value\":1},{\"value\":2}]}",
+    "test[1].value");
     
-    // extra options can be specified
-    assertJsonEquals("{\"test\":{\"a\":1}}",
-    		     "{\"test\":{\"a\":1, \"b\": null}}",
-        	     when(TREATING_NULL_AS_ABSENT));
-    
-    // compares only the structure, not the values
-    assertJsonEquals("[{\"test\":1}, {\"test\":2}]",
-    			      "[{\n\"test\": 1\n}, {\"TEST\": 4}]", when(IGNORING_VALUES))
+// extra options can be specified
+assertJsonEquals("{\"test\":{\"a\":1}}",
+    "{\"test\":{\"a\":1, \"b\": null}}",
+    when(TREATING_NULL_AS_ABSENT));
+
+// compares only the structure, not the values
+assertJsonEquals("[{\"test\":1}, {\"test\":2}]",
+    "[{\n\"test\": 1\n}, {\"TEST\": 4}]", when(IGNORING_VALUES))
+```
     
 When the values are compared, order of elements and whitespaces are ignored. 
 
@@ -30,100 +32,112 @@ Hamcrests matchers
 ----------------
 You use Hamcrest matchers in the following way
 
-    import static net.javacrumbs.jsonunit.JsonMatchers.*;
-    import static org.junit.Assert.*;
-    ...
+```java
+import static net.javacrumbs.jsonunit.JsonMatchers.*;
+import static org.junit.Assert.*;
+...
 
-    assertThat("{\"test\":1}", jsonEquals("{\"test\": 1}"));
-    assertThat("{\"test\":1}", jsonPartEquals("test", 1));
-    assertThat("{\"test\":[1, 2, 3]}", jsonPartEquals("test[0]", 1));
-    
-    assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
-               jsonEquals("{\"test\":{\"b\":2}}").when(IGNORING_EXTRA_FIELDS));
+assertThat("{\"test\":1}", jsonEquals("{\"test\": 1}"));
+assertThat("{\"test\":1}", jsonPartEquals("test", 1));
+assertThat("{\"test\":[1, 2, 3]}", jsonPartEquals("test[0]", 1));
 
-    // Can use other Hamcrest matchers too
-    assertThat("{\"test\":1}", jsonPartMatches("test", is(valueOf(1))))
+assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
+    jsonEquals("{\"test\":{\"b\":2}}").when(IGNORING_EXTRA_FIELDS));
+
+// Can use other Hamcrest matchers too
+assertThat("{\"test\":1}", jsonPartMatches("test", is(valueOf(1))))
+```
 
 Fluent assertions
 ---------------
 Fluent (FEST or AssertJ like) assertions are supported by a special module json-unit-fluent
 
-    import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
-    ...
+```java
+import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
+...
 
-    // compares entire documents
-    assertThatJson("{\"test\":1}").isEqualTo("{\"test\":2}");
+// compares entire documents
+assertThatJson("{\"test\":1}").isEqualTo("{\"test\":2}");
 
-    // compares only parts of the document
-    assertThatJson("{\"test1\":2, \"test2\":1}")
-        .node("test1").isEqualTo(2)
-        .node("test2").isEqualTo(2);
+// compares only parts of the document
+assertThatJson("{\"test1\":2, \"test2\":1}")
+    .node("test1").isEqualTo(2)
+    .node("test2").isEqualTo(2);
 
-    assertThatJson("{\"root\":{\"test\":[1,2,3}}")
-        .node("root.test[0]").isEqualTo(1);
+assertThatJson("{\"root\":{\"test\":[1,2,3}}")
+    .node("root.test[0]").isEqualTo(1);
 
-    // compares only the structure
-    assertThatJson("{\"test\":1}").when(IGNORING_VALUES).isEqualTo("{\"test\":21}");
+// compares only the structure
+assertThatJson("{\"test\":1}").when(IGNORING_VALUES).isEqualTo("{\"test\":21}");
 
-    // ignores a value
-    assertThatJson("{\"test\":1}").isEqualTo("{\"test\":\"${json-unit.ignore}\"}");
+// ignores a value
+assertThatJson("{\"test\":1}").isEqualTo("{\"test\":\"${json-unit.ignore}\"}");
 
-    // ignores extra fields
-    assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}")
-    	.when(IGNORING_EXTRA_FIELDS).isEqualTo("{\"test\":{\"b\":2}}");
+// ignores extra fields
+assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}")
+    .when(IGNORING_EXTRA_FIELDS).isEqualTo("{\"test\":{\"b\":2}}");
     	
-    // array length comparison
-    assertThatJson("{\"test\":[1,2,3]}").node("test")
-    	.isArray().ofLength(2);
+// array length comparison
+assertThatJson("{\"test\":[1,2,3]}").node("test")
+    .isArray().ofLength(2);
 
-    // using Hamcrest matcher
-    assertThatJson("{\"test\":\"one\"}").node("test")
-        .matches(equalTo("one"));
+// using Hamcrest matcher
+assertThatJson("{\"test\":\"one\"}").node("test")
+    .matches(equalTo("one"));
+```
 
-    // Numbers sent to matchers are BigDecimals.
-    import static java.math.BigDecimal.valueOf;
-    ...
-    assertThatJson("{\"test\":[{\"value\":1},{\"value\":2},{\"value\":3}]}")
-        .node("test")
-        .matches(everyItem(jsonPartMatches("value", lessThanOrEqualTo(valueOf(4)))));
+```java
+import static java.math.BigDecimal.valueOf;
+...
+// Numbers sent to matchers are BigDecimals.
+assertThatJson("{\"test\":[{\"value\":1},{\"value\":2},{\"value\":3}]}")
+    .node("test")
+    .matches(everyItem(jsonPartMatches("value", lessThanOrEqualTo(valueOf(4)))));
+```
 
 ### Hamcrest matchers in fluent assertions
 
 It is possible to combine fluent assertions with hamcrest matchers using `matches` method. For example
 
-     assertThatJson("{\"test\":[1,2,3]}").node("test").matches(hasItem(valueOf(1)));
+```java
+assertThatJson("{\"test\":[1,2,3]}").node("test").matches(hasItem(valueOf(1)));
 
-     assertThatJson("{\"test\":[{\"value\":1},{\"value\":2},{\"value\":3}]}")
-        .node("test")
-        .matches(everyItem(jsonPartMatches("value", lessThanOrEqualTo(valueOf(4)))));
+assertThatJson("{\"test\":[{\"value\":1},{\"value\":2},{\"value\":3}]}")
+    .node("test")
+    .matches(everyItem(jsonPartMatches("value", lessThanOrEqualTo(valueOf(4)))));
+```
 
 Spring MVC assertions
 ---------------------
 Since version 1.7.0 JsonUnit supports Spring MVC test assertions. For example
 
-    import static net.javacrumbs.jsonunit.spring.JsonUnitResultMatchers.json;
-    ...
+```java
+import static net.javacrumbs.jsonunit.spring.JsonUnitResultMatchers.json;
+...
 
-    this.mockMvc.perform(get("/sample").andExpect(
-        json().isEqualTo("{\"result\":{\"string\":\"stringValue\", \"array\":[1, 2, 3],\"decimal\":1.00001}}")
-    );
-    this.mockMvc.perform(get("/sample").andExpect(
-        json().node("result.string2").isAbsent()
-    );
-    this.mockMvc.perform(get("/sample").andExpect(
-        json().node("result.array").when(Option.IGNORING_ARRAY_ORDER).isEqualTo(new int[]{3, 2, 1})
-    );
-    this.mockMvc.perform(get("/sample").andExpect(
-        json().node("result.array").matches(everyItem(lessThanOrEqualTo(valueOf(4))))
-    );
+this.mockMvc.perform(get("/sample").andExpect(
+    json().isEqualTo("{\"result\":{\"string\":\"stringValue\", \"array\":[1, 2, 3],\"decimal\":1.00001}}")
+);
+this.mockMvc.perform(get("/sample").andExpect(
+    json().node("result.string2").isAbsent()
+);
+this.mockMvc.perform(get("/sample").andExpect(
+    json().node("result.array").when(Option.IGNORING_ARRAY_ORDER).isEqualTo(new int[]{3, 2, 1})
+);
+this.mockMvc.perform(get("/sample").andExpect(
+    json().node("result.array").matches(everyItem(lessThanOrEqualTo(valueOf(4))))
+);
+```
 
 Ignoring values
 ----------------
 Sometimes you need to ignore certain values when comparing. It is possible to use ${json-unit.ignore}
 placeholder like this
 
-    assertJsonEquals("{\"test\":\"${json-unit.ignore}\"}",
-        "{\n\"test\": {\"object\" : {\"another\" : 1}}}");
+```java
+assertJsonEquals("{\"test\":\"${json-unit.ignore}\"}",
+    "{\n\"test\": {\"object\" : {\"another\" : 1}}}");
+```
 
 Options
 ---------------
@@ -131,47 +145,63 @@ There are multiple options how you can configure the comparison
 
 **TREATING_NULL_AS_ABSENT** - fields with null values are equivalent to absent fields. For example, this test passes
   
-    assertJsonEquals("{\"test\":{\"a\":1}}",
-                     "{\"test\":{\"a\":1, \"b\": null, \"c\": null}}",
-                     when(TREATING_NULL_AS_ABSENT));
-    
+```java
+assertJsonEquals("{\"test\":{\"a\":1}}",
+    "{\"test\":{\"a\":1, \"b\": null, \"c\": null}}",
+    when(TREATING_NULL_AS_ABSENT));
+```
+
 **IGNORING_ARRAY_ORDER** - ignores order in arrays
 
-    assertJsonEquals("{\"test\":[1,2,3]}", 
-                     "{\"test\":[3,2,1]}",
-                     when(IGNORING_ARRAY_ORDER));
-    
+```java
+assertJsonEquals("{\"test\":[1,2,3]}", 
+    "{\"test\":[3,2,1]}",
+    when(IGNORING_ARRAY_ORDER));
+```
+
 **IGNORING_EXTRA_FIELDS** - ignores extra fileds in the compared value
 
-    assertJsonEquals("{\"test\":{\"b\":2}}", 
-                     "{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
-                     when(IGNORING_EXTRA_FIELDS));
-    
+```java
+assertJsonEquals("{\"test\":{\"b\":2}}", 
+    "{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
+    when(IGNORING_EXTRA_FIELDS));
+```
+
 **IGNORE_VALUES** - ignores values and compares only types
 
-    assertJsonEquals("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}", 
-                     "{\"test\":{\"a\":3,\"b\":2,\"c\":1}}",
-                     when(IGNORING_VALUES));
-    
+```java
+assertJsonEquals("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}", 
+    "{\"test\":{\"a\":3,\"b\":2,\"c\":1}}",
+    when(IGNORING_VALUES));
+```
+
 It is possible to combine options. 
 
-    assertJsonEquals("{\"test\":[{\"key\":1},{\"key\":2},{\"key\":3}]}", 
-                     "{\"test\":[{\"key\":3},{\"key\":2, \"extraField\":2},{\"key\":1}]}",
-                     when(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_FIELDS));
+```java
+assertJsonEquals("{\"test\":[{\"key\":1},{\"key\":2},{\"key\":3}]}", 
+    "{\"test\":[{\"key\":3},{\"key\":2, \"extraField\":2},{\"key\":1}]}",
+    when(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_FIELDS));
+```
                      
 In Hamcrest assertion you can set the option like this
 
-    assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
-               jsonEquals("{\"test\":{\"b\":2}}").when(IGNORING_EXTRA_FIELDS));
-               
+```java
+assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
+    jsonEquals("{\"test\":{\"b\":2}}").when(IGNORING_EXTRA_FIELDS));
+```
+
 For standard asserts and Hamcrest matchers, it is possible to set the configuration globally
 
-    JsonAssert.setOptions(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_FIELDS);
+```java
+JsonAssert.setOptions(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_FIELDS);
+```
 
 In fluent assertion, you can set options in the following way
 
-    assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}")
-        .when(IGNORING_EXTRA_FIELDS).isEqualTo("{\"test\":{\"b\":2}}");
+```java
+assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}")
+    .when(IGNORING_EXTRA_FIELDS).isEqualTo("{\"test\":{\"b\":2}}");
+```
 
 Please note that `when` method has to be called **before** the actual comparison.
 
@@ -184,22 +214,30 @@ Numbers are by default compared in the following way:
 
 You can change this behavior by setting tolerance
 
-    assertJsonEquals("1", "\n1.009\n", withTolerance(0.01));
-    
+```java
+assertJsonEquals("1", "\n1.009\n", withTolerance(0.01));
+```
+
 or globally 
 
-    JsonAssert.setTolerance(0.01);
+```java
+JsonAssert.setTolerance(0.01);
+```
 
 or for fluent assertions
 
-    assertThatJson("{\"test\":1.00001}").node("test").withTolerance(0.001).isEqualTo(1);
+```java
+assertThatJson("{\"test\":1.00001}").node("test").withTolerance(0.001).isEqualTo(1);
+```
 
 Or you can use Hamcrest matcher
 
-    import static java.math.BigDecimal.valueOf;
-    ...
-    assertThatJson("{\"test\":1.10001}").node("test")
-            .matches(closeTo(valueOf(1.1), valueOf(0.001)));
+```java
+import static java.math.BigDecimal.valueOf;
+...
+assertThatJson("{\"test\":1.10001}").node("test")
+    .matches(closeTo(valueOf(1.1), valueOf(0.001)));
+```
 
 Logging
 -------
@@ -212,35 +250,38 @@ Maven dependency
 ----------------
 JsonUnit is accessible in Maven central repository. In order for it to work, you need either, [Jackson](http://jackson.codehaus.org/) 1.x or 
 Jackson 2.x or [Gson](https://code.google.com/p/google-gson/) on the classpath. **Since 1.5.0 there is only one version for both versions of Jackson**
-	
-	<dependency>
-    	<groupId>net.javacrumbs.json-unit</groupId>
-    	<artifactId>json-unit</artifactId>
-        <version>1.9.0</version>
-    	<scope>test</scope>
-	</dependency>
+
+```xml	
+<dependency>
+    <groupId>net.javacrumbs.json-unit</groupId>
+    <artifactId>json-unit</artifactId>
+    <version>1.9.0</version>
+    <scope>test</scope>
+</dependency>
+```
 
 To use fluent assertions:
 
-	<dependency>
-    	<groupId>net.javacrumbs.json-unit</groupId>
-    	<artifactId>json-unit-fluent</artifactId>
-        <version>1.9.0</version>
-    	<scope>test</scope>
-	</dependency>
-
+```xml
+<dependency>
+    <groupId>net.javacrumbs.json-unit</groupId>
+    <artifactId>json-unit-fluent</artifactId>
+    <version>1.9.0</version>
+    <scope>test</scope>
+</dependency>
+```
 
 To use Spring MVC assertions:
 
-	<dependency>
-    	<groupId>net.javacrumbs.json-unit</groupId>
-    	<artifactId>json-unit-spring</artifactId>
-        <version>1.9.0</version>
-    	<scope>test</scope>
-	</dependency>
+```xml
+<dependency>
+    <groupId>net.javacrumbs.json-unit</groupId>
+    <artifactId>json-unit-spring</artifactId>
+    <version>1.9.0</version>
+    <scope>test</scope>
+</dependency>
+```
 
 Licence
 -------
 JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/LICENSE-2.0).
-
-
