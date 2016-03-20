@@ -16,7 +16,6 @@
 package net.javacrumbs.jsonunit.test.base;
 
 import net.javacrumbs.jsonunit.core.Option;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.io.StringReader;
@@ -91,6 +90,7 @@ public abstract class AbstractJsonFluentAssertTest {
     public void testAssertToleranceFailure() {
         try {
             assertThatJson("{\"test\":1.1}").node("test").withTolerance(0.001).isEqualTo(1);
+            failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected 1, got 1.1, difference is 0.1, tolerance is 0.001\n", e.getMessage());
         }

@@ -80,6 +80,7 @@ public abstract class AbstractJsonAssertTest {
         try {
             JsonAssert.setTolerance(0.001);
             assertJsonEquals(1, "\"hi\"");
+            failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\nDifferent value found in node \"\". Expected '1', got '\"hi\"'.\n", e.getMessage());
         }
@@ -682,6 +683,7 @@ public abstract class AbstractJsonAssertTest {
         JsonAssert.setOptions(IGNORING_VALUES);
         try {
             assertJsonEquals("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}", "{\"test\":{\"a\":3,\"b\":\"2\",\"c\":1}}");
+            failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\n" +
                 "Different value found in node \"test.b\". Expected '2', got '\"2\"'.\n", e.getMessage());
@@ -693,6 +695,7 @@ public abstract class AbstractJsonAssertTest {
         JsonAssert.setOptions(IGNORING_VALUES);
         try {
             assertJsonEquals("{\"test\":[{\"a\":1},{\"b\":2},{\"c\":3}]}", "{\"test\":[{\"a\":1},{\"b\":\"2\"},{\"c\":3}]}");
+            failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\n" +
                 "Different value found in node \"test[1].b\". Expected '2', got '\"2\"'.\n", e.getMessage());
