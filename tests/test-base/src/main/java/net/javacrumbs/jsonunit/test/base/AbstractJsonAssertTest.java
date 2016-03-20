@@ -32,10 +32,7 @@ import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartNotEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartStructureEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonStructureEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.when;
-import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
-import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
-import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
-import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
+import static net.javacrumbs.jsonunit.core.Option.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -768,6 +765,42 @@ public abstract class AbstractJsonAssertTest {
     @Test
     public void strictStructureEqualsShouldPassOnDifferentValue() {
         assertJsonEquals("{\"test\": \"4\"}", "{\"test\": \"3\"}", when(Option.IGNORING_VALUES));
+    }
+
+    @Test
+    public void shouldNotAssertArraySizeWithEmptyArrays() {
+        assertJsonEquals("{\"test\":[]}", "{\"test\":[]}", when(IGNORING_ARRAY_SIZE));
+    }
+
+    @Test
+    public void shouldNotAssertArraySizeWithExpectedArrayEmpty() {
+        assertJsonEquals("{\"test\":[]}", "{\"test\":[\"a\"]}", when(IGNORING_ARRAY_SIZE));
+    }
+
+    @Test
+    public void shouldNotAssertArraySizeWithActualArrayEmpty() {
+        assertJsonEquals("{\"test\":[\"a\"]}", "{\"test\":[]}", when(IGNORING_ARRAY_SIZE));
+    }
+
+    @Test
+    public void shouldNotAssertArraySize() {
+        assertJsonEquals("{\"test\":[\"a\",\"b\",\"c\"]}", "{\"test\":[\"a\"]}", when(IGNORING_ARRAY_SIZE));
+    }
+
+    @Test
+    public void shouldCompareOnlyFirstElement() {
+        assertJsonEquals("{\"test\":[{\"a\":1},{\"b\":2}]}", "{\"test\":[{\"a\":1},{\"c\":3},{\"b\":2}]}", when(IGNORING_ARRAY_SIZE));
+    }
+
+    @Test
+    public void shouldFailIfFirstElementIsDifferent() {
+        try {
+            assertJsonEquals("{\"test\":[{\"a\":1},{\"b\":2}]}", "{\"test\":[{\"b\":1},{\"a\":2}]}", when(IGNORING_ARRAY_SIZE));
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                    "Different keys found in node \"test[0]\". Expected [a], got [b]. Missing: \"test[0].a\" Extra: \"test[0].b\"\n", e.getMessage());
+        }
     }
 
     @Test
