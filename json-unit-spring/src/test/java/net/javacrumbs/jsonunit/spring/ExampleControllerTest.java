@@ -62,7 +62,7 @@ public class ExampleControllerTest {
     public void isEqualToShouldFailIfDoesNotEqual() throws Exception {
         try {
             exec().andExpect(json().isEqualTo(CORRECT_JSON.replace("stringValue", "stringValue2")));
-            doFail();
+            failIfNoException();
         } catch (AssertionError e) {
             assertEquals(
                 "JSON documents are different:\n" +
@@ -75,7 +75,7 @@ public class ExampleControllerTest {
     public void isStringEqualToShouldFailOnNumber() throws Exception {
         try {
             exec().andExpect(json().node("result.array[0]").isStringEqualTo("1"));
-            doFail();
+            failIfNoException();
         } catch (AssertionError e) {
             assertEquals("Node \"result.array[0]\" is not a string. The actual value is '1'.", e.getMessage());
         }
@@ -90,7 +90,7 @@ public class ExampleControllerTest {
     public void isAbsentShouldFailIfNodeExists() throws Exception {
         try {
             exec().andExpect(json().node("result.string").isAbsent());
-            doFail();
+            failIfNoException();
         } catch (AssertionError e) {
             assertEquals("Node \"result.string\" is present.", e.getMessage());
         }
@@ -106,7 +106,7 @@ public class ExampleControllerTest {
     public void isPresentShouldFailIfNodeIsAbsent() throws Exception {
         try {
             exec().andExpect(json().node("result.string2").isPresent());
-            doFail();
+            failIfNoException();
         } catch (AssertionError e) {
             assertEquals("Node \"result.string2\" is missing.", e.getMessage());
         }
@@ -121,7 +121,7 @@ public class ExampleControllerTest {
     public void isArrayShouldFailOnNotArray() throws Exception {
         try {
             exec().andExpect(json().node("result.string").isArray());
-            doFail();
+            failIfNoException();
         } catch (AssertionError e) {
             assertEquals("Node \"result.string\" is not an array. The actual value is '\"stringValue\"'.", e.getMessage());
         }
@@ -131,7 +131,7 @@ public class ExampleControllerTest {
     public void isArrayShouldFailIfNotPresent() throws Exception {
         try {
             exec().andExpect(json().node("result.array2").isArray());
-            doFail();
+            failIfNoException();
         } catch (AssertionError e) {
             assertEquals("Node \"result.array2\" is missing.", e.getMessage());
         }
@@ -142,7 +142,7 @@ public class ExampleControllerTest {
     public void isObjectShouldFailOnArray() throws Exception {
         try {
             exec().andExpect(json().node("result.array").isObject());
-            doFail();
+            failIfNoException();
         } catch (AssertionError e) {
             assertEquals("Node \"result.array\" is not an object. The actual value is '[1,2,3]'.", e.getMessage());
         }
@@ -152,7 +152,7 @@ public class ExampleControllerTest {
     public void isStringShouldFailOnArray() throws Exception {
         try {
             exec().andExpect(json().node("result.array").isString());
-            doFail();
+            failIfNoException();
         } catch (AssertionError e) {
             assertEquals("Node \"result.array\" is not a string. The actual value is '[1,2,3]'.", e.getMessage());
         }
@@ -187,7 +187,7 @@ public class ExampleControllerTest {
     public void isNotEqualToShouldFailIfEquals() throws Exception {
         try {
             exec().andExpect(json().isNotEqualTo(CORRECT_JSON));
-            doFail();
+            failIfNoException();
         } catch (AssertionError e) {
             assertEquals(
                 "JSON is equal.", e.getMessage());
@@ -199,7 +199,7 @@ public class ExampleControllerTest {
         try {
             exec()
                 .andExpect(json().node("result.string").isEqualTo("stringValue2"));
-            doFail();
+            failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\n" +
                     "Different value found in node \"result.string\". Expected \"stringValue2\", got \"stringValue\".\n",
@@ -216,7 +216,7 @@ public class ExampleControllerTest {
     public void intValueShouldFailIfDoesNotMatch() throws Exception {
         try {
             exec().andExpect(json().node("result.array").matches(everyItem(lessThanOrEqualTo(valueOf(2)))));
-            doFail();
+            failIfNoException();
         } catch (AssertionError e) {
             assertEquals("Node \"result.array\" does not match.\n" +
                     "Expected: every item is a value less than or equal to <2>\n" +
@@ -229,7 +229,7 @@ public class ExampleControllerTest {
         return this.mockMvc.perform(get("/sample").accept(MediaType.APPLICATION_JSON));
     }
 
-    private void doFail() {
+    private void failIfNoException() {
         fail("Exception expected");
     }
 

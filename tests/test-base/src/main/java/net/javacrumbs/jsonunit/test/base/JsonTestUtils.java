@@ -19,6 +19,8 @@ import com.google.gson.JsonParser;
 
 import java.io.IOException;
 
+import static org.junit.Assert.fail;
+
 public class JsonTestUtils {
 
     public static Object readByJackson2(String value) {
@@ -39,5 +41,9 @@ public class JsonTestUtils {
 
     public static Object readByGson(String value) {
         return new JsonParser().parse(value);
+    }
+
+    public static void failIfNoException() {
+        fail("Exception expected");
     }
 }
