@@ -20,7 +20,6 @@ import net.javacrumbs.jsonunit.core.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.String;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,6 +34,8 @@ import java.util.TreeSet;
 
 import static java.util.Collections.emptySet;
 import static net.javacrumbs.jsonunit.core.Option.COMPARING_ONLY_STRUCTURE;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
@@ -224,7 +225,7 @@ public class Diff {
                         BigDecimal diff = expectedValue.subtract(actualValue).abs();
                         if (diff.compareTo(configuration.getTolerance()) > 0) {
                             valueDifferenceFound("Different value found in node \"%s\". Expected %s, got %s, difference is %s, tolerance is %s",
-                                    fieldPath, quoteTextValue(expectedValue), quoteTextValue(actualValue), diff.toString(), configuration.getTolerance());
+                                fieldPath, quoteTextValue(expectedValue), quoteTextValue(actualValue), diff.toString(), configuration.getTolerance());
                         }
                     } else {
                         compareValues(expectedValue, actualValue, fieldPath);
@@ -290,12 +291,21 @@ public class Diff {
     private void compareArrayNodes(Node expectedNode, Node actualNode, String path) {
         List<Node> expectedElements = asList(expectedNode.arrayElements());
         List<Node> actualElements = asList(actualNode.arrayElements());
-        if (expectedElements.size() != actualElements.size()) {
-            structureDifferenceFound("Array \"%s\" has different length. Expected %d, got %d.", path, expectedElements.size(), actualElements.size());
+
+
+        if (failOnExtraArrayItems()) {
+            if (expectedElements.size() != actualElements.size()) {
+                structureDifferenceFound("Array \"%s\" has different length. Expected %d, got %d.", path, expectedElements.size(), actualElements.size());
+            }
+        } else {
+            // if we expect more elements in the array then we get, it's error even when IGNORING_EXTRA_ARRAY_ITEMS
+            if (expectedElements.size() > actualElements.size()) {
+                structureDifferenceFound("Array \"%s\" has invalid length. Expected at least %d, got %d.", path, expectedElements.size(), actualElements.size());
+            }
         }
         List<Node> extraValues = new ArrayList<Node>();
         List<Node> missingValues = new ArrayList<Node>(expectedElements);
-        if (hasOption(Option.IGNORING_ARRAY_ORDER)) {
+        if (hasOption(IGNORING_ARRAY_ORDER)) {
             for (Node actual : actualElements) {
                 int index = indexOf(missingValues, actual);
                 if (index != -1) {
@@ -304,16 +314,24 @@ public class Diff {
                     extraValues.add(actual);
                 }
             }
-
-            if (!missingValues.isEmpty() || !extraValues.isEmpty()) {
-                valueDifferenceFound("Array \"%s\" has different content. Missing values %s, extra values %s", path, missingValues, extraValues);
+            if (failOnExtraArrayItems()) {
+                if (!missingValues.isEmpty() || !extraValues.isEmpty()) {
+                    valueDifferenceFound("Array \"%s\" has different content. Missing values %s, extra values %s", path, missingValues, extraValues);
+                }
+            } else {
+                if (!missingValues.isEmpty()) {
+                    valueDifferenceFound("Array \"%s\" has different content. Missing values %s", path, missingValues);
+                }
             }
-
         } else {
             for (int i = 0; i < Math.min(expectedElements.size(), actualElements.size()); i++) {
                 compareNodes(expectedElements.get(i), actualElements.get(i), getArrayPath(path, i));
             }
         }
+    }
+
+    private boolean failOnExtraArrayItems() {
+        return !hasOption(IGNORING_EXTRA_ARRAY_ITEMS);
     }
 
     /**
