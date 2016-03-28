@@ -159,6 +159,18 @@ assertJsonEquals("{\"test\":[1,2,3]}",
     when(IGNORING_ARRAY_ORDER));
 ```
 
+**IGNORING_EXTRA_ARRAY_ITEMS** - ignores unexpected array items
+```java
+assertJsonEquals("{\"test\":[1,2,3]}",
+    "{\"test\":[1,2,3,4]}",
+    when(IGNORING_EXTRA_ARRAY_ITEMS));
+
+
+assertJsonEquals("{\"test\":[1,2,3]}",
+    "{\"test\":[5,5,4,4,3,3,2,2,1,1]}",
+    when(IGNORING_EXTRA_ARRAY_ITEMS, IGNORING_ARRAY_ORDER));
+```
+
 **IGNORING_EXTRA_FIELDS** - ignores extra fileds in the compared value
 
 ```java
@@ -255,7 +267,7 @@ Jackson 2.x or [Gson](https://code.google.com/p/google-gson/) on the classpath. 
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>1.9.0</version>
+    <version>1.10.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -266,7 +278,7 @@ To use fluent assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>1.9.0</version>
+    <version>1.10.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -277,7 +289,7 @@ To use Spring MVC assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>1.9.0</version>
+    <version>1.10.0</version>
     <scope>test</scope>
 </dependency>
 ```

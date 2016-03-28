@@ -1,3 +1,6 @@
+## 1.10.0
+* Added support for IGNORING_EXTRA_ARRAY_ITEMS
+
 ## 1.9.0
 * Made compatible with Jackson 1.4
 
