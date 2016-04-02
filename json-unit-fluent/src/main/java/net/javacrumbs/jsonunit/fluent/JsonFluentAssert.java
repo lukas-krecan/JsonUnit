@@ -283,13 +283,6 @@ public class JsonFluentAssert {
     }
 
     /**
-     * Syntactic sugar to allow calling of more assertions in one command.
-     */
-    public JsonFluentAssert and() {
-        return this;
-    }
-
-    /**
      * Fails if the selected JSON is not an Array or is not present.
      *
      * @return
@@ -396,7 +389,6 @@ public class JsonFluentAssert {
 
         /**
          * This method should be called before assertion.
-         * Use and() method to get rid of the deprecation warning if you know what you are doing.
          */
         @Override
         @Deprecated
@@ -407,7 +399,6 @@ public class JsonFluentAssert {
 
         /**
          * This method should be called before assertion.
-         * Use and() method to get rid of the deprecation warning if you know what you are doing.
          */
         @Override
         @Deprecated
@@ -417,12 +408,22 @@ public class JsonFluentAssert {
 
         /**
          * This method should be called before assertion.
-         * Use and() method to get rid of the deprecation warning if you know what you are doing.
          */
         @Override
         @Deprecated
         public JsonFluentAssert withTolerance(BigDecimal tolerance) {
             return super.withTolerance(tolerance);
+        }
+
+        /**
+         * This method should be called before assertion.
+         * @param ignorePlaceholder
+         * @return
+         */
+        @Override
+        @Deprecated
+        public JsonFluentAssert ignoring(String ignorePlaceholder) {
+            return super.ignoring(ignorePlaceholder);
         }
     }
 }
