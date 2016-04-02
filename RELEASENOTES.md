@@ -1,3 +1,7 @@
+## 1.11.0
+* Option setting methods made deprecated if called after assertion in JsonFluentAssert
+* JsonFluentAssert constructors made private. Please file an issue if you need them.
+
 ## 1.10.0
 * Added support for IGNORING_EXTRA_ARRAY_ITEMS
 

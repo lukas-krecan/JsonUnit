@@ -1,12 +1,12 @@
 /**
  * Copyright 2009-2015 the original author or authors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -52,7 +52,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * All the methods accept Objects as parameters. The supported types are:
  * <ol>
  * <li>Jackson JsonNode</li>
- * <li>Numbers, booleans and any other type parseable by Jackson's ObjectMapper.convertValue</li>
+ * <li>Gson JsonElement</li>
+ * <li>Numbers, booleans and any other type parsable by underlying JSON library</li>
  * <li>String is parsed as JSON. For expected values the string is quoted if it contains obviously invalid JSON.</li>
  * <li>{@link java.io.Reader} similarly to String</li>
  * <li>null as null Node</li>
@@ -66,7 +67,7 @@ public class JsonFluentAssert {
     private final String description;
     private final Configuration configuration;
 
-    protected JsonFluentAssert(Object actual, String path, String description, Configuration configuration) {
+    private JsonFluentAssert(Object actual, String path, String description, Configuration configuration) {
         if (actual == null) {
             throw new IllegalArgumentException("Can not make assertions about null JSON.");
         }
@@ -74,10 +75,6 @@ public class JsonFluentAssert {
         this.actual = actual;
         this.description = description;
         this.configuration = configuration;
-    }
-
-    protected JsonFluentAssert(Object actual) {
-        this(actual, "", "", Configuration.empty());
     }
 
     /**
@@ -89,7 +86,7 @@ public class JsonFluentAssert {
      * @return new JsonFluentAssert object.
      */
     public static JsonFluentAssert assertThatJson(Object json) {
-        return new JsonFluentAssert(convertToJson(json, ACTUAL));
+        return new JsonFluentAssertAfterAssertion(convertToJson(json, ACTUAL));
     }
 
     /**
@@ -108,12 +105,12 @@ public class JsonFluentAssert {
      * @return {@code this} object.
      * @see #isStringEqualTo(String)
      */
-    public JsonFluentAssert isEqualTo(Object expected) {
+    public JsonFluentAssertAfterAssertion isEqualTo(Object expected) {
         Diff diff = createDiff(expected, configuration);
         if (!diff.similar()) {
             failWithMessage(diff.differences());
         }
-        return this;
+        return (JsonFluentAssertAfterAssertion) this;
     }
 
 
@@ -136,12 +133,12 @@ public class JsonFluentAssert {
      * @param expected
      * @return {@code this} object.
      */
-    public JsonFluentAssert isNotEqualTo(Object expected) {
+    public JsonFluentAssertAfterAssertion isNotEqualTo(Object expected) {
         Diff diff = createDiff(expected, configuration);
         if (diff.similar()) {
             failWithMessage("JSON is equal.");
         }
-        return this;
+        return (JsonFluentAssertAfterAssertion) this;
     }
 
     /**
@@ -151,12 +148,12 @@ public class JsonFluentAssert {
      * @param expected
      * @return {@code this} object.
      */
-    public JsonFluentAssert hasSameStructureAs(Object expected) {
+    public JsonFluentAssertAfterAssertion hasSameStructureAs(Object expected) {
         Diff diff = createDiff(expected, configuration.withOptions(COMPARING_ONLY_STRUCTURE));
         if (!diff.similar()) {
             failWithMessage(diff.differences());
         }
-        return this;
+        return (JsonFluentAssertAfterAssertion) this;
     }
 
     /**
@@ -171,7 +168,7 @@ public class JsonFluentAssert {
      * @return object comparing only node given by path.
      */
     public JsonFluentAssert node(String path) {
-        return new JsonFluentAssert(actual, path, description, configuration);
+        return new JsonFluentAssertAfterAssertion(actual, path, description, configuration);
     }
 
 
@@ -204,7 +201,7 @@ public class JsonFluentAssert {
      * @return
      */
     public JsonFluentAssert describedAs(String description) {
-        return new JsonFluentAssert(actual, path, description, configuration);
+        return new JsonFluentAssertAfterAssertion(actual, path, description, configuration);
     }
 
     /**
@@ -215,7 +212,7 @@ public class JsonFluentAssert {
      * @return
      */
     public JsonFluentAssert ignoring(String ignorePlaceholder) {
-        return new JsonFluentAssert(actual, path, description, configuration.withIgnorePlaceholder(ignorePlaceholder));
+        return new JsonFluentAssertAfterAssertion(actual, path, description, configuration.withIgnorePlaceholder(ignorePlaceholder));
     }
 
     /**
@@ -235,7 +232,7 @@ public class JsonFluentAssert {
      * @param tolerance
      */
     public JsonFluentAssert withTolerance(BigDecimal tolerance) {
-        return new JsonFluentAssert(actual, path, description, configuration.withTolerance(tolerance));
+        return new JsonFluentAssertAfterAssertion(actual, path, description, configuration.withTolerance(tolerance));
     }
 
     /**
@@ -260,7 +257,7 @@ public class JsonFluentAssert {
      * @see net.javacrumbs.jsonunit.core.Option
      */
     public JsonFluentAssert when(Option firstOption, Option... otherOptions) {
-        return new JsonFluentAssert(actual, path, description, configuration.withOptions(firstOption, otherOptions));
+        return new JsonFluentAssertAfterAssertion(actual, path, description, configuration.withOptions(firstOption, otherOptions));
     }
 
     /**
@@ -268,20 +265,27 @@ public class JsonFluentAssert {
      *
      * @return
      */
-    public JsonFluentAssert isAbsent() {
+    public JsonFluentAssertAfterAssertion isAbsent() {
         if (nodeExists(actual, path)) {
             failWithMessage("Node \"" + path + "\" is present.");
         }
-        return this;
+        return (JsonFluentAssertAfterAssertion) this;
     }
 
     /**
      * Fails if the node is missing.
      */
-    public JsonFluentAssert isPresent() {
+    public JsonFluentAssertAfterAssertion isPresent() {
         if (!nodeExists(actual, path)) {
             failWithMessage("Node \"" + path + "\" is missing.");
         }
+        return (JsonFluentAssertAfterAssertion) this;
+    }
+
+    /**
+     * Syntactic sugar to allow calling of more assertions in one command.
+     */
+    public JsonFluentAssert and() {
         return this;
     }
 
@@ -373,6 +377,52 @@ public class JsonFluentAssert {
                 failWithMessage("Node \"" + path + "\" length is " + array.size() + ", expected length is " + expectedLength + ".");
             }
             return this;
+        }
+    }
+
+    /**
+     * JsonFluentAssert after assertion. It does not make much sense to call some of the methods
+     * after assertion so this class deprecates them. It's hard to fix bad API design, isEqual method should have
+     * returned void.
+     */
+    public static class JsonFluentAssertAfterAssertion extends JsonFluentAssert {
+        private JsonFluentAssertAfterAssertion(Object actual) {
+            this(actual, "", "", Configuration.empty());
+        }
+
+        private JsonFluentAssertAfterAssertion(Object actual, String path, String description, Configuration configuration) {
+            super(actual, path, description, configuration);
+        }
+
+        /**
+         * This method should be called before assertion.
+         * Use and() method to get rid of the deprecation warning if you know what you are doing.
+         */
+        @Override
+        @Deprecated
+        public JsonFluentAssert when(Option firstOption, Option... otherOptions) {
+            return super.when(firstOption, otherOptions);
+        }
+
+
+        /**
+         * This method should be called before assertion.
+         * Use and() method to get rid of the deprecation warning if you know what you are doing.
+         */
+        @Override
+        @Deprecated
+        public JsonFluentAssert withTolerance(double tolerance) {
+            return super.withTolerance(tolerance);
+        }
+
+        /**
+         * This method should be called before assertion.
+         * Use and() method to get rid of the deprecation warning if you know what you are doing.
+         */
+        @Override
+        @Deprecated
+        public JsonFluentAssert withTolerance(BigDecimal tolerance) {
+            return super.withTolerance(tolerance);
         }
     }
 }
