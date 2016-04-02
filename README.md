@@ -68,14 +68,19 @@ assertThatJson("{\"root\":{\"test\":[1,2,3}}")
     .node("root.test[0]").isEqualTo(1);
 
 // compares only the structure
-assertThatJson("{\"test\":1}").when(IGNORING_VALUES).isEqualTo("{\"test\":21}");
+assertThatJson("{\"test\":1}")
+    // Options have to be specified before the assertion
+    .when(IGNORING_VALUES)
+    .isEqualTo("{\"test\":21}");
 
 // ignores a value
 assertThatJson("{\"test\":1}").isEqualTo("{\"test\":\"${json-unit.ignore}\"}");
 
 // ignores extra fields
 assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}")
-    .when(IGNORING_EXTRA_FIELDS).isEqualTo("{\"test\":{\"b\":2}}");
+    // Options have to be specified before the assertion
+    .when(IGNORING_EXTRA_FIELDS)
+    .isEqualTo("{\"test\":{\"b\":2}}");
     	
 // array length comparison
 assertThatJson("{\"test\":[1,2,3]}").node("test")

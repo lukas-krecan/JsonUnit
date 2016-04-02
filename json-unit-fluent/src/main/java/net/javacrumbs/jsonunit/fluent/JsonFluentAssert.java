@@ -251,8 +251,9 @@ public class JsonFluentAssert {
     }
 
     /**
-     * Sets options changing comparison behavior. For more
-     * details see {@link net.javacrumbs.jsonunit.core.Option}
+     * Sets options changing comparison behavior. This method has to be called
+     * <b>before</b> assertion.
+     * For more info see {@link net.javacrumbs.jsonunit.core.Option}
      *
      * @param firstOption
      * @param otherOptions
