@@ -67,7 +67,7 @@ public class JsonFluentAssert {
     private final String description;
     private final Configuration configuration;
 
-    private JsonFluentAssert(Object actual, String path, String description, Configuration configuration) {
+    protected JsonFluentAssert(Object actual, String path, String description, Configuration configuration) {
         if (actual == null) {
             throw new IllegalArgumentException("Can not make assertions about null JSON.");
         }
@@ -75,6 +75,10 @@ public class JsonFluentAssert {
         this.actual = actual;
         this.description = description;
         this.configuration = configuration;
+    }
+
+    protected JsonFluentAssert(Object actual) {
+        this(actual, "", "", Configuration.empty());
     }
 
     /**
@@ -86,7 +90,7 @@ public class JsonFluentAssert {
      * @return new JsonFluentAssert object.
      */
     public static JsonFluentAssert assertThatJson(Object json) {
-        return new JsonFluentAssertAfterAssertion(convertToJson(json, ACTUAL));
+        return new JsonFluentAssert(convertToJson(json, ACTUAL));
     }
 
     /**
@@ -110,7 +114,7 @@ public class JsonFluentAssert {
         if (!diff.similar()) {
             failWithMessage(diff.differences());
         }
-        return (JsonFluentAssertAfterAssertion) this;
+        return JsonFluentAssertAfterAssertion.wrap(this);
     }
 
 
@@ -138,7 +142,7 @@ public class JsonFluentAssert {
         if (diff.similar()) {
             failWithMessage("JSON is equal.");
         }
-        return (JsonFluentAssertAfterAssertion) this;
+        return JsonFluentAssertAfterAssertion.wrap(this);
     }
 
     /**
@@ -153,7 +157,7 @@ public class JsonFluentAssert {
         if (!diff.similar()) {
             failWithMessage(diff.differences());
         }
-        return (JsonFluentAssertAfterAssertion) this;
+        return JsonFluentAssertAfterAssertion.wrap(this);
     }
 
     /**
@@ -168,7 +172,7 @@ public class JsonFluentAssert {
      * @return object comparing only node given by path.
      */
     public JsonFluentAssert node(String path) {
-        return new JsonFluentAssertAfterAssertion(actual, path, description, configuration);
+        return new JsonFluentAssert(actual, path, description, configuration);
     }
 
 
@@ -201,7 +205,7 @@ public class JsonFluentAssert {
      * @return
      */
     public JsonFluentAssert describedAs(String description) {
-        return new JsonFluentAssertAfterAssertion(actual, path, description, configuration);
+        return new JsonFluentAssert(actual, path, description, configuration);
     }
 
     /**
@@ -212,7 +216,7 @@ public class JsonFluentAssert {
      * @return
      */
     public JsonFluentAssert ignoring(String ignorePlaceholder) {
-        return new JsonFluentAssertAfterAssertion(actual, path, description, configuration.withIgnorePlaceholder(ignorePlaceholder));
+        return new JsonFluentAssert(actual, path, description, configuration.withIgnorePlaceholder(ignorePlaceholder));
     }
 
     /**
@@ -232,7 +236,7 @@ public class JsonFluentAssert {
      * @param tolerance
      */
     public JsonFluentAssert withTolerance(BigDecimal tolerance) {
-        return new JsonFluentAssertAfterAssertion(actual, path, description, configuration.withTolerance(tolerance));
+        return new JsonFluentAssert(actual, path, description, configuration.withTolerance(tolerance));
     }
 
     /**
@@ -257,7 +261,7 @@ public class JsonFluentAssert {
      * @see net.javacrumbs.jsonunit.core.Option
      */
     public JsonFluentAssert when(Option firstOption, Option... otherOptions) {
-        return new JsonFluentAssertAfterAssertion(actual, path, description, configuration.withOptions(firstOption, otherOptions));
+        return new JsonFluentAssert(actual, path, description, configuration.withOptions(firstOption, otherOptions));
     }
 
     /**
@@ -269,7 +273,7 @@ public class JsonFluentAssert {
         if (nodeExists(actual, path)) {
             failWithMessage("Node \"" + path + "\" is present.");
         }
-        return (JsonFluentAssertAfterAssertion) this;
+        return JsonFluentAssertAfterAssertion.wrap(this);
     }
 
     /**
@@ -279,7 +283,7 @@ public class JsonFluentAssert {
         if (!nodeExists(actual, path)) {
             failWithMessage("Node \"" + path + "\" is missing.");
         }
-        return (JsonFluentAssertAfterAssertion) this;
+        return JsonFluentAssertAfterAssertion.wrap(this);
     }
 
     /**
@@ -379,8 +383,12 @@ public class JsonFluentAssert {
      * returned void.
      */
     public static class JsonFluentAssertAfterAssertion extends JsonFluentAssert {
-        private JsonFluentAssertAfterAssertion(Object actual) {
-            this(actual, "", "", Configuration.empty());
+        private static JsonFluentAssertAfterAssertion wrap(JsonFluentAssert assertion) {
+            if (assertion instanceof JsonFluentAssertAfterAssertion) {
+                return (JsonFluentAssertAfterAssertion)assertion;
+            } else {
+                return new JsonFluentAssertAfterAssertion(assertion.actual, assertion.path, assertion.description, assertion.configuration);
+            }
         }
 
         private JsonFluentAssertAfterAssertion(Object actual, String path, String description, Configuration configuration) {
