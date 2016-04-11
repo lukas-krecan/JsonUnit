@@ -1,6 +1,3 @@
-## 1.11.1
-* JsonFluentAssert constructors made protected again.
-
 ## 1.11.0
 * Option setting methods made deprecated if called after assertion in JsonFluentAssert
 * JsonFluentAssert constructors made private. Please file an issue if you need them.

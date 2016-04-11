@@ -67,7 +67,7 @@ public class JsonFluentAssert {
     private final String description;
     private final Configuration configuration;
 
-    protected JsonFluentAssert(Object actual, String path, String description, Configuration configuration) {
+    private JsonFluentAssert(Object actual, String path, String description, Configuration configuration) {
         if (actual == null) {
             throw new IllegalArgumentException("Can not make assertions about null JSON.");
         }
@@ -77,7 +77,7 @@ public class JsonFluentAssert {
         this.configuration = configuration;
     }
 
-    protected JsonFluentAssert(Object actual) {
+    private JsonFluentAssert(Object actual) {
         this(actual, "", "", Configuration.empty());
     }
 
