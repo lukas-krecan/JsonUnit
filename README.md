@@ -144,6 +144,15 @@ assertJsonEquals("{\"test\":\"${json-unit.ignore}\"}",
     "{\n\"test\": {\"object\" : {\"another\" : 1}}}");
 ```
 
+Regular expressions
+-------------------
+It is also possible to use regular expressions to compare string values
+
+```java
+assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}", 
+    "{\"test\": \"ABCD\"}");
+```
+
 Options
 ---------------
 There are multiple options how you can configure the comparison
