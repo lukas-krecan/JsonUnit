@@ -55,6 +55,16 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
+    public void shouldParseExpectedVlaueLeniently() {
+        assertJsonEquals("{//Comment\ntest:1}", "{\n\"test\": 1\n}");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldFailIfQuotationMarksMissingOnAcutalKeys() {
+        assertJsonEquals("{\"test\":1}", "{test: 1}");
+    }
+
+    @Test
     public void testArray() {
         assertJsonEquals("[{\"test\":1}, {\"test\":2}]", "[{\n\"test\": 1\n}, {\"test\": 2}]");
     }

@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit.core.internal;
 
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.introspect.AnnotatedClass;
 import org.codehaus.jackson.map.introspect.AnnotatedMethod;
@@ -38,6 +39,12 @@ class Jackson1NodeFactory extends AbstractNodeFactory {
     private static final MinimalMethodFilter MINIMAL_METHOD_FILTER = new MinimalMethodFilter();
 
     private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper lenientMapper = new ObjectMapper();
+
+    static {
+        lenientMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        lenientMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+    }
 
     @Override
     protected Node convertValue(Object source) {
@@ -49,12 +56,16 @@ class Jackson1NodeFactory extends AbstractNodeFactory {
         return newNode(NullNode.getInstance());
     }
 
-    protected Node readValue(Reader value, String label) {
+    protected Node readValue(Reader value, String label, boolean lenient) {
         try {
-            return newNode(mapper.readTree(value));
+            return newNode(getMapper(lenient).readTree(value));
         } catch (IOException e) {
             throw new IllegalArgumentException("Can not parse " + label + " value.", e);
         }
+    }
+
+    private ObjectMapper getMapper(boolean lenient) {
+        return lenient ? lenientMapper : mapper;
     }
 
     private static Node newNode(JsonNode jsonNode) {

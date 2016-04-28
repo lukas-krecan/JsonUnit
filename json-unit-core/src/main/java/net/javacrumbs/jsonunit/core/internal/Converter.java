@@ -68,11 +68,11 @@ class Converter {
         return new Converter(factories);
     }
 
-    public Node convertToNode(Object source, String label) {
+    public Node convertToNode(Object source, String label, boolean lenient) {
         for (int i = 0; i < factories.size(); i++) {
             NodeFactory factory = factories.get(i);
             if (isLastFactory(i) || factory.isPreferredFor(source)) {
-                return factory.convertToNode(source, label);
+                return factory.convertToNode(source, label, lenient);
             }
         }
         throw new IllegalStateException("Should not happen");

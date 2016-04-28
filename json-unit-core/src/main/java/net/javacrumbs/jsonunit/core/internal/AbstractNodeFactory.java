@@ -22,15 +22,15 @@ import java.io.StringReader;
  * Common superclass for node factories
  */
 abstract class AbstractNodeFactory implements NodeFactory {
-    public Node convertToNode(Object source, String label) {
+    public Node convertToNode(Object source, String label, boolean lenient) {
         if (source == null) {
             return nullNode();
         } else if (source instanceof Node) {
             return (Node) source;
         } else if (source instanceof String && ((String) source).trim().length() > 0) {
-            return readValue(new StringReader((String) source), label);
+            return readValue(new StringReader((String) source), label, lenient);
         } else if (source instanceof Reader) {
-            return readValue((Reader) source, label);
+            return readValue((Reader) source, label, lenient);
         } else {
             return convertValue(source);
         }
@@ -38,7 +38,7 @@ abstract class AbstractNodeFactory implements NodeFactory {
 
     protected abstract Node convertValue(Object source);
 
-    protected abstract Node readValue(Reader reader, String label);
+    protected abstract Node readValue(Reader reader, String label, boolean lenient);
 
     protected abstract Node nullNode();
 }

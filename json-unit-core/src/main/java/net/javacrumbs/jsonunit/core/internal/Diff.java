@@ -71,7 +71,7 @@ public class Diff {
     }
 
     public static Diff create(Object expected, Object actual, String actualName, String startPath, Configuration configuration) {
-        return new Diff(convertToJson(quoteIfNeeded(expected), "expected"), convertToJson(actual, actualName), startPath, configuration);
+        return new Diff(convertToJson(quoteIfNeeded(expected), "expected", true), convertToJson(actual, actualName, false), startPath, configuration);
     }
 
     private void compare() {

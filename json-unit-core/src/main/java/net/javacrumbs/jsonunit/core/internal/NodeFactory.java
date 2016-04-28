@@ -29,7 +29,8 @@ public interface NodeFactory {
      *
      * @param source
      * @param label
+     * @param lenient
      * @return
      */
-    public Node convertToNode(Object source, String label);
+    public Node convertToNode(Object source, String label, boolean lenient);
 }

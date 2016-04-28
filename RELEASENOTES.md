@@ -1,3 +1,6 @@
+## 1.12.0
+* Lenient parsing of expected values
+
 ## 1.11.0
 * Option setting methods made deprecated if called after assertion in JsonFluentAssert
 * JsonFluentAssert constructors made private. Please file an issue if you need them.

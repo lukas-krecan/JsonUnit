@@ -1,12 +1,12 @@
 /**
  * Copyright 2009-2015 the original author or authors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,17 +24,17 @@ import java.util.regex.Pattern;
  */
 public class JsonUtils {
 
-	private static final Pattern arrayPattern = Pattern.compile("(\\w*)\\[(\\d+)\\]");
+    private static final Pattern arrayPattern = Pattern.compile("(\\w*)\\[(\\d+)\\]");
 
-	/**
-	 * We need to ignore "\." when splitting path.
-	 */
-	public static final Pattern dotWithPreviousChar = Pattern.compile("[^\\\\]\\.");
+    /**
+     * We need to ignore "\." when splitting path.
+     */
+    public static final Pattern dotWithPreviousChar = Pattern.compile("[^\\\\]\\.");
 
     private static final Converter converter = Converter.createDefaultConverter();
 
 
-	/**
+    /**
      * Converts object to JSON.
      *
      * @param source
@@ -42,7 +42,19 @@ public class JsonUtils {
      * @return
      */
     public static Node convertToJson(Object source, String label) {
-        return converter.convertToNode(source, label);
+        return convertToJson(source, label, false);
+    }
+
+    /**
+     * Converts object to JSON.
+     *
+     * @param source
+     * @param label  label to be logged in case of error.
+     * @param lenient lenient parser used for expected values. Allows unquoted keys.
+     * @return
+     */
+    public static Node convertToJson(Object source, String label, boolean lenient) {
+        return converter.convertToNode(source, label, lenient);
     }
 
 
@@ -59,32 +71,32 @@ public class JsonUtils {
         }
 
         Node startNode = root;
-		Matcher pathMatcher = dotWithPreviousChar.matcher(path);
-		int pos = 0;
-		while (pathMatcher.find()) {
-			String step = path.substring(pos, pathMatcher.end() - 1);
-			pos = pathMatcher.end();
-			startNode = doStep(step, startNode);
-		}
-		startNode = doStep(path.substring(pos), startNode);
+        Matcher pathMatcher = dotWithPreviousChar.matcher(path);
+        int pos = 0;
+        while (pathMatcher.find()) {
+            String step = path.substring(pos, pathMatcher.end() - 1);
+            pos = pathMatcher.end();
+            startNode = doStep(step, startNode);
+        }
+        startNode = doStep(path.substring(pos), startNode);
         return startNode;
     }
 
-	private static Node doStep(String step, Node startNode) {
-		step = step.replaceAll("\\\\.", ".");
-		Matcher matcher = arrayPattern.matcher(step);
-		if (!matcher.matches()) {
-			startNode = startNode.get(step);
-		} else {
-			if (matcher.group(1).length() != 0) {
-				startNode = startNode.get(matcher.group(1));
-			}
-			startNode = startNode.element(Integer.valueOf(matcher.group(2)));
-		}
-		return startNode;
-	}
+    private static Node doStep(String step, Node startNode) {
+        step = step.replaceAll("\\\\.", ".");
+        Matcher matcher = arrayPattern.matcher(step);
+        if (!matcher.matches()) {
+            startNode = startNode.get(step);
+        } else {
+            if (matcher.group(1).length() != 0) {
+                startNode = startNode.get(matcher.group(1));
+            }
+            startNode = startNode.element(Integer.valueOf(matcher.group(2)));
+        }
+        return startNode;
+    }
 
-	/**
+    /**
      * Returns node with given path.
      *
      * @param root
@@ -117,8 +129,8 @@ public class JsonUtils {
         String trimmed = source.trim();
 
         if (isObject(trimmed) || isArray(trimmed) || isString(trimmed)
-                || isBoolean(trimmed) || isNull(trimmed)
-                || isNumber(trimmed)) {
+            || isBoolean(trimmed) || isNull(trimmed)
+            || isNumber(trimmed)) {
             return source;
         } else {
             return "\"" + source + "\"";

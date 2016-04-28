@@ -77,6 +77,11 @@ public abstract class AbstractJsonFluentAssertTest {
     }
 
     @Test
+    public void shouldAllowUquotedKeysAndCommentInExpectedValue() {
+        assertThatJson("{\"test\":1}").isEqualTo("{//comment\ntest:1}");
+    }
+
+    @Test
     public void testAssertToleranceDifferentOrder() {
         assertThatJson("{\"test\":1.00001}").withTolerance(0.001).node("test").isEqualTo(1);
     }

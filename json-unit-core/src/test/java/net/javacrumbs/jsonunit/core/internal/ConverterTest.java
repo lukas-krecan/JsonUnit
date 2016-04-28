@@ -38,14 +38,14 @@ public class ConverterTest {
     @Test
     public void shouldUseTheLastFactoryForNonPreferred() {
         Converter converter = new Converter(Arrays.<NodeFactory>asList(new Jackson1NodeFactory(), new Jackson2NodeFactory()));
-        Node node = converter.convertToNode(JSON, "");
+        Node node = converter.convertToNode(JSON, "", false);
         assertEquals(Jackson2NodeFactory.Jackson2Node.class, node.getClass());
     }
 
     @Test
     public void shouldUsePreferredFactory() {
         Converter converter = new Converter(Arrays.<NodeFactory>asList(new Jackson1NodeFactory(), new Jackson2NodeFactory()));
-        Node node = converter.convertToNode(BooleanNode.TRUE, "");
+        Node node = converter.convertToNode(BooleanNode.TRUE, "", false);
         assertEquals(Jackson1NodeFactory.Jackson1Node.class, node.getClass());
     }
 

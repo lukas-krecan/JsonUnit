@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit.test.jackson2;
+package net.javacrumbs.jsonunit.test.jackson1;
 
-import net.javacrumbs.jsonunit.test.base.AbstractJsonMatchersTest;
+import net.javacrumbs.jsonunit.test.base.AbstractJsonFluentAssertTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
 
-public class GsonJsonMatchersTest extends AbstractJsonMatchersTest {
+public class Jackson1FluentAssertTest extends AbstractJsonFluentAssertTest {
+    @Override
     protected Object readValue(String value) {
-        return JsonTestUtils.readByGson(value);
+        return JsonTestUtils.readByJackson1(value);
     }
 }

@@ -1,12 +1,12 @@
 /**
  * Copyright 2009-2015 the original author or authors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,6 +15,7 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.NullNode;
@@ -29,7 +30,14 @@ import java.util.Map;
  * Deserializes node using Jackson 2
  */
 class Jackson2NodeFactory extends AbstractNodeFactory {
-    private final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper lenientMapper = new ObjectMapper();
+
+    static {
+        lenientMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        lenientMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+    }
+
 
     @Override
     protected Node convertValue(Object source) {
@@ -41,12 +49,16 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
         return newNode(NullNode.getInstance());
     }
 
-    protected Node readValue(Reader value, String label) {
+    protected Node readValue(Reader value, String label, boolean lenient) {
         try {
-            return newNode(mapper.readTree(value));
+            return newNode(getMapper(lenient).readTree(value));
         } catch (IOException e) {
             throw new IllegalArgumentException("Can not parse " + label + " value.", e);
         }
+    }
+
+    private ObjectMapper getMapper(boolean lenient) {
+        return lenient ? lenientMapper : mapper;
     }
 
     private static Node newNode(JsonNode jsonNode) {

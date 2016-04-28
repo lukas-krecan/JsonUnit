@@ -51,7 +51,8 @@ class GsonNodeFactory extends AbstractNodeFactory {
         return newNode(JsonNull.INSTANCE);
     }
 
-    protected Node readValue(Reader value, String label) {
+    protected Node readValue(Reader value, String label, boolean lenient) {
+        // GSON is always lenient :-(
         try {
             return newNode(new JsonParser().parse(value));
         } catch (JsonIOException e) {
