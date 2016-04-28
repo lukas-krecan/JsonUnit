@@ -26,7 +26,7 @@ assertJsonEquals("[{\"test\":1}, {\"test\":2}]",
     "[{\n\"test\": 1\n}, {\"TEST\": 4}]", when(IGNORING_VALUES))
 
 // Lenient parsing of expected value
-assertJsonEquals("{//Look ma, no quotation marks\ntest:1}", 
+assertJsonEquals("{//Look ma, no quotation marks\n test:1}", 
     "{\n\"test\": 1\n}");
 ```
     
