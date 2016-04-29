@@ -26,8 +26,8 @@ assertJsonEquals("[{\"test\":1}, {\"test\":2}]",
     "[{\n\"test\": 1\n}, {\"TEST\": 4}]", when(IGNORING_VALUES))
 
 // Lenient parsing of expected value
-assertJsonEquals("{//Look ma, no quotation marks\n test:1}", 
-    "{\n\"test\": 1\n}");
+assertJsonEquals("{//Look ma, no quotation marks\n test:'value'}", 
+    "{\n\"test\": \"value\"\n}");
 ```
     
 When the values are compared, order of elements and whitespaces are ignored. 
@@ -285,7 +285,7 @@ Jackson 2.x or [Gson](https://code.google.com/p/google-gson/) on the classpath. 
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>1.12.0</version>
+    <version>1.12.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -296,7 +296,7 @@ To use fluent assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>1.12.0</version>
+    <version>1.12.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -307,7 +307,7 @@ To use Spring MVC assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>1.12.0</version>
+    <version>1.12.1</version>
     <scope>test</scope>
 </dependency>
 ```

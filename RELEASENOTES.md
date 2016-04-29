@@ -1,3 +1,6 @@
+## 1.12.1
+* Single quote values in expected String allowed
+
 ## 1.12.0
 * Lenient parsing of expected values
 

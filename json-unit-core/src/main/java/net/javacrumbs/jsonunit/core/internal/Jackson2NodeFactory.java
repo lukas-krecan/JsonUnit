@@ -36,6 +36,7 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
     static {
         lenientMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         lenientMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+        lenientMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
     }
 
 

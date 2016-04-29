@@ -55,8 +55,8 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
-    public void shouldParseExpectedVlaueLeniently() {
-        assertJsonEquals("{//Comment\ntest:1}", "{\n\"test\": 1\n}");
+    public void shouldParseExpectedValueLeniently() {
+        assertJsonEquals("{//Comment\ntest:'1'}", "{\n\"test\": \"1\"\n}");
     }
 
     @Test(expected = IllegalArgumentException.class)
