@@ -22,6 +22,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.StringReader;
 
+import static java.math.BigDecimal.valueOf;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonNodeAbsent;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonNodePresent;
@@ -30,14 +31,18 @@ import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartNotEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartStructureEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonStructureEquals;
+import static net.javacrumbs.jsonunit.JsonAssert.configure;
 import static net.javacrumbs.jsonunit.JsonAssert.when;
+import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.failIfNoException;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 public abstract class AbstractJsonAssertTest {
 
@@ -83,6 +88,14 @@ public abstract class AbstractJsonAssertTest {
     public void testSimple() {
         assertJsonEquals("1", "1");
     }
+
+    @Test
+    public void testInlineMatcher() throws IOException {
+        assertJsonEquals("{test:'${json-unit.inline-matcher:isLessThan10}'}", "{\"test\":4}",
+            configure().withInlineMatcher("isLessThan10", lessThanOrEqualTo(valueOf(10))));
+    }
+
+
 
     @Test
     public void testNumberAndString() {

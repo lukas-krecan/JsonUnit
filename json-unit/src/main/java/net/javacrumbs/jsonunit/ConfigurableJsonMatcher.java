@@ -15,6 +15,8 @@
  */
 package net.javacrumbs.jsonunit;
 
+import net.javacrumbs.jsonunit.core.HamcrestNodeMatcher;
+import net.javacrumbs.jsonunit.core.NodeMatcher;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Options;
 import org.hamcrest.Matcher;
@@ -48,4 +50,19 @@ public interface ConfigurableJsonMatcher<T> extends Matcher<T> {
      * Sets options.
      */
     ConfigurableJsonMatcher<T> withOptions(Options options);
+
+
+    /**
+     * Defines inline matcher that can be used like this:
+     *
+     * <pre>
+     * {@code
+     * assertThatJson("{\"test\":{\"a\":1, \"b\":\"value\"}}")
+     *       .withInlineMatcher("isLessThan10", lessThanOrEqualTo(valueOf(10)))
+     *       .isEqualTo("{test:{a:'${json-unit.inline-matcher:isLessThan10}', b:'value'}}");
+     * }
+     * </pre>
+     *
+     */
+    ConfigurableJsonMatcher<T> withInlineMatcher(String name, Matcher<?> matcher);
 }

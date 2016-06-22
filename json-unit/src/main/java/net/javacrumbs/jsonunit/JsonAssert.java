@@ -1,12 +1,12 @@
 /**
  * Copyright 2009-2015 the original author or authors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +19,7 @@ import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Options;
+import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
 
@@ -29,7 +30,7 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
 
 /**
  * Assertions for comparing JSON. The comparison ignores white-spaces and order of nodes.
- *
+ * <p>
  * All the methods accept Objects as parameters. The supported types are:
  * <ol>
  * <li>Jackson JsonNode</li>
@@ -45,7 +46,7 @@ public class JsonAssert {
     private static final String FULL_JSON = "fullJson";
     private static final String ACTUAL = "actual";
     private static final String ROOT = "";
-    private static Configuration configuration = Configuration.empty();
+    private static Configuration configuration = configure();
 
     private JsonAssert() {
         //nothing
@@ -245,20 +246,27 @@ public class JsonAssert {
      * Creates empty configuration and sets numerical comparison tolerance.
      */
     public static Configuration withTolerance(double tolerance) {
-        return Configuration.empty().withTolerance(tolerance);
+        return configure().withTolerance(tolerance);
     }
 
     /**
      * Creates empty configuration and sets numerical comparison tolerance.
      */
     public static Configuration withTolerance(BigDecimal tolerance) {
-        return Configuration.empty().withTolerance(tolerance);
+        return configure().withTolerance(tolerance);
     }
 
     /**
      * Creates empty configuration and sets options.
      */
     public static Configuration when(Option first, Option... next) {
-        return Configuration.empty().withOptions(first, next);
+        return configure().withOptions(first, next);
+    }
+
+    /**
+     * Creates empty configuration.
+     */
+    public static Configuration configure() {
+        return Configuration.empty();
     }
 }

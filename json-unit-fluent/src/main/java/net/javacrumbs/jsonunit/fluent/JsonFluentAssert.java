@@ -16,6 +16,8 @@
 package net.javacrumbs.jsonunit.fluent;
 
 import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.HamcrestNodeMatcher;
+import net.javacrumbs.jsonunit.core.NodeMatcher;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Node;
@@ -39,16 +41,16 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * Contains JSON related fluent assertions inspired by FEST or AssertJ. Typical usage is:
- *
+ * <p>
  * <code>
  * assertThatJson("{\"test\":1}").isEqualTo("{\"test\":2}");
  * assertThatJson("{\"test\":1}").hasSameStructureAs("{\"test\":21}");
  * assertThatJson("{\"root\":{\"test\":1}}").node("root.test").isEqualTo("2");
  * </code>
- *
+ * <p>
  * Please note that the method name is assertThatJson and not assertThat. The reason is that we need to accept String parameter
  * and do not want to override standard FEST or AssertJ assertThat(String) method.
- *
+ * <p>
  * All the methods accept Objects as parameters. The supported types are:
  * <ol>
  * <li>Jackson JsonNode</li>
@@ -96,13 +98,13 @@ public class JsonFluentAssert {
     /**
      * Compares JSON for equality. The expected object is converted to JSON
      * before comparison. Ignores order of sibling nodes and whitespaces.
-     *
+     * <p>
      * Please note that if you pass a String, it's parsed as JSON which can lead to an
      * unexpected behavior. If you pass in "1" it is parsed as a JSON containing
      * integer 1. If you compare it with a string it fails due to a different type.
      * If you want to pass in real string you have to quote it "\"1\"" or use
      * {@link #isStringEqualTo(String)}.
-     *
+     * <p>
      * If the string parameter is not a valid JSON, it is quoted automatically.
      *
      * @param expected
@@ -163,7 +165,7 @@ public class JsonFluentAssert {
     /**
      * Creates an assert object that only compares given node.
      * The path is denoted by JSON path, for example.
-     *
+     * <p>
      * <code>
      * assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[0]").isEqualTo("1");
      * </code>
@@ -237,6 +239,39 @@ public class JsonFluentAssert {
      */
     public JsonFluentAssert withTolerance(BigDecimal tolerance) {
         return new JsonFluentAssert(actual, path, description, configuration.withTolerance(tolerance));
+    }
+
+
+    /**
+     * Defines inline matcher that can be used like this:
+     *
+     * <pre>
+     * {@code
+     * assertThatJson("{\"test\":{\"a\":1, \"b\":\"value\"}}")
+     *       .withInlineMatcher("isLessThan10", lessThanOrEqualTo(valueOf(10)))
+     *       .isEqualTo("{test:{a:'${json-unit.inline-matcher:isLessThan10}', b:'value'}}");
+     * }
+     * </pre>
+     *
+     */
+    public JsonFluentAssert withInlineMatcher(String name, Matcher<?> matcher) {
+        return withInlineMatcher(name, new HamcrestNodeMatcher(matcher));
+    }
+
+    /**
+     * Defines inline matcher that can be used like this:
+     *
+     * <pre>
+     * {@code
+     * assertThatJson("{\"test\":{\"a\":1, \"b\":\"value\"}}")
+     *       .withInlineMatcher("isLessThan10", lessThanOrEqualTo(valueOf(10)))
+     *       .isEqualTo("{test:{a:'${json-unit.inline-matcher:isLessThan10}', b:'value'}}");
+     * }
+     * </pre>
+     *
+     */
+    public JsonFluentAssert withInlineMatcher(String name, NodeMatcher matcher) {
+        return new JsonFluentAssert(actual, path, description, configuration.withInlineMatcher(name, matcher));
     }
 
     /**
@@ -329,11 +364,11 @@ public class JsonFluentAssert {
 
     /**
      * Matches the node using Hamcrest matcher.
-     *
+     * <p>
      * <ul>
-     *     <li>Numbers are mapped to BigDecimal</li>
-     *     <li>Arrays are mapped to a Collection</li>
-     *     <li>Objects are mapped to a map so you can use json(Part)Equals or a Map matcher</li>
+     * <li>Numbers are mapped to BigDecimal</li>
+     * <li>Arrays are mapped to a Collection</li>
+     * <li>Objects are mapped to a map so you can use json(Part)Equals or a Map matcher</li>
      * </ul>
      *
      * @param matcher
@@ -366,6 +401,7 @@ public class JsonFluentAssert {
 
         /**
          * Fails if the array has different length.
+         *
          * @param expectedLength
          * @return
          */
@@ -385,7 +421,7 @@ public class JsonFluentAssert {
     public static class JsonFluentAssertAfterAssertion extends JsonFluentAssert {
         private static JsonFluentAssertAfterAssertion wrap(JsonFluentAssert assertion) {
             if (assertion instanceof JsonFluentAssertAfterAssertion) {
-                return (JsonFluentAssertAfterAssertion)assertion;
+                return (JsonFluentAssertAfterAssertion) assertion;
             } else {
                 return new JsonFluentAssertAfterAssertion(assertion.actual, assertion.path, assertion.description, assertion.configuration);
             }
@@ -425,6 +461,7 @@ public class JsonFluentAssert {
 
         /**
          * This method should be called before assertion.
+         *
          * @param ignorePlaceholder
          * @return
          */
@@ -432,6 +469,12 @@ public class JsonFluentAssert {
         @Deprecated
         public JsonFluentAssert ignoring(String ignorePlaceholder) {
             return super.ignoring(ignorePlaceholder);
+        }
+
+        @Override
+        @Deprecated
+        public JsonFluentAssert withInlineMatcher(String name, Matcher<?> matcher) {
+            throw new UnsupportedOperationException("Can not call this method after assertion");
         }
     }
 }

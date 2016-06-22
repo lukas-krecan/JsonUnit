@@ -446,6 +446,36 @@ public abstract class AbstractJsonFluentAssertTest {
     }
 
     @Test
+    public void inlineMatcherShouldWork() {
+        assertThatJson("{\"test\":{\"a\":1, \"b\":\"value\"}}")
+            .withInlineMatcher("isLessThan10", lessThanOrEqualTo(valueOf(10)))
+            .isEqualTo("{test:{a:'${json-unit.inline-matcher:isLessThan10}', b:'value'}}");
+    }
+
+    @Test
+    public void inlineMatcherShouldFailOnMismatch() {
+        try {
+            assertThatJson("{\"test\":{\"a\":11, \"b\":\"value\"}}")
+                .withInlineMatcher("isLessThan10", lessThanOrEqualTo(valueOf(10)))
+                .isEqualTo("{test:{a:'${json-unit.inline-matcher:isLessThan10}', b:'value'}}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test.a\". <11> was greater than <10>\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void inlineMatcherShouldFailIfMatcherNotFound() {
+        try {
+            assertThatJson("{\"test\":{\"a\":11, \"b\":\"value\"}}")
+                .isEqualTo("{test:{a:'${json-unit.inline-matcher:isLessThan10}', b:'value'}}");
+            failIfNoException();
+        } catch (IllegalArgumentException e) {
+            assertEquals("Inline matcher \"isLessThan10\" not found", e.getMessage());
+        }
+    }
+
+    @Test
     public void arrayContainsShouldMatch() {
         assertThatJson("[{\"a\": 7},8]").matches(hasItem(jsonEquals("{\"a\": 7}")));
     }

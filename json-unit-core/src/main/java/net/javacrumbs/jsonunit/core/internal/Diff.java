@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit.core.internal;
 
 import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.NodeMatcher;
 import net.javacrumbs.jsonunit.core.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.util.Collections.emptySet;
 import static net.javacrumbs.jsonunit.core.Option.COMPARING_ONLY_STRUCTURE;
@@ -52,6 +55,7 @@ import static net.javacrumbs.jsonunit.core.internal.Node.NodeType;
  */
 public class Diff {
     private static final String REGEX_PLACEHOLDER = "${json-unit.regex}";
+    private static final Pattern INLINE_MATCHER_PATTERN = Pattern.compile("\\$\\{json-unit.inline-matcher:(.*)\\}");
     private final Node expectedRoot;
     private final Node actualRoot;
     private final Differences differences = new Differences();
@@ -205,7 +209,6 @@ public class Diff {
             return;
         }
 
-
         // Any number
         if (checkAny(NodeType.NUMBER, "${json-unit.any-number}", "a number", expectedNode, actualNode, fieldPath)) {
             return;
@@ -217,6 +220,24 @@ public class Diff {
         // Any string
         if (checkAny(NodeType.STRING, "${json-unit.any-string}", "a string", expectedNode, actualNode, fieldPath)) {
             return;
+
+        }
+
+        //inline matcher value
+        if (expectedNodeType == NodeType.STRING) {
+            Matcher patternMatcher = INLINE_MATCHER_PATTERN.matcher(expectedNode.asText());
+            if (patternMatcher.matches()) {
+                NodeMatcher matcher = configuration.getInlineMatcher(patternMatcher.group(1));
+                if (matcher != null) {
+                    Object value = actualNode.getValue();
+                    if (!matcher.matches(value)) {
+                        valueDifferenceFound("Different value found in node \"%s\". %s", fieldPath, matcher.describeMismatch(value));
+                    }
+                } else {
+                    throw new IllegalArgumentException("Inline matcher \"" + patternMatcher.group(1) + "\" not found");
+                }
+                return;
+            }
         }
 
         if (!expectedNodeType.equals(actualNodeType)) {

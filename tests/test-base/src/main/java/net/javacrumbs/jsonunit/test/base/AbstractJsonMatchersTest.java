@@ -1,12 +1,12 @@
 /**
  * Copyright 2009-2015 the original author or authors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,9 +39,10 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 public abstract class AbstractJsonMatchersTest {
     @After
@@ -73,7 +74,7 @@ public abstract class AbstractJsonMatchersTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("\nExpected: node \"test\" is <2>\n" +
-                    "     but: was <1>", e.getMessage());
+                "     but: was <1>", e.getMessage());
         }
     }
 
@@ -84,7 +85,7 @@ public abstract class AbstractJsonMatchersTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("\nExpected: node \"test2\" is <2>\n" +
-                    "     but: Node \"test2\" is missing.", e.getMessage());
+                "     but: Node \"test2\" is missing.", e.getMessage());
         }
     }
 
@@ -100,7 +101,7 @@ public abstract class AbstractJsonMatchersTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("\nExpected: node \"test\" (a collection containing <1> and a collection containing <2> and a collection containing <4>)\n" +
-                    "     but: was <[1, 2, 3]>", e.getMessage());
+                "     but: was <[1, 2, 3]>", e.getMessage());
         }
     }
 
@@ -111,8 +112,8 @@ public abstract class AbstractJsonMatchersTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("\nExpected: {\"test\":1}\n" +
-                    "     but: JSON documents are different:\n" +
-                    "Different value found in node \"\". Expected '{\"test\":1}', got '\"\"'.\n", e.getMessage());
+                "     but: JSON documents are different:\n" +
+                "Different value found in node \"\". Expected '{\"test\":1}', got '\"\"'.\n", e.getMessage());
         }
     }
 
@@ -139,6 +140,25 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
+    public void testInlineMatcher() throws IOException {
+        assertThat("{\"test\":4}",
+            jsonEquals("{test:'${json-unit.inline-matcher:isLessThan10}'}").withInlineMatcher("isLessThan10", lessThanOrEqualTo(valueOf(10))));
+    }
+
+    @Test
+    public void testInlineMatcherFailure() throws IOException {
+        try {
+            assertThat("{\"test\":[4,5,6]}",
+                jsonEquals("{test:'${json-unit.inline-matcher:has5Items}'}").withInlineMatcher("has5Items", hasSize(5)));
+        } catch (AssertionError e) {
+            assertEquals("\n" +
+                "Expected: {test:'${json-unit.inline-matcher:has5Items}'}\n" +
+                "     but: JSON documents are different:\n" +
+                "Different value found in node \"test\". collection size was <3>\n", e.getMessage());
+        }
+    }
+
+    @Test
     public void shouldIgnoreExtraFields() {
         assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}", jsonEquals("{\"test\":{\"b\":2}}").when(IGNORING_EXTRA_FIELDS));
     }
@@ -156,9 +176,9 @@ public abstract class AbstractJsonMatchersTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("\n" +
-                    "Expected: 1 in \"test\"\n" +
-                    "     but: JSON documents are different:\n" +
-                    "Different value found in node \"test\". Expected '1', got '\"1\"'.\n", e.getMessage());
+                "Expected: 1 in \"test\"\n" +
+                "     but: JSON documents are different:\n" +
+                "Different value found in node \"test\". Expected '1', got '\"1\"'.\n", e.getMessage());
         }
     }
 
@@ -182,8 +202,8 @@ public abstract class AbstractJsonMatchersTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("\nExpected: {\n\"test\": 2\n}\n" +
-                    "     but: JSON documents are different:\n" +
-                    "Different value found in node \"test\". Expected 2, got 1.\n", e.getMessage());
+                "     but: JSON documents are different:\n" +
+                "Different value found in node \"test\". Expected 2, got 1.\n", e.getMessage());
         }
     }
 
@@ -194,8 +214,8 @@ public abstract class AbstractJsonMatchersTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("\nExpected: {\n\"test2\": 2\n}\n" +
-                    "     but: JSON documents are different:\n" +
-                    "Different keys found in node \"\". Expected [test2], got [test]. Missing: \"test2\" Extra: \"test\"\n", e.getMessage());
+                "     but: JSON documents are different:\n" +
+                "Different keys found in node \"\". Expected [test2], got [test]. Missing: \"test2\" Extra: \"test\"\n", e.getMessage());
         }
     }
 
@@ -206,8 +226,8 @@ public abstract class AbstractJsonMatchersTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("\nExpected: 2 in \"test\"\n" +
-                    "     but: JSON documents are different:\n" +
-                    "Different value found in node \"test\". Expected 2, got 1.\n", e.getMessage());
+                "     but: JSON documents are different:\n" +
+                "Different value found in node \"test\". Expected 2, got 1.\n", e.getMessage());
         }
     }
 
@@ -218,8 +238,8 @@ public abstract class AbstractJsonMatchersTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("\n" +
-                    "Expected: Node \"test\" is absent.\n" +
-                    "     but: Node \"test\" is \"1\".", e.getMessage());
+                "Expected: Node \"test\" is absent.\n" +
+                "     but: Node \"test\" is \"1\".", e.getMessage());
         }
     }
 
@@ -235,8 +255,8 @@ public abstract class AbstractJsonMatchersTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("\n" +
-                    "Expected: Node \"test.a\" is present.\n" +
-                    "     but: Node \"test.a\" is missing.", e.getMessage());
+                "Expected: Node \"test.a\" is present.\n" +
+                "     but: Node \"test.a\" is missing.", e.getMessage());
         }
     }
 
@@ -252,9 +272,9 @@ public abstract class AbstractJsonMatchersTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("\n" +
-                    "Expected: {\"test\":{\"a\":1}}\n" +
-                    "     but: JSON documents are different:\n" +
-                    "Different keys found in node \"test\". Expected [a], got [a, b].  Extra: \"test.b\"\n", e.getMessage());
+                "Expected: {\"test\":{\"a\":1}}\n" +
+                "     but: JSON documents are different:\n" +
+                "Different keys found in node \"test\". Expected [a], got [a, b].  Extra: \"test.b\"\n", e.getMessage());
         }
     }
 
