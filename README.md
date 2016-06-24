@@ -162,7 +162,7 @@ Type placeholders
 If you want to assert just a type, but you do not care about the exact value, you can use any-* placehloder like this
 
 ```java
-assertThatJson("{\"test\":{\"a\":1}}")
+assertThatJson("{\"test\":\"value\"}")
     .isEqualTo("{\"test\":\"${json-unit.any-string}\"}");
 
 assertThatJson("{\"test\":true}")
