@@ -1,12 +1,12 @@
 /**
  * Copyright 2009-2015 the original author or authors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -205,8 +205,22 @@ public class Diff {
             return;
         }
 
+
+        // Any number
+        if (checkAny(NodeType.NUMBER, "${json-unit.any-number}", "a number", expectedNode, actualNode, fieldPath)) {
+            return;
+        }
+        // Any boolean
+        if (checkAny(NodeType.BOOLEAN, "${json-unit.any-boolean}", "a boolean", expectedNode, actualNode, fieldPath)) {
+            return;
+        }
+        // Any string
+        if (checkAny(NodeType.STRING, "${json-unit.any-string}", "a string", expectedNode, actualNode, fieldPath)) {
+            return;
+        }
+
         if (!expectedNodeType.equals(actualNodeType)) {
-            valueDifferenceFound("Different value found in node \"%s\". Expected '%s', got '%s'.", fieldPath, expectedNode, actualNode);
+            valueDifferenceFound("Different value found in node \"%s\". Expected '%s', got '%s'.", fieldPath, quoteTextValue(expectedNode), quoteTextValue(actualNode));
         } else {
             switch (expectedNodeType) {
                 case OBJECT:
@@ -241,6 +255,18 @@ public class Diff {
                     throw new IllegalStateException("Unexpected node type " + expectedNodeType);
             }
         }
+    }
+
+    private boolean checkAny(NodeType type, String placeholder, String name, Node expectedNode, Node actualNode, String fieldPath) {
+        if (expectedNode.getNodeType() == NodeType.STRING && placeholder.equals(expectedNode.asText())) {
+            if (actualNode.getNodeType() == type) {
+                return true;
+            } else {
+                valueDifferenceFound("Different value found in node \"%s\". Expected %s, got '%s'.", fieldPath, name, quoteTextValue(actualNode));
+                return true;
+            }
+        }
+        return false;
     }
 
     private void compareStringValues(String expectedValue, String actualValue, String path) {

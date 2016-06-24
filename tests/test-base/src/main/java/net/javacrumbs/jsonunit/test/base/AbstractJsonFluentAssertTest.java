@@ -1,12 +1,12 @@
 /**
  * Copyright 2009-2015 the original author or authors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,12 +33,10 @@ import static org.hamcrest.CoreMatchers.everyItem;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.closeTo;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 
 public abstract class AbstractJsonFluentAssertTest {
     @Test
@@ -285,6 +283,126 @@ public abstract class AbstractJsonFluentAssertTest {
     @Test
     public void testIgnoreDifferent() {
         assertThatJson("{\"test\":1}").ignoring("##IGNORE##").isEqualTo("{\"test\":\"##IGNORE##\"}");
+    }
+
+    @Test
+    public void anyNumberShouldAcceptAnInt() {
+        assertThatJson("{\"test\":1}").isEqualTo("{\"test\":\"${json-unit.any-number}\"}");
+    }
+
+    @Test
+    public void anyNumberShouldAcceptAFloat() {
+        assertThatJson("{\"test\":1.1}").isEqualTo("{\"test\":\"${json-unit.any-number}\"}");
+    }
+
+    @Test
+    public void anyNumberShouldFailOnString() {
+        try {
+            assertThatJson("{\"test\":\"one\"}").isEqualTo("{\"test\":\"${json-unit.any-number}\"}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected a number, got '\"one\"'.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void anyNumberShouldFailOnNull() {
+        try {
+            assertThatJson("{\"test\":null}").isEqualTo("{\"test\":\"${json-unit.any-number}\"}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected a number, got 'null'.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void anyNumberShouldFailOnObject() {
+        try {
+            assertThatJson("{\"test\":{\"a\":1}}").isEqualTo("{\"test\":\"${json-unit.any-number}\"}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected a number, got '{\"a\":1}'.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void anyBooleanShouldAcceptTrue() {
+        assertThatJson("{\"test\":true}").isEqualTo("{\"test\":\"${json-unit.any-boolean}\"}");
+    }
+
+    @Test
+    public void anyBooleanShouldFailOnString() {
+        try {
+            assertThatJson("{\"test\":\"true\"}").isEqualTo("{\"test\":\"${json-unit.any-boolean}\"}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected a boolean, got '\"true\"'.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void anyBooleanShouldFailOnNull() {
+        try {
+            assertThatJson("{\"test\":null}").isEqualTo("{\"test\":\"${json-unit.any-boolean}\"}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected a boolean, got 'null'.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void anyBooleanShouldFailOnObject() {
+        try {
+            assertThatJson("{\"test\":{\"a\":1}}").isEqualTo("{\"test\":\"${json-unit.any-boolean}\"}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected a boolean, got '{\"a\":1}'.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void anyStringShouldAcceptAString() {
+        assertThatJson("{\"test\":\"value\"}").isEqualTo("{\"test\":\"${json-unit.any-string}\"}");
+    }
+
+    @Test
+    public void anyStringShouldFailOnBoolean() {
+        try {
+            assertThatJson("{\"test\":true}").isEqualTo("{\"test\":\"${json-unit.any-string}\"}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected a string, got 'true'.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void anyStringShouldFailOnNull() {
+        try {
+            assertThatJson("{\"test\":null}").isEqualTo("{\"test\":\"${json-unit.any-string}\"}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected a string, got 'null'.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void anyStringShouldFailOnObject() {
+        try {
+            assertThatJson("{\"test\":{\"a\":1}}").isEqualTo("{\"test\":\"${json-unit.any-string}\"}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected a string, got '{\"a\":1}'.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void comparisonShouldFailOnDifferentType() {
+        try {
+            assertThatJson("{\"test\":1}").isEqualTo("{\"test\":\"1\"}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected '\"1\"', got '1'.\n", e.getMessage());
+        }
     }
 
     @Test
