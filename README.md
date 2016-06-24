@@ -163,7 +163,7 @@ If you want to assert just a type, but you do not care about the exact value, yo
 
 ```java
 assertThatJson("{\"test\":\"value\"}")
-    .isEqualTo("{\"test\":\"${json-unit.any-string}\"}");
+    .isEqualTo("{test:'${json-unit.any-string}'}");
 
 assertThatJson("{\"test\":true}")
     .isEqualTo("{\"test\":\"${json-unit.any-boolean}\"}");
