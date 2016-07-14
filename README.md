@@ -301,7 +301,7 @@ Jackson 2.x or [Gson](https://code.google.com/p/google-gson/) on the classpath. 
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>1.12.1</version>
+    <version>1.13.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -312,7 +312,7 @@ To use fluent assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>1.12.1</version>
+    <version>1.13.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -323,7 +323,7 @@ To use Spring MVC assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>1.12.1</version>
+    <version>1.13.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -337,7 +337,7 @@ Release notes
 ## 1.13.0
 * Support for any-* placeholders
 
-## 1.12.1
+## 1.13.0
 * Single quote values in expected String allowed
 
 ## 1.12.0
