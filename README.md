@@ -5,7 +5,8 @@ JsonUnit is a library that simplifies JSON comparison in unit tests. It's strong
 simple:
 
 ```java
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
+import static net.javacrumbs.jsonunit.JsonAssert.*;
+import static net.javacrumbs.jsonunit.core.Option.*;
 
 ...
 
