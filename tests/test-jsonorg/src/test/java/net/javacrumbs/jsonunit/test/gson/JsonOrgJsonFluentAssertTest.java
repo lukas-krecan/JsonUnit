@@ -31,4 +31,14 @@ public class JsonOrgJsonFluentAssertTest extends AbstractJsonFluentAssertTest {
     public void shouldAllowUquotedKeysAndCommentInExpectedValue() {
         assertThatJson("{\"test\":1}").isEqualTo("{test:1}");
     }
+
+    @Test
+    public void testNotEqualsToToArray() {
+        // array serialization not supported
+    }
+
+    @Test
+    public void testEqualsToArray() {
+        // array serialization not supported
+    }
 }
