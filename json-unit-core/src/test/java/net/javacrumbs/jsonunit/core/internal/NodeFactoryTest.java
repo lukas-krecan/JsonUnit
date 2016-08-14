@@ -1,12 +1,12 @@
 /**
  * Copyright 2009-2016 the original author or authors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,19 +16,40 @@
 package net.javacrumbs.jsonunit.core.internal;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 import java.io.StringReader;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 
 import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.valueOf;
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class JsonOrgNodeFactoryTest {
+@RunWith(Parameterized.class)
+public class NodeFactoryTest {
 
-    private final JsonOrgNodeFactory factory = new JsonOrgNodeFactory();
+    private final AbstractNodeFactory factory;
+
+    public NodeFactoryTest(AbstractNodeFactory factory) {
+        this.factory = factory;
+    }
+
+    @Parameters
+    public static Collection<Object[]> data() {
+        return Arrays.asList(new Object[][]{
+            {new JsonOrgNodeFactory()},
+            {new Jackson1NodeFactory()},
+            {new Jackson2NodeFactory()},
+            {new GsonNodeFactory()},
+        });
+    }
 
     @Test
     public void shouldParseInt() {
@@ -60,7 +81,7 @@ public class JsonOrgNodeFactoryTest {
 
     @Test
     public void shouldParseArray() {
-        Node node = read("[1, \"two\"]]");
+        Node node = read("[1, \"two\"]");
         assertEquals(Node.NodeType.ARRAY, node.getNodeType());
 
         assertEquals(ONE, node.element(0).decimalValue());
@@ -93,6 +114,20 @@ public class JsonOrgNodeFactoryTest {
         assertEquals(true, b.isNull());
     }
 
+    @Test
+    public void shouldConvertArray() {
+        Node node = factory.convertValue(new int[]{1, 2});
+        assertEquals(Node.NodeType.ARRAY, node.getNodeType());
+        assertEquals(ONE, node.element(0).decimalValue());
+    }
+
+    @Test
+    public void shouldConvertCollection() {
+        Node node = factory.convertValue(asList(false, "two"));
+        assertEquals(Node.NodeType.ARRAY, node.getNodeType());
+        assertEquals(false, node.element(0).asBoolean());
+        assertEquals("two", node.element(1).asText());
+    }
 
     private Node read(String value) {
         return factory.readValue(new StringReader(value), "label", false);
