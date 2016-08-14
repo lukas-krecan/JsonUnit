@@ -49,5 +49,11 @@
             <version>${gson.version}</version>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>${jsonorg.version}</version>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 </project>

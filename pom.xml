@@ -8,6 +8,7 @@
         <jackson1.version>1.9.13</jackson1.version>
         <jackson2.version>2.3.1</jackson2.version>
         <gson.version>2.3</gson.version>
+        <jsonorg.version>20160810</jsonorg.version>
         <symbolic.name>${pom.groupId}.${pom.artifactId}</symbolic.name>
         <osgi.importPackage>*</osgi.importPackage>
         <osgi.exportPackage />

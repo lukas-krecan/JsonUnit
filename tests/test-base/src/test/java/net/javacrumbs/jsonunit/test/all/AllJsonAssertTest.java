@@ -32,6 +32,7 @@ import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.failIfNoException;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByGson;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson1;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson2;
+import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJsonOrg;
 import static org.junit.Assert.assertEquals;
 
 public class AllJsonAssertTest extends AbstractJsonAssertTest {
@@ -49,6 +50,11 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
     @Test
     public void testEqualsNodeGson() throws IOException {
         assertJsonEquals(readByGson("{\"test\":1}"), readByGson("{\"test\": 1}"));
+    }
+
+    @Test
+    public void testEqualsNodeJsonOrg() throws IOException {
+        assertJsonEquals(readByJsonOrg("{\"test\":1}"), readByJsonOrg("{\"test\": 1}"));
     }
 
     @Test
@@ -70,6 +76,16 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
     public void testEqualsNodeFailGson() throws IOException {
         try {
             assertJsonEquals(readByGson("{\"test\":1}"), "{\"test\": 2}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected 1, got 2.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testEqualsNodeFailJsonOrg() throws IOException {
+        try {
+            assertJsonEquals(readByJsonOrg("{\"test\":1}"), "{\"test\": 2}");
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected 1, got 2.\n", e.getMessage());

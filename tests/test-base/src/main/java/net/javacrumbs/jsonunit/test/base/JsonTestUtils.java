@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit.test.base;
 
 import com.google.gson.JsonParser;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -42,6 +43,10 @@ public class JsonTestUtils {
     public static Object readByGson(String value) {
         return new JsonParser().parse(value);
     }
+
+    public static Object readByJsonOrg(String value) {
+            return new JSONObject(value);
+        }
 
     public static void failIfNoException() {
         fail("Exception expected");

@@ -36,6 +36,9 @@ class Converter {
     private static final boolean gsonPresent =
             isClassPresent("com.google.gson.Gson");
 
+    private static final boolean jsonOrgPresent =
+            isClassPresent("org.json.JSONObject");
+
     Converter(List<NodeFactory> factories) {
         if (factories.isEmpty()) {
             throw new IllegalStateException("List of factories can not be empty");
@@ -50,6 +53,10 @@ class Converter {
      */
     public static Converter createDefaultConverter() {
         List<NodeFactory> factories = new ArrayList<NodeFactory>();
+
+        if (jsonOrgPresent) {
+            factories.add(new JsonOrgNodeFactory());
+        }
 
         if (jackson1Present) {
             factories.add(new Jackson1NodeFactory());

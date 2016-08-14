@@ -22,11 +22,17 @@ import org.junit.Test;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByGson;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson2;
+import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJsonOrg;
 
 public class AllJsonFluentAssertTest extends AbstractJsonFluentAssertTest {
     @Test
     public void testMixedGsonAndJackson() {
         assertThatJson(readByGson("{\"test\":1}")).isEqualTo(readByJackson2("{\"test\": 1}"));
+    }
+
+    @Test
+    public void testMixedGsonAndJsonOrg() {
+        assertThatJson(readByGson("{\"test\":1}")).isEqualTo(readByJsonOrg("{\"test\": 1}"));
     }
 
     protected Object readValue(String value) {
