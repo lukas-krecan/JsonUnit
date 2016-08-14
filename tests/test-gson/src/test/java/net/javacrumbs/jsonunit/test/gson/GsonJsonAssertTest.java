@@ -28,7 +28,7 @@ public class GsonJsonAssertTest extends AbstractJsonAssertTest {
     @Override
     @Ignore
     @Test
-    public void shouldFailIfQuotationMarksMissingOnAcutalKeys() {
+    public void shouldFailIfQuotationMarksMissingOnActualKeys() {
         // GSON is by default lenient
     }
 }

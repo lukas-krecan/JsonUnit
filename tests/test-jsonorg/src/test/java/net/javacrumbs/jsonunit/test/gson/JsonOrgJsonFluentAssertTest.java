@@ -17,10 +17,18 @@ package net.javacrumbs.jsonunit.test.gson;
 
 import net.javacrumbs.jsonunit.test.base.AbstractJsonFluentAssertTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
+import org.junit.Test;
+
+import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 
 public class JsonOrgJsonFluentAssertTest extends AbstractJsonFluentAssertTest {
     @Override
     protected Object readValue(String value) {
         return JsonTestUtils.readByJsonOrg(value);
+    }
+
+    @Test
+    public void shouldAllowUquotedKeysAndCommentInExpectedValue() {
+        assertThatJson("{\"test\":1}").isEqualTo("{test:1}");
     }
 }

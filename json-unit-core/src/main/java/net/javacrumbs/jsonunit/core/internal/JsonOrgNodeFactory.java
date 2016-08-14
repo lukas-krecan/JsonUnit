@@ -23,6 +23,7 @@ import org.json.JSONTokener;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Deserializes node using org.json.JSONObject
@@ -60,6 +61,8 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
             return new JSONArrayNode((JSONArray) object);
         } else if (JSONObject.NULL.equals(object)) {
             return new NullNode();
+        } else if (object instanceof Map) {
+            return new JSONObjectNode(new JSONObject((Map<?, ?>)object));
         } else {
             throw new IllegalArgumentException("Unsupported type " + object.getClass());
         }
