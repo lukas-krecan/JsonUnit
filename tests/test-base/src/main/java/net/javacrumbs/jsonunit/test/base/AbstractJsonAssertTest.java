@@ -60,7 +60,7 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldFailIfQuotationMarksMissingOnAcutalKeys() {
+    public void shouldFailIfQuotationMarksMissingOnActualKeys() {
         assertJsonEquals("{\"test\":1}", "{test: 1}");
     }
 
@@ -465,6 +465,16 @@ public abstract class AbstractJsonAssertTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("Node \"test.different\" is missing.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAssertJsonNodePresentInArray() {
+        try {
+            assertJsonNodePresent("{\"array\":[1, 2]}", "array[3]");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("Node \"array[3]\" is missing.", e.getMessage());
         }
     }
 

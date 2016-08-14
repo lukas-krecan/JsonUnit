@@ -83,7 +83,11 @@ class GsonNodeFactory extends AbstractNodeFactory {
 
         public Node element(int index) {
             if (jsonNode instanceof JsonArray) {
-                return newNode(((JsonArray) jsonNode).get(index));
+                try {
+                    return newNode(((JsonArray) jsonNode).get(index));
+                } catch (IndexOutOfBoundsException e) {
+                    return MISSING_NODE;
+                }
             }
             throw new IllegalStateException("Can call element() only on an JsonArray");
         }
