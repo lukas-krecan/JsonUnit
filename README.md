@@ -1,7 +1,7 @@
 JsonUnit [![Build Status](https://travis-ci.org/lukas-krecan/JsonUnit.png?branch=master)](https://travis-ci.org/lukas-krecan/JsonUnit) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.javacrumbs.json-unit/json-unit/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.javacrumbs.json-unit/json-unit)
 ========
 
-JsonUnit is a library that simplifies JSON comparison in unit tests. It's strongly inspired by XmlUnit. The usage is
+JsonUnit is a library that simplifies JSON comparison in unit tests. The usage is
 simple:
 
 ```java
@@ -295,14 +295,14 @@ framework to log `net.javacrumbs.jsonunit.difference` on DEBUG level.
 
 Maven dependency
 ----------------
-JsonUnit is accessible in Maven central repository. In order for it to work, you need either, [Jackson](http://jackson.codehaus.org/) 1.x or 
-Jackson 2.x or [Gson](https://code.google.com/p/google-gson/) on the classpath. **Since 1.5.0 there is only one version for both versions of Jackson**
+JsonUnit is accessible in Maven central repository. In order for it to work, you need either, [Jackson](http://jackson.codehaus.org/) 1.x,
+Jackson 2.x, [Gson](https://code.google.com/p/google-gson/) or [JSONObject](https://developer.android.com/reference/org/json/JSONObject.html) on the classpath.
 
 ```xml	
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>1.13.0</version>
+    <version>1.14.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -313,7 +313,7 @@ To use fluent assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>1.13.0</version>
+    <version>1.14.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -324,7 +324,7 @@ To use Spring MVC assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>1.13.0</version>
+    <version>1.14.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -335,10 +335,14 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
-## 1.13.0
+## 1.14.0
+* Support for org.json library
+* Fix: Element out of array bounds is treated as missing
+
+## 1.14.0
 * Support for any-* placeholders
 
-## 1.13.0
+## 1.14.0
 * Single quote values in expected String allowed
 
 ## 1.12.0
