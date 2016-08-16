@@ -302,7 +302,7 @@ Jackson 2.x, [Gson](https://code.google.com/p/google-gson/) or [JSONObject](http
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>1.14.0</version>
+    <version>1.14.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -313,7 +313,7 @@ To use fluent assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>1.14.0</version>
+    <version>1.14.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -324,7 +324,7 @@ To use Spring MVC assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>1.14.0</version>
+    <version>1.14.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -335,14 +335,17 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 1.14.1
+* Preferring org.json library to process JSONArray
+
 ## 1.14.0
 * Support for org.json library
 * Fix: Element out of array bounds is treated as missing
 
-## 1.14.0
+## 1.13.0
 * Support for any-* placeholders
 
-## 1.14.0
+## 1.12.1
 * Single quote values in expected String allowed
 
 ## 1.12.0
