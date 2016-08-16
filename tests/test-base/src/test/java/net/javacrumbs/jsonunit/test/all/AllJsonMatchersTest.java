@@ -40,7 +40,7 @@ public class AllJsonMatchersTest extends AbstractJsonMatchersTest {
 
     @Test
     public void shouldCompareJSONArrays() {
-        assertThat(readByJsonOrg("[1, 2, 3]"), jsonEquals(readByJsonOrg("[1, 2, 3]")));
+        assertThat(readByJsonOrg("[{\"a\":1}, {\"a\":2}, {\"a\":2}]"), jsonEquals(readByJsonOrg("[{\"a\":1}, {\"a\":2}, {\"a\":2}]")));
     }
 
     protected Object readValue(String value) {

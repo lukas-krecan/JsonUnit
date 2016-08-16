@@ -18,7 +18,6 @@
         <module>test-jackson2</module>
         <module>test-gson</module>
         <module>test-jsonorg</module>
-        <module>test-jsonorg-jackson1</module>
     </modules>
 
     <build>
