@@ -125,7 +125,7 @@
                 <version>3.0.0</version>
                 <configuration>
                     <instructions>
-                        <Bundle-Name>${artifactId}</Bundle-Name>
+                        <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Bundle-SymbolicName>${symbolic.name}</Bundle-SymbolicName>
                         <Bundle-Description>${project.description}</Bundle-Description>
                         <Import-Package>${osgi.importPackage}</Import-Package>
