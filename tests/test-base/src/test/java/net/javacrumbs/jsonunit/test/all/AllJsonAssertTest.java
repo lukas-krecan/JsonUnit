@@ -93,6 +93,16 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
     }
 
     @Test
+    public void testEqualsNodeFailJsonOrgArray() throws IOException {
+        try {
+            assertJsonEquals(readByJsonOrg("[1, 2]"), readByJsonOrg("[1, 2, 3]"));
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nArray \"\" has different length. Expected 2, got 3.\n", e.getMessage());
+        }
+    }
+
+    @Test
     public void testAssertStructureEqualsDifferentValues() {
         assertJsonStructureEquals("{\"test\": 3}", "{\"test\": {\"inner\": 5}}");
     }

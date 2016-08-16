@@ -17,6 +17,7 @@ package net.javacrumbs.jsonunit.test.base;
 
 import com.google.gson.JsonParser;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.io.IOException;
 
@@ -45,7 +46,7 @@ public class JsonTestUtils {
     }
 
     public static Object readByJsonOrg(String value) {
-            return new JSONObject(value);
+            return new JSONTokener(value).nextValue();
         }
 
     public static void failIfNoException() {

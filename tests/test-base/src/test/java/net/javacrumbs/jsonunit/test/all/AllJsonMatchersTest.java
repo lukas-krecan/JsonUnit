@@ -24,6 +24,7 @@ import java.io.IOException;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson1;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson2;
+import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJsonOrg;
 import static org.junit.Assert.assertThat;
 
 public class AllJsonMatchersTest extends AbstractJsonMatchersTest {
@@ -35,6 +36,11 @@ public class AllJsonMatchersTest extends AbstractJsonMatchersTest {
     @Test
     public void testJsonNodeJackson2() throws IOException {
         assertThat(readByJackson2("{\"test\":1}"), jsonEquals("{\"test\":1}"));
+    }
+
+    @Test
+    public void shouldCompareJSONArrays() {
+        assertThat(readByJsonOrg("[1, 2, 3]"), jsonEquals(readByJsonOrg("[1, 2, 3]")));
     }
 
     protected Object readValue(String value) {

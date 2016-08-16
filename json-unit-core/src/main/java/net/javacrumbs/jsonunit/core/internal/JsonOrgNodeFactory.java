@@ -72,7 +72,7 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
     }
 
     public boolean isPreferredFor(Object source) {
-        return source instanceof JSONObject;
+        return source instanceof JSONObject || source instanceof JSONArray;
     }
 
 

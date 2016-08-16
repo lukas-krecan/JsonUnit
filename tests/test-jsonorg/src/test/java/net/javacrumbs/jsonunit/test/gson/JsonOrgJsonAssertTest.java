@@ -20,7 +20,12 @@ import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.io.IOException;
+
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
+import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.failIfNoException;
+import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJsonOrg;
+import static org.junit.Assert.assertEquals;
 
 public class JsonOrgJsonAssertTest extends AbstractJsonAssertTest {
     protected Object readValue(String value) {
@@ -35,5 +40,15 @@ public class JsonOrgJsonAssertTest extends AbstractJsonAssertTest {
     @Test
     public void shouldFailIfQuotationMarksMissingOnActualKeys() {
         // it's lenient by default
+    }
+
+    @Test
+    public void testEqualsNodeFailJsonOrgArray() throws IOException {
+        try {
+            assertJsonEquals(readByJsonOrg("[1, 2]"), readByJsonOrg("[1, 2, 3]"));
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nArray \"\" has different length. Expected 2, got 3.\n", e.getMessage());
+        }
     }
 }
