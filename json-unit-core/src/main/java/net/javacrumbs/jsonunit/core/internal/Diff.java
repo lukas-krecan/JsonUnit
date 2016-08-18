@@ -17,8 +17,6 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -38,6 +36,7 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
+import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
@@ -60,8 +59,8 @@ public class Diff {
     private final Configuration configuration;
 
 
-    private static final Logger diffLogger = LoggerFactory.getLogger("net.javacrumbs.jsonunit.difference.diff");
-    private static final Logger valuesLogger = LoggerFactory.getLogger("net.javacrumbs.jsonunit.difference.values");
+    private static final JsonUnitLogger diffLogger = createLogger("net.javacrumbs.jsonunit.difference.diff");
+    private static final JsonUnitLogger valuesLogger = createLogger("net.javacrumbs.jsonunit.difference.values");
 
     private Diff(Node expected, Node actual, String startPath, Configuration configuration) {
         this.expectedRoot = expected;
@@ -444,18 +443,18 @@ public class Diff {
 
     public boolean similar() {
         compare();
-        boolean result = differences.isEmpty();
-        logDifferences(result);
-        return result;
+        boolean isSimilar = differences.isEmpty();
+        logDifferences(isSimilar);
+        return isSimilar;
     }
 
-    private void logDifferences(boolean result) {
-        if (!result) {
-            if (diffLogger.isDebugEnabled()) {
-                diffLogger.debug(getDifferences().trim());
+    private void logDifferences(boolean isSimilar) {
+        if (!isSimilar) {
+            if (diffLogger.isEnabled()) {
+                diffLogger.log(getDifferences().trim());
             }
-            if (valuesLogger.isDebugEnabled()) {
-                valuesLogger.debug("Comparing expected:\n{}\n------------\nwith actual:\n{}\n", expectedRoot, getNode(actualRoot, startPath));
+            if (valuesLogger.isEnabled()) {
+                valuesLogger.log("Comparing expected:\n{}\n------------\nwith actual:\n{}\n", expectedRoot, getNode(actualRoot, startPath));
             }
         }
     }
@@ -492,5 +491,13 @@ public class Diff {
         StringBuilder message = new StringBuilder();
         differences.appendDifferences(message);
         return message.toString();
+    }
+
+    private static JsonUnitLogger createLogger(String name) {
+        if (isClassPresent("org.slf4j.Logger")) {
+            return new JsonUnitLogger.SLF4JLogger(name);
+        } else {
+            return new JsonUnitLogger.NullLogger();
+        }
     }
 }

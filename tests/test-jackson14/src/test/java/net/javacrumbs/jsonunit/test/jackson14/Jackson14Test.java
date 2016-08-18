@@ -18,6 +18,8 @@ package net.javacrumbs.jsonunit.test.jackson14;
 import org.junit.Test;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class Jackson14Test {
     @Test
@@ -25,4 +27,13 @@ public class Jackson14Test {
         assertJsonEquals("{\"value1\":\"value1\"}", new Jackson14Bean());
     }
 
+    @Test
+    public void testObjectName() {
+        try {
+            assertJsonEquals("{\"test\":1}", "{\n\"foo\": 1\n}");
+            fail("Exception expected");
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent keys found in node \"\". Expected [test], got [foo]. Missing: \"test\" Extra: \"foo\"\n", e.getMessage());
+        }
+    }
 }

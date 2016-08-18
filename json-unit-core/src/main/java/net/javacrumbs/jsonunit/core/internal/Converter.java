@@ -18,6 +18,8 @@ package net.javacrumbs.jsonunit.core.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
+
 /**
  * Converts object to Node using {@link net.javacrumbs.jsonunit.core.internal.NodeFactory}.
  */
@@ -48,10 +50,8 @@ class Converter {
 
     /**
      * Creates converter based on the libraries on the classpath.
-     *
-     * @return
      */
-    public static Converter createDefaultConverter() {
+    static Converter createDefaultConverter() {
         List<NodeFactory> factories = new ArrayList<NodeFactory>();
 
         if (jsonOrgPresent) {
@@ -75,7 +75,7 @@ class Converter {
         return new Converter(factories);
     }
 
-    public Node convertToNode(Object source, String label, boolean lenient) {
+    Node convertToNode(Object source, String label, boolean lenient) {
         for (int i = 0; i < factories.size(); i++) {
             NodeFactory factory = factories.get(i);
             if (isLastFactory(i) || factory.isPreferredFor(source)) {
@@ -87,21 +87,5 @@ class Converter {
 
     private boolean isLastFactory(int i) {
         return factories.size() - 1 == i;
-    }
-
-
-    /**
-     * Checks if given class is present.
-     *
-     * @param className
-     * @return
-     */
-    static boolean isClassPresent(String className) {
-        try {
-            Converter.class.getClassLoader().loadClass(className);
-            return true;
-        } catch (Throwable e) {
-            return false;
-        }
     }
 }
