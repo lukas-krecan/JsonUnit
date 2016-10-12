@@ -336,7 +336,7 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 Release notes
 =============
 ## 1.16.0
-* isAbsent and isPresent check take TREAT_NULL_AS_ABSENT into account
+* isAbsent and isPresent checks take TREAT_NULL_AS_ABSENT into account
 
 ## 1.15.0
 * Dependency on slf4j made optional
