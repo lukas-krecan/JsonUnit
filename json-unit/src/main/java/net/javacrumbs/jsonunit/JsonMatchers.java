@@ -28,7 +28,7 @@ import java.math.BigDecimal;
 
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
 
 /**
  * Contains Hamcrest matchers to be used with Hamcrest assertThat and other tools.
@@ -169,7 +169,7 @@ public class JsonMatchers {
         }
 
         public boolean matches(Object item) {
-            return !nodeExists(item, path);
+            return nodeAbsent(item, path, configuration);
         }
 
         public void describeTo(Description description) {
@@ -188,7 +188,7 @@ public class JsonMatchers {
         }
 
         public boolean matches(Object item) {
-            return nodeExists(item, path);
+            return !nodeAbsent(item, path, configuration);
         }
 
         public void describeTo(Description description) {

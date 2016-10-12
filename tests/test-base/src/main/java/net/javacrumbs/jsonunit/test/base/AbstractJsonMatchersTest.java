@@ -241,6 +241,18 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
+    public void testPresentIfNullAndTreatingNullAsAbsent() {
+        try {
+            assertThat("{\"test\":null}", jsonNodePresent("test").when(TREATING_NULL_AS_ABSENT));
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("\n" +
+                    "Expected: Node \"test\" is present.\n" +
+                    "     but: Node \"test\" is missing.", e.getMessage());
+        }
+    }
+
+    @Test
     public void testPresentOk() {
         assertThat("{\"test\":1}", jsonNodePresent("test"));
     }

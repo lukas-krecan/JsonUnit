@@ -606,6 +606,12 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
+    public void testTreatNullAsAbsentInNode() {
+        JsonAssert.setOptions(TREATING_NULL_AS_ABSENT);
+        assertJsonNodeAbsent("{\"test\": null}", "test");
+    }
+
+    @Test
     public void testTreatNullAsAbsentTwoValues() {
         JsonAssert.setOptions(TREATING_NULL_AS_ABSENT);
         assertJsonEquals("{\"test\":{\"a\":1}}", "{\"test\":{\"a\":1, \"b\": null, \"c\": null}}");

@@ -16,6 +16,9 @@
 package net.javacrumbs.jsonunit.core.internal;
 
 
+import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.Option;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -109,13 +112,26 @@ public class JsonUtils {
 
     /**
      * Returns true if the node exists.
-     *
-     * @param json
-     * @param path
-     * @return
      */
+    @Deprecated
     public static boolean nodeExists(Object json, String path) {
         return !getNode(json, path).isMissingNode();
+    }
+
+    public static boolean nodeAbsent(Object json, String path, Configuration configuration) {
+        return nodeAbsent(json, path, configuration.getOptions().contains(Option.TREATING_NULL_AS_ABSENT));
+    }
+
+    /**
+     * Returns true if the is absent.
+     */
+    static boolean nodeAbsent(Object json, String path, boolean treatNullAsAbsent) {
+        Node node = getNode(json, path);
+        if (node.isNull()) {
+            return treatNullAsAbsent;
+        } else {
+            return node.isMissingNode();
+        }
     }
 
 

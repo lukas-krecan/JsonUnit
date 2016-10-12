@@ -22,6 +22,7 @@ import java.io.IOException;
 
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.ARRAY;
@@ -133,8 +134,19 @@ public class JsonUtilsTest {
         assertFalse(nodeExists(json, "root"));
     }
 
-	@Test
-	public void shouldIgnoreEscapedDot() throws IOException {
-		assertTrue(nodeExists("{\"test.1\":{\"value\":1}}", "test\\.1"));
-	}
+    @Test
+    public void testNodeAbsent() throws IOException {
+        String json = "{\"test\":{\"value\":1, \"value2\": null}}";
+        assertFalse(nodeAbsent(json, "test", false));
+        assertFalse(nodeAbsent(json, "test.value", false));
+        assertTrue(nodeAbsent(json, "test.nonsense", false));
+        assertTrue(nodeAbsent(json, "root", false));
+        assertTrue(nodeAbsent(json, "test.value2", true));
+        assertFalse(nodeAbsent(json, "test.value2", false));
+    }
+
+    @Test
+    public void shouldIgnoreEscapedDot() throws IOException {
+        assertFalse(nodeAbsent("{\"test.1\":{\"value\":1}}", "test\\.1", false));
+    }
 }

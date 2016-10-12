@@ -30,7 +30,7 @@ import static net.javacrumbs.jsonunit.core.Option.COMPARING_ONLY_STRUCTURE;
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.ARRAY;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
@@ -270,7 +270,7 @@ public class JsonFluentAssert {
      * @return
      */
     public JsonFluentAssertAfterAssertion isAbsent() {
-        if (nodeExists(actual, path)) {
+        if (!nodeAbsent(actual, path, configuration)) {
             failWithMessage("Node \"" + path + "\" is present.");
         }
         return JsonFluentAssertAfterAssertion.wrap(this);
@@ -280,7 +280,7 @@ public class JsonFluentAssert {
      * Fails if the node is missing.
      */
     public JsonFluentAssertAfterAssertion isPresent() {
-        if (!nodeExists(actual, path)) {
+        if (nodeAbsent(actual, path, configuration)) {
             failWithMessage("Node \"" + path + "\" is missing.");
         }
         return JsonFluentAssertAfterAssertion.wrap(this);

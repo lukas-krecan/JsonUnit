@@ -27,7 +27,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import java.math.BigDecimal;
 
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.ARRAY;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
@@ -142,7 +142,7 @@ public class JsonUnitResultMatchers {
     public ResultMatcher isAbsent() {
         return new AbstractResultMatcher(path, configuration) {
             public void doMatch(Object actual) {
-                if (nodeExists(actual, path)) {
+                if (!nodeAbsent(actual, path, configuration)) {
                     failWithMessage("Node \"" + path + "\" is present.");
                 }
             }
@@ -283,7 +283,7 @@ public class JsonUnitResultMatchers {
         }
 
         protected void isPresent(Object actual) {
-            if (!nodeExists(actual, path)) {
+            if (nodeAbsent(actual, path, configuration)) {
                 failWithMessage("Node \"" + path + "\" is missing.");
             }
         }

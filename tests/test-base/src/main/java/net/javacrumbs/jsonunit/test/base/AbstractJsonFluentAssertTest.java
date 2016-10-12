@@ -251,6 +251,11 @@ public abstract class AbstractJsonFluentAssertTest {
     }
 
     @Test
+    public void shouldTreatNullAsAbsent() {
+        assertThatJson("{\"a\":1, \"b\": null}").when(Option.TREATING_NULL_AS_ABSENT).node("b").isAbsent();
+    }
+
+    @Test
     public void testNodePresent() {
         try {
             assertThatJson("{\"test1\":2, \"test2\":1}").node("test3").isPresent();
@@ -263,6 +268,21 @@ public abstract class AbstractJsonFluentAssertTest {
     @Test
     public void testNodePresentOk() {
         assertThatJson("{\"test1\":2, \"test2\":1}").node("test2").isPresent();
+    }
+
+    @Test
+    public void testNodePresentNull() {
+        assertThatJson("{\"test1\":2, \"test2\":null}").node("test2").isPresent();
+    }
+
+    @Test
+    public void isPresentShouldTreatNullAsAbsentWhenSpecified() {
+        try {
+            assertThatJson("{\"test1\":2, \"test2\":null}").when(Option.TREATING_NULL_AS_ABSENT).node("test2").isPresent();
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("Node \"test2\" is missing.", e.getMessage());
+        }
     }
 
     @Test

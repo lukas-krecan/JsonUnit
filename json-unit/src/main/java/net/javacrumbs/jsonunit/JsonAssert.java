@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 import static net.javacrumbs.jsonunit.core.Option.COMPARING_ONLY_STRUCTURE;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
 
 /**
  * Assertions for comparing JSON. The comparison ignores white-spaces and order of nodes.
@@ -145,7 +145,7 @@ public class JsonAssert {
      * Fails if node in given path exists.
      */
     public static void assertJsonNodeAbsent(Object actual, String path) {
-        if (nodeExists(actual, path)) {
+        if (!nodeAbsent(actual, path, configuration)) {
             doFail("Node \"" + path + "\" is present.");
         }
     }
@@ -154,7 +154,7 @@ public class JsonAssert {
      * Fails if node in given does not exist.
      */
     public static void assertJsonNodePresent(Object actual, String path) {
-        if (!nodeExists(actual, path)) {
+        if (nodeAbsent(actual, path, configuration)) {
             doFail("Node \"" + path + "\" is missing.");
         }
     }
