@@ -302,7 +302,7 @@ Jackson 2.x, [Gson](https://code.google.com/p/google-gson/) or [JSONObject](http
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>1.16.0</version>
+    <version>1.16.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -313,7 +313,7 @@ To use fluent assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>1.16.0</version>
+    <version>1.16.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -324,7 +324,7 @@ To use Spring MVC assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>1.16.0</version>
+    <version>1.16.1</version>
     <scope>test</scope>
 </dependency>
 ```
