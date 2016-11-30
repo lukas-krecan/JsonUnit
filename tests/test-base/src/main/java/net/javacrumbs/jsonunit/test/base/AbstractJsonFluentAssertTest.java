@@ -286,6 +286,16 @@ public abstract class AbstractJsonFluentAssertTest {
     }
 
     @Test
+    public void shouldAllowWeirdCharsInArrayPattern() {
+        assertThatJson("{\n" +
+            "  \"@id\" : \"urn:uuid:50aa37c0-eef0-4d72-9f32-17ebbcf17c10\",\n" +
+            "  \"@graph\" : [\n" +
+            "    { \"foo\" : \"bar\" }\n" +
+            "  ]\n" +
+            "}").node("@graph[0].foo").isEqualTo("bar");
+    }
+
+    @Test
     public void testMessage() {
         try {
             assertThatJson("{\"test\":1}").as("Test is different").isEqualTo("{\"test\":2}");

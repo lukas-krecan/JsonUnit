@@ -27,7 +27,7 @@ import java.util.regex.Pattern;
  */
 public class JsonUtils {
 
-    private static final Pattern arrayPattern = Pattern.compile("(\\w*)\\[(\\d+)\\]");
+    private static final Pattern arrayPattern = Pattern.compile("(.*)\\[(\\d+)\\]");
 
     /**
      * We need to ignore "\." when splitting path.

@@ -335,6 +335,9 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 1.16.1
+* Array pattern accepts non-word characters
+
 ## 1.16.0
 * isAbsent and isPresent checks take TREAT_NULL_AS_ABSENT into account
 
