@@ -293,6 +293,11 @@ Although the differences are printed out by the assert statement, sometimes you 
 logging. JsonUnit uses [SLF4J](http://www.slf4j.org/). The only thing you need to do is to configure your logging
 framework to log `net.javacrumbs.jsonunit.difference` on DEBUG level.
 
+Selecting underlying library
+----------------------------
+JsonUnit is trying to cleverly match which JSON library to use. In case you need to change the default behavior, you can use
+json-unit.libraries system property. For example `-Djson-unit.libraries=jackson2,gson`. Supported values are gson, json.org, jackson1, jackson2
+
 Maven dependency
 ----------------
 JsonUnit is accessible in Maven central repository. In order for it to work, you need either, [Jackson](http://jackson.codehaus.org/) 1.x,
@@ -335,6 +340,9 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 1.17.0
+* System property to specify JSON libraries to be used
+
 ## 1.16.1
 * Array pattern accepts non-word characters
 
