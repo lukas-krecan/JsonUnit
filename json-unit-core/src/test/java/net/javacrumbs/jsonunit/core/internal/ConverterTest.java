@@ -22,9 +22,12 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
+import static net.javacrumbs.jsonunit.core.internal.Converter.LIBRARIES_PROPERTY_NAME;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class ConverterTest {
 
@@ -49,6 +52,35 @@ public class ConverterTest {
         assertEquals(Jackson1NodeFactory.Jackson1Node.class, node.getClass());
     }
 
+
+    @Test
+    public void shouldUseOnlyFactorySpecifiedBySystemProperty() {
+        System.setProperty(LIBRARIES_PROPERTY_NAME,"gson");
+        Converter converter = Converter.createDefaultConverter();
+        assertThat(converter.getFactories()).extracting("class").containsExactly(GsonNodeFactory.class);
+        System.setProperty(LIBRARIES_PROPERTY_NAME, "");
+    }
+
+    @Test
+    public void shouldChangeOrderSpecifiedBySystemProperty() {
+        System.setProperty(LIBRARIES_PROPERTY_NAME,"jackson2, gson ,json.org,\tjackson1");
+        Converter converter = Converter.createDefaultConverter();
+        assertThat(converter.getFactories()).extracting("class").containsExactly(Jackson2NodeFactory.class, GsonNodeFactory.class, JsonOrgNodeFactory.class, Jackson1NodeFactory.class);
+        System.setProperty(LIBRARIES_PROPERTY_NAME, "");
+    }
+
+    @Test
+    public void shouldFailOnUnknownFactory() {
+        System.setProperty(LIBRARIES_PROPERTY_NAME,"unknown");
+        try {
+            Converter.createDefaultConverter();
+            fail("Exception expected");
+        } catch (IllegalArgumentException e) {
+            assertThat(e.getMessage()).isEqualTo("'unknown' library name not recognized.");
+        } finally {
+            System.setProperty(LIBRARIES_PROPERTY_NAME, "");
+        }
+    }
 
     @Test
     public void classShouldBePresent() {

@@ -24,22 +24,23 @@ import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
  * Converts object to Node using {@link net.javacrumbs.jsonunit.core.internal.NodeFactory}.
  */
 class Converter {
+    static final String LIBRARIES_PROPERTY_NAME = "json-unit.libraries";
 
     private final List<NodeFactory> factories;
 
     private static final boolean jackson1Present =
-            isClassPresent("org.codehaus.jackson.map.ObjectMapper") &&
-                    isClassPresent("org.codehaus.jackson.JsonGenerator");
+        isClassPresent("org.codehaus.jackson.map.ObjectMapper") &&
+            isClassPresent("org.codehaus.jackson.JsonGenerator");
 
     private static final boolean jackson2Present =
-            isClassPresent("com.fasterxml.jackson.databind.ObjectMapper") &&
-                    isClassPresent("com.fasterxml.jackson.core.JsonGenerator");
+        isClassPresent("com.fasterxml.jackson.databind.ObjectMapper") &&
+            isClassPresent("com.fasterxml.jackson.core.JsonGenerator");
 
     private static final boolean gsonPresent =
-            isClassPresent("com.google.gson.Gson");
+        isClassPresent("com.google.gson.Gson");
 
     private static final boolean jsonOrgPresent =
-            isClassPresent("org.json.JSONObject");
+        isClassPresent("org.json.JSONObject");
 
     Converter(List<NodeFactory> factories) {
         if (factories.isEmpty()) {
@@ -52,8 +53,42 @@ class Converter {
      * Creates converter based on the libraries on the classpath.
      */
     static Converter createDefaultConverter() {
-        List<NodeFactory> factories = new ArrayList<NodeFactory>();
+        List<NodeFactory> factories;
+        String property = System.getProperty(LIBRARIES_PROPERTY_NAME);
 
+        if (property != null && property.trim().length() > 0) {
+            factories = createFactoriesSpecifiedInProperty(property);
+        } else {
+            factories = createDefaultFactories();
+        }
+
+        if (factories.isEmpty()) {
+            throw new IllegalStateException("Please add either json.org, Jackson 1.x, Jackson 2.x or Gson to the classpath");
+        }
+        return new Converter(factories);
+    }
+
+    private static List<NodeFactory> createFactoriesSpecifiedInProperty(String property) {
+        List<NodeFactory> factories = new ArrayList<NodeFactory>();
+        for (String factoryName : property.toLowerCase().split(",")) {
+            factoryName = factoryName.trim();
+            if ("json.org".equals(factoryName)) {
+                factories.add(new JsonOrgNodeFactory());
+            } else if ("jackson1".equals(factoryName)) {
+                factories.add(new Jackson1NodeFactory());
+            } else if ("jackson2".equals(factoryName)) {
+                factories.add(new Jackson2NodeFactory());
+            } else if ("gson".equals(factoryName)) {
+                factories.add(new GsonNodeFactory());
+            } else {
+                throw new IllegalArgumentException("'" +factoryName + "' library name not recognized.");
+            }
+        }
+        return factories;
+    }
+
+    private static List<NodeFactory> createDefaultFactories() {
+        List<NodeFactory> factories = new ArrayList<NodeFactory>();
         if (jsonOrgPresent) {
             factories.add(new JsonOrgNodeFactory());
         }
@@ -69,10 +104,7 @@ class Converter {
         if (jackson2Present) {
             factories.add(new Jackson2NodeFactory());
         }
-        if (factories.isEmpty()) {
-            throw new IllegalStateException("Please add either Jackson 1.x, Jackson 2.x or Gson to the classpath");
-        }
-        return new Converter(factories);
+        return factories;
     }
 
     Node convertToNode(Object source, String label, boolean lenient) {
@@ -87,5 +119,9 @@ class Converter {
 
     private boolean isLastFactory(int i) {
         return factories.size() - 1 == i;
+    }
+
+    List<NodeFactory> getFactories() {
+        return factories;
     }
 }
