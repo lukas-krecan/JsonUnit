@@ -296,7 +296,7 @@ framework to log `net.javacrumbs.jsonunit.difference` on DEBUG level.
 Selecting underlying library
 ----------------------------
 JsonUnit is trying to cleverly match which JSON library to use. In case you need to change the default behavior, you can use
-json-unit.libraries system property. For example `-Djson-unit.libraries=jackson2,gson`. Supported values are gson, json.org, jackson1, jackson2
+json-unit.libraries system property. For example `-Djson-unit.libraries=jackson2,gson` or `System.setProperty("json-unit.libraries", "jackson1");`. Supported values are gson, json.org, jackson1, jackson2
 
 Maven dependency
 ----------------
@@ -307,7 +307,7 @@ Jackson 2.x, [Gson](https://code.google.com/p/google-gson/) or [JSONObject](http
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>1.16.1</version>
+    <version>1.17.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -318,7 +318,7 @@ To use fluent assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>1.16.1</version>
+    <version>1.17.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -329,7 +329,7 @@ To use Spring MVC assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>1.16.1</version>
+    <version>1.17.0</version>
     <scope>test</scope>
 </dependency>
 ```
