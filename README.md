@@ -11,7 +11,7 @@ import static net.javacrumbs.jsonunit.core.Option.*;
 ...
 
 // compares two JSON documents
-assertJsonEquals("{\"test\":1}", "{\n\"foo\": 1\n}");
+assertJsonEquals("{\"test\":1}", "{\n\"test\": 1\n}");
 
 // compares only part
 assertJsonPartEquals("2", "{\"test\":[{\"value\":1},{\"value\":2}]}",
