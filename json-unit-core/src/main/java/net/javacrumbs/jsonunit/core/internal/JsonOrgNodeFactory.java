@@ -26,6 +26,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+import static net.javacrumbs.jsonunit.core.internal.Utils.closeQuietly;
+
 /**
  * Deserializes node using org.json.JSONObject
  */
@@ -46,6 +48,8 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
             return newNode(new JSONTokener(value).nextValue());
         } catch (JSONException e) {
             throw new IllegalArgumentException("Can not parse " + label + " value.", e);
+        } finally {
+            closeQuietly(value);
         }
     }
 

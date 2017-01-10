@@ -40,6 +40,7 @@ You use Hamcrest matchers in the following way
 ```java
 import static net.javacrumbs.jsonunit.JsonMatchers.*;
 import static org.junit.Assert.*;
+import static net.javacrumbs.jsonunit.core.util.ResourceUtils.resource;
 ...
 
 assertThat("{\"test\":1}", jsonEquals("{\"test\": 1}"));
@@ -51,6 +52,8 @@ assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
 
 // Can use other Hamcrest matchers too
 assertThat("{\"test\":1}", jsonPartMatches("test", is(valueOf(1))))
+
+assertThat("{\"test\":1}", jsonEquals(resource("test.json")));
 ```
 
 Fluent assertions
@@ -340,6 +343,9 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 1.18.0
+* Resource reading helper added
+
 ## 1.17.0
 * System property to specify JSON libraries to be used
 

@@ -34,7 +34,9 @@ import static net.javacrumbs.jsonunit.JsonMatchers.jsonStringPartEquals;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
+import static net.javacrumbs.jsonunit.core.util.ResourceUtils.resource;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.failIfNoException;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
@@ -59,6 +61,8 @@ public abstract class AbstractJsonMatchersTest {
         assertThat("{\"test\":[1, 2, 3]}", jsonPartEquals("test[0]", "1"));
         assertThat("{\"foo\":\"bar\",\"test\": 2}", jsonEquals("{\n\"test\": 2,\n\"foo\":\"bar\"}"));
         assertThat("{}", jsonEquals("{}"));
+        assertThat("{\"test\":1}", jsonEquals(resource("test.json")));
+        assertThat("{\"test\":2}", not(jsonEquals(resource("test.json"))));
     }
 
     @Test
@@ -284,6 +288,42 @@ public abstract class AbstractJsonMatchersTest {
     @Test
     public void testJsonNode() throws IOException {
         assertThat(readValue("{\"test\":1}"), jsonEquals("{\"test\":1}"));
+    }
+
+    @Test
+    public void jsonEqualsResourceShouldReturnReasonWhenDiffers() {
+        try {
+            assertThat("{\"test\":2}", jsonEquals(resource("test.json")));
+            expectException();
+        } catch (AssertionError e) {
+            assertThat(e.getMessage(), containsString("\n" +
+                                "     but: JSON documents are different:\n" +
+                                "Different value found in node \"test\". Expected 1, got 2.\n"));
+        }
+    }
+
+    @Test
+    public void jsonEqualsResourceShouldReturnReasonWhenResourceIsMissing() {
+        try {
+            assertThat("{\"test\":2}", jsonEquals(resource("nonsense")));
+            expectException();
+        } catch (IllegalArgumentException e) {
+            assertEquals("resource 'nonsense' not found", e.getMessage());
+        }
+    }
+
+    @Test
+    public void jsonEqualsResourceShouldReturnReasonWhenNullPassedAsParameter() {
+        try {
+            assertThat("{\"test\":2}", jsonEquals(resource(null)));
+            expectException();
+        } catch (NullPointerException e) {
+            assertEquals("'null' passed instead of resource name", e.getMessage());
+        }
+    }
+
+    private void expectException() {
+        fail("Exception expected");
     }
 
     protected abstract Object readValue(String value);
