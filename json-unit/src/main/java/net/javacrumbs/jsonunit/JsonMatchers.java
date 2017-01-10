@@ -43,11 +43,15 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
  * </ol>
  */
 public class JsonMatchers {
+
+    private static final String EMPTY_PATH = "";
+    private static final String FULL_JSON = "fullJson";
+
     /**
      * Are the JSONs equivalent?
      */
     public static <T> ConfigurableJsonMatcher<T> jsonEquals(Object expected) {
-        return new JsonPartMatcher<T>("", expected);
+        return new JsonPartMatcher<T>(EMPTY_PATH, expected);
     }
 
     /**
@@ -98,7 +102,6 @@ public class JsonMatchers {
         return new JsonNodePresenceMatcher<T>(path);
     }
 
-
     private static abstract class AbstractJsonMatcher<T> extends BaseMatcher<T> implements ConfigurableJsonMatcher<T> {
         protected final String path;
         protected Configuration configuration = JsonAssert.getConfiguration();
@@ -138,7 +141,7 @@ public class JsonMatchers {
         }
 
         public boolean matches(Object item) {
-            Diff diff = create(expected, item, "fullJson", path, configuration);
+            Diff diff = create(expected, item, FULL_JSON, path, configuration);
             if (!diff.similar()) {
                 differences = diff.differences();
             }
@@ -146,7 +149,7 @@ public class JsonMatchers {
         }
 
         public void describeTo(Description description) {
-            if ("".equals(path)) {
+            if (EMPTY_PATH.equals(path)) {
                 description.appendText(safeToString());
             } else {
                 description.appendText(safeToString()).appendText(" in \"").appendText(path).appendText("\"");
@@ -162,6 +165,7 @@ public class JsonMatchers {
             description.appendText(differences);
         }
     }
+
 
     private static final class JsonNodeAbsenceMatcher<T> extends AbstractJsonMatcher<T> {
         JsonNodeAbsenceMatcher(String path) {

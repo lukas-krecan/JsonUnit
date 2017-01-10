@@ -26,6 +26,8 @@ import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.Map;
 
+import static net.javacrumbs.jsonunit.core.internal.Utils.closeQuietly;
+
 /**
  * Deserializes node using Jackson 2
  */
@@ -55,6 +57,8 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
             return newNode(getMapper(lenient).readTree(value));
         } catch (IOException e) {
             throw new IllegalArgumentException("Can not parse " + label + " value.", e);
+        } finally {
+            closeQuietly(value);
         }
     }
 

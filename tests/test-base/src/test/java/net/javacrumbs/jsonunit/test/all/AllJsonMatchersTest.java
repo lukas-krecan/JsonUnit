@@ -22,6 +22,7 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
+import static net.javacrumbs.jsonunit.core.util.ResourceUtils.resource;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson1;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson2;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJsonOrg;
@@ -41,6 +42,11 @@ public class AllJsonMatchersTest extends AbstractJsonMatchersTest {
     @Test
     public void shouldCompareJSONArrays() {
         assertThat(readByJsonOrg("[{\"a\":1}, {\"a\":2}, {\"a\":2}]"), jsonEquals(readByJsonOrg("[{\"a\":1}, {\"a\":2}, {\"a\":2}]")));
+    }
+
+    @Test
+    public void testEqualsResource() throws Exception {
+        assertThat("{\"test\":1}", jsonEquals(resource("test.json")));
     }
 
     protected Object readValue(String value) {

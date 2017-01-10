@@ -31,6 +31,8 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.util.Iterator;
 
+import static net.javacrumbs.jsonunit.core.internal.Utils.closeQuietly;
+
 /**
  * Deserializes node using Jackson 1
  */
@@ -62,6 +64,8 @@ class Jackson1NodeFactory extends AbstractNodeFactory {
             return newNode(getMapper(lenient).readTree(value));
         } catch (IOException e) {
             throw new IllegalArgumentException("Can not parse " + label + " value.", e);
+        } finally {
+            closeQuietly(value);
         }
     }
 

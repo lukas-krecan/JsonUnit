@@ -31,6 +31,8 @@ import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.Map;
 
+import static net.javacrumbs.jsonunit.core.internal.Utils.closeQuietly;
+
 /**
  * Deserializes node using Gson
  */
@@ -59,6 +61,8 @@ class GsonNodeFactory extends AbstractNodeFactory {
             throw new IllegalArgumentException(e);
         } catch (JsonSyntaxException e) {
             throw new IllegalArgumentException(e);
+        } finally {
+            closeQuietly(value);
         }
     }
 
