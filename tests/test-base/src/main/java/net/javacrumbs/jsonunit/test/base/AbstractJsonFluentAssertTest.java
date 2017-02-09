@@ -471,6 +471,16 @@ public abstract class AbstractJsonFluentAssertTest {
     }
 
     @Test
+    public void arrayThatContainsShouldFailOnMissingNode() {
+        try {
+            assertThatJson("{\"test\":[{\"id\":36},{\"id\":37},{\"id\":38}]}").node("test").isArray().thatContains("{\"id\":42}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("Node \"test\" is [{\"id\":36}, {\"id\":37}, {\"id\":38}], expected to contain {\"id\":42}.", e.getMessage());
+        }
+    }
+
+    @Test
     public void intValueShouldMatch() {
         assertThatJson("{\"test\":1}").node("test").matches(equalTo(valueOf(1)));
     }
@@ -695,6 +705,11 @@ public abstract class AbstractJsonFluentAssertTest {
     @Test
     public void arrayOfLengthShouldPass() {
         assertThatJson("{\"test\":[1,2,3]}").node("test").isArray().ofLength(3);
+    }
+
+    @Test
+    public void arrayThatContainsShouldPass() {
+        assertThatJson("{\"test\":[{\"id\":36},{\"id\":37},{\"id\":38}]}").node("test").isArray().thatContains("{\"id\":37}");
     }
 
     @Test

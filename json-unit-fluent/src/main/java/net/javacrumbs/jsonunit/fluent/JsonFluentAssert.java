@@ -375,6 +375,20 @@ public class JsonFluentAssert {
             }
             return this;
         }
+
+        public ArrayAssert thatContains(Object expected) {
+
+            for (Node node : array) {
+                Diff diff = create(expected, node, ACTUAL, "", configuration);
+                if (diff.similar()) {
+                    return this;
+                }
+            }
+
+            failWithMessage("Node \"" + path + "\" is " + array.toString() + ", expected to contain " + expected +  ".");
+            // unfortunately I can't think of a better solution to make this compile
+            return this;
+        }
     }
 
     /**
