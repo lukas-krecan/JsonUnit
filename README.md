@@ -93,6 +93,10 @@ assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}")
 // array length comparison
 assertThatJson("{\"test\":[1,2,3]}").node("test")
     .isArray().ofLength(2);
+    
+// array contains node
+    assertThatJson("{\"test\":[{\"id\":36},{\"id\":37}]}").node("test")
+    .isArray().thatContains("{\"id\":37}");
 
 // using Hamcrest matcher
 assertThatJson("{\"test\":\"one\"}").node("test")
