@@ -95,8 +95,8 @@ assertThatJson("{\"test\":[1,2,3]}").node("test")
     .isArray().ofLength(2);
     
 // array contains node
-    assertThatJson("{\"test\":[{\"id\":36},{\"id\":37}]}").node("test")
-    .isArray().thatContains("{\"id\":37}");
+assertThatJson("{\"test\":[{\"id\":36},{\"id\":37}]}").node("test")
+.isArray().thatContains("{\"id\":37}");
 
 // using Hamcrest matcher
 assertThatJson("{\"test\":\"one\"}").node("test")
@@ -347,6 +347,9 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 1.19.0
+* isArray().thatContains(...) fluent assert added
+
 ## 1.18.0
 * Resource reading helper added
 

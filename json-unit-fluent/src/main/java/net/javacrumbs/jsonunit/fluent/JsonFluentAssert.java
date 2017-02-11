@@ -385,7 +385,7 @@ public class JsonFluentAssert {
                 }
             }
 
-            failWithMessage("Node \"" + path + "\" is " + array.toString() + ", expected to contain " + expected +  ".");
+            failWithMessage("Node \"" + path + "\" is '" + array.toString() + "', expected to contain '" + expected +  "'.");
             // unfortunately I can't think of a better solution to make this compile
             return this;
         }

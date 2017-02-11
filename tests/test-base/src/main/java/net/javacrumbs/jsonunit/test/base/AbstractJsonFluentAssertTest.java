@@ -476,7 +476,7 @@ public abstract class AbstractJsonFluentAssertTest {
             assertThatJson("{\"test\":[{\"id\":36},{\"id\":37},{\"id\":38}]}").node("test").isArray().thatContains("{\"id\":42}");
             failIfNoException();
         } catch (AssertionError e) {
-            assertEquals("Node \"test\" is [{\"id\":36}, {\"id\":37}, {\"id\":38}], expected to contain {\"id\":42}.", e.getMessage());
+            assertEquals("Node \"test\" is '[{\"id\":36}, {\"id\":37}, {\"id\":38}]', expected to contain '{\"id\":42}'.", e.getMessage());
         }
     }
 
