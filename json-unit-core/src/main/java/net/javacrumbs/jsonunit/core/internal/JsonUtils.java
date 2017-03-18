@@ -19,6 +19,7 @@ package net.javacrumbs.jsonunit.core.internal;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,7 +28,7 @@ import java.util.regex.Pattern;
  */
 public class JsonUtils {
 
-    private static final Pattern arrayPattern = Pattern.compile("(.*)\\[(\\d+)\\]");
+    private static final Pattern arrayPattern = Pattern.compile("(.*)\\[(-?\\d+)\\]");
 
     /**
      * We need to ignore "\." when splitting path.
@@ -94,7 +95,12 @@ public class JsonUtils {
             if (matcher.group(1).length() != 0) {
                 startNode = startNode.get(matcher.group(1));
             }
-            startNode = startNode.element(Integer.valueOf(matcher.group(2)));
+
+            int index = Integer.valueOf(matcher.group(2));
+            if(index<0) {
+                for(Iterator<Node> i = startNode.arrayElements();i.hasNext();i.next(), ++index);
+            }
+            startNode = startNode.element(index);
         }
         return startNode;
     }

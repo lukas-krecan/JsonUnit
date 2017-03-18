@@ -72,8 +72,13 @@ assertThatJson("{\"test1\":2, \"test2\":1}")
     .node("test1").isEqualTo(2)
     .node("test2").isEqualTo(2);
 
-assertThatJson("{\"root\":{\"test\":[1,2,3}}")
+// compare node indexed from start of array
+assertThatJson("{\"root\":{\"test\":[1,2,3]}}")
     .node("root.test[0]").isEqualTo(1);
+
+// compare node indexed from end of array
+assertThatJson("{\"root\":{\"test\":[1,2,3]}}")
+    .node("root.test[-1]").isEqualTo(3);
 
 // compares only the structure
 assertThatJson("{\"test\":1}")

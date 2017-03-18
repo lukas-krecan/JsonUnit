@@ -96,6 +96,13 @@ public class JsonUtilsTest {
     }
 
     @Test
+    public void testGetStartNodeArraysNegated() throws IOException {
+        Node startNode = getNode(mapper.readTree("{\"test\":{\"values\":[1,2,3,4]}}"), "test.values[-1]");
+        System.out.println(startNode);
+        assertEquals(4, startNode.decimalValue().intValue());
+    }
+
+    @Test
     public void testGetStartNodeArrays2() throws IOException {
         Node startNode = getNode(mapper.readTree("{\"test\":[{\"values\":[1,2]}, {\"values\":[3,4]}]}"), "test[1].values[1]");
         assertEquals(4, startNode.decimalValue().intValue());
