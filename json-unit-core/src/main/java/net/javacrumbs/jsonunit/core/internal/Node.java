@@ -91,6 +91,11 @@ public interface Node {
 
     Iterator<Node> arrayElements();
 
+    /**
+     * Array length
+     */
+    int size();
+
     String asText();
 
     NodeType getNodeType();
@@ -150,6 +155,10 @@ public interface Node {
         public Iterator<Node> arrayElements() {
             Set<Node> emptySet = Collections.emptySet();
             return emptySet.iterator();
+        }
+
+        public int size() {
+            return 0;
         }
 
         public String asText() {

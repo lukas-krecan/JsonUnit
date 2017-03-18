@@ -97,8 +97,7 @@ public class JsonUtilsTest {
 
     @Test
     public void testGetStartNodeArraysNegated() throws IOException {
-        Node startNode = getNode(mapper.readTree("{\"test\":{\"values\":[1,2,3,4]}}"), "test.values[-1]");
-        System.out.println(startNode);
+        Node startNode = getNode(mapper.readTree("{\"test\":{\"values\":[1,2,3,4,5]}}"), "test.values[-2]");
         assertEquals(4, startNode.decimalValue().intValue());
     }
 

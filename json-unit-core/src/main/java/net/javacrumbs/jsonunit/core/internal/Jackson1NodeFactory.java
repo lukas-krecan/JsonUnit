@@ -162,6 +162,10 @@ class Jackson1NodeFactory extends AbstractNodeFactory {
             };
         }
 
+        public int size() {
+           return jsonNode.size();
+        }
+
         public String asText() {
             return jsonNode.getValueAsText();
         }

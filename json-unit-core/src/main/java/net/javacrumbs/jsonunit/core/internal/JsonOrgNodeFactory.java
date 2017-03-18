@@ -200,6 +200,11 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
                 }
             };
         }
+
+        @Override
+        public int size() {
+            return value.length();
+        }
     }
 
     private static final class JSONObjectNode extends NodeSkeleton {
@@ -273,6 +278,10 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
 
         public Iterator<Node> arrayElements() {
             throw new UnsupportedOperationException();
+        }
+
+        public int size() {
+           throw new UnsupportedOperationException();
         }
 
         public String asText() {

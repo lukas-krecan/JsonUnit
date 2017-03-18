@@ -155,6 +155,13 @@ class GsonNodeFactory extends AbstractNodeFactory {
             throw new IllegalStateException("Can call arrayElements() only on an JsonArray");
         }
 
+        public int size() {
+            if (jsonNode instanceof JsonArray) {
+               return ((JsonArray) jsonNode).size();
+            }
+            throw new IllegalStateException("Can call arrayElements() only on an JsonArray");
+        }
+
         public String asText() {
             return jsonNode.getAsString();
         }

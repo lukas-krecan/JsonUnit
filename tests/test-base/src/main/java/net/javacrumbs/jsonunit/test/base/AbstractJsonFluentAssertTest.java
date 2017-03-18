@@ -471,6 +471,21 @@ public abstract class AbstractJsonFluentAssertTest {
     }
 
     @Test
+    public void negativeArrayIndexShouldCountBackwards() {
+        assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[-1]").isEqualTo(3);
+    }
+
+    @Test
+    public void negativeArrayIndexShouldCountBackwardsAndReportFailure() {
+        try {
+            assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[-3]").isEqualTo(3);
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                "Different value found in node \"root.test[-3]\". Expected 3, got 1.\n", e.getMessage());
+        }
+    }
+
+    @Test
     public void arrayThatContainsShouldFailOnMissingNode() {
         try {
             assertThatJson("{\"test\":[{\"id\":36},{\"id\":37},{\"id\":38}]}").node("test").isArray().thatContains("{\"id\":42}");

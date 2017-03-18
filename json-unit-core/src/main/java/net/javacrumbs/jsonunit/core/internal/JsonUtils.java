@@ -19,7 +19,6 @@ package net.javacrumbs.jsonunit.core.internal;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 
-import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -97,10 +96,11 @@ public class JsonUtils {
             }
 
             int index = Integer.valueOf(matcher.group(2));
-            if(index<0) {
-                for(Iterator<Node> i = startNode.arrayElements();i.hasNext();i.next(), ++index);
+            if (index < 0) {
+                startNode = startNode.element(startNode.size() + index);
+            } else {
+                startNode = startNode.element(index);
             }
-            startNode = startNode.element(index);
         }
         return startNode;
     }
