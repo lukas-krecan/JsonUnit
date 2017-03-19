@@ -486,6 +486,26 @@ public abstract class AbstractJsonFluentAssertTest {
     }
 
     @Test
+    public void negativeArrayIndexOutOfBounds() {
+        try {
+            assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[-5]").isEqualTo(3);
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                "Missing node in path \"root.test[-5]\".\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void positiveArrayIndexOutOfBounds() {
+        try {
+            assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[5]").isEqualTo(3);
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                "Missing node in path \"root.test[5]\".\n", e.getMessage());
+        }
+    }
+
+    @Test
     public void arrayThatContainsShouldFailOnMissingNode() {
         try {
             assertThatJson("{\"test\":[{\"id\":36},{\"id\":37},{\"id\":38}]}").node("test").isArray().thatContains("{\"id\":42}");

@@ -352,6 +352,9 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 1.20.0
+* Negative array indexes added (thanks [roxspring](https://github.com/roxspring))
+
 ## 1.19.0
 * isArray().thatContains(...) fluent assert added
 
