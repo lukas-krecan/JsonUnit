@@ -3,12 +3,12 @@
     <parent>
         <artifactId>tests</artifactId>
         <groupId>net.javacrumbs.json-unit</groupId>
-        <version>1.20.0</version>
+        <version>1.20.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>test-jackson14</artifactId>
-    <version>1.20.0</version>
+    <version>1.20.1-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
