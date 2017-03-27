@@ -20,6 +20,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -27,6 +28,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import static net.javacrumbs.jsonunit.core.internal.Utils.closeQuietly;
+import static net.javacrumbs.jsonunit.core.internal.Utils.readAsString;
 
 /**
  * Deserializes node using org.json.JSONObject
@@ -43,11 +45,28 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
         return newNode(null);
     }
 
+    @Override
+    protected Node readValue(String source, String label, boolean lenient) {
+        try {
+            return newNode(new JSONTokener(source).nextValue());
+        } catch (JSONException e) {
+            throw new IllegalArgumentException("Can not parse " + label + " value.", e);
+        }
+    }
+
+    @Override
     protected Node readValue(Reader value, String label, boolean lenient) {
         try {
             return newNode(new JSONTokener(value).nextValue());
         } catch (JSONException e) {
             throw new IllegalArgumentException("Can not parse " + label + " value.", e);
+        } catch (NoSuchMethodError e) {
+            // support for old json.org implementations
+            try {
+                return readValue(readAsString(value), label, lenient);
+            } catch (IOException e1) {
+                throw new IllegalArgumentException("Can not parse " + label + " value.", e);
+            }
         } finally {
             closeQuietly(value);
         }
@@ -185,18 +204,23 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
 
         @Override
         public Iterator<Node> arrayElements() {
-            final Iterator<Object> iterator = value.iterator();
             return new Iterator<Node>() {
+                private int index = 0;
+
                 public boolean hasNext() {
-                    return iterator.hasNext();
+                    return index < value.length();
                 }
 
                 public Node next() {
-                    return newNode(iterator.next());
+                    try {
+                        return newNode(value.get(index++));
+                    } catch (JSONException e) {
+                        throw new IllegalStateException(e);
+                    }
                 }
 
                 public void remove() {
-                    iterator.remove();
+                    throw new UnsupportedOperationException();
                 }
             };
         }
@@ -231,7 +255,11 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
 
                 public KeyValue next() {
                     String fieldName = iterator.next();
-                    return new KeyValue(fieldName, newNode(jsonObject.get(fieldName)));
+                    try {
+                        return new KeyValue(fieldName, newNode(jsonObject.get(fieldName)));
+                    } catch (JSONException e) {
+                        throw new IllegalStateException(e);
+                    }
                 }
             };
         }
