@@ -651,6 +651,32 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
+    public void shouldReportOnDifferentValuesWhenIgnoringOrder() {
+        try {
+            assertJsonEquals(
+                "{\"test\":[{\"key\":1},{\"key\":2},{\"key\":3}]}",
+                "{\"test\":[{\"key\":4},{\"key\":2},{\"key\":1}]}",
+                when(IGNORING_ARRAY_ORDER)
+            );
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent value found when comparing expected array element test[2] to actual element test[0].\nDifferent value found in node \"test[0].key\". Expected 3, got 4.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void shouldReportOnDifferentValuesWhenIgnoringOrderActualsSame() {
+        try {
+            assertJsonEquals(
+                "{\"test\":[{\"key\":1},{\"key\":1},{\"key\":2}]}",
+                "{\"test\":[{\"key\":1},{\"key\":1},{\"key\":1}]}",
+                when(IGNORING_ARRAY_ORDER)
+            );
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent value found when comparing expected array element test[2] to actual element test[0].\nDifferent value found in node \"test[0].key\". Expected 2, got 1.\n", e.getMessage());
+        }
+    }
+
+    @Test
     public void shouldFailIfArrayContentIsDifferent() {
         JsonAssert.setOptions(IGNORING_ARRAY_ORDER);
         try {
@@ -658,7 +684,21 @@ public abstract class AbstractJsonAssertTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\n" +
-                "Array \"test\" has different content. Missing values [1], extra values [4]\n", e.getMessage());
+                "Different value found when comparing expected array element test[0] to actual element test[2].\n" +
+                "Different value found in node \"test[2]\". Expected 1, got 4.\n", e.getMessage());
+        }
+    }
+
+
+    @Test
+    public void shouldFailIfArrayContentIsDifferentMoreThaOneDifference() {
+        JsonAssert.setOptions(IGNORING_ARRAY_ORDER);
+        try {
+            assertJsonEquals("{\"test\":[1,2,3]}", "{\"test\":[3,4,5]}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                "Array \"test\" has different content. Missing values [1, 2], extra values [4, 5]\n", e.getMessage());
         }
     }
 
@@ -669,8 +709,8 @@ public abstract class AbstractJsonAssertTest {
             assertJsonEquals("{\"test\":[{\"key\":1},{\"key\":2},{\"key\":3}]}", "{\"test\":[{\"key\":3},{\"key\":2},{\"key\":4}]}");
             failIfNoException();
         } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
-                "Array \"test\" has different content. Missing values [{\"key\":1}], extra values [{\"key\":4}]\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found when comparing expected array element test[0] to actual element test[2].\n" +
+                "Different value found in node \"test[2].key\". Expected 1, got 4.\n", e.getMessage());
         }
     }
 

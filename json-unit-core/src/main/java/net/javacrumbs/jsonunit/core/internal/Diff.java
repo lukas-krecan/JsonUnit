@@ -339,7 +339,16 @@ public class Diff {
                     extraValues.add(actual);
                 }
             }
-            if (failOnExtraArrayItems()) {
+            if (expectedElements.size() == actualElements.size() && missingValues.size() == 1 && extraValues.size() == 1) {
+                // handling special case where only one difference is found.
+                Node missing = missingValues.get(0);
+                Node extra = extraValues.get(0);
+                int missingIndex = indexOf(expectedElements, missing);
+                int extraIndex = indexOf(actualElements, extra);
+
+                valueDifferenceFound("Different value found when comparing expected array element %s to actual element %s.", getArrayPath(path, missingIndex), getArrayPath(path, extraIndex));
+                compareNodes(missing, extra, getArrayPath(path, extraIndex));
+            } else if (failOnExtraArrayItems()) {
                 if (!missingValues.isEmpty() || !extraValues.isEmpty()) {
                     valueDifferenceFound("Array \"%s\" has different content. Missing values %s, extra values %s", path, missingValues, extraValues);
                 }
