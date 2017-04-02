@@ -319,7 +319,7 @@ Jackson 2.x, [Gson](https://code.google.com/p/google-gson/) or [JSONObject](http
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>1.20.0</version>
+    <version>1.21.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -330,7 +330,7 @@ To use fluent assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>1.20.0</version>
+    <version>1.21.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -341,7 +341,7 @@ To use Spring MVC assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>1.20.0</version>
+    <version>1.21.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -352,6 +352,9 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 1.21.0
+* Better diff reporting for unordered arrays with single difference
+
 ## 1.20.0
 * Negative array indexes added (thanks [roxspring](https://github.com/roxspring))
 
