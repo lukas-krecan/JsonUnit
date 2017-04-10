@@ -16,9 +16,11 @@
 package net.javacrumbs.jsonunit.test.base;
 
 import com.google.gson.JsonParser;
+import com.squareup.moshi.Moshi;
 import org.json.JSONTokener;
 
 import java.io.IOException;
+import java.util.Map;
 
 import static org.junit.Assert.fail;
 
@@ -47,6 +49,15 @@ public class JsonTestUtils {
     public static Object readByJsonOrg(String value) {
             return new JSONTokener(value).nextValue();
         }
+
+    public static Object readByMoshi(String value) {
+        Moshi moshi = new Moshi.Builder().build();
+        try {
+            return moshi.adapter(Map.class).fromJson(value);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
 
     public static void failIfNoException() {
         fail("Exception expected");

@@ -7,6 +7,7 @@
     <properties>
         <jackson1.version>1.9.13</jackson1.version>
         <jackson2.version>2.3.1</jackson2.version>
+        <moshi.version>1.4.0</moshi.version>
         <gson.version>2.3</gson.version>
         <jsonorg.version>20160810</jsonorg.version>
         <symbolic.name>${project.groupId}.${project.artifactId}</symbolic.name>
