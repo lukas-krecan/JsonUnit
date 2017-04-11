@@ -23,7 +23,6 @@ import java.io.Reader;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +96,7 @@ class MoshiNodeFactory extends AbstractNodeFactory {
                 list.add(i);
             }
             return new ArrayNode(list);
-        } else if (object instanceof Collection) {
+        } else if (object instanceof List) {
             return new ArrayNode((List<?>) object);
         } else {
             throw new IllegalArgumentException("Unsupported type " + object.getClass());
