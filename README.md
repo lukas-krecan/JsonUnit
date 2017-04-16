@@ -13,6 +13,9 @@ import static net.javacrumbs.jsonunit.core.Option.*;
 // compares two JSON documents
 assertJsonEquals("{\"test\":1}", "{\n\"test\": 1\n}");
 
+// objects are automatically serialized before comparison
+assertJsonEquals(jsonObject, "{\n\"test\": 1\n}");
+
 // compares only part
 assertJsonPartEquals("2", "{\"test\":[{\"value\":1},{\"value\":2}]}",
     "test[1].value");
