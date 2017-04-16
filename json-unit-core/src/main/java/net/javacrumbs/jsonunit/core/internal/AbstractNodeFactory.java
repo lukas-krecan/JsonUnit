@@ -28,7 +28,7 @@ abstract class AbstractNodeFactory implements NodeFactory {
         } else if (source instanceof Node) {
             return (Node) source;
         } else if (source instanceof String && ((String) source).trim().length() > 0) {
-            return readValue(new StringReader((String) source), label, lenient);
+            return readValue((String) source, label, lenient);
         } else if (source instanceof Reader) {
             return readValue((Reader) source, label, lenient);
         } else {
@@ -39,6 +39,10 @@ abstract class AbstractNodeFactory implements NodeFactory {
     protected abstract Node convertValue(Object source);
 
     protected abstract Node readValue(Reader reader, String label, boolean lenient);
+
+    protected Node readValue(String source, String label, boolean lenient) {
+        return readValue(new StringReader(source), label, lenient);
+    }
 
     protected abstract Node nullNode();
 }

@@ -22,6 +22,17 @@ import java.io.Reader;
  * Resource reading utility
  */
 class Utils {
+    static String readAsString(final Reader resourceReader) throws IOException {
+        StringBuilder builder = new StringBuilder();
+        char[] arr = new char[8 * 1024];
+        int numCharsRead;
+        while ((numCharsRead = resourceReader.read(arr, 0, arr.length)) != -1) {
+            builder.append(arr, 0, numCharsRead);
+        }
+        resourceReader.close();
+        return builder.toString();
+    }
+
     static void closeQuietly(final Reader resourceReader) {
         if (resourceReader != null) {
             try {

@@ -42,6 +42,9 @@ class Converter {
     private static final boolean jsonOrgPresent =
         isClassPresent("org.json.JSONObject");
 
+    private static final boolean moshiPresent =
+        isClassPresent("com.squareup.moshi.Moshi");
+
     Converter(List<NodeFactory> factories) {
         if (factories.isEmpty()) {
             throw new IllegalStateException("List of factories can not be empty");
@@ -72,7 +75,9 @@ class Converter {
         List<NodeFactory> factories = new ArrayList<NodeFactory>();
         for (String factoryName : property.toLowerCase().split(",")) {
             factoryName = factoryName.trim();
-            if ("json.org".equals(factoryName)) {
+            if ("moshi".equals(factoryName)) {
+                factories.add(new MoshiNodeFactory());
+            } else if ("json.org".equals(factoryName)) {
                 factories.add(new JsonOrgNodeFactory());
             } else if ("jackson1".equals(factoryName)) {
                 factories.add(new Jackson1NodeFactory());
@@ -89,6 +94,10 @@ class Converter {
 
     private static List<NodeFactory> createDefaultFactories() {
         List<NodeFactory> factories = new ArrayList<NodeFactory>();
+        if (moshiPresent) {
+            factories.add(new MoshiNodeFactory());
+        }
+
         if (jsonOrgPresent) {
             factories.add(new JsonOrgNodeFactory());
         }

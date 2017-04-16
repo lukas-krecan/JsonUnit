@@ -441,6 +441,11 @@ public abstract class AbstractJsonFluentAssertTest {
     }
 
     @Test
+    public void testEqualsToDoubleArray() {
+        assertThatJson("{\"test\":[1.0,2.0,3.0]}").node("test").isEqualTo(new double[]{1, 2, 3});
+    }
+
+    @Test
     public void isArrayShouldFailIfArrayDoesNotExist() {
         try {
             assertThatJson("{\"test\":1}").node("test2").isArray();

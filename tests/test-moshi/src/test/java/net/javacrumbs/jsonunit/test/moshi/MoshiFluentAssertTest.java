@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit.test.jackson2;
+package net.javacrumbs.jsonunit.test.moshi;
 
 import net.javacrumbs.jsonunit.test.base.AbstractJsonFluentAssertTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
@@ -21,15 +21,15 @@ import org.junit.Test;
 
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 
-public class Jackson2FluentAssertTest extends AbstractJsonFluentAssertTest {
+public class MoshiFluentAssertTest extends AbstractJsonFluentAssertTest {
     @Override
     protected Object readValue(String value) {
-        return JsonTestUtils.readByJackson2(value);
+        return JsonTestUtils.readByMoshi(value);
     }
 
     @Test
     public void testOkWithLibrary() {
-        System.setProperty("json-unit.libraries", "jackson2");
+        System.setProperty("json-unit.libraries", "moshi");
         try {
             assertThatJson("{\"test\":1}").isEqualTo("{\"test\":1}");
         } finally {

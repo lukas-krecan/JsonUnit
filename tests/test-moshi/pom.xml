@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>test-jackson2</artifactId>
+    <artifactId>test-moshi</artifactId>
     <version>1.22.1-SNAPSHOT</version>
 
     <dependencies>
@@ -17,9 +17,9 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson2.version}</version>
+            <groupId>com.squareup.moshi</groupId>
+            <artifactId>moshi</artifactId>
+            <version>${moshi.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

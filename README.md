@@ -13,6 +13,9 @@ import static net.javacrumbs.jsonunit.core.Option.*;
 // compares two JSON documents
 assertJsonEquals("{\"test\":1}", "{\n\"test\": 1\n}");
 
+// objects are automatically serialized before comparison
+assertJsonEquals(jsonObject, "{\n\"test\": 1\n}");
+
 // compares only part
 assertJsonPartEquals("2", "{\"test\":[{\"value\":1},{\"value\":2}]}",
     "test[1].value");
@@ -268,7 +271,7 @@ Numeric comparison
 --------------------
 Numbers are by default compared in the following way:
 
-* If the type differs, the number is different. So 1 and 1.0 are different (int vs. float)
+* If the type differs, the number is different. So 1 and 1.0 are different (int vs. float). This does not apply when Moshi is used since it [parses all numbers as Doubles](https://github.com/square/moshi/issues/192).
 * Floating number comparison is exact
 
 You can change this behavior by setting tolerance
@@ -308,18 +311,18 @@ framework to log `net.javacrumbs.jsonunit.difference` on DEBUG level.
 Selecting underlying library
 ----------------------------
 JsonUnit is trying to cleverly match which JSON library to use. In case you need to change the default behavior, you can use
-json-unit.libraries system property. For example `-Djson-unit.libraries=jackson2,gson` or `System.setProperty("json-unit.libraries", "jackson1");`. Supported values are gson, json.org, jackson1, jackson2
+json-unit.libraries system property. For example `-Djson-unit.libraries=jackson2,gson` or `System.setProperty("json-unit.libraries", "jackson1");`. Supported values are gson, json.org, moshi, jackson1, jackson2
 
 Maven dependency
 ----------------
 JsonUnit is accessible in Maven central repository. In order for it to work, you need either, [Jackson](http://jackson.codehaus.org/) 1.x,
-Jackson 2.x, [Gson](https://code.google.com/p/google-gson/) or [JSONObject](https://developer.android.com/reference/org/json/JSONObject.html) on the classpath.
+Jackson 2.x, [Gson](https://code.google.com/p/google-gson/), [JSONObject](https://developer.android.com/reference/org/json/JSONObject.html) or [Moshi](https://github.com/square/moshi) on the classpath.
 
 ```xml	
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>1.21.0</version>
+    <version>1.22.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -330,7 +333,7 @@ To use fluent assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>1.21.0</version>
+    <version>1.22.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -341,7 +344,7 @@ To use Spring MVC assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>1.21.0</version>
+    <version>1.22.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -352,6 +355,9 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 1.22.0
+* Support for Moshi
+
 ## 1.21.0
 * Better diff reporting for unordered arrays with single difference
 
