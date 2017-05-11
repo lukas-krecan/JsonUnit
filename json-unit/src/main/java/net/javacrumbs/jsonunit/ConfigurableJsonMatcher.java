@@ -48,4 +48,9 @@ public interface ConfigurableJsonMatcher<T> extends Matcher<T> {
      * Sets options.
      */
     ConfigurableJsonMatcher<T> withOptions(Options options);
+
+    /**
+     * Adds a matcher to be used in ${json-unit.matches:matcherName} macro.
+     */
+    ConfigurableJsonMatcher<T> withMatcher(String matcherName, Matcher<?> matcher);
 }

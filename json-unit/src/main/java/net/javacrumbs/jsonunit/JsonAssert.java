@@ -19,6 +19,7 @@ import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Options;
+import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
 
@@ -260,5 +261,12 @@ public class JsonAssert {
      */
     public static Configuration when(Option first, Option... next) {
         return Configuration.empty().withOptions(first, next);
+    }
+
+    /**
+     * Adds a matcher to be used in ${json-unit.matches:matcherName} macro.
+     */
+    public static Configuration withMatcher(String matcherName, Matcher<?> matcher) {
+        return Configuration.empty().withMatcher(matcherName, matcher);
     }
 }

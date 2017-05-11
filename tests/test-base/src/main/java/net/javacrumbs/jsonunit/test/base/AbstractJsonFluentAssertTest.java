@@ -33,6 +33,7 @@ import static org.hamcrest.CoreMatchers.everyItem;
 import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
@@ -424,6 +425,16 @@ public abstract class AbstractJsonFluentAssertTest {
             assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected a string, got '{\"a\":1}'.\n", e.getMessage());
         }
     }
+    @Test
+    public void ifMatcherDoesNotMatchReportDifference() {
+        try {
+            assertThatJson("{\"test\":-1}").withMatcher("positive", greaterThan(valueOf(0))).isEqualTo("{\"test\": \"${json-unit.matches:positive}\"}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nMatcher \"positive\" does not match value -1 in node \"test\". <-1> was less than <0>\n", e.getMessage());
+        }
+    }
+
 
     @Test
     public void comparisonShouldFailOnDifferentType() {

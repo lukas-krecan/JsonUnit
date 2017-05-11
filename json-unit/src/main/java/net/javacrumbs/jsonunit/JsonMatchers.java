@@ -129,6 +129,14 @@ public class JsonMatchers {
             configuration = configuration.withOptions(options);
             return this;
         }
+
+        /**
+         * Adds a matcher to be used in ${json-unit.matches:matcherName} macro.
+         */
+        public ConfigurableJsonMatcher<T> withMatcher(String matcherName, Matcher<?> matcher) {
+            configuration = configuration.withMatcher(matcherName, matcher);
+            return this;
+        }
     }
 
     private static final class JsonPartMatcher<T> extends AbstractJsonMatcher<T> {

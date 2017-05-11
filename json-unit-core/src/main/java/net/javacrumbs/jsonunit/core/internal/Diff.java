@@ -17,6 +17,8 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
+import org.hamcrest.Description;
+import org.hamcrest.StringDescription;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -29,6 +31,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static java.util.Collections.emptySet;
 import static net.javacrumbs.jsonunit.core.Option.COMPARING_ONLY_STRUCTURE;
@@ -51,6 +55,7 @@ import static net.javacrumbs.jsonunit.core.internal.Node.NodeType;
  */
 public class Diff {
     private static final String REGEX_PLACEHOLDER = "${json-unit.regex}";
+    private static final Pattern MATCHER_PLACEHOLDER_PATTERN = Pattern.compile("\\$\\{json-unit.matches:(.+)\\}");
     private final Node expectedRoot;
     private final Node actualRoot;
     private final Differences differences = new Differences();
@@ -217,6 +222,9 @@ public class Diff {
         if (checkAny(NodeType.STRING, "${json-unit.any-string}", "a string", expectedNode, actualNode, fieldPath)) {
             return;
         }
+        if (checkMatcher(expectedNode, actualNode, fieldPath)) {
+            return;
+        }
 
         if (!expectedNodeType.equals(actualNodeType)) {
             valueDifferenceFound("Different value found in node \"%s\". Expected '%s', got '%s'.", fieldPath, quoteTextValue(expectedNode), quoteTextValue(actualNode));
@@ -254,6 +262,28 @@ public class Diff {
                     throw new IllegalStateException("Unexpected node type " + expectedNodeType);
             }
         }
+    }
+
+    private boolean checkMatcher(Node expectedNode, Node actualNode, Object fieldPath) {
+        if (expectedNode.getNodeType() == NodeType.STRING) {
+            Matcher patternMatcher = MATCHER_PLACEHOLDER_PATTERN.matcher(expectedNode.asText());
+            if (patternMatcher.matches()) {
+                String matcherName = patternMatcher.group(1);
+                org.hamcrest.Matcher<?> matcher = configuration.getMatcher(matcherName);
+                if (matcher != null) {
+                    Object value = actualNode.getValue();
+                    if (!matcher.matches(value)) {
+                        Description description = new StringDescription();
+                        matcher.describeMismatch(value, description);
+                        valueDifferenceFound("Matcher \"%s\" does not match value %s in node \"%s\". %s", matcherName, quoteTextValue(actualNode), fieldPath, description);
+                    }
+                } else {
+                    structureDifferenceFound("Matcher \"%s\" not found.", matcherName);
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean checkAny(NodeType type, String placeholder, String name, Node expectedNode, Node actualNode, String fieldPath) {

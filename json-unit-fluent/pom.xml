@@ -29,10 +29,5 @@
             <version>${jackson1.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-core</artifactId>
-            <optional>true</optional>
-        </dependency>
     </dependencies>
 </project>

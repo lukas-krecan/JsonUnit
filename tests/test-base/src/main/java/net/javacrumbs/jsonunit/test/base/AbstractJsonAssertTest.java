@@ -22,6 +22,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.io.StringReader;
 
+import static java.math.BigDecimal.valueOf;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonNodeAbsent;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonNodePresent;
@@ -37,6 +38,7 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.failIfNoException;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractJsonAssertTest {
@@ -964,6 +966,82 @@ public abstract class AbstractJsonAssertTest {
     public void testEqualsNodeIgnore() throws IOException {
         assertJsonEquals(readValue("{\"test\":\"${json-unit.ignore}\"}"), readValue("{\"test\": 1}"));
     }
+
+    @Test
+    public void testRegex() {
+        assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}", "{\"test\": \"ABCD\"}");
+    }
+
+    @Test
+    public void regexShouldFail() {
+        try {
+            assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}", "{\"test\": \"123\"}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                "Different value found in node \"test\". Pattern \"[A-Z]+\" did not match \"123\".\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void regexShouldFailOnNullGracefully() {
+        try {
+            assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}", "{\"test\": null}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                "Different value found in node \"test\". Expected '\"${json-unit.regex}[A-Z]+\"', got 'null'.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void regexShouldFailOnNumberGracefully() {
+        try {
+            assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}", "{\"test\": 123}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                "Different value found in node \"test\". Expected '\"${json-unit.regex}[A-Z]+\"', got '123'.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void regexShouldFailOnNonexistingGracefully() {
+        try {
+            assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}", "{\"test2\": 123}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                "Different keys found in node \"\". Expected [test], got [test2]. Missing: \"test\" Extra: \"test2\"\n", e.getMessage());
+        }
+    }
+
+
+    @Test
+    public void matcherShouldMatch() {
+        assertJsonEquals("{\"test\": \"${json-unit.matches:positive}\"}", "{\"test\":1}", JsonAssert.withMatcher("positive", greaterThan(valueOf(0))));
+    }
+
+    @Test
+    public void ifMatcherDoesNotMatchReportDifference() {
+        try {
+            assertJsonEquals("{\"test\": \"${json-unit.matches:positive}\"}", "{\"test\":-1}", JsonAssert.withMatcher("positive", greaterThan(valueOf(0))));
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nMatcher \"positive\" does not match value -1 in node \"test\". <-1> was less than <0>\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void failIfMatcherNotFound() {
+        try {
+            assertJsonEquals("{\"test\": \"${json-unit.matches:unknown}\"}", "{\"test\":-1}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nMatcher \"unknown\" not found.\n", e.getMessage());
+        }
+    }
+
 
     @Test
     public void testEqualsNodeFail() throws IOException {
