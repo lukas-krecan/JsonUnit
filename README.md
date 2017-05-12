@@ -186,8 +186,19 @@ assertThatJson("{\"test\":true}")
     
 assertThatJson("{\"test\":1.1}")
     .isEqualTo("{\"test\":\"${json-unit.any-number}\"}");
-```
 
+```
+Custom matchers
+---------------
+In some special cases you might want to use your own matcher in the expected document.
+```java
+ assertJsonEquals(
+     "{\"test\": \"${json-unit.matches:positive}\"}", 
+     "{\"test\":1}", 
+     JsonAssert.withMatcher("positive", greaterThan(valueOf(0)))
+ );
+
+```
 
 Options
 ---------------
@@ -322,7 +333,7 @@ Jackson 2.x, [Gson](https://code.google.com/p/google-gson/), [JSONObject](https:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>1.22.0</version>
+    <version>1.23.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -333,7 +344,7 @@ To use fluent assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>1.22.0</version>
+    <version>1.23.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -344,7 +355,7 @@ To use Spring MVC assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>1.22.0</version>
+    <version>1.23.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -355,6 +366,9 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 1.23.0
+* Support for custom matchers ${json-unit.matches:matcherName}
+
 ## 1.22.0
 * Support for Moshi
 
