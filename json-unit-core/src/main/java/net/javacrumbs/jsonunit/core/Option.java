@@ -44,8 +44,11 @@ public enum Option {
 
     /**
      * Compares only structures. Completely ignores both values and types.
-     *  Is too lenient, ignores types, prefer {@link Option#IGNORING_VALUES} instead.
+     * Is too lenient, ignores types, prefer {@link Option#IGNORING_VALUES} instead.
+     *
+     * @deprecated Use IGNORING_VALUES option instead
      */
+    @Deprecated
     COMPARING_ONLY_STRUCTURE,
 
     /**

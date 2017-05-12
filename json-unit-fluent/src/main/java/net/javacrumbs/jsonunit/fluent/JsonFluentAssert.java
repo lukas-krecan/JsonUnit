@@ -151,7 +151,10 @@ public class JsonFluentAssert {
      *
      * @param expected
      * @return {@code this} object.
+     *
+     * @deprecated Use IGNORING_VALUES option instead
      */
+    @Deprecated
     public JsonFluentAssertAfterAssertion hasSameStructureAs(Object expected) {
         Diff diff = createDiff(expected, configuration.withOptions(COMPARING_ONLY_STRUCTURE));
         if (!diff.similar()) {
