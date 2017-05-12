@@ -41,6 +41,7 @@ import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
@@ -105,6 +106,19 @@ public abstract class AbstractJsonMatchersTest {
         } catch (AssertionError e) {
             assertEquals("\nExpected: node \"test\" (a collection containing <1> and a collection containing <2> and a collection containing <4>)\n" +
                     "     but: was <[1, 2, 3]>", e.getMessage());
+        }
+    }
+
+    @Test
+    public void ifMatcherDoesNotMatchReportDifference() {
+        try {
+            assertThat("{\"test\":-1}", jsonEquals("{\"test\": \"${json-unit.matches:positive}\"}").withMatcher("positive", greaterThan(valueOf(0))));
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("\n" +
+                "Expected: {\"test\": \"${json-unit.matches:positive}\"}\n" +
+                "     but: JSON documents are different:\n" +
+                "Matcher \"positive\" does not match value -1 in node \"test\". <-1> was less than <0>\n", e.getMessage());
         }
     }
 

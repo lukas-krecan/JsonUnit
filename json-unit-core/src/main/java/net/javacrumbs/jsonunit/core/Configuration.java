@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit.core;
 
 import net.javacrumbs.jsonunit.core.internal.Options;
+import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
 
@@ -23,15 +24,22 @@ import java.math.BigDecimal;
  * Comparison configuration. Immutable.
  */
 public class Configuration {
-    private static final Configuration EMPTY_CONFIGURATION = new Configuration(null, Options.empty(), "${json-unit.ignore}");
+    private static final Configuration EMPTY_CONFIGURATION = new Configuration(null, Options.empty(), "${json-unit.ignore}", Matchers.empty());
     private final BigDecimal tolerance;
     private final Options options;
     private final String ignorePlaceholder;
+    private final Matchers matchers;
 
+    @Deprecated
     public Configuration(BigDecimal tolerance, Options options, String ignorePlaceholder) {
+        this(tolerance, options, ignorePlaceholder, Matchers.empty());
+    }
+
+    private Configuration(BigDecimal tolerance, Options options, String ignorePlaceholder, Matchers matchers) {
         this.tolerance = tolerance;
         this.options = options;
         this.ignorePlaceholder = ignorePlaceholder;
+        this.matchers = matchers;
     }
 
     /**
@@ -50,7 +58,7 @@ public class Configuration {
      * @return
      */
     public Configuration withTolerance(BigDecimal tolerance) {
-        return new Configuration(tolerance, options, ignorePlaceholder);
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers);
     }
 
     /**
@@ -82,7 +90,7 @@ public class Configuration {
      * @return
      */
     public Configuration withOptions(Option first, Option... next) {
-        return new Configuration(tolerance, options.with(first, next), ignorePlaceholder);
+        return new Configuration(tolerance, options.with(first, next), ignorePlaceholder, matchers);
     }
 
     /**
@@ -92,7 +100,7 @@ public class Configuration {
      * @return
      */
     public Configuration withOptions(Options options) {
-        return new Configuration(tolerance, options, ignorePlaceholder);
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers);
     }
 
     /**
@@ -102,7 +110,22 @@ public class Configuration {
      * @return
      */
     public Configuration withIgnorePlaceholder(String ignorePlaceholder) {
-        return new Configuration(tolerance, options, ignorePlaceholder);
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers);
+    }
+
+    /**
+     * Adds a matcher to be used in ${json-unit.matches:matcherName} macro.
+     *
+     * @param matcherName
+     * @param matcher
+     * @return
+     */
+    public Configuration withMatcher(String matcherName, Matcher<?> matcher) {
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers.with(matcherName, matcher));
+    }
+
+    public Matcher<?> getMatcher(String matcherName) {
+        return matchers.getMatcher(matcherName);
     }
 
     public BigDecimal getTolerance() {
@@ -116,4 +139,5 @@ public class Configuration {
     public String getIgnorePlaceholder() {
         return ignorePlaceholder;
     }
+
 }

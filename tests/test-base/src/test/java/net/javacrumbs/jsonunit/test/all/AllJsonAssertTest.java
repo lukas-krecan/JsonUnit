@@ -138,55 +138,6 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
     }
 
     @Test
-    public void testRegex() {
-        assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}", "{\"test\": \"ABCD\"}");
-    }
-
-    @Test
-    public void regexShouldFail() {
-        try {
-            assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}", "{\"test\": \"123\"}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
-                "Different value found in node \"test\". Pattern \"[A-Z]+\" did not match \"123\".\n", e.getMessage());
-        }
-    }
-
-    @Test
-    public void regexShouldFailOnNullGracefully() {
-        try {
-            assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}", "{\"test\": null}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
-                "Different value found in node \"test\". Expected '\"${json-unit.regex}[A-Z]+\"', got 'null'.\n", e.getMessage());
-        }
-    }
-
-    @Test
-    public void regexShouldFailOnNumberGracefully() {
-        try {
-            assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}", "{\"test\": 123}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
-                "Different value found in node \"test\". Expected '\"${json-unit.regex}[A-Z]+\"', got '123'.\n", e.getMessage());
-        }
-    }
-
-    @Test
-    public void regexShouldFailOnNonexistingGracefully() {
-        try {
-            assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}", "{\"test2\": 123}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
-                "Different keys found in node \"\". Expected [test], got [test2]. Missing: \"test\" Extra: \"test2\"\n", e.getMessage());
-        }
-    }
-
-    @Test
     public void shouldSerializeBasedOnAnnotation() {
         assertJsonEquals("{\"bean\": {\"property\": \"value\"}}", new Jackson1Bean("value"));
     }

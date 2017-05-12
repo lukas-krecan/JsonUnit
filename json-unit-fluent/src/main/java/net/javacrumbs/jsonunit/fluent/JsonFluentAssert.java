@@ -239,6 +239,14 @@ public class JsonFluentAssert {
         return new JsonFluentAssert(actual, path, description, configuration.withTolerance(tolerance));
     }
 
+
+    /**
+     * Adds a matcher to be used in ${json-unit.matches:matcherName} macro.
+     */
+    public JsonFluentAssert withMatcher(String matcherName, Matcher<?> matcher) {
+        return new JsonFluentAssert(actual, path, description, configuration.withMatcher(matcherName, matcher));
+    }
+
     /**
      * When set to true, treats null nodes in actual value as absent. In other words
      * if you expect {"test":{"a":1}} this {"test":{"a":1, "b": null}} will pass the test.
@@ -349,6 +357,7 @@ public class JsonFluentAssert {
         Node node = getNode(value, path);
         assertThat("Node \"" + path + "\" does not match.", node.getValue(), (Matcher<? super Object>) matcher);
     }
+
 
     /**
      * Array assertions
