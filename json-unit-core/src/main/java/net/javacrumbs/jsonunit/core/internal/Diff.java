@@ -17,6 +17,7 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
+import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
 
@@ -55,7 +56,7 @@ import static net.javacrumbs.jsonunit.core.internal.Node.NodeType;
  */
 public class Diff {
     private static final String REGEX_PLACEHOLDER = "${json-unit.regex}";
-    private static final Pattern MATCHER_PLACEHOLDER_PATTERN = Pattern.compile("\\$\\{json-unit.matches:(.+)\\}");
+    private static final Pattern MATCHER_PLACEHOLDER_PATTERN = Pattern.compile("\\$\\{json-unit.matches:(.+)\\}(.*)");
     private final Node expectedRoot;
     private final Node actualRoot;
     private final Differences differences = new Differences();
@@ -271,6 +272,9 @@ public class Diff {
                 String matcherName = patternMatcher.group(1);
                 org.hamcrest.Matcher<?> matcher = configuration.getMatcher(matcherName);
                 if (matcher != null) {
+                    if (matcher instanceof ParametrizedMatcher) {
+                        ((ParametrizedMatcher) matcher).setParameter(patternMatcher.group(2));
+                    }
                     Object value = actualNode.getValue();
                     if (!matcher.matches(value)) {
                         Description description = new StringDescription();

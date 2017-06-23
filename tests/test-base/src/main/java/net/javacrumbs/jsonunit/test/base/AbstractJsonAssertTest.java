@@ -16,12 +16,18 @@
 package net.javacrumbs.jsonunit.test.base;
 
 import net.javacrumbs.jsonunit.JsonAssert;
+import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.math.BigDecimal;
 
+import static java.math.BigDecimal.ZERO;
 import static java.math.BigDecimal.valueOf;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonNodeAbsent;
@@ -1020,6 +1026,37 @@ public abstract class AbstractJsonAssertTest {
     @Test
     public void matcherShouldMatch() {
         assertJsonEquals("{\"test\": \"${json-unit.matches:positive}\"}", "{\"test\":1}", JsonAssert.withMatcher("positive", greaterThan(valueOf(0))));
+    }
+
+    @Test
+    public void parametrizedMatcherShouldMatch() {
+        Matcher<?> divisionMatcher = new DivisionMatcher();
+        try {
+            assertJsonEquals("{\"test\": \"${json-unit.matches:isDivisibleBy}3\"}", "{\"test\":5}", JsonAssert.withMatcher("isDivisibleBy", divisionMatcher));
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nMatcher \"isDivisibleBy\" does not match value 5 in node \"test\". It is not divisible by <3>\n", e.getMessage());
+        }
+    }
+
+    private static class DivisionMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
+        private BigDecimal param;
+
+        public boolean matches(Object item) {
+            return ((BigDecimal)item).remainder(param).compareTo(ZERO) == 0;
+        }
+
+        public void describeTo(Description description) {
+            description.appendValue(param);
+        }
+
+        @Override
+        public void describeMismatch(Object item, Description description) {
+            description.appendText("It is not divisible by ").appendValue(param);
+        }
+
+        public void setParameter(String parameter) {
+            this.param = new BigDecimal(parameter);
+        }
     }
 
     @Test
