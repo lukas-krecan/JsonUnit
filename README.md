@@ -204,7 +204,7 @@ In even more special cases, you might want to parametrize your matcher.
 ```java
  Matcher<?> divisionMatcher = new DivisionMatcher();
  assertJsonEquals(
-     "{\"test\": \"${json-unit.matches:isDivisibleBy}3\"}", 
+     "{test: '${json-unit.matches:isDivisibleBy}3'}", 
      "{\"test\":5}", 
      JsonAssert.withMatcher("isDivisibleBy", divisionMatcher)
  );

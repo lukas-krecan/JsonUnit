@@ -1032,7 +1032,7 @@ public abstract class AbstractJsonAssertTest {
     public void parametrizedMatcherShouldMatch() {
         Matcher<?> divisionMatcher = new DivisionMatcher();
         try {
-            assertJsonEquals("{\"test\": \"${json-unit.matches:isDivisibleBy}3\"}", "{\"test\":5}", JsonAssert.withMatcher("isDivisibleBy", divisionMatcher));
+            assertJsonEquals("{test: '${json-unit.matches:isDivisibleBy}3'}", "{\"test\":5}", JsonAssert.withMatcher("isDivisibleBy", divisionMatcher));
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\nMatcher \"isDivisibleBy\" does not match value 5 in node \"test\". It is not divisible by <3>\n", e.getMessage());
         }
