@@ -200,6 +200,33 @@ In some special cases you might want to use your own matcher in the expected doc
 
 ```
 
+In even more special cases, you might want to parametrize your matcher.
+```java
+ Matcher<?> divisionMatcher = new DivisionMatcher();
+ assertJsonEquals("{\"test\": \"${json-unit.matches:isDivisibleBy}3\"}", "{\"test\":5}", JsonAssert.withMatcher("isDivisibleBy", divisionMatcher));
+ 
+ private static class DivisionMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
+     private BigDecimal param;
+
+     public boolean matches(Object item) {
+         return ((BigDecimal)item).remainder(param).compareTo(ZERO) == 0;
+     }
+
+     public void describeTo(Description description) {
+         description.appendValue(param);
+     }
+
+     @Override
+     public void describeMismatch(Object item, Description description) {
+         description.appendText("It is not divisible by ").appendValue(param);
+     }
+
+     public void setParameter(String parameter) {
+         this.param = new BigDecimal(parameter);
+     }
+ }
+```
+
 Options
 ---------------
 There are multiple options how you can configure the comparison
@@ -333,7 +360,7 @@ Jackson 2.x, [Gson](https://code.google.com/p/google-gson/), [JSONObject](https:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>1.23.0</version>
+    <version>1.24.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -344,7 +371,7 @@ To use fluent assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>1.23.0</version>
+    <version>1.24.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -355,7 +382,7 @@ To use Spring MVC assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>1.23.0</version>
+    <version>1.24.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -366,6 +393,9 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 1.24.0
+* Support for parametrers in custom matchers ${json-unit.matches:matcherName}param
+
 ## 1.23.0
 * Support for custom matchers ${json-unit.matches:matcherName}
 
