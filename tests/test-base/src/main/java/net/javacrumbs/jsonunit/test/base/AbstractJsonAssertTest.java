@@ -1029,13 +1029,30 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
-    public void parametrizedMatcherShouldMatch() {
+    public void matcherParameterShouldBeIgnored() {
+        assertJsonEquals("{\"test\": \"${json-unit.matches:positive}param\"}", "{\"test\":1}", JsonAssert.withMatcher("positive", greaterThan(valueOf(0))));
+    }
+
+    @Test
+    public void parametrizedMatcherShouldFail() {
         Matcher<?> divisionMatcher = new DivisionMatcher();
         try {
             assertJsonEquals("{test: '${json-unit.matches:isDivisibleBy}3'}", "{\"test\":5}", JsonAssert.withMatcher("isDivisibleBy", divisionMatcher));
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\nMatcher \"isDivisibleBy\" does not match value 5 in node \"test\". It is not divisible by <3>\n", e.getMessage());
         }
+    }
+
+    @Test
+    public void parametrizedMatcherShouldMatch() {
+        Matcher<?> divisionMatcher = new DivisionMatcher();
+        assertJsonEquals("{test: '${json-unit.matches:isDivisibleBy}3'}", "{\"test\":6}", JsonAssert.withMatcher("isDivisibleBy", divisionMatcher));
+    }
+
+    @Test(expected = NumberFormatException.class)
+    public void missingParameterShouldResultInEmptyString() {
+        Matcher<?> divisionMatcher = new DivisionMatcher();
+        assertJsonEquals("{test: '${json-unit.matches:isDivisibleBy}'}", "{\"test\":6}", JsonAssert.withMatcher("isDivisibleBy", divisionMatcher));
     }
 
     private static class DivisionMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
