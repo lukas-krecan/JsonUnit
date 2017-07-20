@@ -178,6 +178,12 @@ public class JsonFluentAssert {
         return new JsonFluentAssert(actual, path, description, configuration);
     }
 
+    /**
+     * Adds paths to be ignored
+     */
+    public JsonFluentAssert whenIgnoringPaths(String... pathsToBeIgnored) {
+        return new JsonFluentAssert(actual, path, description, configuration.whenIgnoringPaths(pathsToBeIgnored));
+    }
 
     private Diff createDiff(Object expected, Configuration configuration) {
         return create(expected, actual, ACTUAL, path, configuration);

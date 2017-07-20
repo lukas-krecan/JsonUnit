@@ -447,6 +447,16 @@ public abstract class AbstractJsonFluentAssertTest {
     }
 
     @Test
+    public void pathShouldBeIgnoredForExtraKey() {
+        assertThatJson("{\"root\":{\"test\":1, \"ignored\": 1}}").whenIgnoringPaths("root.ignored").isEqualTo("{\"root\":{\"test\":1}}");
+    }
+
+    @Test
+    public void pathShouldBeIgnoredForDifferentValue() {
+        assertThatJson("{\"root\":{\"test\":1, \"ignored\": 1}}").whenIgnoringPaths("root.ignored").isEqualTo("{\"root\":{\"test\":1, \"ignored\": 2}}");
+    }
+
+    @Test
     public void testEqualsToArray() {
         assertThatJson("{\"test\":[1,2,3]}").node("test").isEqualTo(new int[]{1, 2, 3});
     }

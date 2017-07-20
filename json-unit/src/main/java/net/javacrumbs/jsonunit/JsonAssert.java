@@ -275,4 +275,11 @@ public class JsonAssert {
     public static Configuration withMatcher(String matcherName, Matcher<?> matcher) {
         return Configuration.empty().withMatcher(matcherName, matcher);
     }
+
+    /**
+     * Sets paths to be ignored.
+     */
+    public static Configuration whenIgnoringPaths(String... paths) {
+        return Configuration.empty().whenIgnoringPaths(paths);
+    }
 }

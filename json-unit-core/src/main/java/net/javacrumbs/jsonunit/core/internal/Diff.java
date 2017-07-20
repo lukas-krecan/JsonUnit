@@ -112,6 +112,8 @@ public class Diff {
                 extraKeys = getNotNullExtraKeys(actual, extraKeys);
             }
 
+            removePathsToBeIgnored(path, extraKeys);
+
             if (!missingKeys.isEmpty() || !extraKeys.isEmpty()) {
                 String missingKeysMessage = getMissingKeysMessage(missingKeys, path);
                 String extraKeysMessage = getExtraKeysMessage(extraKeys, path);
@@ -124,6 +126,19 @@ public class Diff {
             Node actualNode = actualFields.get(fieldName);
             String fieldPath = getPath(path, fieldName);
             compareNodes(expectedNode, actualNode, fieldPath);
+        }
+    }
+
+    private void removePathsToBeIgnored(String path, Set<String> extraKeys) {
+        Set<String> pathsToBeIgnored = configuration.getPathsToBeIgnored();
+        if (!pathsToBeIgnored.isEmpty()) {
+            Iterator<String> iterator = extraKeys.iterator();
+            while (iterator.hasNext()) {
+                String keyWithPath = getPath(path, iterator.next());
+                if (pathsToBeIgnored.contains(keyWithPath)) {
+                    iterator.remove();
+                }
+            }
         }
     }
 
@@ -202,6 +217,10 @@ public class Diff {
      * @param fieldPath
      */
     private void compareNodes(Node expectedNode, Node actualNode, String fieldPath) {
+        if (configuration.getPathsToBeIgnored().contains(fieldPath)) {
+            return;
+        }
+
         NodeType expectedNodeType = expectedNode.getNodeType();
         NodeType actualNodeType = actualNode.getNodeType();
 
