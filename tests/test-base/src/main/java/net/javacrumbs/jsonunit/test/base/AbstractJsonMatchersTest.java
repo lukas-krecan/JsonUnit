@@ -123,6 +123,11 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
+     public void pathShouldBeIgnoredForDifferentValue() {
+        assertThat("{\"root\":{\"test\":1, \"ignored\": 2}}", jsonEquals("{\"root\":{\"test\":1, \"ignored\": 1}}").whenIgnoringPaths("root.ignored"));
+     }
+
+    @Test
     public void shouldNotFailOnEmptyInput() {
         try {
             assertThat("", jsonEquals("{\"test\":1}"));

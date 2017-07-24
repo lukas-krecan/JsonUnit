@@ -19,27 +19,35 @@ import net.javacrumbs.jsonunit.core.internal.Options;
 import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
+import static java.util.Arrays.asList;
 
 /**
  * Comparison configuration. Immutable.
  */
 public class Configuration {
-    private static final Configuration EMPTY_CONFIGURATION = new Configuration(null, Options.empty(), "${json-unit.ignore}", Matchers.empty());
+    private static final Configuration EMPTY_CONFIGURATION = new Configuration(null, Options.empty(), "${json-unit.ignore}", Matchers.empty(), Collections.<String>emptySet());
     private final BigDecimal tolerance;
     private final Options options;
     private final String ignorePlaceholder;
     private final Matchers matchers;
+    private final Set<String> pathsToBeIgnored;
 
     @Deprecated
     public Configuration(BigDecimal tolerance, Options options, String ignorePlaceholder) {
-        this(tolerance, options, ignorePlaceholder, Matchers.empty());
+        this(tolerance, options, ignorePlaceholder, Matchers.empty(), Collections.<String>emptySet());
     }
 
-    private Configuration(BigDecimal tolerance, Options options, String ignorePlaceholder, Matchers matchers) {
+    private Configuration(BigDecimal tolerance, Options options, String ignorePlaceholder, Matchers matchers, Collection<String> pathsToBeIgnored) {
         this.tolerance = tolerance;
         this.options = options;
         this.ignorePlaceholder = ignorePlaceholder;
         this.matchers = matchers;
+        this.pathsToBeIgnored = Collections.unmodifiableSet(new HashSet<String>(pathsToBeIgnored));
     }
 
     /**
@@ -58,7 +66,7 @@ public class Configuration {
      * @return
      */
     public Configuration withTolerance(BigDecimal tolerance) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers);
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored);
     }
 
     /**
@@ -90,7 +98,7 @@ public class Configuration {
      * @return
      */
     public Configuration withOptions(Option first, Option... next) {
-        return new Configuration(tolerance, options.with(first, next), ignorePlaceholder, matchers);
+        return new Configuration(tolerance, options.with(first, next), ignorePlaceholder, matchers, pathsToBeIgnored);
     }
 
     /**
@@ -100,7 +108,11 @@ public class Configuration {
      * @return
      */
     public Configuration withOptions(Options options) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers);
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored);
+    }
+
+    public Configuration whenIgnoringPaths(String... pathsToBeIgnored) {
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers, asList(pathsToBeIgnored));
     }
 
     /**
@@ -110,7 +122,7 @@ public class Configuration {
      * @return
      */
     public Configuration withIgnorePlaceholder(String ignorePlaceholder) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers);
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored);
     }
 
     /**
@@ -121,7 +133,7 @@ public class Configuration {
      * @return
      */
     public Configuration withMatcher(String matcherName, Matcher<?> matcher) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers.with(matcherName, matcher));
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers.with(matcherName, matcher), pathsToBeIgnored);
     }
 
     public Matcher<?> getMatcher(String matcherName) {
@@ -140,4 +152,7 @@ public class Configuration {
         return ignorePlaceholder;
     }
 
+    public Set<String> getPathsToBeIgnored() {
+        return pathsToBeIgnored;
+    }
 }

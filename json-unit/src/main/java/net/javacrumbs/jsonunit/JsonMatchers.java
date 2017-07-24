@@ -137,6 +137,11 @@ public class JsonMatchers {
             configuration = configuration.withMatcher(matcherName, matcher);
             return this;
         }
+
+        public ConfigurableJsonMatcher<T> whenIgnoringPaths(String... paths) {
+            configuration = configuration.whenIgnoringPaths(paths);
+            return this;
+        }
     }
 
     private static final class JsonPartMatcher<T> extends AbstractJsonMatcher<T> {

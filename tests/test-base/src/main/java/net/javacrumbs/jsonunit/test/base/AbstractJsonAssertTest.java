@@ -1077,6 +1077,11 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
+    public void pathShouldBeIgnoredForDifferentValue() {
+        assertJsonEquals("{\"root\":{\"test\":1, \"ignored\": 2}}", "{\"root\":{\"test\":1, \"ignored\": 1}}", JsonAssert.whenIgnoringPaths("root.ignored"));
+    }
+
+    @Test
     public void ifMatcherDoesNotMatchReportDifference() {
         try {
             assertJsonEquals("{\"test\": \"${json-unit.matches:positive}\"}", "{\"test\":-1}", JsonAssert.withMatcher("positive", greaterThan(valueOf(0))));
