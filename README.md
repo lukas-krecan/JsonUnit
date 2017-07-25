@@ -164,6 +164,16 @@ assertJsonEquals("{\"test\":\"${json-unit.ignore}\"}",
     "{\n\"test\": {\"object\" : {\"another\" : 1}}}");
 ```
 
+Ignoring paths
+--------------
+```java
+assertJsonEquals(
+     "{\"root\":{\"test\":1, \"ignored\": 2}}", 
+     "{\"root\":{\"test\":1, \"ignored\": 1}}", 
+     JsonAssert.whenIgnoringPaths("root.ignored")
+);
+```
+
 Regular expressions
 -------------------
 It is also possible to use regular expressions to compare string values
@@ -364,7 +374,7 @@ Jackson 2.x, [Gson](https://code.google.com/p/google-gson/), [JSONObject](https:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>1.24.0</version>
+    <version>1.25.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -375,7 +385,7 @@ To use fluent assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>1.24.0</version>
+    <version>1.25</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -386,7 +396,7 @@ To use Spring MVC assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>1.24.0</version>
+    <version>1.25.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -397,6 +407,9 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 1.25.0
+* Support for ignoring paths whenIgnoringPaths()
+
 ## 1.24.0
 * Support for parametrers in custom matchers ${json-unit.matches:matcherName}param
 
