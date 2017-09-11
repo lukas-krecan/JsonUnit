@@ -147,6 +147,50 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
         assertJsonEquals("{\"property\": \"value\"}", new Jackson1IgnorepropertyBean("value"));
     }
 
+    @Test
+    public void dotInPathFailure() {
+        try {
+            assertJsonEquals(
+            "{\"root\":{\"test\":1, \".ignored\": 1}}",
+                "{\"root\":{\"test\":1, \".ignored\": 2}}"
+            );
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent value found in node \"root..ignored\". Expected 1, got 2.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void dotInPathMiddleFailure() {
+        try {
+            assertJsonEquals(
+            "{\"root\":{\"test\":1, \"igno.red\": 1}}",
+                "{\"root\":{\"test\":1, \"igno.red\": 2}}"
+            );
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent value found in node \"root.igno.red\". Expected 1, got 2.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void dotInPath() {
+        assertJsonEquals(
+        "{\"root\":{\"test\":1, \".ignored\": 1}}",
+            "{\"root\":{\"test\":1, \".ignored\": 2}}",
+        JsonAssert.whenIgnoringPaths("root..ignored")
+        );
+    }
+
+    @Test
+    public void dotInPathMiddle() {
+        assertJsonEquals(
+        "{\"root\":{\"test\":1, \"igno.red\": 1}}",
+            "{\"root\":{\"test\":1, \"igno.red\": 2}}",
+        JsonAssert.whenIgnoringPaths("root.igno.red")
+        );
+    }
+
     protected Object readValue(String value) {
         return JsonTestUtils.readByJackson1(value);
     }
