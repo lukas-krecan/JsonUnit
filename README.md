@@ -170,7 +170,7 @@ Ignoring paths
 assertJsonEquals(
      "{\"root\":{\"test\":1, \"ignored\": 2}}", 
      "{\"root\":{\"test\":1, \"ignored\": 1}}", 
-     JsonAssert.whenIgnoringPaths("root.ignored")
+     whenIgnoringPaths("root.ignored")
 );
 ```
 
