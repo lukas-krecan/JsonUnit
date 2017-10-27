@@ -183,6 +183,8 @@ class Jackson1NodeFactory extends AbstractNodeFactory {
                 return NodeType.BOOLEAN;
             } else if (jsonNode.isNull()) {
                 return NodeType.NULL;
+            } else if (jsonNode.isBinary()) {
+                return NodeType.STRING;
             } else {
                 throw new IllegalStateException("Unexpected node type " + jsonNode);
             }

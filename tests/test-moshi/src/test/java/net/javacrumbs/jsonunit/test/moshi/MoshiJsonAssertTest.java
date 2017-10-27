@@ -18,6 +18,7 @@ package net.javacrumbs.jsonunit.test.moshi;
 import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
 import org.junit.Ignore;
+import org.junit.Test;
 
 public class MoshiJsonAssertTest extends AbstractJsonAssertTest {
 
@@ -35,5 +36,12 @@ public class MoshiJsonAssertTest extends AbstractJsonAssertTest {
     @Ignore
     public void testNotEqualWhenToleranceNotSet() {
         // https://github.com/square/moshi/issues/192
+    }
+
+    @Test
+    @Override
+    @Ignore
+    public void testBinary() {
+        // no support for binary
     }
 }

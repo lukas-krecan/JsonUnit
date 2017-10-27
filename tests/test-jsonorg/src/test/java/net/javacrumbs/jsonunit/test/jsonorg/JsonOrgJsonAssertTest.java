@@ -17,6 +17,7 @@ package net.javacrumbs.jsonunit.test.jsonorg;
 
 import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -50,4 +51,12 @@ public class JsonOrgJsonAssertTest extends AbstractJsonAssertTest {
             assertEquals("JSON documents are different:\nArray \"\" has different length. Expected 2, got 3.\n", e.getMessage());
         }
     }
+
+    @Test
+    @Override
+    @Ignore
+    public void testBinary() {
+        // no support for binary
+    }
+
 }

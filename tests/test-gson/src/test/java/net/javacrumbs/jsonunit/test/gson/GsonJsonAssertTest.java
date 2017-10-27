@@ -31,4 +31,12 @@ public class GsonJsonAssertTest extends AbstractJsonAssertTest {
     public void shouldFailIfQuotationMarksMissingOnActualKeys() {
         // GSON is by default lenient
     }
+
+
+    @Test
+    @Override
+    @Ignore
+    public void testBinary() {
+        // no support for binary
+    }
 }
