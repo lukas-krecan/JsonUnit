@@ -374,7 +374,7 @@ Jackson 2.x, [Gson](https://code.google.com/p/google-gson/), [JSONObject](https:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>1.25.0</version>
+    <version>1.25.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -396,7 +396,7 @@ To use Spring MVC assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>1.25.0</version>
+    <version>1.25.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -407,6 +407,9 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 1.25.1
+* Support for Jackson BinaryNode
+
 ## 1.25.0
 * Support for ignoring paths whenIgnoringPaths()
 
