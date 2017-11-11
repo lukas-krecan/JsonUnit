@@ -22,7 +22,7 @@ public interface NodeFactory {
      * @param source
      * @return
      */
-    public boolean isPreferredFor(Object source);
+    boolean isPreferredFor(Object source);
 
     /**
      * Creates node from given source.
@@ -32,5 +32,5 @@ public interface NodeFactory {
      * @param lenient
      * @return
      */
-    public Node convertToNode(Object source, String label, boolean lenient);
+    Node convertToNode(Object source, String label, boolean lenient);
 }

@@ -76,7 +76,7 @@ public interface Node {
             public Object getValue(Node node) {
                 return null;
             }
-        };
+        }
     }
 
     Node element(int index);
@@ -108,7 +108,7 @@ public interface Node {
 
     void ___do_not_implement_this_interface_seriously();
 
-    static class KeyValue {
+    class KeyValue {
         private final String key;
         private final Node value;
 
@@ -126,7 +126,7 @@ public interface Node {
         }
     }
 
-    static final Node MISSING_NODE = new Node() {
+    Node MISSING_NODE = new Node() {
         public boolean isArray() {
             return false;
         }
@@ -183,7 +183,7 @@ public interface Node {
 
         public void ___do_not_implement_this_interface_seriously() {}
     };
-    static interface ValueExtractor {
-        public Object getValue(Node node);
+    interface ValueExtractor {
+        Object getValue(Node node);
     }
 }
