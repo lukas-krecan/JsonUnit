@@ -16,6 +16,7 @@
         <symbolic.name>${project.groupId}.${project.artifactId}</symbolic.name>
         <osgi.importPackage>*</osgi.importPackage>
         <osgi.exportPackage />
+        <target.java.version>1.5</target.java.version>
     </properties>
     <packaging>pom</packaging>
 
@@ -91,8 +92,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.7.0</version>
                 <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
+                    <source>${target.java.version}</source>
+                    <target>${target.java.version}</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -132,6 +133,11 @@
                         <version>1.0</version>
                     </signature>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
             </plugin>
             <plugin>
                 <groupId>org.apache.felix</groupId>
@@ -196,6 +202,15 @@
             </activation>
             <properties>
                 <additionalparam>-Xdoclint:none</additionalparam>
+            </properties>
+        </profile>
+        <profile>
+            <id>target-for-java9</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <properties>
+                <target.java.version>1.6</target.java.version>
             </properties>
         </profile>
     </profiles>
