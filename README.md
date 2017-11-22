@@ -385,7 +385,7 @@ To use fluent assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>1.25</version>
+    <version>1.25.1</version>
     <scope>test</scope>
 </dependency>
 ```
