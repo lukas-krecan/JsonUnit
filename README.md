@@ -185,7 +185,7 @@ assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}",
 
 Type placeholders
 -----------------
-If you want to assert just a type, but you do not care about the exact value, you can use any-* placehloder like this
+If you want to assert just a type, but you do not care about the exact value, you can use any-* placeholder like this
 
 ```java
 assertThatJson("{\"test\":\"value\"}")
@@ -273,7 +273,7 @@ assertJsonEquals("{\"test\":[1,2,3]}",
     when(IGNORING_EXTRA_ARRAY_ITEMS, IGNORING_ARRAY_ORDER));
 ```
 
-**IGNORING_EXTRA_FIELDS** - ignores extra fileds in the compared value
+**IGNORING_EXTRA_FIELDS** - ignores extra fields in the compared value
 
 ```java
 assertJsonEquals("{\"test\":{\"b\":2}}", 
