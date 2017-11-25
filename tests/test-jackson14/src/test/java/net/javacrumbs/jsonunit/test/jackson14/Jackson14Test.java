@@ -33,7 +33,7 @@ public class Jackson14Test {
             assertJsonEquals("{\"test\":1}", "{\n\"foo\": 1\n}");
             fail("Exception expected");
         } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent keys found in node \"\". Expected [test], got [foo]. Missing: \"test\" Extra: \"foo\"\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent keys found in node \"\", expected: <[test]> but was: <[foo]>. Missing: \"test\" Extra: \"foo\"\n", e.getMessage());
         }
     }
 }

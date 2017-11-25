@@ -19,6 +19,7 @@ import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Node;
+import net.javacrumbs.jsonunit.core.internal.Node.NodeType;
 import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
@@ -28,6 +29,7 @@ import java.util.List;
 
 import static net.javacrumbs.jsonunit.core.Option.COMPARING_ONLY_STRUCTURE;
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
+import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
@@ -126,7 +128,7 @@ public class JsonFluentAssert {
         isString();
         Node node = getNode(actual, path);
         if (!node.asText().equals(expected)) {
-            failWithMessage("Node \"" + path + "\" is not equal to \"" + expected + "\".");
+            failWithMessage(String.format("Different value found in node \"%s\", expected: <\"%s\"> but was: <\"%s\">.", path, expected, node.asText()));
         }
     }
 
@@ -312,7 +314,7 @@ public class JsonFluentAssert {
         isPresent();
         Node node = getNode(actual, path);
         if (node.getNodeType() != ARRAY) {
-            failOnType(node, "an array");
+            failOnType(node, ARRAY);
         }
         return new ArrayAssert(node.arrayElements());
     }
@@ -324,7 +326,7 @@ public class JsonFluentAssert {
         isPresent();
         Node node = getNode(actual, path);
         if (node.getNodeType() != OBJECT) {
-            failOnType(node, "an object");
+            failOnType(node, OBJECT);
         }
     }
 
@@ -335,12 +337,12 @@ public class JsonFluentAssert {
         isPresent();
         Node node = getNode(actual, path);
         if (node.getNodeType() != STRING) {
-            failOnType(node, "a string");
+            failOnType(node, STRING);
         }
     }
 
-    private void failOnType(Node node, final String type) {
-        failWithMessage("Node \"" + path + "\" is not " + type + ". The actual value is '" + node + "'.");
+    private void failOnType(Node node, final NodeType expectedType) {
+        failWithMessage("Node \"" + path + "\" has invalid type, expected: <" + expectedType.getDescription() + "> but was: <" + quoteTextValue(node.getValue()) + ">.");
     }
 
 
@@ -389,7 +391,7 @@ public class JsonFluentAssert {
          */
         public ArrayAssert ofLength(int expectedLength) {
             if (array.size() != expectedLength) {
-                failWithMessage("Node \"" + path + "\" length is " + array.size() + ", expected length is " + expectedLength + ".");
+                failWithMessage("Node \"" + path + "\" has invalid length, expected: <" + array.size() + "> but was: <" + expectedLength + ">.");
             }
             return this;
         }

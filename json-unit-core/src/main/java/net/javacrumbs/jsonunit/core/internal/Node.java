@@ -33,7 +33,7 @@ import static java.util.Collections.unmodifiableMap;
 public interface Node {
 
     enum NodeType implements ValueExtractor {
-        OBJECT {
+        OBJECT("object") {
             public Object getValue(Node node) {
                 // custom conversion to map. We want be consistent and native mapping may have different rules for
                 // serializing numbers, dates etc.
@@ -46,7 +46,7 @@ public interface Node {
                 return unmodifiableMap(result);
             }
         },
-        ARRAY {
+        ARRAY("array") {
             public Object getValue(Node node) {
                 Iterator<Node> nodeIterator = node.arrayElements();
                 LinkedList<Object> result = new LinkedList<Object>();
@@ -57,25 +57,35 @@ public interface Node {
                 return unmodifiableCollection(result);
             }
         },
-        STRING {
+        STRING("string") {
             public Object getValue(Node node) {
                 return node.asText();
             }
         },
-        NUMBER {
+        NUMBER("number") {
             public Object getValue(Node node) {
                 return node.decimalValue();
             }
         },
-        BOOLEAN {
+        BOOLEAN("boolean") {
             public Object getValue(Node node) {
                 return node.asBoolean();
             }
         },
-        NULL {
+        NULL("null") {
             public Object getValue(Node node) {
                 return null;
             }
+        };
+
+        private final String description;
+
+        NodeType(String description) {
+            this.description = description;
+        }
+
+        public String getDescription() {
+            return description;
         }
     }
 

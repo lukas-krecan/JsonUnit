@@ -117,7 +117,7 @@ public class Diff {
             if (!missingKeys.isEmpty() || !extraKeys.isEmpty()) {
                 String missingKeysMessage = getMissingKeysMessage(missingKeys, path);
                 String extraKeysMessage = getExtraKeysMessage(extraKeys, path);
-                structureDifferenceFound("Different keys found in node \"%s\". Expected %s, got %s. %s %s", path, sort(expectedFields.keySet()), sort(actualFields.keySet()), missingKeysMessage, extraKeysMessage);
+                structureDifferenceFound("Different keys found in node \"%s\", expected: <%s> but was: <%s>. %s %s", path, sort(expectedFields.keySet()), sort(actualFields.keySet()), missingKeysMessage, extraKeysMessage);
             }
         }
 
@@ -247,7 +247,7 @@ public class Diff {
         }
 
         if (!expectedNodeType.equals(actualNodeType)) {
-            valueDifferenceFound("Different value found in node \"%s\". Expected '%s', got '%s'.", fieldPath, quoteTextValue(expectedNode), quoteTextValue(actualNode));
+            valueDifferenceFound("Different value found in node \"%s\", expected: <%s> but was: <%s>.", fieldPath, quoteTextValue(expectedNode), quoteTextValue(actualNode));
         } else {
             switch (expectedNodeType) {
                 case OBJECT:
@@ -265,7 +265,7 @@ public class Diff {
                     if (configuration.getTolerance() != null && !hasOption(IGNORING_VALUES)) {
                         BigDecimal diff = expectedValue.subtract(actualValue).abs();
                         if (diff.compareTo(configuration.getTolerance()) > 0) {
-                            valueDifferenceFound("Different value found in node \"%s\". Expected %s, got %s, difference is %s, tolerance is %s",
+                            valueDifferenceFound("Different value found in node \"%s\", expected: <%s> but was: <%s>, difference is %s, tolerance is %s",
                                 fieldPath, quoteTextValue(expectedValue), quoteTextValue(actualValue), diff.toString(), configuration.getTolerance());
                         }
                     } else {
@@ -314,7 +314,7 @@ public class Diff {
             if (actualNode.getNodeType() == type) {
                 return true;
             } else {
-                valueDifferenceFound("Different value found in node \"%s\". Expected %s, got '%s'.", fieldPath, name, quoteTextValue(actualNode));
+                valueDifferenceFound("Different value found in node \"%s\", expected: <%s> but was: <%s>.", fieldPath, name, quoteTextValue(actualNode));
                 return true;
             }
         }
@@ -346,7 +346,7 @@ public class Diff {
     private void compareValues(Object expectedValue, Object actualValue, String path) {
         if (!hasOption(IGNORING_VALUES)) {
             if (!expectedValue.equals(actualValue)) {
-                valueDifferenceFound("Different value found in node \"%s\". Expected %s, got %s.", path, quoteTextValue(expectedValue), quoteTextValue(actualValue));
+                valueDifferenceFound("Different value found in node \"%s\", expected: <%s> but was: <%s>.", path, quoteTextValue(expectedValue), quoteTextValue(actualValue));
             }
         }
     }
@@ -357,7 +357,7 @@ public class Diff {
      * @param value
      * @return
      */
-    private Object quoteTextValue(Object value) {
+    public static Object quoteTextValue(Object value) {
         if (value instanceof String) {
             return "\"" + value + "\"";
         } else {
@@ -373,12 +373,12 @@ public class Diff {
 
         if (failOnExtraArrayItems()) {
             if (expectedElements.size() != actualElements.size()) {
-                structureDifferenceFound("Array \"%s\" has different length. Expected %d, got %d.", path, expectedElements.size(), actualElements.size());
+                structureDifferenceFound("Array \"%s\" has different length, expected: <%d> but was: <%d>.", path, expectedElements.size(), actualElements.size());
             }
         } else {
             // if we expect more elements in the array then we get, it's error even when IGNORING_EXTRA_ARRAY_ITEMS
             if (expectedElements.size() > actualElements.size()) {
-                structureDifferenceFound("Array \"%s\" has invalid length. Expected at least %d, got %d.", path, expectedElements.size(), actualElements.size());
+                structureDifferenceFound("Array \"%s\" has invalid length, expected: <at least %d> but was: <%d>.", path, expectedElements.size(), actualElements.size());
             }
         }
         List<Node> extraValues = new ArrayList<Node>();

@@ -66,7 +66,7 @@ public class ExampleControllerTest {
         } catch (AssertionError e) {
             assertEquals(
                 "JSON documents are different:\n" +
-                    "Different value found in node \"result.string\". Expected \"stringValue2\", got \"stringValue\".\n",
+                    "Different value found in node \"result.string\", expected: <\"stringValue2\"> but was: <\"stringValue\">.\n",
                 e.getMessage());
         }
     }
@@ -202,7 +202,7 @@ public class ExampleControllerTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\n" +
-                    "Different value found in node \"result.string\". Expected \"stringValue2\", got \"stringValue\".\n",
+                    "Different value found in node \"result.string\", expected: <\"stringValue2\"> but was: <\"stringValue\">.\n",
                 e.getMessage());
         }
     }
