@@ -68,7 +68,7 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
             assertJsonEquals(readByJackson1("{\"test\":1}"), "{\"test\": 2}");
             failIfNoException();
         } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected 1, got 2.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <1> but was: <2>.\n", e.getMessage());
         }
     }
 
@@ -78,7 +78,7 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
             assertJsonEquals(readByGson("{\"test\":1}"), "{\"test\": 2}");
             failIfNoException();
         } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected 1, got 2.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <1> but was: <2>.\n", e.getMessage());
         }
     }
 
@@ -88,7 +88,7 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
             assertJsonEquals(readByJsonOrg("{\"test\":1}"), "{\"test\": 2}");
             failIfNoException();
         } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected 1, got 2.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <1> but was: <2>.\n", e.getMessage());
         }
     }
 
@@ -98,7 +98,7 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
             assertJsonEquals(readByJsonOrg("[1, 2]"), readByJsonOrg("[1, 2, 3]"));
             failIfNoException();
         } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nArray \"\" has different length. Expected 2, got 3.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nArray \"\" has different length, expected: <2> but was: <3>.\n", e.getMessage());
         }
     }
 
@@ -113,7 +113,7 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
             assertJsonEquals("{\"test\": 3}", "{\"test\": {\"inner\": 5}}", when(IGNORING_VALUES));
             failIfNoException();
         } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected '3', got '{\"inner\":5}'.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <3> but was: <{\"inner\":5}>.\n", e.getMessage());
         }
     }
 
@@ -128,7 +128,7 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
             assertJsonEquals("{\"test\":\"a\"}", readByJackson2("{\"test\": \"b\"}"));
             failIfNoException();
         } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\". Expected \"a\", got \"b\".\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <\"a\"> but was: <\"b\">.\n", e.getMessage());
         }
     }
 
@@ -156,7 +156,7 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
             );
             failIfNoException();
         } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"root..ignored\". Expected 1, got 2.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"root..ignored\", expected: <1> but was: <2>.\n", e.getMessage());
         }
     }
 
@@ -169,7 +169,7 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
             );
             failIfNoException();
         } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"root.igno.red\". Expected 1, got 2.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found in node \"root.igno.red\", expected: <1> but was: <2>.\n", e.getMessage());
         }
     }
 
