@@ -124,12 +124,13 @@ public class JsonFluentAssert {
      * Fails if the selected JSON is not a String or is not present or the value
      * is not equal to expected value.
      */
-    public void isStringEqualTo(String expected) {
+    public JsonFluentAssertAfterAssertion isStringEqualTo(String expected) {
         isString();
         Node node = getNode(actual, path);
         if (!node.asText().equals(expected)) {
             failWithMessage(String.format("Different value found in node \"%s\", expected: <\"%s\"> but was: <\"%s\">.", path, expected, node.asText()));
         }
+        return JsonFluentAssertAfterAssertion.wrap(this);
     }
 
     /**
