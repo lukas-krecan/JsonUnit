@@ -702,6 +702,14 @@ public abstract class AbstractJsonFluentAssertTest {
         }
     }
 
+
+    @Test
+    public void shouldChainStringEquals() {
+        assertThatJson("{ \"key1\": \"[value1]\", \"key2\": \"[value2]\" }")
+         .node("key1").isStringEqualTo("[value1]")
+         .node("key2").isStringEqualTo("[value2]");
+    }
+
     @Test
     public void isStringShouldFailIfItIsNotAString() {
         try {
