@@ -242,7 +242,7 @@ public abstract class AbstractJsonFluentAssertTest {
             assertThatJson("{\"test1\":2, \"test2\":1}").node("test2").isAbsent();
             failIfNoException();
         } catch (AssertionError e) {
-            assertEquals("Node \"test2\" is present.", e.getMessage());
+            assertEquals("Different value found in node \"test2\", expected: <node to be absent> but was: <1>.", e.getMessage());
         }
     }
 
@@ -262,7 +262,7 @@ public abstract class AbstractJsonFluentAssertTest {
             assertThatJson("{\"test1\":2, \"test2\":1}").node("test3").isPresent();
             failIfNoException();
         } catch (AssertionError e) {
-            assertEquals("Node \"test3\" is missing.", e.getMessage());
+            assertEquals("Different value found in node \"test3\", expected: <node to be present> but was: <missing>.", e.getMessage());
         }
     }
 
@@ -282,7 +282,7 @@ public abstract class AbstractJsonFluentAssertTest {
             assertThatJson("{\"test1\":2, \"test2\":null}").when(Option.TREATING_NULL_AS_ABSENT).node("test2").isPresent();
             failIfNoException();
         } catch (AssertionError e) {
-            assertEquals("Node \"test2\" is missing.", e.getMessage());
+            assertEquals("Different value found in node \"test2\", expected: <node to be present> but was: <missing>.", e.getMessage());
         }
     }
 
@@ -472,7 +472,7 @@ public abstract class AbstractJsonFluentAssertTest {
             assertThatJson("{\"test\":1}").node("test2").isArray();
             failIfNoException();
         } catch (AssertionError e) {
-            assertEquals("Node \"test2\" is missing.", e.getMessage());
+            assertEquals("Different value found in node \"test2\", expected: <array> but was: <missing>.", e.getMessage());
         }
     }
 
@@ -609,7 +609,7 @@ public abstract class AbstractJsonFluentAssertTest {
             assertThatJson("{\"test2\":true}").node("test").matches(equalTo(false));
             failIfNoException();
         } catch (AssertionError e) {
-            assertEquals("Node \"test\" is missing.", e.getMessage());
+            assertEquals("Different value found in node \"test\", expected: <node to be present> but was: <missing>.", e.getMessage());
         }
     }
 
@@ -698,7 +698,7 @@ public abstract class AbstractJsonFluentAssertTest {
             assertThatJson("{\"test\":1}").node("test2").isString();
             failIfNoException();
         } catch (AssertionError e) {
-            assertEquals("Node \"test2\" is missing.", e.getMessage());
+            assertEquals("Different value found in node \"test2\", expected: <string> but was: <missing>.", e.getMessage());
         }
     }
 
@@ -802,7 +802,7 @@ public abstract class AbstractJsonFluentAssertTest {
             assertThatJson("{\"test\":{\"a\":true}}").node("test.b").isObject();
             failIfNoException();
         } catch (AssertionError e) {
-            assertEquals("Node \"test.b\" is missing.", e.getMessage());
+            assertEquals("Different value found in node \"test.b\", expected: <object> but was: <missing>.", e.getMessage());
         }
     }
 

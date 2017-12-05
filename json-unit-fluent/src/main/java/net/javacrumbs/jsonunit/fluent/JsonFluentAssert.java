@@ -128,9 +128,13 @@ public class JsonFluentAssert {
         isString();
         Node node = getNode(actual, path);
         if (!node.asText().equals(expected)) {
-            failWithMessage(String.format("Different value found in node \"%s\", expected: <\"%s\"> but was: <\"%s\">.", path, expected, node.asText()));
+            failOnDifference(quoteTextValue(expected), quoteTextValue(node.asText()));
         }
         return JsonFluentAssertAfterAssertion.wrap(this);
+    }
+
+    private void failOnDifference(Object expected, Object actual) {
+        failWithMessage(String.format("Different value found in node \"%s\", expected: <%s> but was: <%s>.", path, expected, actual));
     }
 
     /**
@@ -291,7 +295,8 @@ public class JsonFluentAssert {
      */
     public JsonFluentAssertAfterAssertion isAbsent() {
         if (!nodeAbsent(actual, path, configuration)) {
-            failWithMessage("Node \"" + path + "\" is present.");
+            failOnDifference("node to be absent", quoteTextValue(getNode(actual, path)));
+
         }
         return JsonFluentAssertAfterAssertion.wrap(this);
     }
@@ -300,8 +305,12 @@ public class JsonFluentAssert {
      * Fails if the node is missing.
      */
     public JsonFluentAssertAfterAssertion isPresent() {
+        return isPresent("node to be present");
+    }
+
+    private JsonFluentAssertAfterAssertion isPresent(String expectedValue) {
         if (nodeAbsent(actual, path, configuration)) {
-            failWithMessage("Node \"" + path + "\" is missing.");
+            failOnDifference(expectedValue, "missing");
         }
         return JsonFluentAssertAfterAssertion.wrap(this);
     }
@@ -312,34 +321,31 @@ public class JsonFluentAssert {
      * @return
      */
     public ArrayAssert isArray() {
-        isPresent();
-        Node node = getNode(actual, path);
-        if (node.getNodeType() != ARRAY) {
-            failOnType(node, ARRAY);
-        }
+        Node node = assertType(ARRAY);
         return new ArrayAssert(node.arrayElements());
+    }
+
+    private Node assertType(NodeType type) {
+        isPresent(type.getDescription());
+        Node node = getNode(actual, path);
+        if (node.getNodeType() != type) {
+            failOnType(node, type);
+        }
+        return node;
     }
 
     /**
      * Fails if the selected JSON is not an Object or is not present.
      */
     public void isObject() {
-        isPresent();
-        Node node = getNode(actual, path);
-        if (node.getNodeType() != OBJECT) {
-            failOnType(node, OBJECT);
-        }
+        assertType(OBJECT);
     }
 
     /**
      * Fails if the selected JSON is not a String or is not present.
      */
     public void isString() {
-        isPresent();
-        Node node = getNode(actual, path);
-        if (node.getNodeType() != STRING) {
-            failOnType(node, STRING);
-        }
+        assertType(STRING);
     }
 
     private void failOnType(Node node, final NodeType expectedType) {
