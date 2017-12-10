@@ -270,6 +270,18 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
+    public void testDifferentArrayLengthWhenIgnoringArrayOrder() {
+        try {
+            assertJsonEquals("{\"test\":[\"a\", \"b\", \"c\"]}", "{\n\"test\": [\"a\", \"b\"]\n}", when(IGNORING_ARRAY_ORDER));
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                "Array \"test\" has different length, expected: <3> but was: <2>.\n" +
+                "Array \"test\" has different content, expected: <[\"a\",\"b\",\"c\"]> but was: <[\"a\",\"b\"]>. Missing values [\"c\"], extra values []\n", e.getMessage());
+        }
+    }
+
+    @Test
     public void testDifferentArrayValue() {
         try {
             assertJsonEquals("{\"test\":[1, 2, 3]}", "{\n\"test\": [1, 2, 5]\n}");

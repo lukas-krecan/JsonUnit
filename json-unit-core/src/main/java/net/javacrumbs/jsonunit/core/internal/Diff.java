@@ -382,7 +382,7 @@ public class Diff {
                 structureDifferenceFound("Array \"%s\" has different length, expected: <%d> but was: <%d>.", path, expectedElements.size(), actualElements.size());
             }
         } else {
-            // if we expect more elements in the array then we get, it's error even when IGNORING_EXTRA_ARRAY_ITEMS
+            // if we expect more elements in the array than we get, it's error even when IGNORING_EXTRA_ARRAY_ITEMS
             if (expectedElements.size() > actualElements.size()) {
                 structureDifferenceFound("Array \"%s\" has invalid length, expected: <at least %d> but was: <%d>.", path, expectedElements.size(), actualElements.size());
             }
