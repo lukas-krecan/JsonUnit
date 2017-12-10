@@ -42,6 +42,7 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
+import static net.javacrumbs.jsonunit.core.internal.JsonUnitLogger.NULL_LOGGER;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
@@ -57,6 +58,10 @@ import static net.javacrumbs.jsonunit.core.internal.Node.NodeType;
 public class Diff {
     private static final String REGEX_PLACEHOLDER = "${json-unit.regex}";
     private static final Pattern MATCHER_PLACEHOLDER_PATTERN = Pattern.compile("\\$\\{json-unit.matches:(.+)\\}(.*)");
+
+    private static final JsonUnitLogger DEFAULT_DIFF_LOGGER = createLogger("net.javacrumbs.jsonunit.difference.diff");
+    private static final JsonUnitLogger DEFAULT_VALUE_LOGGER = createLogger("net.javacrumbs.jsonunit.difference.values");
+
     private final Node expectedRoot;
     private final Node actualRoot;
     private final Differences differences = new Differences();
@@ -64,19 +69,20 @@ public class Diff {
     private boolean compared = false;
     private final Configuration configuration;
 
+    private final JsonUnitLogger diffLogger;
+    private final JsonUnitLogger valuesLogger;
 
-    private static final JsonUnitLogger diffLogger = createLogger("net.javacrumbs.jsonunit.difference.diff");
-    private static final JsonUnitLogger valuesLogger = createLogger("net.javacrumbs.jsonunit.difference.values");
-
-    private Diff(Node expected, Node actual, String startPath, Configuration configuration) {
+    private Diff(Node expected, Node actual, String startPath, Configuration configuration, JsonUnitLogger diffLogger, JsonUnitLogger valuesLogger) {
         this.expectedRoot = expected;
         this.actualRoot = actual;
         this.startPath = startPath;
         this.configuration = configuration;
+        this.diffLogger = diffLogger;
+        this.valuesLogger = valuesLogger;
     }
 
     public static Diff create(Object expected, Object actual, String actualName, String startPath, Configuration configuration) {
-        return new Diff(convertToJson(quoteIfNeeded(expected), "expected", true), convertToJson(actual, actualName, false), startPath, configuration);
+        return new Diff(convertToJson(quoteIfNeeded(expected), "expected", true), convertToJson(actual, actualName, false), startPath, configuration, DEFAULT_DIFF_LOGGER, DEFAULT_VALUE_LOGGER);
     }
 
     private void compare() {
@@ -381,40 +387,90 @@ public class Diff {
                 structureDifferenceFound("Array \"%s\" has invalid length, expected: <at least %d> but was: <%d>.", path, expectedElements.size(), actualElements.size());
             }
         }
-        List<Node> extraValues = new ArrayList<Node>();
-        List<Node> missingValues = new ArrayList<Node>(expectedElements);
+
         if (hasOption(IGNORING_ARRAY_ORDER)) {
-            for (Node actual : actualElements) {
-                int index = indexOf(missingValues, actual);
-                if (index != -1) {
-                    missingValues.remove(index);
-                } else {
-                    extraValues.add(actual);
-                }
-            }
+            ArrayComparison arrayComparison = compareArraysIgnoringOrder(expectedElements, actualElements);
+            List<Node> missingValues = arrayComparison.missingValues;
+            List<Node> extraValues = arrayComparison.extraValues;
             if (expectedElements.size() == actualElements.size() && missingValues.size() == 1 && extraValues.size() == 1) {
                 // handling special case where only one difference is found.
                 Node missing = missingValues.get(0);
                 Node extra = extraValues.get(0);
-                int missingIndex = indexOf(expectedElements, missing);
-                int extraIndex = indexOf(actualElements, extra);
+                List<Integer> missingIndex = indexOf(expectedElements, missing);
+                List<Integer> extraIndex = indexOf(actualElements, extra);
 
-                valueDifferenceFound("Different value found when comparing expected array element %s to actual element %s.", getArrayPath(path, missingIndex), getArrayPath(path, extraIndex));
-                compareNodes(missing, extra, getArrayPath(path, extraIndex));
-            } else if (failOnExtraArrayItems()) {
-                if (!missingValues.isEmpty() || !extraValues.isEmpty()) {
-                    valueDifferenceFound("Array \"%s\" has different content. Missing values %s, extra values %s", path, missingValues, extraValues);
-                }
-            } else {
-                if (!missingValues.isEmpty()) {
-                    valueDifferenceFound("Array \"%s\" has different content. Missing values %s", path, missingValues);
-                }
+                valueDifferenceFound("Different value found when comparing expected array element %s to actual element %s.", getArrayPath(path, missingIndex.get(0)), getArrayPath(path, extraIndex.get(0)));
+                compareNodes(missing, extra, getArrayPath(path, extraIndex.get(0)));
+            } else if (failOnExtraArrayItems() && (!missingValues.isEmpty() || !extraValues.isEmpty())) {
+                valueDifferenceFound("Array \"%s\" has different content, expected: <%s> but was: <%s>. Missing values %s, extra values %s", path, expectedNode, actualNode, missingValues, extraValues);
+            } else if (!missingValues.isEmpty()) {
+                valueDifferenceFound("Array \"%s\" has different content, expected: <%s> but was: <%s>. Missing values %s", path, expectedNode, actualNode, missingValues);
             }
         } else {
             for (int i = 0; i < Math.min(expectedElements.size(), actualElements.size()); i++) {
                 compareNodes(expectedElements.get(i), actualElements.get(i), getArrayPath(path, i));
             }
         }
+    }
+
+    private ArrayComparison compareArraysIgnoringOrder(List<Node> expectedElements, List<Node> actualElements) {
+        return new ArrayComparison(expectedElements, actualElements).compareArraysIgnoringOrder();
+    }
+
+    private class ArrayComparison {
+        private final int compareFrom;
+        private final List<Node> actualElements;
+        private final List<Node> extraValues;
+        private final List<Node> missingValues;
+
+        private ArrayComparison(int compareFrom, List<Node> actualElements, List<Node> extraValues, List<Node> missingValues) {
+            this.compareFrom = compareFrom;
+            this.actualElements = actualElements;
+            this.extraValues = extraValues;
+            this.missingValues = missingValues;
+        }
+
+        ArrayComparison(List<Node> expectedElements, List<Node> actualElements) {
+            this(0, actualElements, new ArrayList<Node>(), new ArrayList<Node>(expectedElements));
+        }
+
+        ArrayComparison copy(int compareFrom) {
+            return new ArrayComparison(compareFrom, actualElements, new ArrayList<Node>(extraValues), new ArrayList<Node>(missingValues));
+        }
+
+        private ArrayComparison compareArraysIgnoringOrder() {
+            for (int i = compareFrom; i < actualElements.size(); i++) {
+                Node actual = actualElements.get(i);
+                List<Integer> matches = indexOf(missingValues, actual);
+                if (matches.size() == 1) {
+                    removeMissing(matches.get(0));
+                } else if (matches.size() > 0) {
+                    // we have more matches, since comparison does not have to be transitive ([1, 2] == [2] == [2, 3]), we have to check all the possibilities
+                    for (int match : matches) {
+                        ArrayComparison copy = copy(i + 1);
+                        copy.removeMissing(match);
+                        copy.compareArraysIgnoringOrder();
+                        if (copy.isMatching()) {
+                            return copy;
+                        }
+                    }
+                    // no combination matching, let's report the first difference
+                    removeMissing(matches.get(0));
+                } else {
+                    extraValues.add(actual);
+                }
+            }
+            return this;
+        }
+
+        private boolean isMatching() {
+            return missingValues.isEmpty() && (extraValues.isEmpty() || !failOnExtraArrayItems());
+        }
+
+        private void removeMissing(int index) {
+            missingValues.remove(index);
+        }
+
     }
 
     private boolean failOnExtraArrayItems() {
@@ -428,16 +484,17 @@ public class Diff {
      * @param actual
      * @return
      */
-    private int indexOf(List<Node> expectedElements, Node actual) {
+    private List<Integer> indexOf(List<Node> expectedElements, Node actual) {
+        List<Integer> result = new ArrayList<Integer>();
         int i = 0;
         for (Node expected : expectedElements) {
-            Diff diff = new Diff(expected, actual, "", configuration);
+            Diff diff = new Diff(expected, actual, "", configuration, NULL_LOGGER, NULL_LOGGER);
             if (diff.similar()) {
-                return i;
+                result.add(i);
             }
             i++;
         }
-        return -1;
+        return result;
     }
 
 
@@ -559,7 +616,7 @@ public class Diff {
         if (isClassPresent("org.slf4j.Logger")) {
             return new JsonUnitLogger.SLF4JLogger(name);
         } else {
-            return new JsonUnitLogger.NullLogger();
+            return NULL_LOGGER;
         }
     }
 }

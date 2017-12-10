@@ -205,6 +205,11 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
         public int size() {
             return value.length();
         }
+
+        @Override
+        public String toString() {
+            return value.toString();
+        }
     }
 
     private static final class JSONObjectNode extends NodeSkeleton {

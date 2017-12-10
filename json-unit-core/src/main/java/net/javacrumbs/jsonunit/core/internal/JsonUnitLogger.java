@@ -22,10 +22,19 @@ import org.slf4j.LoggerFactory;
  * There are some people that do not like dependency on SLF4J. Let's not force them to use it.
  */
 interface JsonUnitLogger {
-
     boolean isEnabled();
 
     void log(String message, Object... params);
+
+    JsonUnitLogger NULL_LOGGER = new JsonUnitLogger() {
+        @Override
+        public boolean isEnabled() {
+            return false;
+        }
+
+        @Override
+        public void log(String message, Object... params) {}
+    };
 
     final class SLF4JLogger implements JsonUnitLogger {
         private final Logger logger;
@@ -42,13 +51,4 @@ interface JsonUnitLogger {
             logger.debug(message, params);
         }
     }
-
-    final class NullLogger implements JsonUnitLogger {
-        public boolean isEnabled() {
-            return false;
-        }
-
-        public void log(String message, Object... params) {}
-    }
-
 }
