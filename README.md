@@ -370,11 +370,12 @@ Maven dependency
 JsonUnit is accessible in Maven central repository. In order for it to work, you need either, [Jackson](http://jackson.codehaus.org/) 1.x,
 Jackson 2.x, [Gson](https://code.google.com/p/google-gson/), [JSONObject](https://developer.android.com/reference/org/json/JSONObject.html) or [Moshi](https://github.com/square/moshi) on the classpath.
 
-```xml	
+
+```xml
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>1.26.0</version>
+    <version>1.27.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -385,7 +386,7 @@ To use fluent assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>1.26.0</version>
+    <version>1.27.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -396,7 +397,7 @@ To use Spring MVC assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>1.26.0</version>
+    <version>1.27.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -407,6 +408,9 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 1.27.0
+* Better array comparison and error messages
+
 ## 1.26.0
 * IDE friendly error messages
 * isStringEqualTo is chainable (thanks to @gsson)
