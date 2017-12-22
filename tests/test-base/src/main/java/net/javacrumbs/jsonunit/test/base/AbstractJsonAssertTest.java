@@ -1145,6 +1145,40 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
+    public void arrayWildcardForPathIgnoring() {
+        assertJsonEquals("[{\"a\":1, \"b\":0},{\"a\":1, \"b\":0}]", "[{\"a\":1, \"b\":2},{\"a\":1, \"b\":3}]", JsonAssert.whenIgnoringPaths("[*].b"));
+    }
+
+    @Test
+    public void arrayWildcardForPathIgnoringMultidimensional() {
+        assertJsonEquals("[[1, 2], [3, 4], [5, 6]]", "[[2, 2], [2, 4], [2, 6]]", JsonAssert.whenIgnoringPaths("[*][0]"));
+    }
+
+    @Test
+    public void multidimensionalArrayCompareFailure() {
+        try {
+            assertJsonEquals("[[1, 2], [3, 4], [5, 6]]", "[[2, 2], [2, 4], [2, 6]]");
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                "Different value found in node \"[0][0]\", expected: <1> but was: <2>.\n" +
+                "Different value found in node \"[1][0]\", expected: <3> but was: <2>.\n" +
+                "Different value found in node \"[2][0]\", expected: <5> but was: <2>.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void arrayWildcardForPathIgnoringFail() {
+        try {
+            assertJsonEquals("[{\"a\":1, \"b\":5},{\"a\":1, \"b\":5}]", "[{\"a\":1, \"b\":2},{\"a\":1, \"b\":3}]", JsonAssert.whenIgnoringPaths("[*].a"));
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                "Different value found in node \"[0].b\", expected: <5> but was: <2>.\n" +
+                "Different value found in node \"[1].b\", expected: <5> but was: <3>.\n", e.getMessage());
+        }
+    }
+
+    @Test
     public void ifMatcherDoesNotMatchReportDifference() {
         try {
             assertJsonEquals("{\"test\": \"${json-unit.matches:positive}\"}", "{\"test\":-1}", JsonAssert.withMatcher("positive", greaterThan(valueOf(0))));
