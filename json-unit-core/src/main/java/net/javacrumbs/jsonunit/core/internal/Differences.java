@@ -32,15 +32,15 @@ class Differences {
         add(String.format(message, args));
     }
 
-    void add(String message) {
+    private void add(String message) {
         messages.add(message);
     }
 
-    public boolean isEmpty() {
+    boolean isEmpty() {
         return messages.isEmpty();
     }
 
-    public void appendDifferences(StringBuilder builder) {
+    void appendDifferences(StringBuilder builder) {
         if (!messages.isEmpty()) {
             builder.append("JSON documents are different:\n");
             for (String message : messages) {

@@ -68,6 +68,7 @@ public class Diff {
     private final String startPath;
     private boolean compared = false;
     private final Configuration configuration;
+    private final PathMatcher pathsToBeIgnored;
 
     private final JsonUnitLogger diffLogger;
     private final JsonUnitLogger valuesLogger;
@@ -79,6 +80,7 @@ public class Diff {
         this.configuration = configuration;
         this.diffLogger = diffLogger;
         this.valuesLogger = valuesLogger;
+        this.pathsToBeIgnored = PathMatcher.create(configuration.getPathsToBeIgnored());
     }
 
     public static Diff create(Object expected, Object actual, String actualName, String startPath, Configuration configuration) {
@@ -136,12 +138,11 @@ public class Diff {
     }
 
     private void removePathsToBeIgnored(String path, Set<String> extraKeys) {
-        Set<String> pathsToBeIgnored = configuration.getPathsToBeIgnored();
-        if (!pathsToBeIgnored.isEmpty()) {
+        if (!configuration.getPathsToBeIgnored().isEmpty()) {
             Iterator<String> iterator = extraKeys.iterator();
             while (iterator.hasNext()) {
                 String keyWithPath = getPath(path, iterator.next());
-                if (pathsToBeIgnored.contains(keyWithPath)) {
+                if (shouldIgnorePath(keyWithPath)) {
                     iterator.remove();
                 }
             }
@@ -223,7 +224,7 @@ public class Diff {
      * @param fieldPath
      */
     private void compareNodes(Node expectedNode, Node actualNode, String fieldPath) {
-        if (configuration.getPathsToBeIgnored().contains(fieldPath)) {
+        if (shouldIgnorePath(fieldPath)) {
             return;
         }
 
@@ -288,6 +289,10 @@ public class Diff {
                     throw new IllegalStateException("Unexpected node type " + expectedNodeType);
             }
         }
+    }
+
+    private boolean shouldIgnorePath(String fieldPath) {
+        return pathsToBeIgnored.matches(fieldPath);
     }
 
     private boolean checkMatcher(Node expectedNode, Node actualNode, Object fieldPath) {
