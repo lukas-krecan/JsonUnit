@@ -174,6 +174,15 @@ assertJsonEquals(
 );
 ```
 
+Array index placeholder
+```java
+assertJsonEquals(
+    "[{\"a\":1, \"b\":0},{\"a\":1, \"b\":0}]", 
+    "[{\"a\":1, \"b\":2},{\"a\":1, \"b\":3}]", 
+    JsonAssert.whenIgnoringPaths("[*].b")
+);
+```
+
 Regular expressions
 -------------------
 It is also possible to use regular expressions to compare string values
@@ -375,7 +384,7 @@ Jackson 2.x, [Gson](https://code.google.com/p/google-gson/), [JSONObject](https:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>1.27.0</version>
+    <version>1.28.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -386,7 +395,7 @@ To use fluent assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>1.27.0</version>
+    <version>1.28.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -397,7 +406,7 @@ To use Spring MVC assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>1.27.0</version>
+    <version>1.28.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -408,6 +417,9 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 1.28.0
+* Support for [*] placeholder in ignored path
+
 ## 1.27.0
 * Better array comparison and error messages
 
