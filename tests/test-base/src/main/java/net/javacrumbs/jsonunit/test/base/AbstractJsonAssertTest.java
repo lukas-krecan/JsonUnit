@@ -45,6 +45,7 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.failIfNoException;
+import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertEquals;
 
@@ -1118,6 +1119,21 @@ public abstract class AbstractJsonAssertTest {
         assertJsonEquals("{test: '${json-unit.matches:isDivisibleBy}'}", "{\"test\":6}", JsonAssert.withMatcher("isDivisibleBy", divisionMatcher));
     }
 
+    @Test
+    public void shouldUseMultipleMatchers() {
+        Matcher<?> divisionMatcher = new DivisionMatcher();
+        Matcher<?> emptyMatcher = empty();
+
+        assertJsonEquals(
+            "{test: '${json-unit.matches:isDivisibleBy}3', x: '${json-unit.matches:isEmpty}'}",
+            "{\"test\":6, \"x\": []}",
+            JsonAssert
+                .withMatcher("isDivisibleBy", divisionMatcher)
+                .withMatcher("isEmpty", emptyMatcher)
+        );
+
+    }
+
     private static class DivisionMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
         private BigDecimal param;
 
@@ -1218,6 +1234,7 @@ public abstract class AbstractJsonAssertTest {
             assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <\"a\"> but was: <\"b\">.\n", e.getMessage());
         }
     }
+
 
     @Test
     public void testBinary() {
