@@ -142,7 +142,7 @@ public interface Node {
         }
 
         public Node element(int index) {
-            return null;
+            return MISSING_NODE;
         }
 
         public Iterator<KeyValue> fields() {

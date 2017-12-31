@@ -341,6 +341,18 @@ public abstract class AbstractJsonMatchersTest {
         }
     }
 
+    @Test
+    public void nullPointerExceptionTest() {
+        String message = "{"
+            + "     \"properties\":{"
+            + "         \"attr\":\"123\""
+            + "     }"
+            + "}";
+        String path = "properties.another[0]";
+        String expected = "VALUE";
+        jsonPartEquals(path, expected).matches(message);
+    }
+
     private void expectException() {
         fail("Exception expected");
     }
