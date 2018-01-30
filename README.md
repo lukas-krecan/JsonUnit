@@ -384,7 +384,7 @@ Jackson 2.x, [Gson](https://code.google.com/p/google-gson/), [JSONObject](https:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>1.28.1</version>
+    <version>1.28.2</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -395,7 +395,7 @@ To use fluent assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>1.28.1</version>
+    <version>1.28.2</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -406,7 +406,7 @@ To use Spring MVC assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>1.28.1</version>
+    <version>1.28.2</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -417,6 +417,9 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 1.28.2
+* Fixing matcher pattern
+
 ## 1.28.1
 * Fixing NPE when accessing element of nonexistent array
 
