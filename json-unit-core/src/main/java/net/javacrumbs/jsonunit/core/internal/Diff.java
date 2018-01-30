@@ -57,7 +57,7 @@ import static net.javacrumbs.jsonunit.core.internal.Node.NodeType;
  */
 public class Diff {
     private static final String REGEX_PLACEHOLDER = "${json-unit.regex}";
-    private static final Pattern MATCHER_PLACEHOLDER_PATTERN = Pattern.compile("\\$\\{json-unit.matches:(.+)\\}(.*)");
+    private static final Pattern MATCHER_PLACEHOLDER_PATTERN = Pattern.compile("\\$\\{json-unit.matches:(.+?)\\}(.*)");
 
     private static final JsonUnitLogger DEFAULT_DIFF_LOGGER = createLogger("net.javacrumbs.jsonunit.difference.diff");
     private static final JsonUnitLogger DEFAULT_VALUE_LOGGER = createLogger("net.javacrumbs.jsonunit.difference.values");

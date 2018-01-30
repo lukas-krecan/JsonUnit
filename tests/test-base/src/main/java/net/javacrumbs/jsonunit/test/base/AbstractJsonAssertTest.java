@@ -1134,6 +1134,18 @@ public abstract class AbstractJsonAssertTest {
 
     }
 
+    @Test
+    public void matcherNameShouldBeparsedUntilFirstCurlyBrace() throws Exception {
+        String expected =
+            "{ \"o\" : \"${json-unit.matches:embedded}{\\\"x\\\" : \\\"y\\\"}\" }";
+        String actual =
+            "{ \"o\" : \"{\\\"x\\\" : \\\"y\\\"}\" }";
+
+        JsonAssert.assertJsonEquals(expected, actual,
+            JsonAssert.withMatcher("embedded", new TrueMatcher()));
+
+    }
+
     private static class DivisionMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
         private BigDecimal param;
 
@@ -1152,6 +1164,27 @@ public abstract class AbstractJsonAssertTest {
 
         public void setParameter(String parameter) {
             this.param = new BigDecimal(parameter);
+        }
+    }
+
+    private static class TrueMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
+        private String param;
+
+        public boolean matches(Object item) {
+            return true;
+        }
+
+        public void describeTo(Description description) {
+            description.appendValue(param);
+        }
+
+        @Override
+        public void describeMismatch(Object item, Description description) {
+
+        }
+
+        public void setParameter(String parameter) {
+            this.param = parameter;
         }
     }
 
