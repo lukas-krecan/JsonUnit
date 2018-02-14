@@ -542,6 +542,11 @@ public abstract class AbstractJsonFluentAssertTest {
     }
 
     @Test
+    public void testContains() {
+        assertThatJson("[\"foo\", \"bar\"]").isArray().ofLength(2).thatContains("foo").thatContains("bar");
+    }
+
+    @Test
     public void intValueShouldMatch() {
         assertThatJson("{\"test\":1}").node("test").matches(equalTo(valueOf(1)));
     }
