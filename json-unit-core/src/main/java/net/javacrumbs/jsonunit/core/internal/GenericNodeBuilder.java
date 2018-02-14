@@ -303,11 +303,19 @@ class GenericNodeBuilder implements NodeBuilder {
         @Override
         public String toString() {
             StringBuilder builder = new StringBuilder();
-            builder.append('{');
-            for (KeyValue kv : this) {
-                builder.append('"').append(kv.getKey()).append("\":").append(kv.getValue());
+            builder.append("{");
+            Iterator<Node.KeyValue> entries = this.iterator();
+            while (entries.hasNext()) {
+                Node.KeyValue entry = entries.next();
+                builder
+                    .append('"').append(entry.getKey()).append('"')
+                    .append(":")
+                    .append(entry.getValue());
+                if (entries.hasNext()) {
+                    builder.append(",");
+                }
             }
-            builder.append('}');
+            builder.append("}");
             return builder.toString();
         }
     }

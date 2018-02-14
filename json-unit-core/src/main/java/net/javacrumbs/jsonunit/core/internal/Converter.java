@@ -126,6 +126,16 @@ class Converter {
         throw new IllegalStateException("Should not happen");
     }
 
+    Node valueToNode(Object source) {
+        for (int i = 0; i < factories.size(); i++) {
+            NodeFactory factory = factories.get(i);
+            if (isLastFactory(i) || factory.isPreferredFor(source)) {
+                return factory.valueToNode(source);
+            }
+        }
+        throw new IllegalStateException("Should not happen");
+    }
+
     private boolean isLastFactory(int i) {
         return factories.size() - 1 == i;
     }

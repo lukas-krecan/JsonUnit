@@ -46,6 +46,10 @@ public final class Path {
         return new Path(newPath, pathPrefix);
     }
 
+    public Path asPrefix() {
+        return new Path("", getFullPath());
+    }
+
     String getPath() {
         return path;
     }
@@ -55,8 +59,10 @@ public final class Path {
             return path;
         } else if (path.startsWith("[")) {
             return pathPrefix + path;
-        } else {
+        } else if (!path.isEmpty()){
             return pathPrefix + "." + path;
+        } else {
+            return pathPrefix;
         }
     }
 
@@ -76,6 +82,14 @@ public final class Path {
      */
     Path toElement(int i) {
         return copy(path + "[" + i + "]");
+    }
+
+    public Path to(String name) {
+        if (name.startsWith("[")){
+            return copy(path + name);
+        } else {
+            return toField(name);
+        }
     }
 
     public String toString() {

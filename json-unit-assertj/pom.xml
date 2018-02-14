@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>json-unit-json-path</artifactId>
+    <artifactId>json-unit-assertj</artifactId>
     <packaging>bundle</packaging>
 
     <description>
-        json-path adapter
+        JSON Assertions based on AssertJ
     </description>
 
     <parent>
@@ -13,10 +13,6 @@
         <version>1.31.2-SNAPSHOT</version>
     </parent>
 
-    <properties>
-        <osgi.exportPackage>net.javacrumbs.jsonunit.jsonpath.*</osgi.exportPackage>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>net.javacrumbs.json-unit</groupId>
@@ -24,9 +20,9 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.jayway.jsonpath</groupId>
-            <artifactId>json-path</artifactId>
-            <version>2.4.0</version>
+          <groupId>org.assertj</groupId>
+          <artifactId>assertj-core</artifactId>
+          <version>${assertj.version}</version>
         </dependency>
     </dependencies>
 
@@ -39,7 +35,7 @@
                     <archive>
                         <manifestEntries>
                             <Automatic-Module-Name>
-                                net.javacrumbs.jsonunit.jsonpath
+                                net.javacrumbs.jsonunit.assertj
                             </Automatic-Module-Name>
                         </manifestEntries>
                     </archive>

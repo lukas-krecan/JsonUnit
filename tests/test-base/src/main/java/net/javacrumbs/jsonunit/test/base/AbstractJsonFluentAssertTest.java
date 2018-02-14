@@ -30,6 +30,7 @@ import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.failIfNoException;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.everyItem;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -462,8 +463,8 @@ public abstract class AbstractJsonFluentAssertTest {
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\nMatcher \"positive\" does not match value -1 in node \"test\". <-1> was less than <0>\n", e.getMessage());
 
-            assertEquals(1, listener.getDifferenceList().size());
-            assertEquals("DIFFERENT Expected ${json-unit.matches:positive} in test got -1 in test", listener.getDifferenceList().get(0).toString());
+            assertThat(listener.getDifferenceList()).hasSize(1);
+            assertThat(listener.getDifferenceList().get(0).toString()).isEqualTo("DIFFERENT Expected ${json-unit.matches:positive} in test got -1 in test");
         }
     }
 

@@ -33,4 +33,12 @@ public interface NodeFactory {
      * @return
      */
     Node convertToNode(Object source, String label, boolean lenient);
+
+    /**
+     * Converts value to Json node. It can be Map, String, null, or primitive. Should not be parsed, just converted.
+     *
+     * @param source
+     * @return
+     */
+    Node valueToNode(Object source);
 }

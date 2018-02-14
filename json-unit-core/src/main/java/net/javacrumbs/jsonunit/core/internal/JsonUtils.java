@@ -53,6 +53,20 @@ public class JsonUtils {
         }
     }
 
+
+    /**
+     * Converts value to Json node. It can be Map, String, null, or primitive. Should not be parsed, just converted.
+     * @param source
+     * @return
+     */
+    public static Node valueToNode(Object source) {
+        if (source instanceof Node) {
+            return (Node) source;
+        } else {
+            return converter.valueToNode(source);
+        }
+    }
+
     /**
      * Returns node with given path.
      *
@@ -186,4 +200,5 @@ public class JsonUtils {
         }
         return true;
     }
+
 }
