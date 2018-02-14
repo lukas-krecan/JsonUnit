@@ -23,12 +23,6 @@
             <artifactId>json-unit-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.codehaus.jackson</groupId>
-            <artifactId>jackson-mapper-asl</artifactId>
-            <version>${jackson1.version}</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>
