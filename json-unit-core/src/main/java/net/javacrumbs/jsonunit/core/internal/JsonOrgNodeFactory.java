@@ -15,13 +15,13 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import net.javacrumbs.jsonunit.core.internal.GenericNodeBuilder.NodeSkeleton;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.Reader;
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -57,15 +57,15 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
         if (object instanceof JSONObject) {
             return new JSONObjectNode((JSONObject) object);
         } else if (object instanceof Number) {
-            return new NumberNode((Number) object);
+            return new GenericNodeBuilder.NumberNode((Number) object);
         } else if (object instanceof String) {
-            return new StringNode((String) object);
+            return new GenericNodeBuilder.StringNode((String) object);
         } else if (object instanceof Boolean) {
-            return new BooleanNode((Boolean) object);
+            return new GenericNodeBuilder.BooleanNode((Boolean) object);
         } else if (object instanceof JSONArray) {
             return new JSONArrayNode((JSONArray) object);
         } else if (JSONObject.NULL.equals(object)) {
-            return new NullNode();
+            return new GenericNodeBuilder.NullNode();
         } else if (object instanceof Map) {
             return new JSONObjectNode(new JSONObject((Map<?, ?>) object));
         } else if (object instanceof Collection || object.getClass().isArray()) {
@@ -77,90 +77,6 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
 
     public boolean isPreferredFor(Object source) {
         return source instanceof JSONObject || source instanceof JSONArray;
-    }
-
-
-    private static final class NullNode extends NodeSkeleton {
-        @Override
-        public boolean isNull() {
-            return true;
-        }
-
-        public NodeType getNodeType() {
-            return NodeType.NULL;
-        }
-
-        @Override
-        public String toString() {
-            return "null";
-        }
-    }
-
-
-    private static final class NumberNode extends NodeSkeleton {
-        private final Number value;
-
-        private NumberNode(Number value) {
-            this.value = value;
-        }
-
-        public NodeType getNodeType() {
-            return NodeType.NUMBER;
-        }
-
-        @Override
-        public BigDecimal decimalValue() {
-            return new BigDecimal(value.toString());
-        }
-
-        @Override
-        public String toString() {
-            return value.toString();
-        }
-    }
-
-    private static final class StringNode extends NodeSkeleton {
-        private final String value;
-
-        private StringNode(String value) {
-            this.value = value;
-        }
-
-        public NodeType getNodeType() {
-            return NodeType.STRING;
-        }
-
-        @Override
-        public String asText() {
-            return value;
-        }
-
-        @Override
-        public String toString() {
-            return '"' + value + '"';
-        }
-    }
-
-    private static final class BooleanNode extends NodeSkeleton {
-        private final Boolean value;
-
-        private BooleanNode(Boolean value) {
-            this.value = value;
-        }
-
-        public NodeType getNodeType() {
-            return NodeType.BOOLEAN;
-        }
-
-        @Override
-        public Boolean asBoolean() {
-            return value;
-        }
-
-        @Override
-        public String toString() {
-            return value.toString();
-        }
     }
 
     private static final class JSONArrayNode extends NodeSkeleton {
@@ -260,45 +176,4 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
         }
     }
 
-    private static abstract class NodeSkeleton extends AbstractNode {
-        public Node element(int index) {
-            throw new UnsupportedOperationException();
-        }
-
-        public Iterator<Node.KeyValue> fields() {
-            throw new UnsupportedOperationException();
-        }
-
-        public Node get(String key) {
-            return MISSING_NODE;
-        }
-
-        public boolean isMissingNode() {
-            return false;
-        }
-
-        public boolean isNull() {
-            return false;
-        }
-
-        public Iterator<Node> arrayElements() {
-            throw new UnsupportedOperationException();
-        }
-
-        public int size() {
-           throw new UnsupportedOperationException();
-        }
-
-        public String asText() {
-            throw new UnsupportedOperationException();
-        }
-
-        public BigDecimal decimalValue() {
-            throw new UnsupportedOperationException();
-        }
-
-        public Boolean asBoolean() {
-            throw new UnsupportedOperationException();
-        }
-    }
 }
