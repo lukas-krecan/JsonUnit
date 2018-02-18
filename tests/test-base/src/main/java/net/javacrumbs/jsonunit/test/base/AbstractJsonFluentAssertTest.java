@@ -26,6 +26,7 @@ import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartMatches;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.failIfNoException;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -192,6 +193,26 @@ public abstract class AbstractJsonFluentAssertTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <2> but was: <1>.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAssertPathWithDescription() {
+        try {
+            assertThatJson(jsonSource("{\"test\":1}", "$")).node("test").isEqualTo("2");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent value found in node \"$.test\", expected: <2> but was: <1>.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testPresentWithDescription() {
+        try {
+            assertThatJson(jsonSource("{\"test\":1}", "$")).node("test2").isPresent();
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("Different value found in node \"$.test2\", expected: <node to be present> but was: <missing>.", e.getMessage());
         }
     }
 

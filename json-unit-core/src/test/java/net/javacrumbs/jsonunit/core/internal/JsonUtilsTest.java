@@ -143,16 +143,16 @@ public class JsonUtilsTest {
     @Test
     public void testNodeAbsent() throws IOException {
         String json = "{\"test\":{\"value\":1, \"value2\": null}}";
-        assertFalse(nodeAbsent(json, "test", false));
-        assertFalse(nodeAbsent(json, "test.value", false));
-        assertTrue(nodeAbsent(json, "test.nonsense", false));
-        assertTrue(nodeAbsent(json, "root", false));
-        assertTrue(nodeAbsent(json, "test.value2", true));
-        assertFalse(nodeAbsent(json, "test.value2", false));
+        assertFalse(nodeAbsent(json, Path.create("test"), false));
+        assertFalse(nodeAbsent(json, Path.create("test.value"), false));
+        assertTrue(nodeAbsent(json, Path.create("test.nonsense"), false));
+        assertTrue(nodeAbsent(json, Path.create("root"), false));
+        assertTrue(nodeAbsent(json, Path.create("test.value2"), true));
+        assertFalse(nodeAbsent(json, Path.create("test.value2"), false));
     }
 
     @Test
     public void shouldIgnoreEscapedDot() throws IOException {
-        assertFalse(nodeAbsent("{\"test.1\":{\"value\":1}}", "test\\.1", false));
+        assertFalse(nodeAbsent("{\"test.1\":{\"value\":1}}", Path.create("test\\.1"), false));
     }
 }

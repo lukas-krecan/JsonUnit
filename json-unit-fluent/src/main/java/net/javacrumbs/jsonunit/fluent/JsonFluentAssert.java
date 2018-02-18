@@ -20,6 +20,7 @@ import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Node.NodeType;
+import net.javacrumbs.jsonunit.core.internal.Path;
 import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
@@ -32,6 +33,7 @@ import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.ARRAY;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
@@ -64,12 +66,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class JsonFluentAssert {
     private static final String ACTUAL = "actual";
 
-    private final String path;
+    private final Path path;
     private final Object actual;
     private final String description;
     private final Configuration configuration;
 
-    private JsonFluentAssert(Object actual, String path, String description, Configuration configuration) {
+    private JsonFluentAssert(Object actual, Path path, String description, Configuration configuration) {
         if (actual == null) {
             throw new IllegalArgumentException("Can not make assertions about null JSON.");
         }
@@ -79,8 +81,8 @@ public class JsonFluentAssert {
         this.configuration = configuration;
     }
 
-    private JsonFluentAssert(Object actual) {
-        this(actual, "", "", Configuration.empty());
+    private JsonFluentAssert(Object actual, String pathPrefix) {
+        this(actual, Path.create("", pathPrefix), "", Configuration.empty());
     }
 
     /**
@@ -92,7 +94,7 @@ public class JsonFluentAssert {
      * @return new JsonFluentAssert object.
      */
     public static JsonFluentAssert assertThatJson(Object json) {
-        return new JsonFluentAssert(convertToJson(json, ACTUAL));
+        return new JsonFluentAssert(convertToJson(json, ACTUAL), getPathPrefix(json));
     }
 
     /**
@@ -178,11 +180,11 @@ public class JsonFluentAssert {
      * assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[0]").isEqualTo("1");
      * </code>
      *
-     * @param path
+     * @param newPath
      * @return object comparing only node given by path.
      */
-    public JsonFluentAssert node(String path) {
-        return new JsonFluentAssert(actual, path, description, configuration);
+    public JsonFluentAssert node(String newPath) {
+        return new JsonFluentAssert(actual, path.copy(newPath), description, configuration);
     }
 
     /**
@@ -371,7 +373,7 @@ public class JsonFluentAssert {
         return this;
     }
 
-    private static void match(Object value, String path, Matcher<?> matcher) {
+    private static void match(Object value, Path path, Matcher<?> matcher) {
         Node node = getNode(value, path);
         assertThat("Node \"" + path + "\" does not match.", node.getValue(), (Matcher<? super Object>) matcher);
     }
@@ -432,7 +434,7 @@ public class JsonFluentAssert {
             }
         }
 
-        private JsonFluentAssertAfterAssertion(Object actual, String path, String description, Configuration configuration) {
+        private JsonFluentAssertAfterAssertion(Object actual, Path path, String description, Configuration configuration) {
             super(actual, path, description, configuration);
         }
 

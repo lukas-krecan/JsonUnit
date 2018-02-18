@@ -44,6 +44,7 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.failIfNoException;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.greaterThan;
@@ -1028,6 +1029,16 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
+    public void shouldAddPathPrefixToPath() {
+        try {
+            assertJsonPartEquals("2", jsonSource("{\"test\":1}", "$"), "test");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nDifferent value found in node \"$.test\", expected: <2> but was: <1>.\n", e.getMessage());
+        }
+    }
+
+    @Test
     public void testEqualsNode() throws IOException {
         assertJsonEquals(readValue("{\"test\":1}"), readValue("{\"test\": 1}"));
     }
@@ -1267,7 +1278,6 @@ public abstract class AbstractJsonAssertTest {
             assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <\"a\"> but was: <\"b\">.\n", e.getMessage());
         }
     }
-
 
     @Test
     public void testBinary() {
