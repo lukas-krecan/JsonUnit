@@ -17,6 +17,7 @@ package net.javacrumbs.jsonunit.core.internal;
 
 
 import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.JsonSource;
 import net.javacrumbs.jsonunit.core.Option;
 
 import java.util.regex.Matcher;
@@ -57,7 +58,11 @@ public class JsonUtils {
      * @return
      */
     public static Node convertToJson(Object source, String label, boolean lenient) {
-        return converter.convertToNode(source, label, lenient);
+        if (source instanceof JsonSource) {
+            return converter.convertToNode(((JsonSource) source).getJson(), label, lenient);
+        } else {
+            return converter.convertToNode(source, label, lenient);
+        }
     }
 
 

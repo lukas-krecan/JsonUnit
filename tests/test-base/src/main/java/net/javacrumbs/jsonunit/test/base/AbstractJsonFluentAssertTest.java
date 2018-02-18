@@ -15,6 +15,7 @@
  */
 package net.javacrumbs.jsonunit.test.base;
 
+import net.javacrumbs.jsonunit.core.DefaultJsonSource;
 import net.javacrumbs.jsonunit.core.Option;
 import org.junit.Test;
 
@@ -192,6 +193,16 @@ public abstract class AbstractJsonFluentAssertTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <2> but was: <1>.\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAssertPathWithDescription() {
+        try {
+            assertThatJson(new DefaultJsonSource("{\"test\":1}", "Comparing nodes in path \"$\"")).node("test").isEqualTo("2");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("[Comparing nodes in path \"$\"] JSON documents are different:\nDifferent value found in node \"test\", expected: <2> but was: <1>.\n", e.getMessage());
         }
     }
 

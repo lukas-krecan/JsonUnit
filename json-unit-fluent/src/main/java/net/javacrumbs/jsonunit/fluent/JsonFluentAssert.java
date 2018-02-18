@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit.fluent;
 
 import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.JsonSource;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Node;
@@ -79,8 +80,8 @@ public class JsonFluentAssert {
         this.configuration = configuration;
     }
 
-    private JsonFluentAssert(Object actual) {
-        this(actual, "", "", Configuration.empty());
+    private JsonFluentAssert(Object actual, String description) {
+        this(actual, "", description, Configuration.empty());
     }
 
     /**
@@ -92,7 +93,15 @@ public class JsonFluentAssert {
      * @return new JsonFluentAssert object.
      */
     public static JsonFluentAssert assertThatJson(Object json) {
-        return new JsonFluentAssert(convertToJson(json, ACTUAL));
+        return new JsonFluentAssert(convertToJson(json, ACTUAL), getDescription(json));
+    }
+
+    private static String getDescription(Object json) {
+        if (json instanceof JsonSource) {
+            return ((JsonSource) json).getDescription();
+        } else {
+            return "";
+        }
     }
 
     /**
