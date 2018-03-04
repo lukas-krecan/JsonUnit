@@ -44,7 +44,6 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
 import static net.javacrumbs.jsonunit.core.internal.JsonUnitLogger.NULL_LOGGER;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
 import static net.javacrumbs.jsonunit.core.internal.Node.KeyValue;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType;
@@ -65,7 +64,7 @@ public class Diff {
     private final Node expectedRoot;
     private final Node actualRoot;
     private final Differences differences = new Differences();
-    private final String startPath;
+    private final Path startPath;
     private boolean compared = false;
     private final Configuration configuration;
     private final PathMatcher pathsToBeIgnored;
@@ -73,7 +72,7 @@ public class Diff {
     private final JsonUnitLogger diffLogger;
     private final JsonUnitLogger valuesLogger;
 
-    private Diff(Node expected, Node actual, String startPath, Configuration configuration, JsonUnitLogger diffLogger, JsonUnitLogger valuesLogger) {
+    private Diff(Node expected, Node actual, Path startPath, Configuration configuration, JsonUnitLogger diffLogger, JsonUnitLogger valuesLogger) {
         this.expectedRoot = expected;
         this.actualRoot = actual;
         this.startPath = startPath;
@@ -83,13 +82,21 @@ public class Diff {
         this.pathsToBeIgnored = PathMatcher.create(configuration.getPathsToBeIgnored());
     }
 
-    public static Diff create(Object expected, Object actual, String actualName, String startPath, Configuration configuration) {
-        return new Diff(convertToJson(quoteIfNeeded(expected), "expected", true), convertToJson(actual, actualName, false), startPath, configuration, DEFAULT_DIFF_LOGGER, DEFAULT_VALUE_LOGGER);
+    public static Diff create(Object expected, Object actual, String actualName, String path, Configuration configuration) {
+        if (actual instanceof JsonSource) {
+            return create(expected, actual, actualName, Path.create(path, ((JsonSource) actual).getPathPrefix()), configuration);
+        } else {
+            return create(expected, actual, actualName, Path.create(path, ""), configuration);
+        }
+    }
+
+    public static Diff create(Object expected, Object actual, String actualName, Path path, Configuration configuration) {
+        return new Diff(convertToJson(quoteIfNeeded(expected), "expected", true), convertToJson(actual, actualName, false), path, configuration, DEFAULT_DIFF_LOGGER, DEFAULT_VALUE_LOGGER);
     }
 
     private void compare() {
         if (!compared) {
-            Node part = getNode(actualRoot, startPath);
+            Node part = startPath.getNode(actualRoot);
             if (part.isMissingNode()) {
                 structureDifferenceFound("Missing node in path \"%s\".", startPath);
             } else {
@@ -106,7 +113,7 @@ public class Diff {
      * @param actual
      * @param path
      */
-    private void compareObjectNodes(Node expected, Node actual, String path) {
+    private void compareObjectNodes(Node expected, Node actual, Path path) {
         Map<String, Node> expectedFields = getFields(expected);
         Map<String, Node> actualFields = getFields(actual);
 
@@ -132,16 +139,16 @@ public class Diff {
         for (String fieldName : commonFields(expectedFields, actualFields)) {
             Node expectedNode = expectedFields.get(fieldName);
             Node actualNode = actualFields.get(fieldName);
-            String fieldPath = getPath(path, fieldName);
+            Path fieldPath = path.toField(fieldName);
             compareNodes(expectedNode, actualNode, fieldPath);
         }
     }
 
-    private void removePathsToBeIgnored(String path, Set<String> extraKeys) {
+    private void removePathsToBeIgnored(Path path, Set<String> extraKeys) {
         if (!configuration.getPathsToBeIgnored().isEmpty()) {
             Iterator<String> iterator = extraKeys.iterator();
             while (iterator.hasNext()) {
-                String keyWithPath = getPath(path, iterator.next());
+                Path keyWithPath = path.toField(iterator.next());
                 if (shouldIgnorePath(keyWithPath)) {
                     iterator.remove();
                 }
@@ -167,7 +174,7 @@ public class Diff {
     }
 
 
-    private static String getMissingKeysMessage(Set<String> missingKeys, String path) {
+    private static String getMissingKeysMessage(Set<String> missingKeys, Path path) {
         if (!missingKeys.isEmpty()) {
             return "Missing: " + appendKeysToPrefix(missingKeys, path);
         } else {
@@ -181,7 +188,7 @@ public class Diff {
         return missingKeys;
     }
 
-    private static String getExtraKeysMessage(Set<String> extraKeys, String path) {
+    private static String getExtraKeysMessage(Set<String> extraKeys, Path path) {
         if (!extraKeys.isEmpty()) {
             return "Extra: " + appendKeysToPrefix(extraKeys, path);
         } else {
@@ -203,12 +210,12 @@ public class Diff {
         return configuration.getOptions().contains(option);
     }
 
-    private static String appendKeysToPrefix(Iterable<String> keys, String prefix) {
+    private static String appendKeysToPrefix(Iterable<String> keys, Path prefix) {
         Iterator<String> iterator = keys.iterator();
         StringBuilder buffer = new StringBuilder();
         while (iterator.hasNext()) {
             String key = iterator.next();
-            buffer.append("\"").append(getPath(prefix, key)).append("\"");
+            buffer.append("\"").append(prefix.toField(key)).append("\"");
             if (iterator.hasNext()) {
                 buffer.append(",");
             }
@@ -223,7 +230,7 @@ public class Diff {
      * @param actualNode
      * @param fieldPath
      */
-    private void compareNodes(Node expectedNode, Node actualNode, String fieldPath) {
+    private void compareNodes(Node expectedNode, Node actualNode, Path fieldPath) {
         if (shouldIgnorePath(fieldPath)) {
             return;
         }
@@ -291,8 +298,8 @@ public class Diff {
         }
     }
 
-    private boolean shouldIgnorePath(String fieldPath) {
-        return pathsToBeIgnored.matches(fieldPath);
+    private boolean shouldIgnorePath(Path fieldPath) {
+        return pathsToBeIgnored.matches(fieldPath.getPath());
     }
 
     private boolean checkMatcher(Node expectedNode, Node actualNode, Object fieldPath) {
@@ -320,7 +327,7 @@ public class Diff {
         return false;
     }
 
-    private boolean checkAny(NodeType type, String placeholder, String name, Node expectedNode, Node actualNode, String fieldPath) {
+    private boolean checkAny(NodeType type, String placeholder, String name, Node expectedNode, Node actualNode, Path fieldPath) {
         if (expectedNode.getNodeType() == NodeType.STRING && placeholder.equals(expectedNode.asText())) {
             if (actualNode.getNodeType() == type) {
                 return true;
@@ -332,7 +339,7 @@ public class Diff {
         return false;
     }
 
-    private void compareStringValues(String expectedValue, String actualValue, String path) {
+    private void compareStringValues(String expectedValue, String actualValue, Path path) {
         if (hasOption(IGNORING_VALUES)) {
             return;
         }
@@ -354,7 +361,7 @@ public class Diff {
         return expectedValue.startsWith(REGEX_PLACEHOLDER);
     }
 
-    private void compareValues(Object expectedValue, Object actualValue, String path) {
+    private void compareValues(Object expectedValue, Object actualValue, Path path) {
         if (!hasOption(IGNORING_VALUES)) {
             if (!expectedValue.equals(actualValue)) {
                 valueDifferenceFound("Different value found in node \"%s\", expected: <%s> but was: <%s>.", path, quoteTextValue(expectedValue), quoteTextValue(actualValue));
@@ -377,7 +384,7 @@ public class Diff {
     }
 
 
-    private void compareArrayNodes(Node expectedNode, Node actualNode, String path) {
+    private void compareArrayNodes(Node expectedNode, Node actualNode, Path path) {
         List<Node> expectedElements = asList(expectedNode.arrayElements());
         List<Node> actualElements = asList(actualNode.arrayElements());
 
@@ -404,8 +411,8 @@ public class Diff {
                 List<Integer> missingIndex = indexOf(expectedElements, missing);
                 List<Integer> extraIndex = indexOf(actualElements, extra);
 
-                valueDifferenceFound("Different value found when comparing expected array element %s to actual element %s.", getArrayPath(path, missingIndex.get(0)), getArrayPath(path, extraIndex.get(0)));
-                compareNodes(missing, extra, getArrayPath(path, extraIndex.get(0)));
+                valueDifferenceFound("Different value found when comparing expected array element %s to actual element %s.", path.toElement(missingIndex.get(0)), path.toElement(extraIndex.get(0)));
+                compareNodes(missing, extra, path.toElement(extraIndex.get(0)));
             } else if (failOnExtraArrayItems() && (!missingValues.isEmpty() || !extraValues.isEmpty())) {
                 valueDifferenceFound("Array \"%s\" has different content, expected: <%s> but was: <%s>. Missing values %s, extra values %s", path, expectedNode, actualNode, missingValues, extraValues);
             } else if (!missingValues.isEmpty()) {
@@ -413,7 +420,7 @@ public class Diff {
             }
         } else {
             for (int i = 0; i < Math.min(expectedElements.size(), actualElements.size()); i++) {
-                compareNodes(expectedElements.get(i), actualElements.get(i), getArrayPath(path, i));
+                compareNodes(expectedElements.get(i), actualElements.get(i), path.toElement(i));
             }
         }
     }
@@ -493,7 +500,7 @@ public class Diff {
         List<Integer> result = new ArrayList<Integer>();
         int i = 0;
         for (Node expected : expectedElements) {
-            Diff diff = new Diff(expected, actual, "", configuration, NULL_LOGGER, NULL_LOGGER);
+            Diff diff = new Diff(expected, actual, Path.create(""), configuration, NULL_LOGGER, NULL_LOGGER);
             if (diff.similar()) {
                 result.add(i);
             }
@@ -512,36 +519,6 @@ public class Diff {
         return Collections.unmodifiableList(result);
     }
 
-
-    /**
-     * Construct path to an element.
-     *
-     * @param parent
-     * @param name
-     * @return
-     */
-    private static String getPath(String parent, String name) {
-        if (parent.length() == 0) {
-            return name;
-        } else {
-            return parent + "." + name;
-        }
-    }
-
-    /**
-     * Constructs path to an array element.
-     *
-     * @param parent
-     * @param i
-     * @return
-     */
-    private String getArrayPath(String parent, int i) {
-        if (parent.length() == 0) {
-            return "[" + i + "]";
-        } else {
-            return parent + "[" + i + "]";
-        }
-    }
 
     private void structureDifferenceFound(String message, Object... arguments) {
         differences.add(message, arguments);
@@ -578,7 +555,7 @@ public class Diff {
                 diffLogger.log(getDifferences().trim());
             }
             if (valuesLogger.isEnabled()) {
-                valuesLogger.log("Comparing expected:\n{}\n------------\nwith actual:\n{}\n", expectedRoot, getNode(actualRoot, startPath));
+                valuesLogger.log("Comparing expected:\n{}\n------------\nwith actual:\n{}\n", expectedRoot, startPath.getNode(actualRoot));
             }
         }
     }

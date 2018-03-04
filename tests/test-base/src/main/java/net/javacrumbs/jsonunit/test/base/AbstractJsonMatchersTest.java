@@ -34,6 +34,7 @@ import static net.javacrumbs.jsonunit.JsonMatchers.jsonStringPartEquals;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
 import static net.javacrumbs.jsonunit.core.util.ResourceUtils.resource;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.failIfNoException;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -88,8 +89,21 @@ public abstract class AbstractJsonMatchersTest {
             assertThat("{\"test\":1}", jsonPartMatches("test2", is(valueOf(2))));
             failIfNoException();
         } catch (AssertionError e) {
-            assertEquals("\nExpected: node \"test2\" is <2>\n" +
-                    "     but: Node \"test2\" is missing.", e.getMessage());
+            assertEquals("\n" +
+                "Expected: node \"test2\" is <2>\n" +
+                "     but: Node \"test2\" is missing.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void shouldAddPathPrefixToPath() {
+        try {
+            assertThat(jsonSource("{\"test\":1}", "$"), jsonPartMatches("test", is(valueOf(2))));
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("\n" +
+                "Expected: node \"$.test\" is <2>\n" +
+                "     but: was <1>", e.getMessage());
         }
     }
 
@@ -241,8 +255,20 @@ public abstract class AbstractJsonMatchersTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("\n" +
-                    "Expected: Node \"test\" is absent.\n" +
-                    "     but: Node \"test\" is \"1\".", e.getMessage());
+                "Expected: Node \"test\" is absent.\n" +
+                "     but: Node \"test\" is \"1\".", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testAbsentShouldAddPathToThePrefix() {
+        try {
+            assertThat(jsonSource("{\"test\":1}", "$"), jsonNodeAbsent("test"));
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("\n" +
+                "Expected: Node \"$.test\" is absent.\n" +
+                "     but: Node \"$.test\" is \"1\".", e.getMessage());
         }
     }
 
@@ -258,8 +284,21 @@ public abstract class AbstractJsonMatchersTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("\n" +
-                    "Expected: Node \"test.a\" is present.\n" +
-                    "     but: Node \"test.a\" is missing.", e.getMessage());
+                "Expected: Node \"test.a\" is present.\n" +
+                "     but: Node \"test.a\" is missing.", e.getMessage());
+        }
+    }
+
+
+    @Test
+    public void testPresentShouldAddPathToThePrefix() {
+        try {
+            assertThat(jsonSource("{\"test\":1}", "$"), jsonNodePresent("test.a"));
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("\n" +
+                "Expected: Node \"$.test.a\" is present.\n" +
+                "     but: Node \"$.test.a\" is missing.", e.getMessage());
         }
     }
 
@@ -270,8 +309,8 @@ public abstract class AbstractJsonMatchersTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("\n" +
-                    "Expected: Node \"test\" is present.\n" +
-                    "     but: Node \"test\" is missing.", e.getMessage());
+                "Expected: Node \"test\" is present.\n" +
+                "     but: Node \"test\" is missing.", e.getMessage());
         }
     }
 

@@ -20,6 +20,7 @@ import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Options;
+import net.javacrumbs.jsonunit.core.internal.Path;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -28,6 +29,7 @@ import java.math.BigDecimal;
 
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
 
 /**
@@ -102,12 +104,34 @@ public class JsonMatchers {
         return new JsonNodePresenceMatcher<T>(path);
     }
 
-    private static abstract class AbstractJsonMatcher<T> extends BaseMatcher<T> implements ConfigurableJsonMatcher<T> {
-        protected final String path;
-        protected Configuration configuration = JsonAssert.getConfiguration();
+    private static abstract class AbstractMatcher<T> extends BaseMatcher<T> {
+        final String path;
+        Object actual;
 
-        public AbstractJsonMatcher(String path) {
+        AbstractMatcher(String path) {
             this.path = path;
+        }
+
+        @Override
+        public final boolean matches(Object item) {
+            actual = item;
+            return doMatch(item);
+        }
+
+        abstract boolean doMatch(Object item);
+
+        Path getPath() {
+            return Path.create(path, getPathPrefix(actual));
+        }
+    }
+
+    private static abstract class AbstractJsonMatcher<T> extends AbstractMatcher<T> implements ConfigurableJsonMatcher<T> {
+
+        Configuration configuration = JsonAssert.getConfiguration();
+
+
+        AbstractJsonMatcher(String path) {
+            super(path);
         }
 
         public ConfigurableJsonMatcher<T> withTolerance(BigDecimal tolerance) {
@@ -153,7 +177,7 @@ public class JsonMatchers {
             this.expected = expected;
         }
 
-        public boolean matches(Object item) {
+        boolean doMatch(Object item) {
             Diff diff = create(expected, item, FULL_JSON, path, configuration);
             if (!diff.similar()) {
                 differences = diff.differences();
@@ -185,17 +209,17 @@ public class JsonMatchers {
             super(path);
         }
 
-        public boolean matches(Object item) {
+        boolean doMatch(Object item) {
             return nodeAbsent(item, path, configuration);
         }
 
         public void describeTo(Description description) {
-            description.appendText("Node \"" + path + "\" is absent.");
+            description.appendText("Node \"" + getPath() + "\" is absent.");
         }
 
         @Override
         public void describeMismatch(Object item, Description description) {
-            description.appendText("Node \"" + path + "\" is \"" + getNode(item, path) + "\".");
+            description.appendText("Node \"" + getPath() + "\" is \"" + getNode(item, path) + "\".");
         }
     }
 
@@ -204,30 +228,29 @@ public class JsonMatchers {
             super(path);
         }
 
-        public boolean matches(Object item) {
-            return !nodeAbsent(item, path, configuration);
+        boolean doMatch(Object item) {
+            return !nodeAbsent(item, getPath(), configuration);
         }
 
         public void describeTo(Description description) {
-            description.appendText("Node \"" + path + "\" is present.");
+            description.appendText("Node \"" + getPath() + "\" is present.");
         }
 
         @Override
         public void describeMismatch(Object item, Description description) {
-            description.appendText("Node \"" + path + "\" is missing.");
+            description.appendText("Node \"" + getPath() + "\" is missing.");
         }
     }
 
-    private static final class MatcherApplyingMatcher<T> extends BaseMatcher<T> {
-        private final String path;
+    private static final class MatcherApplyingMatcher<T> extends AbstractMatcher<T> {
         private final Matcher<?> matcher;
 
-        public MatcherApplyingMatcher(String path, Matcher<?> matcher) {
-            this.path = path;
+        MatcherApplyingMatcher(String path, Matcher<?> matcher) {
+            super(path);
             this.matcher = matcher;
         }
 
-        public boolean matches(Object item) {
+        boolean doMatch(Object item) {
             Node node = getNode(item, path);
             if (!node.isMissingNode()) {
                 return matcher.matches(node.getValue());
@@ -238,7 +261,7 @@ public class JsonMatchers {
         }
 
         public void describeTo(Description description) {
-            description.appendText("node \"" + path + "\" ");
+            description.appendText("node \"" + getPath() + "\" ");
             matcher.describeTo(description);
         }
 
@@ -248,7 +271,7 @@ public class JsonMatchers {
             if (!node.isMissingNode()) {
                 super.describeMismatch(node.getValue(), description);
             } else {
-                description.appendText("Node \"" + path + "\" is missing.");
+                description.appendText("Node \"" + getPath() + "\" is missing.");
             }
         }
     }
