@@ -50,6 +50,16 @@ public final class Path {
         return path;
     }
 
+    String getFullPath() {
+        if (pathPrefix.isEmpty()) {
+            return path;
+        } else if (path.startsWith("[")) {
+            return pathPrefix + path;
+        } else {
+            return pathPrefix + "." + path;
+        }
+    }
+
     /**
      * Construct path to a filed.
      */
@@ -69,13 +79,7 @@ public final class Path {
     }
 
     public String toString() {
-        if (pathPrefix.isEmpty()) {
-            return path;
-        } else if (path.startsWith("[")) {
-            return pathPrefix + path;
-        } else {
-            return pathPrefix + "." + path;
-        }
+        return getFullPath();
     }
 
     /**

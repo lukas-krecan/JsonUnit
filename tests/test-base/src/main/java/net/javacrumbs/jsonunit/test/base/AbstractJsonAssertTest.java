@@ -1206,7 +1206,49 @@ public abstract class AbstractJsonAssertTest {
 
     @Test
     public void arrayWildcardForPathIgnoring() {
-        assertJsonEquals("[{\"a\":1, \"b\":0},{\"a\":1, \"b\":0}]", "[{\"a\":1, \"b\":2},{\"a\":1, \"b\":3}]", JsonAssert.whenIgnoringPaths("[*].b"));
+        assertJsonEquals("[{\"a\":1, \"b\":0},{\"a\":2, \"b\":0}]", "[{\"a\":1, \"b\":2},{\"a\":2, \"b\":3}]", JsonAssert.whenIgnoringPaths("[*].b"));
+    }
+
+    @Test
+    public void arrayWildcardForPathIgnoringArrayOrder() {
+        assertJsonEquals("[{\"a\":1, \"b\":0},{\"a\":2, \"b\":0}]", "[{\"a\":2, \"b\":2},{\"a\":1, \"b\":3}]", JsonAssert.whenIgnoringPaths("[*].b").when(IGNORING_ARRAY_ORDER));
+    }
+
+    @Test
+    public void arrayWildcardShouldWorkWhenIgnoringArrayOrder() {
+        String expected = "{\n" +
+            "  \"calendars\": [\n" +
+            "    {\n" +
+            "      \"dates\": [\n" +
+            "        {\n" +
+            "          \"id\": \"date-8c9c9ffa58fee47b47c2c1eb511c4e6c\",\n" +
+            "          \"type\": \"NOTIFICATION\",\n" +
+            "          \"from\": 1\n" +
+            "        }\n" +
+            "      ]\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
+
+        String actual = "{\n" +
+            "  \"calendars\": [\n" +
+            "    {\n" +
+            "      \"dates\": [\n" +
+            "        {\n" +
+            "          \"id\": \"date-8c9c9ffa58fee47b47c2c1eb511c4e6c\",\n" +
+            "          \"type\": \"NOTIFICATION\",\n" +
+            "          \"from\": 2\n" +
+            "        }\n" +
+            "      ]\n" +
+            "    }\n" +
+            "  ]\n" +
+            "}";
+
+        assertJsonEquals(expected, actual,
+            JsonAssert.whenIgnoringPaths(
+                "calendars[*].dates[*].from"
+            ).when(IGNORING_ARRAY_ORDER)
+        );
     }
 
     @Test

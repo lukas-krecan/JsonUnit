@@ -299,7 +299,7 @@ public class Diff {
     }
 
     private boolean shouldIgnorePath(Path fieldPath) {
-        return pathsToBeIgnored.matches(fieldPath.getPath());
+        return pathsToBeIgnored.matches(fieldPath.getFullPath());
     }
 
     private boolean checkMatcher(Node expectedNode, Node actualNode, Object fieldPath) {
@@ -401,15 +401,15 @@ public class Diff {
         }
 
         if (hasOption(IGNORING_ARRAY_ORDER)) {
-            ArrayComparison arrayComparison = compareArraysIgnoringOrder(expectedElements, actualElements);
+            ArrayComparison arrayComparison = compareArraysIgnoringOrder(expectedElements, actualElements, path);
             List<Node> missingValues = arrayComparison.missingValues;
             List<Node> extraValues = arrayComparison.extraValues;
             if (expectedElements.size() == actualElements.size() && missingValues.size() == 1 && extraValues.size() == 1) {
                 // handling special case where only one difference is found.
                 Node missing = missingValues.get(0);
                 Node extra = extraValues.get(0);
-                List<Integer> missingIndex = indexOf(expectedElements, missing);
-                List<Integer> extraIndex = indexOf(actualElements, extra);
+                List<Integer> missingIndex = arrayComparison.indexOf(expectedElements, missing);
+                List<Integer> extraIndex = arrayComparison.indexOf(actualElements, extra);
 
                 valueDifferenceFound("Different value found when comparing expected array element %s to actual element %s.", path.toElement(missingIndex.get(0)), path.toElement(extraIndex.get(0)));
                 compareNodes(missing, extra, path.toElement(extraIndex.get(0)));
@@ -425,29 +425,33 @@ public class Diff {
         }
     }
 
-    private ArrayComparison compareArraysIgnoringOrder(List<Node> expectedElements, List<Node> actualElements) {
-        return new ArrayComparison(expectedElements, actualElements).compareArraysIgnoringOrder();
+    private ArrayComparison compareArraysIgnoringOrder(List<Node> expectedElements, List<Node> actualElements, Path path) {
+        return new ArrayComparison(expectedElements, actualElements, path, configuration).compareArraysIgnoringOrder();
     }
 
-    private class ArrayComparison {
+    private static class ArrayComparison {
         private final int compareFrom;
         private final List<Node> actualElements;
         private final List<Node> extraValues;
         private final List<Node> missingValues;
+        private final Path path;
+        private final Configuration configuration;
 
-        private ArrayComparison(int compareFrom, List<Node> actualElements, List<Node> extraValues, List<Node> missingValues) {
+        private ArrayComparison(int compareFrom, List<Node> actualElements, List<Node> extraValues, List<Node> missingValues, Path path, Configuration configuration) {
             this.compareFrom = compareFrom;
             this.actualElements = actualElements;
             this.extraValues = extraValues;
             this.missingValues = missingValues;
+            this.path = path;
+            this.configuration = configuration;
         }
 
-        ArrayComparison(List<Node> expectedElements, List<Node> actualElements) {
-            this(0, actualElements, new ArrayList<Node>(), new ArrayList<Node>(expectedElements));
+        ArrayComparison(List<Node> expectedElements, List<Node> actualElements, Path path, Configuration configuration) {
+            this(0, actualElements, new ArrayList<Node>(), new ArrayList<Node>(expectedElements), path, configuration);
         }
 
         ArrayComparison copy(int compareFrom) {
-            return new ArrayComparison(compareFrom, actualElements, new ArrayList<Node>(extraValues), new ArrayList<Node>(missingValues));
+            return new ArrayComparison(compareFrom, actualElements, new ArrayList<Node>(extraValues), new ArrayList<Node>(missingValues), path, configuration);
         }
 
         private ArrayComparison compareArraysIgnoringOrder() {
@@ -475,8 +479,28 @@ public class Diff {
             return this;
         }
 
+        /**
+         * Finds element in the expected elements.
+         *
+         * @param expectedElements
+         * @param actual
+         * @return
+         */
+        private List<Integer> indexOf(List<Node> expectedElements, Node actual) {
+            List<Integer> result = new ArrayList<Integer>();
+            int i = 0;
+            for (Node expected : expectedElements) {
+                Diff diff = new Diff(expected, actual, Path.create("", path.toElement(i).getFullPath()), configuration, NULL_LOGGER, NULL_LOGGER);
+                if (diff.similar()) {
+                    result.add(i);
+                }
+                i++;
+            }
+            return result;
+        }
+
         private boolean isMatching() {
-            return missingValues.isEmpty() && (extraValues.isEmpty() || !failOnExtraArrayItems());
+            return missingValues.isEmpty() && (extraValues.isEmpty() || !configuration.getOptions().contains(Option.IGNORING_EXTRA_ARRAY_ITEMS));
         }
 
         private void removeMissing(int index) {
@@ -487,26 +511,6 @@ public class Diff {
 
     private boolean failOnExtraArrayItems() {
         return !hasOption(IGNORING_EXTRA_ARRAY_ITEMS);
-    }
-
-    /**
-     * Finds element in the expected elements. Can not use Jackson comparison since we need to take Options into account
-     *
-     * @param expectedElements
-     * @param actual
-     * @return
-     */
-    private List<Integer> indexOf(List<Node> expectedElements, Node actual) {
-        List<Integer> result = new ArrayList<Integer>();
-        int i = 0;
-        for (Node expected : expectedElements) {
-            Diff diff = new Diff(expected, actual, Path.create(""), configuration, NULL_LOGGER, NULL_LOGGER);
-            if (diff.similar()) {
-                result.add(i);
-            }
-            i++;
-        }
-        return result;
     }
 
 

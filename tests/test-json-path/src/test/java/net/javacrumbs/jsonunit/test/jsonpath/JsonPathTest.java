@@ -43,7 +43,7 @@ public class JsonPathTest {
     }
 
     @Test
-    public void shouldBeAbletoUseObjects() {
+    public void shouldBeAbleToUseObjects() {
         try {
             assertThatJson(inPath(json, "$.store.book[0]"))
                 .isEqualTo(
@@ -58,6 +58,19 @@ public class JsonPathTest {
             assertEquals("JSON documents are different:\n" +
                 "Different value found in node \"$.store.book[0].price\", expected: <8.96> but was: <8.95>.\n", e.getMessage());
         }
+    }
+
+    @Test
+    public void shouldIgnorePath() {
+        assertThatJson(inPath(json, "$.store.book[0]"))
+            .whenIgnoringPaths("$.store.book[*].price")
+            .isEqualTo(
+                "            {\n" +
+                "                \"category\": \"reference\",\n" +
+                "                \"author\": \"Nigel Rees\",\n" +
+                "                \"title\": \"Sayings of the Century\",\n" +
+                "                \"price\": 8.96\n" +
+                "            }");
     }
 
 

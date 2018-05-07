@@ -476,5 +476,16 @@ public class JsonFluentAssert {
         public JsonFluentAssert ignoring(String ignorePlaceholder) {
             return super.ignoring(ignorePlaceholder);
         }
+
+        /**
+         * This method should be called before assertion.
+         * @param pathsToBeIgnored
+         * @return
+         */
+        @Override
+        @Deprecated
+        public JsonFluentAssert whenIgnoringPaths(String... pathsToBeIgnored) {
+            return super.whenIgnoringPaths(pathsToBeIgnored);
+        }
     }
 }
