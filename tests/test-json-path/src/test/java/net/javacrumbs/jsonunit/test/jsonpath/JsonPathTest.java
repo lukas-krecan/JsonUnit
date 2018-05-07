@@ -15,6 +15,7 @@
  */
 package net.javacrumbs.jsonunit.test.jsonpath;
 
+import net.javacrumbs.jsonunit.core.Option;
 import org.junit.Test;
 
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
@@ -27,6 +28,14 @@ public class JsonPathTest {
     public void shouldBeAbleToUseSimpleValues() {
         assertThatJson(inPath(json, "$.store.book[*].author"))
             .isEqualTo("['Nigel Rees', 'Evelyn Waugh', 'Herman Melville', 'J. R. R. Tolkien']");
+
+    }
+
+    @Test
+    public void shouldBeAbleToUseSimpleValuesAndIgnoreArrayOrder() {
+        assertThatJson(inPath(json, "$.store.book[*].author"))
+            .when(Option.IGNORING_ARRAY_ORDER)
+            .isEqualTo("['J. R. R. Tolkien', 'Nigel Rees', 'Evelyn Waugh', 'Herman Melville']");
 
     }
 
