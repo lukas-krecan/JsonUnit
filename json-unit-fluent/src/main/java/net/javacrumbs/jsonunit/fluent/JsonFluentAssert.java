@@ -400,7 +400,7 @@ public class JsonFluentAssert {
          */
         public ArrayAssert ofLength(int expectedLength) {
             if (array.size() != expectedLength) {
-                failWithMessage("Node \"" + path + "\" has invalid length, expected: <" + array.size() + "> but was: <" + expectedLength + ">.");
+                failWithMessage("Node \"" + path + "\" has invalid length, expected: <" + expectedLength + "> but was: <" + array.size() + ">.");
             }
             return this;
         }
