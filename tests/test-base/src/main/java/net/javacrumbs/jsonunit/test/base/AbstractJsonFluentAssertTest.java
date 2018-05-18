@@ -513,7 +513,7 @@ public abstract class AbstractJsonFluentAssertTest {
             assertThatJson("{\"test\":[1,2,3]}").node("test").isArray().ofLength(2);
             failIfNoException();
         } catch (AssertionError e) {
-            assertEquals("Node \"test\" has invalid length, expected: <3> but was: <2>.", e.getMessage());
+            assertEquals("Node \"test\" has invalid length, expected: <2> but was: <3>.", e.getMessage());
         }
     }
 
