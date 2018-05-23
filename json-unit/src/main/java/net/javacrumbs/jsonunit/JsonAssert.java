@@ -18,10 +18,14 @@ package net.javacrumbs.jsonunit;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
+import net.javacrumbs.jsonunit.core.internal.Filter;
 import net.javacrumbs.jsonunit.core.internal.Options;
 import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static net.javacrumbs.jsonunit.core.Option.COMPARING_ONLY_STRUCTURE;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
@@ -47,6 +51,7 @@ public class JsonAssert {
     private static final String ACTUAL = "actual";
     private static final String ROOT = "";
     private static Configuration configuration = Configuration.empty();
+    private static List<Filter> filters = new ArrayList<Filter>();
 
     private JsonAssert() {
         //nothing
@@ -77,7 +82,7 @@ public class JsonAssert {
      * Compares part of the JSON. Path has this format "root.array[0].value".
      */
     public static void assertJsonPartEquals(Object expected, Object fullJson, String path, Configuration configuration) {
-        Diff diff = create(expected, fullJson, FULL_JSON, path, configuration);
+        Diff diff = create(expected, fullJson, FULL_JSON, path, configuration, filters);
         if (!diff.similar()) {
             doFail(diff.toString());
         }
@@ -110,7 +115,7 @@ public class JsonAssert {
      * Path has this format "root.array[0].value".
      */
     public static void assertJsonPartNotEquals(Object expected, Object fullJson, String path, Configuration configuration) {
-        Diff diff = create(expected, fullJson, FULL_JSON, path, configuration);
+        Diff diff = create(expected, fullJson, FULL_JSON, path, configuration, filters);
         if (diff.similar()) {
             if (ROOT.equals(path)) {
                 doFail("Expected different values but the values were equal.");
@@ -128,7 +133,7 @@ public class JsonAssert {
      */
     @Deprecated
     public static void assertJsonStructureEquals(Object expected, Object actual) {
-        Diff diff = create(expected, actual, ACTUAL, ROOT, configuration.withOptions(COMPARING_ONLY_STRUCTURE));
+        Diff diff = create(expected, actual, ACTUAL, ROOT, configuration.withOptions(COMPARING_ONLY_STRUCTURE), filters);
         if (!diff.similar()) {
             doFail(diff.differences());
         }
@@ -142,7 +147,7 @@ public class JsonAssert {
      */
     @Deprecated
     public static void assertJsonPartStructureEquals(Object expected, Object fullJson, String path) {
-        Diff diff = create(expected, fullJson, FULL_JSON, path, configuration.withOptions(COMPARING_ONLY_STRUCTURE));
+        Diff diff = create(expected, fullJson, FULL_JSON, path, configuration.withOptions(COMPARING_ONLY_STRUCTURE), filters);
         if (!diff.similar()) {
             doFail(diff.differences());
         }
@@ -235,6 +240,10 @@ public class JsonAssert {
      */
     public static void setOptions(Option firstOption, Option... rest) {
         configuration = configuration.withOptions(Options.empty().with(firstOption, rest));
+    }
+
+    public static void setFilters(Filter... filter) {
+        filters = Arrays.asList(filter);
     }
 
     /**

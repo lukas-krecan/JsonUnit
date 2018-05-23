@@ -1,12 +1,12 @@
 /**
  * Copyright 2009-2018 the original author or authors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,8 +16,11 @@
 package net.javacrumbs.jsonunit.test.all;
 
 import net.javacrumbs.jsonunit.test.base.AbstractJsonFluentAssertTest;
+import net.javacrumbs.jsonunit.test.base.DebugFilter;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
 import org.junit.Test;
+
+import java.io.IOException;
 
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByGson;
@@ -34,6 +37,12 @@ public class AllJsonFluentAssertTest extends AbstractJsonFluentAssertTest {
     public void testMixedGsonAndJsonOrg() {
         assertThatJson(readByGson("{\"test\":1}")).isEqualTo(readByJsonOrg("{\"test\": 1}"));
     }
+
+    @Test
+    public void testOneFilter() throws IOException {
+        assertThatJson("{\"test\":1}").withFilters(new DebugFilter()).isEqualTo("{\"test\": 1}");
+    }
+
 
     protected Object readValue(String value) {
         return JsonTestUtils.readByJackson1(value);

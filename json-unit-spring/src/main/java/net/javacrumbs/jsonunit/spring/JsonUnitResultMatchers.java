@@ -18,6 +18,7 @@ package net.javacrumbs.jsonunit.spring;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
+import net.javacrumbs.jsonunit.core.internal.Filter;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 import net.javacrumbs.jsonunit.core.internal.Node;
 import org.hamcrest.Matcher;
@@ -25,6 +26,9 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
@@ -45,10 +49,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class JsonUnitResultMatchers {
     private final String path;
     private final Configuration configuration;
+    private static List<Filter> filters = new ArrayList<Filter>();
 
-    private JsonUnitResultMatchers(String path, Configuration configuration) {
+    private JsonUnitResultMatchers(String path, Configuration configuration, List<Filter> filters) {
         this.path = path;
         this.configuration = configuration;
+        this.filters = filters;
     }
 
     /**
@@ -57,7 +63,7 @@ public class JsonUnitResultMatchers {
      * @return
      */
     public static JsonUnitResultMatchers json() {
-        return new JsonUnitResultMatchers("", Configuration.empty());
+        return new JsonUnitResultMatchers("", Configuration.empty(), filters);
     }
 
     /**
@@ -72,7 +78,7 @@ public class JsonUnitResultMatchers {
      * @return object comparing only node given by path.
      */
     public JsonUnitResultMatchers node(String path) {
-        return new JsonUnitResultMatchers(path, configuration);
+        return new JsonUnitResultMatchers(path, configuration, filters);
     }
 
     /**
@@ -208,7 +214,7 @@ public class JsonUnitResultMatchers {
      * The default value is ${json-unit.ignore}
      */
     public JsonUnitResultMatchers ignoring(String ignorePlaceholder) {
-        return new JsonUnitResultMatchers(path, configuration.withIgnorePlaceholder(ignorePlaceholder));
+        return new JsonUnitResultMatchers(path, configuration.withIgnorePlaceholder(ignorePlaceholder), filters);
     }
 
     /**
@@ -224,7 +230,11 @@ public class JsonUnitResultMatchers {
      * For example, if set to 0.01, ignores all differences lower than 0.01, so 1 and 0.9999 are considered equal.
      */
     public JsonUnitResultMatchers withTolerance(BigDecimal tolerance) {
-        return new JsonUnitResultMatchers(path, configuration.withTolerance(tolerance));
+        return new JsonUnitResultMatchers(path, configuration.withTolerance(tolerance), filters);
+    }
+
+    public JsonUnitResultMatchers withFilters(Filter... filters) {
+        return new JsonUnitResultMatchers(path, configuration, Arrays.asList(filters));
     }
 
     /**
@@ -234,7 +244,7 @@ public class JsonUnitResultMatchers {
      * @see net.javacrumbs.jsonunit.core.Option
      */
     public JsonUnitResultMatchers when(Option firstOption, Option... otherOptions) {
-        return new JsonUnitResultMatchers(path, configuration.withOptions(firstOption, otherOptions));
+        return new JsonUnitResultMatchers(path, configuration.withOptions(firstOption, otherOptions), filters);
     }
 
     /**
@@ -279,7 +289,7 @@ public class JsonUnitResultMatchers {
         }
 
         protected Diff createDiff(Object expected, Object actual) {
-            return create(expected, actual, "actual", path, configuration);
+            return create(expected, actual, "actual", path, configuration, filters);
         }
 
         protected void isPresent(Object actual) {

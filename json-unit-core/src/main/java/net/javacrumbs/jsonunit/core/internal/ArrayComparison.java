@@ -30,18 +30,20 @@ class ArrayComparison {
     private final List<NodeWithIndex> missingValues;
     private final Path path;
     private final Configuration configuration;
+    private final List<Filter> filters;
 
-    private ArrayComparison(int compareFrom, List<Node> actualElements, List<NodeWithIndex> extraValues, List<NodeWithIndex> missingValues, Path path, Configuration configuration) {
+    private ArrayComparison(int compareFrom, List<Node> actualElements, List<NodeWithIndex> extraValues, List<NodeWithIndex> missingValues, Path path, Configuration configuration, List<Filter> filters) {
         this.compareFrom = compareFrom;
         this.actualElements = actualElements;
         this.extraValues = extraValues;
         this.missingValues = missingValues;
         this.path = path;
         this.configuration = configuration;
+        this.filters = filters;
     }
 
-    ArrayComparison(List<Node> expectedElements, List<Node> actualElements, Path path, Configuration configuration) {
-        this(0, actualElements, new ArrayList<NodeWithIndex>(), new ArrayList<NodeWithIndex>(addIndex(expectedElements)), path, configuration);
+    ArrayComparison(List<Node> expectedElements, List<Node> actualElements, Path path, Configuration configuration, List<Filter> filters) {
+        this(0, actualElements, new ArrayList<NodeWithIndex>(), new ArrayList<NodeWithIndex>(addIndex(expectedElements)), path, configuration, filters);
     }
 
     private static List<NodeWithIndex> addIndex(List<Node> expectedElements) {
@@ -54,7 +56,7 @@ class ArrayComparison {
 
 
     ArrayComparison copy(int compareFrom) {
-        return new ArrayComparison(compareFrom, actualElements, new ArrayList<NodeWithIndex>(extraValues), new ArrayList<NodeWithIndex>(missingValues), path, configuration);
+        return new ArrayComparison(compareFrom, actualElements, new ArrayList<NodeWithIndex>(extraValues), new ArrayList<NodeWithIndex>(missingValues), path, configuration, filters);
     }
 
     ArrayComparison compareArraysIgnoringOrder() {
@@ -108,7 +110,7 @@ class ArrayComparison {
         List<Integer> result = new ArrayList<Integer>();
         int i = 0;
         for (NodeWithIndex expected : expectedElements) {
-            Diff diff = new Diff(expected.getNode(), actual, Path.create("", path.toElement(i).getFullPath()), configuration, NULL_LOGGER, NULL_LOGGER);
+            Diff diff = new Diff(expected.getNode(), actual, Path.create("", path.toElement(i).getFullPath()), configuration, NULL_LOGGER, NULL_LOGGER, filters);
             if (diff.similar()) {
                 result.add(i);
             }

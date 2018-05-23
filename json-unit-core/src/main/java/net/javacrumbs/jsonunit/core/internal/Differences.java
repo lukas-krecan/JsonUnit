@@ -21,19 +21,31 @@ import java.util.List;
 /**
  * List of differences
  */
-class Differences {
+public class Differences {
 
+    private final List<DiffNode> diffNodes = new ArrayList<DiffNode>();
     private final List<String> messages = new ArrayList<String>();
 
     Differences() {
     }
 
-    public void add(String message, Object... args) {
+    void add(String message, Object... args) {
         add(String.format(message, args));
     }
 
     private void add(String message) {
         messages.add(message);
+    }
+
+    void add(DiffNode diffNode) {
+        diffNodes.add(diffNode);
+    }
+
+    public List<DiffNode> getDiffNodes() {
+        return diffNodes;
+    }
+    public List<String> getMessages() {
+        return messages;
     }
 
     boolean isEmpty() {

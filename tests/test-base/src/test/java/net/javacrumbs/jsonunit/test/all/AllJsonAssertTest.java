@@ -17,6 +17,7 @@ package net.javacrumbs.jsonunit.test.all;
 
 import net.javacrumbs.jsonunit.JsonAssert;
 import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest;
+import net.javacrumbs.jsonunit.test.base.DebugFilter;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
 import net.javacrumbs.jsonunit.test.base.beans.Jackson1Bean;
 import net.javacrumbs.jsonunit.test.base.beans.Jackson1IgnorepropertyBean;
@@ -134,6 +135,28 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
     }
 
     @Test
+    public void testEqualsExtraNodeStringFail() {
+        try {
+        assertJsonEquals("{\"test\":\"a\"}","{\"test\": \"a\", \"test2\": \"aa\"}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                    "Different keys found in node \"\", expected: <[test]> but was: <[test, test2]>.  Extra: \"test2\"\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testEqualsMissedNodeStringFail() {
+        try {
+            assertJsonEquals("{\"test\": \"a\", \"test2\": \"aa\"}", "{\"test\":\"a\"}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                    "Different keys found in node \"\", expected: <[test, test2]> but was: <[test]>. Missing: \"test2\" \n", e.getMessage());
+        }
+    }
+
+    @Test
     public void testStructureEquals() {
         JsonAssert.assertJsonStructureEquals("{\"test\": 123}", "{\"test\": 412}");
     }
@@ -190,6 +213,12 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
             "{\"root\":{\"test\":1, \"igno.red\": 2}}",
         JsonAssert.whenIgnoringPaths("root.igno.red")
         );
+    }
+
+    @Test
+    public void testFilter() throws IOException {
+        JsonAssert.setFilters(new DebugFilter());
+        assertJsonEquals("{\"test\":1}","{\"test\": 1}");
     }
 
     protected Object readValue(String value) {
