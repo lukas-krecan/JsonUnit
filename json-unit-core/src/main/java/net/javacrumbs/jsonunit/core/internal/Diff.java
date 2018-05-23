@@ -56,6 +56,11 @@ import static net.javacrumbs.jsonunit.core.internal.Node.NodeType;
  * @author Lukas Krecan
  */
 public class Diff {
+
+    private static final String ANY_NUMBER_PLACEHOLDER = "${json-unit.any-number}";
+    private static final String ANY_BOOLEAN_PLACEHOLDER = "${json-unit.any-boolean}";
+    private static final String ANY_STRING_PLACEHOLDER = "${json-unit.any-string}";
+
     private static final String REGEX_PLACEHOLDER = "${json-unit.regex}";
     private static final Pattern MATCHER_PLACEHOLDER_PATTERN = Pattern.compile("\\$\\{json-unit.matches:(.+?)\\}(.*)");
 
@@ -67,13 +72,14 @@ public class Diff {
     private final Differences differences = new Differences();
     private final Path startPath;
     private boolean compared = false;
+    private List<Filter> filters;
     private final Configuration configuration;
     private final PathMatcher pathsToBeIgnored;
 
     private final JsonUnitLogger diffLogger;
     private final JsonUnitLogger valuesLogger;
 
-    Diff(Node expected, Node actual, Path startPath, Configuration configuration, JsonUnitLogger diffLogger, JsonUnitLogger valuesLogger) {
+    Diff(Node expected, Node actual, Path startPath, Configuration configuration, JsonUnitLogger diffLogger, JsonUnitLogger valuesLogger, List<Filter> filters) {
         this.expectedRoot = expected;
         this.actualRoot = actual;
         this.startPath = startPath;
@@ -81,18 +87,20 @@ public class Diff {
         this.diffLogger = diffLogger;
         this.valuesLogger = valuesLogger;
         this.pathsToBeIgnored = PathMatcher.create(configuration.getPathsToBeIgnored());
+        this.filters = filters;
     }
 
-    public static Diff create(Object expected, Object actual, String actualName, String path, Configuration configuration) {
+    public static Diff create(Object expected, Object actual, String actualName, String path, Configuration configuration, List<Filter> filters) {
         if (actual instanceof JsonSource) {
-            return create(expected, actual, actualName, Path.create(path, ((JsonSource) actual).getPathPrefix()), configuration);
+            return create(expected, actual, actualName, Path.create(path, ((JsonSource) actual).getPathPrefix()), configuration, filters);
         } else {
-            return create(expected, actual, actualName, Path.create(path, ""), configuration);
+            return create(expected, actual, actualName, Path.create(path, ""), configuration, filters);
         }
     }
 
-    public static Diff create(Object expected, Object actual, String actualName, Path path, Configuration configuration) {
-        return new Diff(convertToJson(quoteIfNeeded(expected), "expected", true), convertToJson(actual, actualName, false), path, configuration, DEFAULT_DIFF_LOGGER, DEFAULT_VALUE_LOGGER);
+    public static Diff create(Object expected, Object actual, String actualName, Path path, Configuration configuration,
+                              List<Filter> filters) {
+        return new Diff(convertToJson(quoteIfNeeded(expected), "expected", true), convertToJson(actual, actualName, false), path, configuration, DEFAULT_DIFF_LOGGER, DEFAULT_VALUE_LOGGER, filters);
     }
 
     private void compare() {
@@ -102,6 +110,10 @@ public class Diff {
                 structureDifferenceFound("Missing node in path \"%s\".", startPath);
             } else {
                 compareNodes(expectedRoot, part, startPath);
+            }
+            //process differences
+            for (Filter f : filters) {
+                f.process(expectedRoot, actualRoot, startPath, configuration, differences);
             }
             compared = true;
         }
@@ -131,6 +143,12 @@ public class Diff {
             removePathsToBeIgnored(path, extraKeys);
 
             if (!missingKeys.isEmpty() || !extraKeys.isEmpty()) {
+                for (String key : missingKeys) {
+                    differences.add(DiffNode.removed(path.toField(key), expected.get(key)));
+                }
+                for (String key : extraKeys) {
+                    differences.add(DiffNode.added(path.toField(key), actual.get(key)));
+                }
                 String missingKeysMessage = getMissingKeysMessage(missingKeys, path);
                 String extraKeysMessage = getExtraKeysMessage(extraKeys, path);
                 structureDifferenceFound("Different keys found in node \"%s\", expected: <%s> but was: <%s>. %s %s", path, sort(expectedFields.keySet()), sort(actualFields.keySet()), missingKeysMessage, extraKeysMessage);
@@ -244,24 +262,27 @@ public class Diff {
             return;
         }
 
-
         // Any number
-        if (checkAny(NodeType.NUMBER, "${json-unit.any-number}", "a number", expectedNode, actualNode, fieldPath)) {
+        if (checkAny(NodeType.NUMBER, ANY_NUMBER_PLACEHOLDER, "a number", expectedNode, actualNode, fieldPath)) {
             return;
         }
+
         // Any boolean
-        if (checkAny(NodeType.BOOLEAN, "${json-unit.any-boolean}", "a boolean", expectedNode, actualNode, fieldPath)) {
+        if (checkAny(NodeType.BOOLEAN, ANY_BOOLEAN_PLACEHOLDER, "a boolean", expectedNode, actualNode, fieldPath)) {
             return;
         }
+
         // Any string
-        if (checkAny(NodeType.STRING, "${json-unit.any-string}", "a string", expectedNode, actualNode, fieldPath)) {
+        if (checkAny(NodeType.STRING, ANY_STRING_PLACEHOLDER, "a string", expectedNode, actualNode, fieldPath)) {
             return;
         }
+
         if (checkMatcher(expectedNode, actualNode, fieldPath)) {
             return;
         }
 
         if (!expectedNodeType.equals(actualNodeType)) {
+            differences.add(DiffNode.changed(fieldPath, actualNode, expectedNode));
             valueDifferenceFound("Different value found in node \"%s\", expected: <%s> but was: <%s>.", fieldPath, quoteTextValue(expectedNode), quoteTextValue(actualNode));
         } else {
             switch (expectedNodeType) {
@@ -272,7 +293,7 @@ public class Diff {
                     compareArrayNodes(expectedNode, actualNode, fieldPath);
                     break;
                 case STRING:
-                    compareStringValues(expectedNode.asText(), actualNode.asText(), fieldPath);
+                    compareStringValues(expectedNode, actualNode, fieldPath);
                     break;
                 case NUMBER:
                     BigDecimal actualValue = actualNode.decimalValue();
@@ -280,15 +301,16 @@ public class Diff {
                     if (configuration.getTolerance() != null && !hasOption(IGNORING_VALUES)) {
                         BigDecimal diff = expectedValue.subtract(actualValue).abs();
                         if (diff.compareTo(configuration.getTolerance()) > 0) {
+                            differences.add(DiffNode.changed(fieldPath, actualNode, expectedNode));
                             valueDifferenceFound("Different value found in node \"%s\", expected: <%s> but was: <%s>, difference is %s, tolerance is %s",
-                                fieldPath, quoteTextValue(expectedValue), quoteTextValue(actualValue), diff.toString(), configuration.getTolerance());
+                                    fieldPath, quoteTextValue(expectedValue), quoteTextValue(actualValue), diff.toString(), configuration.getTolerance());
                         }
                     } else {
-                        compareValues(expectedValue, actualValue, fieldPath);
+                        compareValues(expectedValue, expectedNode, actualValue, actualNode, fieldPath);
                     }
                     break;
                 case BOOLEAN:
-                    compareValues(expectedNode.asBoolean(), actualNode.asBoolean(), fieldPath);
+                    compareValues(expectedNode.asBoolean(), expectedNode, actualNode.asBoolean(), actualNode, fieldPath);
                     break;
                 case NULL:
                     //nothing
@@ -303,7 +325,7 @@ public class Diff {
         return pathsToBeIgnored.matches(fieldPath.getFullPath());
     }
 
-    private boolean checkMatcher(Node expectedNode, Node actualNode, Object fieldPath) {
+    private boolean checkMatcher(Node expectedNode, Node actualNode, Path fieldPath) {
         if (expectedNode.getNodeType() == NodeType.STRING) {
             Matcher patternMatcher = MATCHER_PLACEHOLDER_PATTERN.matcher(expectedNode.asText());
             if (patternMatcher.matches()) {
@@ -317,6 +339,7 @@ public class Diff {
                     if (!matcher.matches(value)) {
                         Description description = new StringDescription();
                         matcher.describeMismatch(value, description);
+                        differences.add(DiffNode.changed(fieldPath, actualNode, expectedNode));
                         valueDifferenceFound("Matcher \"%s\" does not match value %s in node \"%s\". %s", matcherName, quoteTextValue(actualNode), fieldPath, description);
                     }
                 } else {
@@ -333,6 +356,7 @@ public class Diff {
             if (actualNode.getNodeType() == type) {
                 return true;
             } else {
+                differences.add(DiffNode.changed(fieldPath, actualNode, expectedNode));
                 valueDifferenceFound("Different value found in node \"%s\", expected: <%s> but was: <%s>.", fieldPath, name, quoteTextValue(actualNode));
                 return true;
             }
@@ -340,17 +364,21 @@ public class Diff {
         return false;
     }
 
-    private void compareStringValues(String expectedValue, String actualValue, Path path) {
+    private void compareStringValues(Node expected, Node actual, Path path) {
+        String expectedValue = expected.asText();
+        String actualValue = actual.asText();
+
         if (hasOption(IGNORING_VALUES)) {
             return;
         }
         if (isRegexExpected(expectedValue)) {
             String pattern = getRegexPattern(expectedValue);
             if (!actualValue.matches(pattern)) {
+                differences.add(DiffNode.changed(path, actual, expected));
                 valueDifferenceFound("Different value found in node \"%s\". Pattern %s did not match %s.", path, quoteTextValue(pattern), quoteTextValue(actualValue));
             }
         } else {
-            compareValues(expectedValue, actualValue, path);
+            compareValues(expectedValue, expected, actualValue, actual, path);
         }
     }
 
@@ -362,9 +390,10 @@ public class Diff {
         return expectedValue.startsWith(REGEX_PLACEHOLDER);
     }
 
-    private void compareValues(Object expectedValue, Object actualValue, Path path) {
+    private void compareValues(Object expectedValue, Node expected, Object actualValue, Node actual, Path path) {
         if (!hasOption(IGNORING_VALUES)) {
             if (!expectedValue.equals(actualValue)) {
+                differences.add(DiffNode.changed(path, actual, expected));
                 valueDifferenceFound("Different value found in node \"%s\", expected: <%s> but was: <%s>.", path, quoteTextValue(expectedValue), quoteTextValue(actualValue));
             }
         }
@@ -413,8 +442,20 @@ public class Diff {
                 valueDifferenceFound("Different value found when comparing expected array element %s to actual element %s.", path.toElement(missing.getIndex()), path.toElement(extra.getIndex()));
                 compareNodes(missing.getNode(), extra.getNode(), path.toElement(extra.getIndex()));
             } else if (failOnExtraArrayItems() && (!missingValues.isEmpty() || !extraValues.isEmpty())) {
+
+                for (NodeWithIndex missingValue: missingValues) {
+                    differences.add(DiffNode.removed(path, missingValue.getNode()));
+                }
+
+                for (NodeWithIndex extraValue: extraValues) {
+                    differences.add(DiffNode.added(path, extraValue.getNode()));
+                }
+
                 valueDifferenceFound("Array \"%s\" has different content, expected: <%s> but was: <%s>. Missing values %s, extra values %s", path, expectedNode, actualNode, missingValues, extraValues);
             } else if (!missingValues.isEmpty()) {
+                for (NodeWithIndex missingValue: missingValues) {
+                    differences.add(DiffNode.removed(path, missingValue.getNode()));
+                }
                 valueDifferenceFound("Array \"%s\" has different content, expected: <%s> but was: <%s>. Missing values %s", path, expectedNode, actualNode, missingValues);
             }
         } else {
@@ -425,7 +466,7 @@ public class Diff {
     }
 
     private ArrayComparison compareArraysIgnoringOrder(List<Node> expectedElements, List<Node> actualElements, Path path) {
-        return new ArrayComparison(expectedElements, actualElements, path, configuration).compareArraysIgnoringOrder();
+        return new ArrayComparison(expectedElements, actualElements, path, configuration, filters).compareArraysIgnoringOrder();
     }
 
 
@@ -512,10 +553,14 @@ public class Diff {
         return getDifferences();
     }
 
-    private String getDifferences() {
+    public String getDifferences() {
         StringBuilder message = new StringBuilder();
         differences.appendDifferences(message);
         return message.toString();
+    }
+
+    public List<DiffNode> getDiffNodes() {
+        return differences.getDiffNodes();
     }
 
     private static JsonUnitLogger createLogger(String name) {
