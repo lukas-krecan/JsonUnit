@@ -18,6 +18,7 @@ package net.javacrumbs.jsonunit.core.internal;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
+import net.javacrumbs.jsonunit.core.internal.ArrayComparison.NodeWithIndex;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
 
@@ -72,7 +73,7 @@ public class Diff {
     private final JsonUnitLogger diffLogger;
     private final JsonUnitLogger valuesLogger;
 
-    private Diff(Node expected, Node actual, Path startPath, Configuration configuration, JsonUnitLogger diffLogger, JsonUnitLogger valuesLogger) {
+    Diff(Node expected, Node actual, Path startPath, Configuration configuration, JsonUnitLogger diffLogger, JsonUnitLogger valuesLogger) {
         this.expectedRoot = expected;
         this.actualRoot = actual;
         this.startPath = startPath;
@@ -402,17 +403,15 @@ public class Diff {
 
         if (hasOption(IGNORING_ARRAY_ORDER)) {
             ArrayComparison arrayComparison = compareArraysIgnoringOrder(expectedElements, actualElements, path);
-            List<Node> missingValues = arrayComparison.missingValues;
-            List<Node> extraValues = arrayComparison.extraValues;
+            List<NodeWithIndex> missingValues = arrayComparison.getMissingValues();
+            List<NodeWithIndex> extraValues = arrayComparison.getExtraValues();
             if (expectedElements.size() == actualElements.size() && missingValues.size() == 1 && extraValues.size() == 1) {
                 // handling special case where only one difference is found.
-                Node missing = missingValues.get(0);
-                Node extra = extraValues.get(0);
-                List<Integer> missingIndex = arrayComparison.indexOf(expectedElements, missing);
-                List<Integer> extraIndex = arrayComparison.indexOf(actualElements, extra);
+                NodeWithIndex missing = missingValues.get(0);
+                NodeWithIndex extra = extraValues.get(0);
 
-                valueDifferenceFound("Different value found when comparing expected array element %s to actual element %s.", path.toElement(missingIndex.get(0)), path.toElement(extraIndex.get(0)));
-                compareNodes(missing, extra, path.toElement(extraIndex.get(0)));
+                valueDifferenceFound("Different value found when comparing expected array element %s to actual element %s.", path.toElement(missing.getIndex()), path.toElement(extra.getIndex()));
+                compareNodes(missing.getNode(), extra.getNode(), path.toElement(extra.getIndex()));
             } else if (failOnExtraArrayItems() && (!missingValues.isEmpty() || !extraValues.isEmpty())) {
                 valueDifferenceFound("Array \"%s\" has different content, expected: <%s> but was: <%s>. Missing values %s, extra values %s", path, expectedNode, actualNode, missingValues, extraValues);
             } else if (!missingValues.isEmpty()) {
@@ -429,85 +428,6 @@ public class Diff {
         return new ArrayComparison(expectedElements, actualElements, path, configuration).compareArraysIgnoringOrder();
     }
 
-    private static class ArrayComparison {
-        private final int compareFrom;
-        private final List<Node> actualElements;
-        private final List<Node> extraValues;
-        private final List<Node> missingValues;
-        private final Path path;
-        private final Configuration configuration;
-
-        private ArrayComparison(int compareFrom, List<Node> actualElements, List<Node> extraValues, List<Node> missingValues, Path path, Configuration configuration) {
-            this.compareFrom = compareFrom;
-            this.actualElements = actualElements;
-            this.extraValues = extraValues;
-            this.missingValues = missingValues;
-            this.path = path;
-            this.configuration = configuration;
-        }
-
-        ArrayComparison(List<Node> expectedElements, List<Node> actualElements, Path path, Configuration configuration) {
-            this(0, actualElements, new ArrayList<Node>(), new ArrayList<Node>(expectedElements), path, configuration);
-        }
-
-        ArrayComparison copy(int compareFrom) {
-            return new ArrayComparison(compareFrom, actualElements, new ArrayList<Node>(extraValues), new ArrayList<Node>(missingValues), path, configuration);
-        }
-
-        private ArrayComparison compareArraysIgnoringOrder() {
-            for (int i = compareFrom; i < actualElements.size(); i++) {
-                Node actual = actualElements.get(i);
-                List<Integer> matches = indexOf(missingValues, actual);
-                if (matches.size() == 1) {
-                    removeMissing(matches.get(0));
-                } else if (matches.size() > 0) {
-                    // we have more matches, since comparison does not have to be transitive ([1, 2] == [2] == [2, 3]), we have to check all the possibilities
-                    for (int match : matches) {
-                        ArrayComparison copy = copy(i + 1);
-                        copy.removeMissing(match);
-                        copy.compareArraysIgnoringOrder();
-                        if (copy.isMatching()) {
-                            return copy;
-                        }
-                    }
-                    // no combination matching, let's report the first difference
-                    removeMissing(matches.get(0));
-                } else {
-                    extraValues.add(actual);
-                }
-            }
-            return this;
-        }
-
-        /**
-         * Finds element in the expected elements.
-         *
-         * @param expectedElements
-         * @param actual
-         * @return
-         */
-        private List<Integer> indexOf(List<Node> expectedElements, Node actual) {
-            List<Integer> result = new ArrayList<Integer>();
-            int i = 0;
-            for (Node expected : expectedElements) {
-                Diff diff = new Diff(expected, actual, Path.create("", path.toElement(i).getFullPath()), configuration, NULL_LOGGER, NULL_LOGGER);
-                if (diff.similar()) {
-                    result.add(i);
-                }
-                i++;
-            }
-            return result;
-        }
-
-        private boolean isMatching() {
-            return missingValues.isEmpty() && (extraValues.isEmpty() || !configuration.getOptions().contains(Option.IGNORING_EXTRA_ARRAY_ITEMS));
-        }
-
-        private void removeMissing(int index) {
-            missingValues.remove(index);
-        }
-
-    }
 
     private boolean failOnExtraArrayItems() {
         return !hasOption(IGNORING_EXTRA_ARRAY_ITEMS);

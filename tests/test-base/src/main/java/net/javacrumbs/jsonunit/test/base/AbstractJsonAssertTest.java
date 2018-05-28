@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit.test.base;
 
 import net.javacrumbs.jsonunit.JsonAssert;
+import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -695,7 +696,7 @@ public abstract class AbstractJsonAssertTest {
                 when(IGNORING_ARRAY_ORDER)
             );
         } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found when comparing expected array element test[2] to actual element test[0].\nDifferent value found in node \"test[0].key\", expected: <2> but was: <1>.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nDifferent value found when comparing expected array element test[2] to actual element test[2].\nDifferent value found in node \"test[2].key\", expected: <2> but was: <1>.\n", e.getMessage());
         }
     }
 
@@ -1146,7 +1147,7 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
-    public void matcherNameShouldBeparsedUntilFirstCurlyBrace() throws Exception {
+    public void matcherNameShouldBeparsedUntilFirstCurlyBrace() {
         String expected =
             "{ \"o\" : \"${json-unit.matches:embedded}{\\\"x\\\" : \\\"y\\\"}\" }";
         String actual =
@@ -1156,6 +1157,19 @@ public abstract class AbstractJsonAssertTest {
             JsonAssert.withMatcher("embedded", new TrueMatcher()));
 
     }
+
+    @Test
+    public void parameterMatchingShouldWork() {
+        try {
+            assertJsonEquals("{\"test\": [\"${json-unit.matches:eq}1\", \"${json-unit.matches:eq}2\"]}", "{\"test\":[2, 2]}", JsonAssert.withMatcher("eq", new NumEqualsMatcher()).when(Option.IGNORING_ARRAY_ORDER));
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                "Different value found when comparing expected array element test[0] to actual element test[1].\n" +
+                "Matcher \"eq\" does not match value 2 in node \"test[1]\". \n", e.getMessage());
+        }
+    }
+
 
     private static class DivisionMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
         private BigDecimal param;
@@ -1198,6 +1212,32 @@ public abstract class AbstractJsonAssertTest {
             this.param = parameter;
         }
     }
+
+    private static class NumEqualsMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
+
+        private BigDecimal param;
+
+        @Override
+        public boolean matches(Object item) {
+            return param.compareTo((BigDecimal) item) == 0;
+        }
+
+        public void describeTo(Description description) {
+            description.appendValue(param);
+        }
+
+        @Override
+        public void describeMismatch(Object item, Description description) {
+
+        }
+
+        public void setParameter(String parameter) {
+            this.param = new BigDecimal(parameter);
+        }
+
+
+    }
+
 
     @Test
     public void pathShouldBeIgnoredForDifferentValue() {
@@ -1327,4 +1367,6 @@ public abstract class AbstractJsonAssertTest {
     }
 
     protected abstract Object readValue(String value);
+
+
 }
