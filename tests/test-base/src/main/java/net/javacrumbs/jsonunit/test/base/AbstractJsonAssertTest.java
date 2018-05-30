@@ -268,7 +268,8 @@ public abstract class AbstractJsonAssertTest {
             assertJsonEquals("{\"test\":[1, 2, 3]}", "{\n\"test\": [1, 2]\n}");
             failIfNoException();
         } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nArray \"test\" has different length, expected: <3> but was: <2>.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nArray \"test\" has different length, expected: <3> but was: <2>.\n" +
+                "Array \"test\" has different content, expected: <[1,2,3]> but was: <[1,2]>. Missing values [3]\n", e.getMessage());
         }
     }
 
@@ -1013,7 +1014,8 @@ public abstract class AbstractJsonAssertTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\n" +
-                "Array \"test\" has invalid length, expected: <at least 3> but was: <2>.\n", e.getMessage());
+                "Array \"test\" has invalid length, expected: <at least 3> but was: <2>.\n" +
+                "Array \"test\" has different content, expected: <[{\"a\":1},{\"b\":1},{\"c\":3}]> but was: <[{\"a\":1},{\"b\":1}]>. Missing values [{\"c\":3}]\n", e.getMessage());
         }
     }
 
@@ -1025,6 +1027,7 @@ public abstract class AbstractJsonAssertTest {
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\n" +
                 "Array \"test\" has invalid length, expected: <at least 3> but was: <2>.\n" +
+                "Array \"test\" has different content, expected: <[{\"a\":1},{\"b\":2},{\"c\":3}]> but was: <[{\"a\":1},{\"b\":1}]>. Missing values [{\"c\":3}]\n" +
                 "Different value found in node \"test[1].b\", expected: <2> but was: <1>.\n", e.getMessage());
         }
     }
