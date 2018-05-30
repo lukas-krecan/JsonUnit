@@ -418,6 +418,11 @@ public class Diff {
                 valueDifferenceFound("Array \"%s\" has different content, expected: <%s> but was: <%s>. Missing values %s", path, expectedNode, actualNode, missingValues);
             }
         } else {
+            if (expectedElements.size() > actualElements.size()) {
+                valueDifferenceFound("Array \"%s\" has different content, expected: <%s> but was: <%s>. Missing values %s", path, expectedNode, actualNode, expectedElements.subList(actualElements.size(), expectedElements.size()));
+            } else if (expectedElements.size() < actualElements.size()) {
+                valueDifferenceFound("Array \"%s\" has different content, expected: <%s> but was: <%s>. Extra values %s", path, expectedNode, actualNode, actualElements.subList(expectedElements.size(), actualElements.size()));
+            }
             for (int i = 0; i < Math.min(expectedElements.size(), actualElements.size()); i++) {
                 compareNodes(expectedElements.get(i), actualElements.get(i), path.toElement(i));
             }

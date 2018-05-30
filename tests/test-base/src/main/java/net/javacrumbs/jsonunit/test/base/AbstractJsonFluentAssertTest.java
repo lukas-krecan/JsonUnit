@@ -24,6 +24,7 @@ import static java.math.BigDecimal.valueOf;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartMatches;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
@@ -514,6 +515,67 @@ public abstract class AbstractJsonFluentAssertTest {
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("Node \"test\" has invalid length, expected: <2> but was: <3>.", e.getMessage());
+        }
+    }
+
+    @Test
+    public void shouldReportExtraArrayItemsWhenNotIgnoringOrder() {
+        try {
+            assertThatJson("{\"test\":[1,2,3]}").node("test").isEqualTo("[1]");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                "Array \"test\" has different length, expected: <1> but was: <3>.\n" +
+                "Array \"test\" has different content, expected: <[1]> but was: <[1,2,3]>. Extra values [2, 3]\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void shouldReportExtraArrayItemsWhenIgnoringOrder() {
+        try {
+            assertThatJson("{\"test\":[1,2,3]}").node("test").when(IGNORING_ARRAY_ORDER).isEqualTo("[1]");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                "Array \"test\" has different length, expected: <1> but was: <3>.\n" +
+                "Array \"test\" has different content, expected: <[1]> but was: <[1,2,3]>. Missing values [], extra values [2, 3]\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void shouldReportMissingArrayItemsWhenNotIgnoringOrder() {
+        try {
+            assertThatJson("{\"test\":[1]}").node("test").isEqualTo("[1, 2, 3]");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                "Array \"test\" has different length, expected: <3> but was: <1>.\n" +
+                "Array \"test\" has different content, expected: <[1,2,3]> but was: <[1]>. Missing values [2, 3]\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void shouldReportMissingArrayItemsWhenIgnoringOrder() {
+        try {
+            assertThatJson("{\"test\":[1]}").node("test").when(IGNORING_ARRAY_ORDER).isEqualTo("[1, 2, 3]");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                "Array \"test\" has different length, expected: <3> but was: <1>.\n" +
+                "Array \"test\" has different content, expected: <[1,2,3]> but was: <[1]>. Missing values [2, 3], extra values []\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void shouldReportExtraArrayItemsAndDifferencesWhenNotIgnoringOrder() {
+        try {
+            assertThatJson("{\"test\":[0,2,3]}").node("test").isEqualTo("[1]");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                "Array \"test\" has different length, expected: <1> but was: <3>.\n" +
+                "Array \"test\" has different content, expected: <[1]> but was: <[0,2,3]>. Extra values [2, 3]\n" +
+                "Different value found in node \"test[0]\", expected: <1> but was: <0>.\n", e.getMessage());
         }
     }
 
