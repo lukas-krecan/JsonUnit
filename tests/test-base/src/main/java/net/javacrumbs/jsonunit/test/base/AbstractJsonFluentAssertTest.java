@@ -569,13 +569,13 @@ public abstract class AbstractJsonFluentAssertTest {
     @Test
     public void shouldReportExtraArrayItemsAndDifferencesWhenNotIgnoringOrder() {
         try {
-            assertThatJson("{\"test\":[0,2,3]}").node("test").isEqualTo("[1]");
+            assertThatJson("{\"test\":[\"x\",\"b\",\"c\"]}").node("test").isEqualTo("[\"a\"]");
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\n" +
                 "Array \"test\" has different length, expected: <1> but was: <3>.\n" +
-                "Array \"test\" has different content, expected: <[1]> but was: <[0,2,3]>. Extra values [2, 3]\n" +
-                "Different value found in node \"test[0]\", expected: <1> but was: <0>.\n", e.getMessage());
+                "Array \"test\" has different content, expected: <[\"a\"]> but was: <[\"x\",\"b\",\"c\"]>. Extra values [\"b\", \"c\"]\n" +
+                "Different value found in node \"test[0]\", expected: <\"a\"> but was: <\"x\">.\n", e.getMessage());
         }
     }
 

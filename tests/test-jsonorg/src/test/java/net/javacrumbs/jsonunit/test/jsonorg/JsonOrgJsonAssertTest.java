@@ -20,8 +20,6 @@ import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.io.IOException;
-
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.failIfNoException;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJsonOrg;
@@ -43,7 +41,7 @@ public class JsonOrgJsonAssertTest extends AbstractJsonAssertTest {
     }
 
     @Test
-    public void testEqualsNodeFailJsonOrgArray() throws IOException {
+    public void testEqualsNodeFailJsonOrgArray() {
         try {
             assertJsonEquals(readByJsonOrg("[1, 2]"), readByJsonOrg("[1, 2, 3]"));
             failIfNoException();
