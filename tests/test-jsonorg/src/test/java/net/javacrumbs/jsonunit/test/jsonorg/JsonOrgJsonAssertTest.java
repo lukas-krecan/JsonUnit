@@ -48,7 +48,8 @@ public class JsonOrgJsonAssertTest extends AbstractJsonAssertTest {
             assertJsonEquals(readByJsonOrg("[1, 2]"), readByJsonOrg("[1, 2, 3]"));
             failIfNoException();
         } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nArray \"\" has different length, expected: <2> but was: <3>.\n", e.getMessage());
+            assertEquals("JSON documents are different:\nArray \"\" has different length, expected: <2> but was: <3>.\n" +
+                "Array \"\" has different content, expected: <[1,2]> but was: <[1,2,3]>. Extra values [3]\n", e.getMessage());
         }
     }
 
