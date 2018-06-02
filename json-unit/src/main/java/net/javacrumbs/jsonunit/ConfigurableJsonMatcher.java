@@ -16,8 +16,8 @@
 package net.javacrumbs.jsonunit;
 
 import net.javacrumbs.jsonunit.core.Option;
-import net.javacrumbs.jsonunit.core.internal.Filter;
 import net.javacrumbs.jsonunit.core.internal.Options;
+import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
@@ -61,7 +61,7 @@ public interface ConfigurableJsonMatcher<T> extends Matcher<T> {
     ConfigurableJsonMatcher<T> whenIgnoringPaths(String... paths);
 
     /**
-     * Sets filters
+     * Sets DifferenceListener.
      */
-    ConfigurableJsonMatcher<T> withFilters(Filter... filter);
+    ConfigurableJsonMatcher<T> withDifferenceListener(DifferenceListener differenceListener);
 }

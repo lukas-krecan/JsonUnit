@@ -18,18 +18,15 @@ package net.javacrumbs.jsonunit;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
-import net.javacrumbs.jsonunit.core.internal.Filter;
 import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Options;
 import net.javacrumbs.jsonunit.core.internal.Path;
+import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
@@ -132,7 +129,6 @@ public class JsonMatchers {
     private static abstract class AbstractJsonMatcher<T> extends AbstractMatcher<T> implements ConfigurableJsonMatcher<T> {
 
         Configuration configuration = JsonAssert.getConfiguration();
-        List<Filter> filters = new ArrayList<Filter>();
 
 
         AbstractJsonMatcher(String path) {
@@ -172,8 +168,8 @@ public class JsonMatchers {
             return this;
         }
 
-        public ConfigurableJsonMatcher<T> withFilters(Filter... filter) {
-            filters = Arrays.asList(filter);
+        public ConfigurableJsonMatcher<T> withDifferenceListener(DifferenceListener differenceListener) {
+            configuration = configuration.withDifferenceListener(differenceListener);
             return this;
         }
     }
@@ -188,7 +184,7 @@ public class JsonMatchers {
         }
 
         boolean doMatch(Object item) {
-            Diff diff = create(expected, item, FULL_JSON, path, configuration, filters);
+            Diff diff = create(expected, item, FULL_JSON, path, configuration);
             if (!diff.similar()) {
                 differences = diff.differences();
             }

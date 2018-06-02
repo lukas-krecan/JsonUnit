@@ -17,7 +17,6 @@ package net.javacrumbs.jsonunit.test.all;
 
 import net.javacrumbs.jsonunit.JsonAssert;
 import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest;
-import net.javacrumbs.jsonunit.test.base.DebugFilter;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
 import net.javacrumbs.jsonunit.test.base.beans.Jackson1Bean;
 import net.javacrumbs.jsonunit.test.base.beans.Jackson1IgnorepropertyBean;
@@ -213,12 +212,6 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
             "{\"root\":{\"test\":1, \"igno.red\": 2}}",
         JsonAssert.whenIgnoringPaths("root.igno.red")
         );
-    }
-
-    @Test
-    public void testFilter() throws IOException {
-        JsonAssert.setFilters(new DebugFilter());
-        assertJsonEquals("{\"test\":1}","{\"test\": 1}");
     }
 
     protected Object readValue(String value) {

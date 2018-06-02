@@ -16,11 +16,8 @@
 package net.javacrumbs.jsonunit.test.all;
 
 import net.javacrumbs.jsonunit.test.base.AbstractJsonFluentAssertTest;
-import net.javacrumbs.jsonunit.test.base.DebugFilter;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
 import org.junit.Test;
-
-import java.io.IOException;
 
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByGson;
@@ -37,12 +34,6 @@ public class AllJsonFluentAssertTest extends AbstractJsonFluentAssertTest {
     public void testMixedGsonAndJsonOrg() {
         assertThatJson(readByGson("{\"test\":1}")).isEqualTo(readByJsonOrg("{\"test\": 1}"));
     }
-
-    @Test
-    public void testOneFilter() throws IOException {
-        assertThatJson("{\"test\":1}").withFilters(new DebugFilter()).isEqualTo("{\"test\": 1}");
-    }
-
 
     protected Object readValue(String value) {
         return JsonTestUtils.readByJackson1(value);

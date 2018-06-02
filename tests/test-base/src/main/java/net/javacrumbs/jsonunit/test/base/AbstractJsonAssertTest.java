@@ -18,6 +18,8 @@ package net.javacrumbs.jsonunit.test.base;
 import net.javacrumbs.jsonunit.JsonAssert;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
+import net.javacrumbs.jsonunit.core.listener.Difference;
+import org.assertj.core.api.iterable.Extractor;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -47,6 +49,8 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.failIfNoException;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.extractor.Extractors.toStringMethod;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.Assert.assertEquals;
@@ -766,13 +770,21 @@ public abstract class AbstractJsonAssertTest {
 
     @Test
     public void shouldFailIfArrayContentIsDifferentMoreThaOneDifference() {
-        JsonAssert.setOptions(IGNORING_ARRAY_ORDER);
+        RecordingDifferenceListener listener = new RecordingDifferenceListener();
         try {
-            assertJsonEquals("{\"test\":[1,2,3]}", "{\"test\":[3,4,5]}");
+            assertJsonEquals("{\"test\":[1,2,3]}", "{\"test\":[3,4,5]}", when(IGNORING_ARRAY_ORDER).withDifferenceListener(listener));
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\n" +
                 "Array \"test\" has different content, expected: <[1,2,3]> but was: <[3,4,5]>. Missing values [1, 2], extra values [4, 5]\n", e.getMessage());
+
+            assertThat(listener.getDifferenceList()).hasSize(4);
+            assertThat(listener.getDifferenceList()).extracting((Extractor<? super Difference, String>) toStringMethod()).containsExactly(
+                "MISSING 1 in test[0]",
+                "MISSING 2 in test[1]",
+                "EXTRA 4 in test[1]",
+                "EXTRA 5 in test[2]"
+            );
         }
     }
 

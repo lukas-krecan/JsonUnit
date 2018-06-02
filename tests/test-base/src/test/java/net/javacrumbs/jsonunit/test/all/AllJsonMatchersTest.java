@@ -16,7 +16,6 @@
 package net.javacrumbs.jsonunit.test.all;
 
 import net.javacrumbs.jsonunit.test.base.AbstractJsonMatchersTest;
-import net.javacrumbs.jsonunit.test.base.DebugFilter;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
 import org.junit.Test;
 
@@ -48,11 +47,6 @@ public class AllJsonMatchersTest extends AbstractJsonMatchersTest {
     @Test
     public void testEqualsResource() throws Exception {
         assertThat("{\"test\":1}", jsonEquals(resource("test.json")));
-    }
-
-    @Test
-    public void testFilter() throws IOException {
-        assertThat("{\"test\":1}",  jsonEquals("{\"test\": 1}").withFilters(new DebugFilter()));
     }
 
     protected Object readValue(String value) {

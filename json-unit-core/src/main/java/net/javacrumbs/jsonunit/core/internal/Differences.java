@@ -21,9 +21,7 @@ import java.util.List;
 /**
  * List of differences
  */
-public class Differences {
-
-    private final List<DiffNode> diffNodes = new ArrayList<DiffNode>();
+class Differences {
     private final List<String> messages = new ArrayList<String>();
 
     Differences() {
@@ -35,17 +33,6 @@ public class Differences {
 
     private void add(String message) {
         messages.add(message);
-    }
-
-    void add(DiffNode diffNode) {
-        diffNodes.add(diffNode);
-    }
-
-    public List<DiffNode> getDiffNodes() {
-        return diffNodes;
-    }
-    public List<String> getMessages() {
-        return messages;
     }
 
     boolean isEmpty() {

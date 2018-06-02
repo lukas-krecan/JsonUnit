@@ -238,13 +238,17 @@ public abstract class AbstractJsonMatchersTest {
 
     @Test
     public void testDifferentPartValue() {
+        RecordingDifferenceListener listener = new RecordingDifferenceListener();
         try {
-            assertThat("{\"test\":1}", jsonPartEquals("test", "2"));
+            assertThat("{\"test\":1}", jsonPartEquals("test", "2").withDifferenceListener(listener));
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("\nExpected: 2 in \"test\"\n" +
                     "     but: JSON documents are different:\n" +
                     "Different value found in node \"test\", expected: <2> but was: <1>.\n", e.getMessage());
+
+            assertEquals(1, listener.getDifferenceList().size());
+            assertEquals("DIFFERENT Expected 2 in test got 1 in test", listener.getDifferenceList().get(0).toString());
         }
     }
 
