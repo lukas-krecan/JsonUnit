@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit;
 
 import net.javacrumbs.jsonunit.core.Option;
+import net.javacrumbs.jsonunit.core.internal.Filter;
 import net.javacrumbs.jsonunit.core.internal.Options;
 import org.hamcrest.Matcher;
 
@@ -58,4 +59,9 @@ public interface ConfigurableJsonMatcher<T> extends Matcher<T> {
      * Sets paths to be ignored.
      */
     ConfigurableJsonMatcher<T> whenIgnoringPaths(String... paths);
+
+    /**
+     * Sets filters
+     */
+    ConfigurableJsonMatcher<T> withFilters(Filter... filter);
 }

@@ -18,6 +18,7 @@ package net.javacrumbs.jsonunit.fluent;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
+import net.javacrumbs.jsonunit.core.internal.Filter;
 import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Node.NodeType;
 import net.javacrumbs.jsonunit.core.internal.Path;
@@ -25,6 +26,7 @@ import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -70,8 +72,9 @@ public class JsonFluentAssert {
     private final Object actual;
     private final String description;
     private final Configuration configuration;
+    private static List<Filter> filters = new ArrayList<Filter>();
 
-    private JsonFluentAssert(Object actual, Path path, String description, Configuration configuration) {
+    private JsonFluentAssert(Object actual, Path path, String description, Configuration configuration, List<Filter> filters) {
         if (actual == null) {
             throw new IllegalArgumentException("Can not make assertions about null JSON.");
         }
@@ -79,10 +82,11 @@ public class JsonFluentAssert {
         this.actual = actual;
         this.description = description;
         this.configuration = configuration;
+        this.filters = filters;
     }
 
     private JsonFluentAssert(Object actual, String pathPrefix) {
-        this(actual, Path.create("", pathPrefix), "", Configuration.empty());
+        this(actual, Path.create("", pathPrefix), "", Configuration.empty(), filters);
     }
 
     /**
@@ -184,18 +188,18 @@ public class JsonFluentAssert {
      * @return object comparing only node given by path.
      */
     public JsonFluentAssert node(String newPath) {
-        return new JsonFluentAssert(actual, path.copy(newPath), description, configuration);
+        return new JsonFluentAssert(actual, path.copy(newPath), description, configuration, filters);
     }
 
     /**
      * Adds paths to be ignored
      */
     public JsonFluentAssert whenIgnoringPaths(String... pathsToBeIgnored) {
-        return new JsonFluentAssert(actual, path, description, configuration.whenIgnoringPaths(pathsToBeIgnored));
+        return new JsonFluentAssert(actual, path, description, configuration.whenIgnoringPaths(pathsToBeIgnored), filters);
     }
 
     private Diff createDiff(Object expected, Configuration configuration) {
-        return create(expected, actual, ACTUAL, path, configuration);
+        return create(expected, actual, ACTUAL, path, configuration, filters);
     }
 
     private void failWithMessage(String message) {
@@ -223,7 +227,7 @@ public class JsonFluentAssert {
      * @return
      */
     public JsonFluentAssert describedAs(String description) {
-        return new JsonFluentAssert(actual, path, description, configuration);
+        return new JsonFluentAssert(actual, path, description, configuration, filters);
     }
 
     /**
@@ -234,7 +238,7 @@ public class JsonFluentAssert {
      * @return
      */
     public JsonFluentAssert ignoring(String ignorePlaceholder) {
-        return new JsonFluentAssert(actual, path, description, configuration.withIgnorePlaceholder(ignorePlaceholder));
+        return new JsonFluentAssert(actual, path, description, configuration.withIgnorePlaceholder(ignorePlaceholder), filters);
     }
 
     /**
@@ -254,7 +258,7 @@ public class JsonFluentAssert {
      * @param tolerance
      */
     public JsonFluentAssert withTolerance(BigDecimal tolerance) {
-        return new JsonFluentAssert(actual, path, description, configuration.withTolerance(tolerance));
+        return new JsonFluentAssert(actual, path, description, configuration.withTolerance(tolerance), filters);
     }
 
 
@@ -262,7 +266,11 @@ public class JsonFluentAssert {
      * Adds a matcher to be used in ${json-unit.matches:matcherName} macro.
      */
     public JsonFluentAssert withMatcher(String matcherName, Matcher<?> matcher) {
-        return new JsonFluentAssert(actual, path, description, configuration.withMatcher(matcherName, matcher));
+        return new JsonFluentAssert(actual, path, description, configuration.withMatcher(matcherName, matcher), filters);
+    }
+
+    public JsonFluentAssert withFilters(Filter... filters) {
+        return new JsonFluentAssert(actual, path, description, configuration, Arrays.asList(filters));
     }
 
     /**
@@ -287,7 +295,7 @@ public class JsonFluentAssert {
      * @see net.javacrumbs.jsonunit.core.Option
      */
     public JsonFluentAssert when(Option firstOption, Option... otherOptions) {
-        return new JsonFluentAssert(actual, path, description, configuration.withOptions(firstOption, otherOptions));
+        return new JsonFluentAssert(actual, path, description, configuration.withOptions(firstOption, otherOptions), filters);
     }
 
     /**
@@ -408,7 +416,7 @@ public class JsonFluentAssert {
         public ArrayAssert thatContains(Object expected) {
 
             for (Node node : array) {
-                Diff diff = create(expected, node, ACTUAL, "", configuration);
+                Diff diff = create(expected, node, ACTUAL, "", configuration, filters);
                 if (diff.similar()) {
                     return this;
                 }
@@ -435,7 +443,7 @@ public class JsonFluentAssert {
         }
 
         private JsonFluentAssertAfterAssertion(Object actual, Path path, String description, Configuration configuration) {
-            super(actual, path, description, configuration);
+            super(actual, path, description, configuration, filters);
         }
 
         /**
