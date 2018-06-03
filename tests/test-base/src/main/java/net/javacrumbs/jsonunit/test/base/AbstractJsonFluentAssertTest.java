@@ -447,6 +447,12 @@ public abstract class AbstractJsonFluentAssertTest {
             assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <a string> but was: <{\"a\":1}>.\n", e.getMessage());
         }
     }
+
+    @Test
+    public void emptinessCheck() {
+        assertThatJson("{\"test\":{}}").node("test").isEqualTo("{}");
+    }
+
     @Test
     public void ifMatcherDoesNotMatchReportDifference() {
         try {
