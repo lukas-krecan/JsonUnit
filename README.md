@@ -384,7 +384,7 @@ Jackson 2.x, [Gson](https://code.google.com/p/google-gson/), [JSONObject](https:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>1.29.1</version>
+    <version>1.30.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -395,7 +395,7 @@ To use fluent assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>1.29.1</version>
+    <version>1.30.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -406,7 +406,7 @@ To use Spring MVC assertions:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>1.29.1</version>
+    <version>1.30.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -417,6 +417,10 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 1.30.0
+* Introduced DifferenceListener
+* Array comparison reports extra/missing elements when comparing with array order preserved. 
+
 ## 1.29.1
 * Fixed error in JsonFluentAssert.ofLength error message
 * Fixed matcher handling when comparing arrays #111
