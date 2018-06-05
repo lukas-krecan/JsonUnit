@@ -134,6 +134,28 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
     }
 
     @Test
+    public void testEqualsExtraNodeStringFail() {
+        try {
+        assertJsonEquals("{\"test\":\"a\"}","{\"test\": \"a\", \"test2\": \"aa\"}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                    "Different keys found in node \"\", expected: <[test]> but was: <[test, test2]>.  Extra: \"test2\"\n", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testEqualsMissedNodeStringFail() {
+        try {
+            assertJsonEquals("{\"test\": \"a\", \"test2\": \"aa\"}", "{\"test\":\"a\"}");
+            failIfNoException();
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\n" +
+                    "Different keys found in node \"\", expected: <[test, test2]> but was: <[test]>. Missing: \"test2\" \n", e.getMessage());
+        }
+    }
+
+    @Test
     public void testStructureEquals() {
         JsonAssert.assertJsonStructureEquals("{\"test\": 123}", "{\"test\": 412}");
     }

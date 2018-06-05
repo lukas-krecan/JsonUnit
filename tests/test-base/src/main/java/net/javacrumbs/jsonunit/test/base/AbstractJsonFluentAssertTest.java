@@ -455,11 +455,15 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void ifMatcherDoesNotMatchReportDifference() {
+        RecordingDifferenceListener listener = new RecordingDifferenceListener();
         try {
-            assertThatJson("{\"test\":-1}").withMatcher("positive", greaterThan(valueOf(0))).isEqualTo("{\"test\": \"${json-unit.matches:positive}\"}");
+            assertThatJson("{\"test\":-1}").withMatcher("positive", greaterThan(valueOf(0))).withDifferenceListener(listener).isEqualTo("{\"test\": \"${json-unit.matches:positive}\"}");
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\nMatcher \"positive\" does not match value -1 in node \"test\". <-1> was less than <0>\n", e.getMessage());
+
+            assertEquals(1, listener.getDifferenceList().size());
+            assertEquals("DIFFERENT Expected ${json-unit.matches:positive} in test got -1 in test", listener.getDifferenceList().get(0).toString());
         }
     }
 

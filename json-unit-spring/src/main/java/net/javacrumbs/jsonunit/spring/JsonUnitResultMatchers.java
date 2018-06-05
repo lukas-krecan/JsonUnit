@@ -20,6 +20,7 @@ import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 import net.javacrumbs.jsonunit.core.internal.Node;
+import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -225,6 +226,10 @@ public class JsonUnitResultMatchers {
      */
     public JsonUnitResultMatchers withTolerance(BigDecimal tolerance) {
         return new JsonUnitResultMatchers(path, configuration.withTolerance(tolerance));
+    }
+
+    public JsonUnitResultMatchers withDifferenceListener(DifferenceListener differenceListener) {
+        return new JsonUnitResultMatchers(path, configuration.withDifferenceListener(differenceListener));
     }
 
     /**

@@ -19,6 +19,7 @@ import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Options;
+import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
@@ -281,5 +282,12 @@ public class JsonAssert {
      */
     public static Configuration whenIgnoringPaths(String... paths) {
         return Configuration.empty().whenIgnoringPaths(paths);
+    }
+
+    /**
+     * Sets DifferenceListener.
+     */
+    public static Configuration withDifferenceListener(DifferenceListener differenceListener) {
+        return Configuration.empty().withDifferenceListener(differenceListener);
     }
 }

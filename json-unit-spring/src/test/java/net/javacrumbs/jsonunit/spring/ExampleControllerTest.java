@@ -16,6 +16,8 @@
 package net.javacrumbs.jsonunit.spring;
 
 import net.javacrumbs.jsonunit.core.Option;
+import net.javacrumbs.jsonunit.core.listener.Difference;
+import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,6 +37,9 @@ import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -60,14 +65,17 @@ public class ExampleControllerTest {
 
     @Test
     public void isEqualToShouldFailIfDoesNotEqual() throws Exception {
+        DifferenceListener listener = mock(DifferenceListener.class);
         try {
-            exec().andExpect(json().isEqualTo(CORRECT_JSON.replace("stringValue", "stringValue2")));
+            exec().andExpect(json().withDifferenceListener(listener).isEqualTo(CORRECT_JSON.replace("stringValue", "stringValue2")));
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals(
                 "JSON documents are different:\n" +
                     "Different value found in node \"result.string\", expected: <\"stringValue2\"> but was: <\"stringValue\">.\n",
                 e.getMessage());
+
+            verify(listener).diff(any(Difference.class));
         }
     }
 

@@ -21,6 +21,7 @@ import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Options;
 import net.javacrumbs.jsonunit.core.internal.Path;
+import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -164,6 +165,11 @@ public class JsonMatchers {
 
         public ConfigurableJsonMatcher<T> whenIgnoringPaths(String... paths) {
             configuration = configuration.whenIgnoringPaths(paths);
+            return this;
+        }
+
+        public ConfigurableJsonMatcher<T> withDifferenceListener(DifferenceListener differenceListener) {
+            configuration = configuration.withDifferenceListener(differenceListener);
             return this;
         }
     }

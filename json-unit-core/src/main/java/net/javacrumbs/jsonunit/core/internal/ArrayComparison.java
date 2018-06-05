@@ -21,6 +21,7 @@ import net.javacrumbs.jsonunit.core.Option;
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.javacrumbs.jsonunit.core.Configuration.dummyDifferenceListener;
 import static net.javacrumbs.jsonunit.core.internal.JsonUnitLogger.NULL_LOGGER;
 
 class ArrayComparison {
@@ -82,17 +83,6 @@ class ArrayComparison {
         return this;
     }
 
-    private static List<Integer> range(int size) {
-        List<Integer> result = new ArrayList<Integer>(size);
-
-        for (int i = 0; i < size; i++) {
-            result.add(i);
-        }
-
-        return result;
-    }
-
-
     private void removeMissing(int index) {
         missingValues.remove(index);
     }
@@ -108,7 +98,7 @@ class ArrayComparison {
         List<Integer> result = new ArrayList<Integer>();
         int i = 0;
         for (NodeWithIndex expected : expectedElements) {
-            Diff diff = new Diff(expected.getNode(), actual, Path.create("", path.toElement(i).getFullPath()), configuration, NULL_LOGGER, NULL_LOGGER);
+            Diff diff = new Diff(expected.getNode(), actual, Path.create("", path.toElement(i).getFullPath()), configuration.withDifferenceListener(dummyDifferenceListener()), NULL_LOGGER, NULL_LOGGER);
             if (diff.similar()) {
                 result.add(i);
             }

@@ -22,13 +22,12 @@ import java.util.List;
  * List of differences
  */
 class Differences {
-
     private final List<String> messages = new ArrayList<String>();
 
     Differences() {
     }
 
-    public void add(String message, Object... args) {
+    void add(String message, Object... args) {
         add(String.format(message, args));
     }
 

@@ -21,6 +21,7 @@ import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Node.NodeType;
 import net.javacrumbs.jsonunit.core.internal.Path;
+import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
@@ -263,6 +264,10 @@ public class JsonFluentAssert {
      */
     public JsonFluentAssert withMatcher(String matcherName, Matcher<?> matcher) {
         return new JsonFluentAssert(actual, path, description, configuration.withMatcher(matcherName, matcher));
+    }
+
+    public JsonFluentAssert withDifferenceListener(DifferenceListener differenceListener) {
+        return new JsonFluentAssert(actual, path, description, configuration.withDifferenceListener(differenceListener));
     }
 
     /**
