@@ -467,6 +467,15 @@ public abstract class AbstractJsonFluentAssertTest {
         }
     }
 
+    @Test
+    public void testLogging() {
+        assertThatJson("[\"foo\", \"bar\"]")
+        .isArray()
+        .ofLength(2)
+        .thatContains("foo")
+        .thatContains("bar");
+    }
+
 
     @Test
     public void comparisonShouldFailOnDifferentType() {
