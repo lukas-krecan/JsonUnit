@@ -75,7 +75,7 @@ public class ExampleControllerTest {
                     "Different value found in node \"result.string\", expected: <\"stringValue2\"> but was: <\"stringValue\">.\n",
                 e.getMessage());
 
-            verify(listener).diff(any(Difference.class));
+            verify(listener).diff(any(Difference.class), any(Object.class), any(Object.class));
         }
     }
 

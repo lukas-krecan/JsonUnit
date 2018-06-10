@@ -34,7 +34,7 @@ import static java.util.Arrays.asList;
 public class Configuration {
     private static final DifferenceListener DUMMY_LISTENER = new DifferenceListener() {
         @Override
-        public void diff(Difference difference) {
+        public void diff(Difference difference, Object actualSource, Object expectedSource) {
 
         }
     };

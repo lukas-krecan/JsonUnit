@@ -116,9 +116,7 @@ public class Diff {
     /**
      * Compares object nodes.
      *
-     * @param expected
-     * @param actual
-     * @param path
+     * @param context
      */
     private void compareObjectNodes(Context context) {
         Node expected = context.getExpectedNode();
@@ -161,7 +159,7 @@ public class Diff {
     }
 
     private void reportDifference(Difference difference) {
-        configuration.getDifferenceListener().diff(difference);
+        configuration.getDifferenceListener().diff(difference, actualRoot, expectedRoot);
     }
 
     private void removePathsToBeIgnored(Path path, Set<String> extraKeys) {
@@ -246,9 +244,7 @@ public class Diff {
     /**
      * Compares two nodes.
      *
-     * @param expectedNode
-     * @param actualNode
-     * @param fieldPath
+     * @param context
      */
     private void compareNodes(Context context) {
         if (shouldIgnorePath(context.getActualPath())) {

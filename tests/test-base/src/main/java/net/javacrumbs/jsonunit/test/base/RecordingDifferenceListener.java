@@ -25,7 +25,7 @@ public class RecordingDifferenceListener implements DifferenceListener {
     private final List<Difference> differenceList = new ArrayList<Difference>();
 
     @Override
-    public void diff(Difference difference) {
+    public void diff(Difference difference, Object actualSource, Object expectedSource) {
         differenceList.add(difference);
     }
 
