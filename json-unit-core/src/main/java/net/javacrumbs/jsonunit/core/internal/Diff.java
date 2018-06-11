@@ -44,6 +44,7 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
+import static net.javacrumbs.jsonunit.core.internal.DifferenceContextImpl.differenceContext;
 import static net.javacrumbs.jsonunit.core.internal.JsonUnitLogger.NULL_LOGGER;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
@@ -116,9 +117,7 @@ public class Diff {
     /**
      * Compares object nodes.
      *
-     * @param expected
-     * @param actual
-     * @param path
+     * @param context
      */
     private void compareObjectNodes(Context context) {
         Node expected = context.getExpectedNode();
@@ -161,7 +160,8 @@ public class Diff {
     }
 
     private void reportDifference(Difference difference) {
-        configuration.getDifferenceListener().diff(difference);
+        configuration.getDifferenceListener().diff(difference,
+                differenceContext(configuration, actualRoot, expectedRoot));
     }
 
     private void removePathsToBeIgnored(Path path, Set<String> extraKeys) {
@@ -246,9 +246,7 @@ public class Diff {
     /**
      * Compares two nodes.
      *
-     * @param expectedNode
-     * @param actualNode
-     * @param fieldPath
+     * @param context
      */
     private void compareNodes(Context context) {
         if (shouldIgnorePath(context.getActualPath())) {
