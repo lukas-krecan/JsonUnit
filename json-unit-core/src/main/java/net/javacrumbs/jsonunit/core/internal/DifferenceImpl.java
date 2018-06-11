@@ -1,6 +1,5 @@
 package net.javacrumbs.jsonunit.core.internal;
 
-import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.listener.Difference;
 
 class DifferenceImpl implements Difference {
@@ -32,11 +31,6 @@ class DifferenceImpl implements Difference {
     public Object getExpected() {
         Node expectedNode = context.getExpectedNode();
         return expectedNode != null && !expectedNode.isMissingNode() ? expectedNode.getValue() : null;
-    }
-
-    @Override
-    public Configuration getConfiguration() {
-        return context.getConfiguration();
     }
 
     @Override

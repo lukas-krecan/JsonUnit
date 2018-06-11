@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit.test.base;
 
 import net.javacrumbs.jsonunit.core.listener.Difference;
+import net.javacrumbs.jsonunit.core.listener.DifferenceContext;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class RecordingDifferenceListener implements DifferenceListener {
     private final List<Difference> differenceList = new ArrayList<Difference>();
 
     @Override
-    public void diff(Difference difference, Object actualSource, Object expectedSource) {
+    public void diff(Difference difference, DifferenceContext context) {
         differenceList.add(difference);
     }
 

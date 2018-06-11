@@ -1,7 +1,5 @@
 package net.javacrumbs.jsonunit.core.listener;
 
-import net.javacrumbs.jsonunit.core.Configuration;
-
 /**
  * Describes differences between documents.
  */
@@ -33,9 +31,4 @@ public interface Difference {
      * Type of the difference
      */
     Type getType();
-
-    /**
-     * Configuration used for comparison.
-     */
-    Configuration getConfiguration();
 }

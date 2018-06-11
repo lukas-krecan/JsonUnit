@@ -17,6 +17,7 @@ package net.javacrumbs.jsonunit.core;
 
 import net.javacrumbs.jsonunit.core.internal.Options;
 import net.javacrumbs.jsonunit.core.listener.Difference;
+import net.javacrumbs.jsonunit.core.listener.DifferenceContext;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
 
@@ -34,7 +35,7 @@ import static java.util.Arrays.asList;
 public class Configuration {
     private static final DifferenceListener DUMMY_LISTENER = new DifferenceListener() {
         @Override
-        public void diff(Difference difference, Object actualSource, Object expectedSource) {
+        public void diff(Difference difference, DifferenceContext context) {
 
         }
     };

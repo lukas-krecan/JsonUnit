@@ -3,6 +3,7 @@ package net.javacrumbs.jsonunit.core.internal;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.listener.Difference;
+import net.javacrumbs.jsonunit.core.listener.DifferenceContext;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.junit.Test;
 
@@ -185,6 +186,20 @@ public class DifferenceTest {
         assertThat((BigDecimal) listener.getDifferenceList().get(0).getExpected(), equalTo(valueOf(3)));
     }
 
+    @Test
+    public void shouldSeeActualSource() {
+        Diff diff = Diff.create("{\"test\": \"1\"}", "{}", "", "", commonConfig());
+        diff.similar();
+        assertThat(listener.getActualSource().toString(), equalTo("{}"));
+    }
+
+    @Test
+    public void shouldSeeExpectedSource() {
+        Diff diff = Diff.create("{\"test\": \"1\"}", "{}", "", "", commonConfig());
+        diff.similar();
+        assertThat(listener.getExpectedSource().toString(), equalTo("{\"test\":\"1\"}"));
+    }
+
 
     private Configuration commonConfig() {
         return Configuration.empty().withDifferenceListener(listener);
@@ -192,14 +207,26 @@ public class DifferenceTest {
 
     private static class RecordingDifferenceListener implements DifferenceListener {
         private final List<Difference> differenceList = new ArrayList<Difference>();
+        private Object actualSource;
+        private Object expectedSource;
 
         @Override
-        public void diff(Difference difference, Object actualSource, Object expectedSource) {
+        public void diff(Difference difference, DifferenceContext context) {
             differenceList.add(difference);
+            actualSource = context.getActualSource();
+            expectedSource = context.getExpectedSource();
         }
 
         public List<Difference> getDifferenceList() {
             return differenceList;
+        }
+
+        public Object getActualSource() {
+            return actualSource;
+        }
+
+        public Object getExpectedSource() {
+            return expectedSource;
         }
     }
 }

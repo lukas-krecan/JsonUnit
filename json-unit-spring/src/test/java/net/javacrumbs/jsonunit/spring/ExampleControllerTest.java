@@ -17,6 +17,7 @@ package net.javacrumbs.jsonunit.spring;
 
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.listener.Difference;
+import net.javacrumbs.jsonunit.core.listener.DifferenceContext;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,7 +76,7 @@ public class ExampleControllerTest {
                     "Different value found in node \"result.string\", expected: <\"stringValue2\"> but was: <\"stringValue\">.\n",
                 e.getMessage());
 
-            verify(listener).diff(any(Difference.class), any(Object.class), any(Object.class));
+            verify(listener).diff(any(Difference.class), any(DifferenceContext.class));
         }
     }
 
