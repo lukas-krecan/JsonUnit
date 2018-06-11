@@ -116,8 +116,6 @@ public class Diff {
 
     /**
      * Compares object nodes.
-     *
-     * @param context
      */
     private void compareObjectNodes(Context context) {
         Node expected = context.getExpectedNode();
@@ -245,8 +243,6 @@ public class Diff {
 
     /**
      * Compares two nodes.
-     *
-     * @param context
      */
     private void compareNodes(Context context) {
         if (shouldIgnorePath(context.getActualPath())) {

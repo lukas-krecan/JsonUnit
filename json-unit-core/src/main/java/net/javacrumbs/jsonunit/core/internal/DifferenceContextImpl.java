@@ -3,20 +3,20 @@ package net.javacrumbs.jsonunit.core.internal;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.listener.DifferenceContext;
 
-public class DifferenceContextImpl implements DifferenceContext {
+class DifferenceContextImpl implements DifferenceContext {
 
     private final Configuration configuration;
-    private final Object actualSource;
-    private final Object expectedSource;
+    private final Node actualSource;
+    private final Node expectedSource;
 
-    private DifferenceContextImpl(Configuration configuration, Object actualSource, Object expectedSource) {
+    private DifferenceContextImpl(Configuration configuration, Node actualSource, Node expectedSource) {
         this.configuration = configuration;
         this.actualSource = actualSource;
         this.expectedSource = expectedSource;
     }
 
 
-    static DifferenceContextImpl differenceContext(Configuration configuration, Object actualSource, Object expectedSource) {
+    static DifferenceContextImpl differenceContext(Configuration configuration, Node actualSource, Node expectedSource) {
         return new DifferenceContextImpl(configuration, actualSource, expectedSource);
     }
 
@@ -27,11 +27,11 @@ public class DifferenceContextImpl implements DifferenceContext {
 
     @Override
     public Object getActualSource() {
-        return actualSource;
+        return actualSource.getValue();
     }
 
     @Override
     public Object getExpectedSource() {
-        return expectedSource;
+        return expectedSource.getValue();
     }
 }

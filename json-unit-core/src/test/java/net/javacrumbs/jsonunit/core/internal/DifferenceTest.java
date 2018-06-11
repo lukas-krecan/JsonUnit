@@ -5,6 +5,7 @@ import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.listener.Difference;
 import net.javacrumbs.jsonunit.core.listener.DifferenceContext;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
+import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.math.BigDecimal;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.math.BigDecimal.valueOf;
+import static java.util.Collections.singletonMap;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -197,7 +199,7 @@ public class DifferenceTest {
     public void shouldSeeExpectedSource() {
         Diff diff = Diff.create("{\"test\": \"1\"}", "{}", "", "", commonConfig());
         diff.similar();
-        assertThat(listener.getExpectedSource().toString(), equalTo("{\"test\":\"1\"}"));
+        assertThat(listener.getExpectedSource(), Matchers.<Object>equalTo(singletonMap("test", "1")));
     }
 
 
