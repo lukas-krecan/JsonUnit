@@ -478,6 +478,12 @@ public abstract class AbstractJsonFluentAssertTest {
 
 
     @Test
+    public void shoulEscapeDot() {
+        assertThatJson("{\"name.with.dot\": \"value\"}").node("name\\.with\\.dot").isStringEqualTo("value");
+    }
+
+
+    @Test
     public void comparisonShouldFailOnDifferentType() {
         try {
             assertThatJson("{\"test\":1}").isEqualTo("{\"test\":\"1\"}");

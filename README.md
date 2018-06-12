@@ -154,6 +154,14 @@ this.mockMvc.perform(get("/sample").andExpect(
 );
 ```
 
+Escaping dots
+-------------
+Sometimes you have dots in JSON element names and you need to address those elements. It is possible to escape dots like this
+
+```java
+assertThatJson("{\"name.with.dot\": \"value\"}").node("name\\.with\\.dot").isStringEqualTo("value");
+```
+
 Ignoring values
 ----------------
 Sometimes you need to ignore certain values when comparing. It is possible to use ${json-unit.ignore}
