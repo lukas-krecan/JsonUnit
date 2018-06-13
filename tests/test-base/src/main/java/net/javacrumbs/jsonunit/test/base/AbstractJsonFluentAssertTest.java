@@ -482,6 +482,10 @@ public abstract class AbstractJsonFluentAssertTest {
         assertThatJson("{\"name.with.dot\": \"value\"}").node("name\\.with\\.dot").isStringEqualTo("value");
     }
 
+    @Test
+    public void shoulEscapeDotWithArray() {
+        assertThatJson("{\"errors\":{\"days[0].date\":[\"validation.failed\"]}}").node("errors.days[0]\\.date").isArray();
+    }
 
     @Test
     public void comparisonShouldFailOnDifferentType() {
