@@ -22,7 +22,7 @@ public final class Path {
     private final String path;
     private final String pathPrefix;
 
-    private static final Pattern arrayPattern = Pattern.compile("(.*)\\[(-?\\d+)\\]");
+    private static final Pattern arrayPattern = Pattern.compile("(.*)\\[(-?\\d+)]");
 
     /**
      * We need to ignore "\." when splitting path.

@@ -18,8 +18,6 @@ package net.javacrumbs.jsonunit.test.base;
 import net.javacrumbs.jsonunit.JsonAssert;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
-import net.javacrumbs.jsonunit.core.listener.Difference;
-import org.assertj.core.api.iterable.Extractor;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -779,7 +777,7 @@ public abstract class AbstractJsonAssertTest {
                 "Array \"test\" has different content, expected: <[1,2,3]> but was: <[3,4,5]>. Missing values [1, 2], extra values [4, 5]\n", e.getMessage());
 
             assertThat(listener.getDifferenceList()).hasSize(4);
-            assertThat(listener.getDifferenceList()).extracting((Extractor<? super Difference, String>) toStringMethod()).containsExactly(
+            assertThat(listener.getDifferenceList()).extracting(toStringMethod()).containsExactly(
                 "MISSING 1 in test[0]",
                 "MISSING 2 in test[1]",
                 "EXTRA 4 in test[1]",
@@ -1357,7 +1355,7 @@ public abstract class AbstractJsonAssertTest {
 
 
     @Test
-    public void testEqualsNodeFail() throws IOException {
+    public void testEqualsNodeFail() {
         try {
             assertJsonEquals(readValue("{\"test\":1}"), "{\"test\": 2}");
             failIfNoException();

@@ -64,7 +64,7 @@ public class Diff {
     private static final String ANY_STRING_PLACEHOLDER = "${json-unit.any-string}";
 
     private static final String REGEX_PLACEHOLDER = "${json-unit.regex}";
-    private static final Pattern MATCHER_PLACEHOLDER_PATTERN = Pattern.compile("\\$\\{json-unit.matches:(.+?)\\}(.*)");
+    private static final Pattern MATCHER_PLACEHOLDER_PATTERN = Pattern.compile("\\$\\{json-unit.matches:(.+?)}(.*)");
 
     private static final JsonUnitLogger DEFAULT_DIFF_LOGGER = createLogger("net.javacrumbs.jsonunit.difference.diff");
     private static final JsonUnitLogger DEFAULT_VALUE_LOGGER = createLogger("net.javacrumbs.jsonunit.difference.values");
@@ -182,7 +182,7 @@ public class Diff {
      * @return
      */
     private Set<String> getNotNullExtraKeys(Node actual, Set<String> extraKeys) {
-        Set<String> notNullExtraKeys = new TreeSet<String>();
+        Set<String> notNullExtraKeys = new TreeSet<>();
         for (String extraKey : extraKeys) {
             if (!actual.get(extraKey).isNull()) {
                 notNullExtraKeys.add(extraKey);
@@ -201,7 +201,7 @@ public class Diff {
     }
 
     private static Set<String> getMissingKeys(Set<String> expectedKeys, Collection<String> actualKeys) {
-        Set<String> missingKeys = new TreeSet<String>(expectedKeys);
+        Set<String> missingKeys = new TreeSet<>(expectedKeys);
         missingKeys.removeAll(actualKeys);
         return missingKeys;
     }
@@ -216,7 +216,7 @@ public class Diff {
 
     private Set<String> getExtraKeys(Set<String> expectedKeys, Collection<String> actualKeys) {
         if (!hasOption(IGNORING_EXTRA_FIELDS)) {
-            Set<String> extraKeys = new TreeSet<String>(actualKeys);
+            Set<String> extraKeys = new TreeSet<>(actualKeys);
             extraKeys.removeAll(expectedKeys);
             return extraKeys;
         } else {
@@ -498,7 +498,7 @@ public class Diff {
 
 
     private List<Node> asList(Iterator<Node> elements) {
-        List<Node> result = new ArrayList<Node>();
+        List<Node> result = new ArrayList<>();
         while (elements.hasNext()) {
             Node Node = elements.next();
             result.add(Node);
@@ -524,14 +524,14 @@ public class Diff {
 
 
     private Set<String> commonFields(Map<String, Node> expectedFields, Map<String, Node> actualFields) {
-        Set<String> result = new TreeSet<String>(expectedFields.keySet());
+        Set<String> result = new TreeSet<>(expectedFields.keySet());
         result.retainAll(actualFields.keySet());
         return Collections.unmodifiableSet(result);
     }
 
 
     private SortedSet<String> sort(Set<String> set) {
-        return new TreeSet<String>(set);
+        return new TreeSet<>(set);
     }
 
     public boolean similar() {
@@ -559,7 +559,7 @@ public class Diff {
      * @return
      */
     private static Map<String, Node> getFields(Node node) {
-        Map<String, Node> result = new HashMap<String, Node>();
+        Map<String, Node> result = new HashMap<>();
         Iterator<KeyValue> fields = node.fields();
         while (fields.hasNext()) {
             KeyValue field = fields.next();

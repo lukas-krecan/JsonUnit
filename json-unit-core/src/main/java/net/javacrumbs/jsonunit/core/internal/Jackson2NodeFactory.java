@@ -81,7 +81,7 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
     static final class Jackson2Node extends AbstractNode {
         private final JsonNode jsonNode;
 
-        public Jackson2Node(JsonNode jsonNode) {
+        Jackson2Node(JsonNode jsonNode) {
             this.jsonNode = jsonNode;
         }
 

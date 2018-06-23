@@ -48,7 +48,7 @@ public interface Node {
         ARRAY("array") {
             public Object getValue(Node node) {
                 Iterator<Node> nodeIterator = node.arrayElements();
-                LinkedList<Object> result = new LinkedList<Object>();
+                LinkedList<Object> result = new LinkedList<>();
                 while (nodeIterator.hasNext()) {
                     Node arrayNode = nodeIterator.next();
                     result.add(arrayNode.getValue());

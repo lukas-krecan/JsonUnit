@@ -391,7 +391,7 @@ public class JsonFluentAssert {
         private final List<Node> array;
 
         public ArrayAssert(Iterator<Node> array) {
-            List<Node> list = new ArrayList<Node>();
+            List<Node> list = new ArrayList<>();
             while (array.hasNext()) {
                 list.add(array.next());
             }

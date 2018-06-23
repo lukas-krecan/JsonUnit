@@ -57,9 +57,7 @@ class GsonNodeFactory extends AbstractNodeFactory {
         // GSON is always lenient :-(
         try {
             return newNode(new JsonParser().parse(value));
-        } catch (JsonIOException e) {
-            throw new IllegalArgumentException(e);
-        } catch (JsonSyntaxException e) {
+        } catch (JsonIOException | JsonSyntaxException e) {
             throw new IllegalArgumentException(e);
         } finally {
             closeQuietly(value);
@@ -81,7 +79,7 @@ class GsonNodeFactory extends AbstractNodeFactory {
     static final class GsonNode extends AbstractNode {
         private final JsonElement jsonNode;
 
-        public GsonNode(JsonElement jsonNode) {
+        GsonNode(JsonElement jsonNode) {
             this.jsonNode = jsonNode;
         }
 

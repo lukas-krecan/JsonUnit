@@ -20,8 +20,6 @@ import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Test;
 
-import java.io.IOException;
-
 import static java.math.BigDecimal.valueOf;
 import static java.util.Arrays.asList;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
@@ -165,13 +163,13 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    public void testToleranceStatic() throws IOException {
+    public void testToleranceStatic() {
         JsonAssert.setTolerance(0.001);
         assertThat("{\"test\":1.00001}", jsonEquals("{\"test\":1}"));
     }
 
     @Test
-    public void testTolerance() throws IOException {
+    public void testTolerance() {
         assertThat("{\"test\":1.00001}", jsonEquals("{\"test\":1}").withTolerance(0.001).when(IGNORING_EXTRA_FIELDS));
     }
 
@@ -181,7 +179,7 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    public void hasItemShouldWork() throws IOException {
+    public void hasItemShouldWork() {
         //assertThat(asList("{\"test\":1}"), hasItem(jsonEquals("{\"test\":1}"))); //does not compile
         assertThat(asList("{\"test\":1}"), contains(jsonEquals("{\"test\":1}")));
     }
@@ -324,7 +322,7 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    public void testNullAndAbsent() throws IOException {
+    public void testNullAndAbsent() {
         try {
             assertThat("{\"test\":{\"a\":1, \"b\": null}}", jsonEquals("{\"test\":{\"a\":1}}"));
             failIfNoException();
@@ -348,7 +346,7 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    public void testJsonNode() throws IOException {
+    public void testJsonNode() {
         assertThat(readValue("{\"test\":1}"), jsonEquals("{\"test\":1}"));
     }
 

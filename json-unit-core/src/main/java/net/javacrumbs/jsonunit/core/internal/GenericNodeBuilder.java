@@ -39,14 +39,14 @@ class GenericNodeBuilder implements NodeBuilder {
             return new ArrayNode(Arrays.asList((Object[]) object), this);
         } else if (object instanceof int[]) {
             int[] array = (int[]) object;
-            List<Integer> list = new ArrayList<Integer>(array.length);
+            List<Integer> list = new ArrayList<>(array.length);
             for (int i : array) {
                 list.add(i);
             }
             return new ArrayNode(list, this);
         } else if (object instanceof double[]) {
             double[] array = (double[]) object;
-            List<Double> list = new ArrayList<Double>(array.length);
+            List<Double> list = new ArrayList<>(array.length);
             for (double i : array) {
                 list.add(i);
             }

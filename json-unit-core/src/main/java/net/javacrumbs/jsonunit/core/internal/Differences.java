@@ -22,7 +22,7 @@ import java.util.List;
  * List of differences
  */
 class Differences {
-    private final List<String> messages = new ArrayList<String>();
+    private final List<String> messages = new ArrayList<>();
 
     Differences() {
     }

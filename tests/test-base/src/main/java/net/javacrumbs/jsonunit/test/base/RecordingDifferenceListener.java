@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RecordingDifferenceListener implements DifferenceListener {
-    private final List<Difference> differenceList = new ArrayList<Difference>();
+    private final List<Difference> differenceList = new ArrayList<>();
 
     @Override
     public void diff(Difference difference, DifferenceContext context) {

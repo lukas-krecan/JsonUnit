@@ -72,7 +72,7 @@ class Converter {
     }
 
     private static List<NodeFactory> createFactoriesSpecifiedInProperty(String property) {
-        List<NodeFactory> factories = new ArrayList<NodeFactory>();
+        List<NodeFactory> factories = new ArrayList<>();
         for (String factoryName : property.toLowerCase().split(",")) {
             factoryName = factoryName.trim();
             if ("moshi".equals(factoryName)) {
@@ -93,7 +93,7 @@ class Converter {
     }
 
     private static List<NodeFactory> createDefaultFactories() {
-        List<NodeFactory> factories = new ArrayList<NodeFactory>();
+        List<NodeFactory> factories = new ArrayList<>();
         if (moshiPresent) {
             factories.add(new MoshiNodeFactory());
         }
