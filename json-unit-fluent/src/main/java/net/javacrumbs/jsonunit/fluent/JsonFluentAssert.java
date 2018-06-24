@@ -347,7 +347,7 @@ public class JsonFluentAssert {
 
         /**
          * Creates an assert object that only compares given node.
-         * The path is denoted by JSON path, for example.
+         * The path is denoted by JSON path, for example. Second call navigates from the root.
          *
          * <code>
          * assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[0]").isEqualTo("1");

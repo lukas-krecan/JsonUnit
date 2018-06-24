@@ -15,23 +15,29 @@
  */
 package net.javacrumbs.jsonunit.assertj;
 
+import net.javacrumbs.jsonunit.assertj.JsonAssert.ConfigurableJsonAssert;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 import net.javacrumbs.jsonunit.core.internal.Path;
 
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix;
 
-public class JsonAssertions {
-    public static JsonAssert assertThatJson(Object actual) {
-      return new JsonAssert(Path.create("", getPathPrefix(actual)), Configuration.empty(), actual);
+public final class JsonAssertions {
+    private JsonAssertions() {
+        
+    }
+
+    public static ConfigurableJsonAssert assertThatJson(Object actual) {
+        return new ConfigurableJsonAssert(Path.create("", getPathPrefix(actual)), Configuration.empty(), actual);
     }
 
     /**
      * JSON to be used in expected part of the assertion,
+     *
      * @param input
      * @return Object suitable for comparison. Implementation type may change in the future.
      */
     public static Object json(Object input) {
-         return JsonUtils.convertToJson(input, "", true);
-     }
+        return JsonUtils.convertToJson(input, "", true);
+    }
 }

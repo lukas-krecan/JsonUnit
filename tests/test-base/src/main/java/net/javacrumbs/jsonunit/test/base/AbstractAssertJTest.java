@@ -549,7 +549,7 @@ public abstract class AbstractAssertJTest {
     @Test
     public void shouldReportExtraArrayItemsWhenIgnoringOrder() {
         try {
-            assertThatJson("{\"test\":[1,2,3]}").node("test").when(IGNORING_ARRAY_ORDER).isEqualTo("[1]");
+            assertThatJson("{\"test\":[1,2,3]}").when(IGNORING_ARRAY_ORDER).node("test").isEqualTo("[1]");
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\n" +
@@ -573,7 +573,7 @@ public abstract class AbstractAssertJTest {
     @Test
     public void shouldReportMissingArrayItemsWhenIgnoringOrder() {
         try {
-            assertThatJson("{\"test\":[1]}").node("test").when(IGNORING_ARRAY_ORDER).isEqualTo("[1, 2, 3]");
+            assertThatJson("{\"test\":[1]}").when(IGNORING_ARRAY_ORDER).node("test").isEqualTo("[1, 2, 3]");
             failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\n" +

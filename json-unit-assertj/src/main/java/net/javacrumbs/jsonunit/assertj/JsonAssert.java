@@ -41,9 +41,9 @@ import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NUMBER;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
 
-public final class JsonAssert extends AbstractAssert<JsonAssert, Object> {
-    private final Path path;
-    private final Configuration configuration;
+public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
+    final Path path;
+    final Configuration configuration;
 
     JsonAssert(Path path, Configuration configuration, Object o) {
         super(o, JsonAssert.class);
@@ -52,54 +52,16 @@ public final class JsonAssert extends AbstractAssert<JsonAssert, Object> {
         usingComparator(new JsonComparator(configuration, path, false));
     }
 
+    /**
+     * Moves comparison to given node. Second call navigates from the last position in the JSON.
+     */
     public JsonAssert node(String node) {
         return new JsonAssert(path.to(node), configuration, getNode(actual, node));
     }
 
-    public MapAssert<String, Object> isObject() {
-        Node node = assertType(OBJECT);
-        return new JsonMapAssert((Map<String, Object>) node.getValue(), path.asPrefix(), configuration)
-            .as("Different value found in node \"%s\"", path);
-    }
-
-    public BigDecimalAssert isNumber() {
-        Node node = assertType(NUMBER);
-        return new BigDecimalAssert(node.decimalValue()).as("Different value found in node \"%s\"", path);
-    }
-
-    public ListAssert<Object> isArray() {
-        Node node = assertType(ARRAY);
-        return new JsonListAssert((List<?>)node.getValue(), path.asPrefix(), configuration)
-            .as("Different value found in node \"%s\"", path);
-    }
-
-    public BooleanAssert isBoolean() {
-        Node node = assertType(BOOLEAN);
-        return new BooleanAssert((Boolean) node.getValue()).as("Different value found in node \"%s\"", path);
-    }
-
-    public StringAssert isString() {
-        Node node = assertType(STRING);
-        return new StringAssert((String) node.getValue()).as("Different value found in node \"%s\"", path);
-    }
-
     /**
-     * Adds comparison options.
+     * Compares JSONs.
      */
-    public JsonAssert when(Option first, Option... other) {
-        return new JsonAssert(path, configuration.when(first, other), actual);
-    }
-
-    public JsonAssert withConfiguration(Function<Configuration, Configuration> configurationFunction) {
-        return new JsonAssert(path, configurationFunction.apply(configuration), actual);
-    }
-
-
-    @Override
-    public void isNull() {
-        assertType(NULL);
-    }
-
     @Override
     public JsonAssert isEqualTo(Object expected) {
         Diff diff = Diff.create(expected, actual, "fullJson", path.asPrefix(), configuration);
@@ -109,18 +71,93 @@ public final class JsonAssert extends AbstractAssert<JsonAssert, Object> {
         return this;
     }
 
+    /**
+     * Asserts that given node is present and is of type object.
+     *
+     * @return MapAssert where the object is serialized as Map
+     */
+    public MapAssert<String, Object> isObject() {
+        Node node = assertType(OBJECT);
+        return new JsonMapAssert((Map<String, Object>) node.getValue(), path.asPrefix(), configuration)
+            .as("Different value found in node \"%s\"", path);
+    }
 
+    /**
+     * Asserts that given node is present and is of type number.
+     *
+     * @return
+     */
+    public BigDecimalAssert isNumber() {
+        Node node = assertType(NUMBER);
+        return new BigDecimalAssert(node.decimalValue()).as("Different value found in node \"%s\"", path);
+    }
+
+    /**
+     * Asserts that given node is present and is of type array.
+     *
+     * @return
+     */
+    public ListAssert<Object> isArray() {
+        Node node = assertType(ARRAY);
+        return new JsonListAssert((List<?>)node.getValue(), path.asPrefix(), configuration)
+            .as("Different value found in node \"%s\"", path);
+    }
+
+    /**
+     * Asserts that given node is present and is of type boolean.
+     *
+     * @return
+     */
+    public BooleanAssert isBoolean() {
+        Node node = assertType(BOOLEAN);
+        return new BooleanAssert((Boolean) node.getValue()).as("Different value found in node \"%s\"", path);
+    }
+
+    /**
+     * Asserts that given node is present and is of type string.
+     *
+     * @return
+     */
+    public StringAssert isString() {
+        Node node = assertType(STRING);
+        return new StringAssert((String) node.getValue()).as("Different value found in node \"%s\"", path);
+    }
+
+
+    /**
+     * Asserts that given node is present and is null.
+     * @return
+     */
+    @Override
+    public void isNull() {
+        assertType(NULL);
+    }
+
+    /**
+     * Asserts that given node is present.
+     *
+     * @return
+     */
     public JsonAssert isPresent() {
         isPresent("node to be present");
         return this;
     }
 
+    /**
+     * Asserts that given node is absent.
+     *
+     * @return
+     */
     public void isAbsent() {
         if (!nodeAbsent(actual, path.asPrefix(), configuration)) {
             failOnDifference("node to be absent", quoteTextValue(actual));
         }
     }
 
+    /**
+     * Asserts that given node is present and is not null.
+     * @return
+     */
     @Override
     public JsonAssert isNotNull() {
         isPresent("not null");
@@ -152,5 +189,38 @@ public final class JsonAssert extends AbstractAssert<JsonAssert, Object> {
 
     private void failOnType(Node node, String expectedTypeDescription) {
         failWithMessage("Node \"" + path + "\" has invalid type, expected: <" + expectedTypeDescription + "> but was: <" + quoteTextValue(node.getValue()) + ">.");
+    }
+
+    /**
+     * JsonAssert that can be configured to prevent mistakes like
+     *
+     * <code>
+     * assertThatJson(...).isEqualsTo(...).when(...);
+     * </code>
+     */
+    public static class ConfigurableJsonAssert extends JsonAssert {
+        ConfigurableJsonAssert(Path path, Configuration configuration, Object o) {
+            super(path, configuration, o);
+        }
+
+        /**
+         * Adds comparison options.
+         */
+        public ConfigurableJsonAssert when(Option first, Option... other) {
+            return withConfiguration(c -> c.when(first, other));
+        }
+
+        /**
+         * Allows to configure like this
+         *
+         * <code>
+         *     assertThatJson(...)
+         *             .withConfiguration(c -> c.withMatcher("positive", greaterThan(valueOf(0)))
+         *             ....
+         * </code>
+         */
+        public ConfigurableJsonAssert withConfiguration(Function<Configuration, Configuration> configurationFunction) {
+            return new ConfigurableJsonAssert(path, configurationFunction.apply(configuration), actual);
+        }
     }
 }

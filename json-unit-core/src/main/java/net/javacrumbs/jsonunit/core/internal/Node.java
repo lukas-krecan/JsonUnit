@@ -121,7 +121,7 @@ public interface Node {
         private final String key;
         private final Node value;
 
-        public KeyValue(String key, Node value) {
+        KeyValue(String key, Node value) {
             this.key = key;
             this.value = value;
         }
