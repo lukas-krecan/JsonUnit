@@ -155,7 +155,8 @@ public abstract class AbstractJsonMatchersTest {
     public void testGenericsStringInference() {
         doAssertThat("{\"test\":1}", jsonStringPartEquals("test", "1"));
         doAssertThat("{\"test\":1}", jsonStringEquals("{\"test\" : 1}"));
-        //doAssertThat("{\"test\":1}", jsonPartEquals("test", "1")); //does not compile in Java 7
+        doAssertThat("{\"test\":1}", jsonPartEquals("test", "1"));
+        doAssertThat("{\"test\":1}", jsonEquals(("{\"test\" : 1}")));
     }
 
     private void doAssertThat(String text, Matcher<String> matcher) {

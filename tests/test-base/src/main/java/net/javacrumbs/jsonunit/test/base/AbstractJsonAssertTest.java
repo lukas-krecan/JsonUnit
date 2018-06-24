@@ -748,6 +748,7 @@ public abstract class AbstractJsonAssertTest {
     public void arraysMatchShouldReportErrorCorrectlyWhenIgnoringExtraFieldsComplex() {
         try {
             assertJsonEquals("[[3],[2],[1]]", "[[1,2],[2,3],[2,4]]", when(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_ARRAY_ITEMS));
+            failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\n" +
                 "Different value found when comparing expected array element [2] to actual element [2].\n" +
@@ -759,6 +760,7 @@ public abstract class AbstractJsonAssertTest {
     public void arraysMatchShouldReportErrorCorrectlyWhenIgnoringExtraFieldsInEmbeddedObjects() {
         try {
             assertJsonEquals("[{\"a\":[\"b\"]},{\"a\":[\"a\"]}]", "[{\"a\":[\"b\",\"a\"]},{\"a\":[\"d\",\"c\"]}]", when(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_ARRAY_ITEMS));
+            failIfNoException();
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\n" +
                 "Different value found when comparing expected array element [1] to actual element [1].\n" +
