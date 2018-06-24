@@ -255,11 +255,6 @@ public abstract class AbstractJsonFluentAssertTest {
     }
 
     @Test
-    public void testDeprecation() {
-        assertThatJson("{\"test1\":2, \"test2\":1}").node("test1").isEqualTo(2).when(TREATING_NULL_AS_ABSENT);
-    }
-
-    @Test
     public void testNodeAbsent() {
         try {
             assertThatJson("{\"test1\":2, \"test2\":1}").node("test2").isAbsent();
