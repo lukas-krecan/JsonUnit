@@ -20,6 +20,7 @@ import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Path;
+import net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.BigDecimalAssert;
 import org.assertj.core.api.BooleanAssert;
@@ -33,6 +34,7 @@ import java.util.function.Function;
 
 import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.ARRAY;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.BOOLEAN;
@@ -50,6 +52,10 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
         this.path = path;
         this.configuration = configuration;
         usingComparator(new JsonComparator(configuration, path, false));
+    }
+
+    JsonAssert(Object actual, Configuration configuration) {
+        this(Path.create("", getPathPrefix(actual)), configuration, actual);
     }
 
     /**
@@ -203,6 +209,10 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
             super(path, configuration, o);
         }
 
+        ConfigurableJsonAssert(Object actual, Configuration configuration) {
+            super(Path.create("", getPathPrefix(actual)), configuration, actual);
+        }
+
         /**
          * Adds comparison options.
          */
@@ -221,6 +231,10 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
          */
         public ConfigurableJsonAssert withConfiguration(Function<Configuration, Configuration> configurationFunction) {
             return new ConfigurableJsonAssert(path, configurationFunction.apply(configuration), actual);
+        }
+
+        public JsonAssert inPath(String jsonPath) {
+            return new JsonAssert(JsonPathAdapter.inPath(actual, jsonPath), configuration);
         }
     }
 }

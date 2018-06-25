@@ -18,9 +18,6 @@ package net.javacrumbs.jsonunit.assertj;
 import net.javacrumbs.jsonunit.assertj.JsonAssert.ConfigurableJsonAssert;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
-import net.javacrumbs.jsonunit.core.internal.Path;
-
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix;
 
 public final class JsonAssertions {
     private JsonAssertions() {
@@ -28,7 +25,7 @@ public final class JsonAssertions {
     }
 
     public static ConfigurableJsonAssert assertThatJson(Object actual) {
-        return new ConfigurableJsonAssert(Path.create("", getPathPrefix(actual)), Configuration.empty(), actual);
+        return new ConfigurableJsonAssert(actual, Configuration.empty());
     }
 
     /**

@@ -26,7 +26,6 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
-import static net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter.inPath;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.entry;
@@ -285,7 +284,7 @@ public abstract class AbstractAssertJTest {
 
     @Test
     public void shouldAssertNotNullChain() {
-        assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": null}}").node("a").node("b").isNotNull())
+        assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": null}}").node("a").isPresent().node("b").isNotNull())
             .hasMessage("Node \"a.b\" has invalid type, expected: <not null> but was: <null>.");
     }
 
@@ -681,7 +680,8 @@ public abstract class AbstractAssertJTest {
     // *****************************************************************************************************************
     @Test
     public void jsonPathShouldBeAbleToUseObjects() {
-        assertThatThrownBy(() -> assertThatJson(inPath(json, "$.store.book[0]"))
+        assertThatThrownBy(() -> assertThatJson(json)
+            .inPath("$.store.book[0]")
             .isEqualTo(
                 "            {\n" +
                     "                \"category\": \"reference\",\n" +
@@ -695,8 +695,49 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    public void jsonPathWithIgnoredPaths() {
+        assertThatJson(json)
+            .withConfiguration(c -> c.whenIgnoringPaths("$.store.book[*].price"))
+            .inPath("$.store.book[0]")
+            .isEqualTo(
+                "            {\n" +
+                    "                \"category\": \"reference\",\n" +
+                    "                \"author\": \"Nigel Rees\",\n" +
+                    "                \"title\": \"Sayings of the Century\",\n" +
+                    "                \"price\": 999\n" +
+                    "            }"
+            );
+    }
+
+    @Test
+    public void jsonPathWithNode() {
+        assertThatJson(json)
+            .inPath("$.store.book[0]")
+            .node("title")
+            .isEqualTo("Sayings of the Century");
+    }
+
+    @Test
+    public void jsonPathWithNodeError() {
+        assertThatThrownBy(() ->  assertThatJson(json)
+            .inPath("$.store.book[0]")
+            .node("title")
+            .isEqualTo("Sayings of the Century2")
+        ).hasMessage("JSON documents are different:\nDifferent value found in node \"$.store.book[0].title\", expected: <\"Sayings of the Century2\"> but was: <\"Sayings of the Century\">.\n");
+    }
+
+    @Test
+    public void jsonPatNumber() {
+        assertThatJson(json)
+            .inPath("$..book.length()")
+            .isArray()
+            .containsExactly(valueOf(4));
+    }
+
+    @Test
     public void jsonPathShouldBeAbleToUseArrays() {
-        assertThatThrownBy(() -> assertThatJson(inPath(json, "$.store.book"))
+        assertThatThrownBy(() -> assertThatJson(json)
+            .inPath("$.store.book")
             .isArray()
             .contains(json(
                 "            {\n" +
@@ -721,7 +762,16 @@ public abstract class AbstractAssertJTest {
 
     @Test
     public void jsonPathShouldBeAbleToUseArraysDeep() {
-            assertThatJson(inPath(json, "$.store.book[*].category"))
+            assertThatJson(json)
+                .inPath("$.store.book[*].category")
+                .isArray()
+                .containsExactlyInAnyOrder("fiction", "reference", "fiction", "fiction");
+    }
+
+    @Test
+    public void jsonPathShouldBeAbleToUseArraysFromObject() {
+            assertThatJson(readValue(json))
+                .inPath("$.store.book[*].category")
                 .isArray()
                 .containsExactlyInAnyOrder("fiction", "reference", "fiction", "fiction");
     }
