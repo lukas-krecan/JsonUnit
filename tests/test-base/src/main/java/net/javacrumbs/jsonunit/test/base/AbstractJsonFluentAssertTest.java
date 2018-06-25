@@ -29,8 +29,8 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
-import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.failIfNoException;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.everyItem;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -45,32 +45,20 @@ import static org.junit.Assert.assertEquals;
 public abstract class AbstractJsonFluentAssertTest {
     @Test
     public void testAssertString() {
-        try {
-            assertThatJson("{\"test\":1}").isEqualTo("{\"test\":2}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <2> but was: <1>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":1}").isEqualTo("{\"test\":2}"))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <2> but was: <1>.\n");
     }
 
     @Test
     public void testAssertDifferentType() {
-        try {
-            assertThatJson("{\"test\":\"1\"}").node("test").isEqualTo("1");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <1> but was: <\"1\">.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":\"1\"}").node("test").isEqualTo("1"))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <1> but was: <\"1\">.\n");
     }
 
     @Test
     public void testAssertDifferentTypeInt() {
-        try {
-            assertThatJson("{\"test\":\"1\"}").node("test").isEqualTo(1);
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <1> but was: <\"1\">.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":\"1\"}").node("test").isEqualTo(1))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <1> but was: <\"1\">.\n");
     }
 
     @Test
@@ -95,42 +83,26 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void testAssertToleranceFailure() {
-        try {
-            assertThatJson("{\"test\":1.1}").node("test").withTolerance(0.001).isEqualTo(1);
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <1> but was: <1.1>, difference is 0.1, tolerance is 0.001\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":1.1}").node("test").withTolerance(0.001).isEqualTo(1))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <1> but was: <1.1>, difference is 0.1, tolerance is 0.001\n");
     }
 
     @Test
     public void testAssertNode() {
-        try {
-            assertThatJson(readValue("{\"test\":1}")).isEqualTo(readValue("{\"test\":2}"));
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <2> but was: <1>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson(readValue("{\"test\":1}")).isEqualTo(readValue("{\"test\":2}")))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <2> but was: <1>.\n");
     }
 
     @Test
     public void testAssertNodeInExpectOnly() {
-        try {
-            assertThatJson("{\"test\":1}").isEqualTo(readValue("{\"test\":2}"));
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <2> but was: <1>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":1}").isEqualTo(readValue("{\"test\":2}")))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <2> but was: <1>.\n");
     }
 
     @Test
     public void testAssertReader() {
-        try {
-            assertThatJson(new StringReader("{\"test\":1}")).isEqualTo(new StringReader("{\"test\":2}"));
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <2> but was: <1>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson(new StringReader("{\"test\":1}")).isEqualTo(new StringReader("{\"test\":2}")))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <2> but was: <1>.\n");
     }
 
     @Test
@@ -165,12 +137,8 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void testNotEqualTo() {
-        try {
-            assertThatJson("{\"test\":1}").isNotEqualTo("{\"test\": 1}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON is equal.", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":1}").isNotEqualTo("{\"test\": 1}"))
+            .hasMessage("JSON is equal.");
     }
 
     @Test
@@ -180,52 +148,32 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void testDifferentStructure() {
-        try {
-            assertThatJson("{\"test\":1}").hasSameStructureAs("{\"test\":21, \"a\":true}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent keys found in node \"\", expected: <[a, test]> but was: <[test]>. Missing: \"a\" \n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":1}").hasSameStructureAs("{\"test\":21, \"a\":true}"))
+            .hasMessage("JSON documents are different:\nDifferent keys found in node \"\", expected: <[a, test]> but was: <[test]>. Missing: \"a\" \n");
     }
 
     @Test
     public void testAssertPath() {
-        try {
-            assertThatJson("{\"test\":1}").node("test").isEqualTo("2");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <2> but was: <1>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":1}").node("test").isEqualTo("2"))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <2> but was: <1>.\n");
     }
 
     @Test
     public void testAssertPathWithDescription() {
-        try {
-            assertThatJson(jsonSource("{\"test\":1}", "$")).node("test").isEqualTo("2");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"$.test\", expected: <2> but was: <1>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson(jsonSource("{\"test\":1}", "$")).node("test").isEqualTo("2"))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"$.test\", expected: <2> but was: <1>.\n");
     }
 
     @Test
     public void testPresentWithDescription() {
-        try {
-            assertThatJson(jsonSource("{\"test\":1}", "$")).node("test2").isPresent();
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Different value found in node \"$.test2\", expected: <node to be present> but was: <missing>.", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson(jsonSource("{\"test\":1}", "$")).node("test2").isPresent())
+            .hasMessage("Different value found in node \"$.test2\", expected: <node to be present> but was: <missing>.");
     }
 
     @Test
     public void testAssertPathArray() {
-        try {
-            assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[0]").isEqualTo(2);
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"root.test[0]\", expected: <2> but was: <1>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[0]").isEqualTo(2))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"root.test[0]\", expected: <2> but was: <1>.\n");
     }
 
     @Test
@@ -236,32 +184,20 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void testLongPaths() {
-        try {
-            assertThatJson("{\"root\":{\"test\":1}}").node("root.test").isEqualTo("2");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"root.test\", expected: <2> but was: <1>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"root\":{\"test\":1}}").node("root.test").isEqualTo("2"))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"root.test\", expected: <2> but was: <1>.\n");
     }
 
     @Test
     public void testMoreNodes() {
-        try {
-            assertThatJson("{\"test1\":2, \"test2\":1}").node("test1").isEqualTo(2).node("test2").isEqualTo(2);
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test2\", expected: <2> but was: <1>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test1\":2, \"test2\":1}").node("test1").isEqualTo(2).node("test2").isEqualTo(2))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"test2\", expected: <2> but was: <1>.\n");
     }
 
     @Test
     public void testNodeAbsent() {
-        try {
-            assertThatJson("{\"test1\":2, \"test2\":1}").node("test2").isAbsent();
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Different value found in node \"test2\", expected: <node to be absent> but was: <1>.", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test1\":2, \"test2\":1}").node("test2").isAbsent())
+            .hasMessage("Different value found in node \"test2\", expected: <node to be absent> but was: <1>.");
     }
 
     @Test
@@ -276,12 +212,8 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void testNodePresent() {
-        try {
-            assertThatJson("{\"test1\":2, \"test2\":1}").node("test3").isPresent();
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Different value found in node \"test3\", expected: <node to be present> but was: <missing>.", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test1\":2, \"test2\":1}").node("test3").isPresent())
+            .hasMessage("Different value found in node \"test3\", expected: <node to be present> but was: <missing>.");
     }
 
     @Test
@@ -296,12 +228,8 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void isPresentShouldTreatNullAsAbsentWhenSpecified() {
-        try {
-            assertThatJson("{\"test1\":2, \"test2\":null}").when(Option.TREATING_NULL_AS_ABSENT).node("test2").isPresent();
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Different value found in node \"test2\", expected: <node to be present> but was: <missing>.", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test1\":2, \"test2\":null}").when(TREATING_NULL_AS_ABSENT).node("test2").isPresent())
+            .hasMessage("Different value found in node \"test2\", expected: <node to be present> but was: <missing>.");
     }
 
     @Test
@@ -316,12 +244,8 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void testMessage() {
-        try {
-            assertThatJson("{\"test\":1}").as("Test is different").isEqualTo("{\"test\":2}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("[Test is different] JSON documents are different:\nDifferent value found in node \"test\", expected: <2> but was: <1>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":1}").as("Test is different").isEqualTo("{\"test\":2}"))
+            .hasMessage("[Test is different] JSON documents are different:\nDifferent value found in node \"test\", expected: <2> but was: <1>.\n");
     }
 
     @Test
@@ -346,32 +270,20 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void anyNumberShouldFailOnString() {
-        try {
-            assertThatJson("{\"test\":\"one\"}").isEqualTo("{\"test\":\"${json-unit.any-number}\"}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <a number> but was: <\"one\">.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":\"one\"}").isEqualTo("{\"test\":\"${json-unit.any-number}\"}"))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <a number> but was: <\"one\">.\n");
     }
 
     @Test
     public void anyNumberShouldFailOnNull() {
-        try {
-            assertThatJson("{\"test\":null}").isEqualTo("{\"test\":\"${json-unit.any-number}\"}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <a number> but was: <null>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":null}").isEqualTo("{\"test\":\"${json-unit.any-number}\"}"))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <a number> but was: <null>.\n");
     }
 
     @Test
     public void anyNumberShouldFailOnObject() {
-        try {
-            assertThatJson("{\"test\":{\"a\":1}}").isEqualTo("{\"test\":\"${json-unit.any-number}\"}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <a number> but was: <{\"a\":1}>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":{\"a\":1}}").isEqualTo("{\"test\":\"${json-unit.any-number}\"}"))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <a number> but was: <{\"a\":1}>.\n");
     }
 
     @Test
@@ -381,32 +293,20 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void anyBooleanShouldFailOnString() {
-        try {
-            assertThatJson("{\"test\":\"true\"}").isEqualTo("{\"test\":\"${json-unit.any-boolean}\"}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <a boolean> but was: <\"true\">.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":\"true\"}").isEqualTo("{\"test\":\"${json-unit.any-boolean}\"}"))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <a boolean> but was: <\"true\">.\n");
     }
 
     @Test
     public void anyBooleanShouldFailOnNull() {
-        try {
-            assertThatJson("{\"test\":null}").isEqualTo("{\"test\":\"${json-unit.any-boolean}\"}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <a boolean> but was: <null>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":null}").isEqualTo("{\"test\":\"${json-unit.any-boolean}\"}"))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <a boolean> but was: <null>.\n");
     }
 
     @Test
     public void anyBooleanShouldFailOnObject() {
-        try {
-            assertThatJson("{\"test\":{\"a\":1}}").isEqualTo("{\"test\":\"${json-unit.any-boolean}\"}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <a boolean> but was: <{\"a\":1}>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":{\"a\":1}}").isEqualTo("{\"test\":\"${json-unit.any-boolean}\"}"))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <a boolean> but was: <{\"a\":1}>.\n");
     }
 
     @Test
@@ -416,32 +316,20 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void anyStringShouldFailOnBoolean() {
-        try {
-            assertThatJson("{\"test\":true}").isEqualTo("{\"test\":\"${json-unit.any-string}\"}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <a string> but was: <true>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":true}").isEqualTo("{\"test\":\"${json-unit.any-string}\"}"))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <a string> but was: <true>.\n");
     }
 
     @Test
     public void anyStringShouldFailOnNull() {
-        try {
-            assertThatJson("{\"test\":null}").isEqualTo("{\"test\":\"${json-unit.any-string}\"}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <a string> but was: <null>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":null}").isEqualTo("{\"test\":\"${json-unit.any-string}\"}"))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <a string> but was: <null>.\n");
     }
 
     @Test
     public void anyStringShouldFailOnObject() {
-        try {
-            assertThatJson("{\"test\":{\"a\":1}}").isEqualTo("{\"test\":\"${json-unit.any-string}\"}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <a string> but was: <{\"a\":1}>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":{\"a\":1}}").isEqualTo("{\"test\":\"${json-unit.any-string}\"}"))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <a string> but was: <{\"a\":1}>.\n");
     }
 
     @Test
@@ -452,15 +340,10 @@ public abstract class AbstractJsonFluentAssertTest {
     @Test
     public void ifMatcherDoesNotMatchReportDifference() {
         RecordingDifferenceListener listener = new RecordingDifferenceListener();
-        try {
-            assertThatJson("{\"test\":-1}").withMatcher("positive", greaterThan(valueOf(0))).withDifferenceListener(listener).isEqualTo("{\"test\": \"${json-unit.matches:positive}\"}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nMatcher \"positive\" does not match value -1 in node \"test\". <-1> was less than <0>\n", e.getMessage());
-
-            assertThat(listener.getDifferenceList()).hasSize(1);
-            assertThat(listener.getDifferenceList().get(0).toString()).isEqualTo("DIFFERENT Expected ${json-unit.matches:positive} in test got -1 in test");
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":-1}").withMatcher("positive", greaterThan(valueOf(0))).withDifferenceListener(listener).isEqualTo("{\"test\": \"${json-unit.matches:positive}\"}"))
+            .hasMessage("JSON documents are different:\nMatcher \"positive\" does not match value -1 in node \"test\". <-1> was less than <0>\n");
+        assertThat(listener.getDifferenceList()).hasSize(1);
+        assertThat(listener.getDifferenceList().get(0).toString()).isEqualTo("DIFFERENT Expected ${json-unit.matches:positive} in test got -1 in test");
     }
 
     @Test
@@ -485,12 +368,8 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void comparisonShouldFailOnDifferentType() {
-        try {
-            assertThatJson("{\"test\":1}").isEqualTo("{\"test\":\"1\"}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <\"1\"> but was: <1>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":1}").isEqualTo("{\"test\":\"1\"}"))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <\"1\"> but was: <1>.\n");
     }
 
     @Test
@@ -515,93 +394,61 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void isArrayShouldFailIfArrayDoesNotExist() {
-        try {
-            assertThatJson("{\"test\":1}").node("test2").isArray();
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Different value found in node \"test2\", expected: <array> but was: <missing>.", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":1}").node("test2").isArray())
+            .hasMessage("Different value found in node \"test2\", expected: <array> but was: <missing>.");
     }
 
     @Test
     public void isArrayShouldFailIfItIsNotArray() {
-        try {
-            assertThatJson("{\"test\":\"1\"}").node("test").isArray();
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"test\" has invalid type, expected: <array> but was: <\"1\">.", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":\"1\"}").node("test").isArray())
+            .hasMessage("Node \"test\" has invalid type, expected: <array> but was: <\"1\">.");
     }
 
     @Test
     public void arrayOfLengthShouldFailOnIncorrectSize() {
-        try {
-            assertThatJson("{\"test\":[1,2,3]}").node("test").isArray().ofLength(2);
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"test\" has invalid length, expected: <2> but was: <3>.", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":[1,2,3]}").node("test").isArray().ofLength(2))
+            .hasMessage("Node \"test\" has invalid length, expected: <2> but was: <3>.");
     }
 
     @Test
     public void shouldReportExtraArrayItemsWhenNotIgnoringOrder() {
-        try {
-            assertThatJson("{\"test\":[1,2,3]}").node("test").isEqualTo("[1]");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
+        assertThatThrownBy(() -> assertThatJson("{\"test\":[1,2,3]}").node("test").isEqualTo("[1]"))
+            .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has different length, expected: <1> but was: <3>.\n" +
-                "Array \"test\" has different content, expected: <[1]> but was: <[1,2,3]>. Extra values [2, 3]\n", e.getMessage());
-        }
+                "Array \"test\" has different content, expected: <[1]> but was: <[1,2,3]>. Extra values [2, 3]\n");
     }
 
     @Test
     public void shouldReportExtraArrayItemsWhenIgnoringOrder() {
-        try {
-            assertThatJson("{\"test\":[1,2,3]}").node("test").when(IGNORING_ARRAY_ORDER).isEqualTo("[1]");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
+        assertThatThrownBy(() -> assertThatJson("{\"test\":[1,2,3]}").node("test").when(IGNORING_ARRAY_ORDER).isEqualTo("[1]"))
+            .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has different length, expected: <1> but was: <3>.\n" +
-                "Array \"test\" has different content, expected: <[1]> but was: <[1,2,3]>. Missing values [], extra values [2, 3]\n", e.getMessage());
-        }
+                "Array \"test\" has different content, expected: <[1]> but was: <[1,2,3]>. Missing values [], extra values [2, 3]\n");
     }
 
     @Test
     public void shouldReportMissingArrayItemsWhenNotIgnoringOrder() {
-        try {
-            assertThatJson("{\"test\":[1]}").node("test").isEqualTo("[1, 2, 3]");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
+        assertThatThrownBy(() -> assertThatJson("{\"test\":[1]}").node("test").isEqualTo("[1, 2, 3]"))
+            .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has different length, expected: <3> but was: <1>.\n" +
-                "Array \"test\" has different content, expected: <[1,2,3]> but was: <[1]>. Missing values [2, 3]\n", e.getMessage());
-        }
+                "Array \"test\" has different content, expected: <[1,2,3]> but was: <[1]>. Missing values [2, 3]\n");
     }
 
     @Test
     public void shouldReportMissingArrayItemsWhenIgnoringOrder() {
-        try {
-            assertThatJson("{\"test\":[1]}").node("test").when(IGNORING_ARRAY_ORDER).isEqualTo("[1, 2, 3]");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
+        assertThatThrownBy(() -> assertThatJson("{\"test\":[1]}").node("test").when(IGNORING_ARRAY_ORDER).isEqualTo("[1, 2, 3]"))
+            .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has different length, expected: <3> but was: <1>.\n" +
-                "Array \"test\" has different content, expected: <[1,2,3]> but was: <[1]>. Missing values [2, 3], extra values []\n", e.getMessage());
-        }
+                "Array \"test\" has different content, expected: <[1,2,3]> but was: <[1]>. Missing values [2, 3], extra values []\n");
     }
 
     @Test
     public void shouldReportExtraArrayItemsAndDifferencesWhenNotIgnoringOrder() {
-        try {
-            assertThatJson("{\"test\":[\"x\",\"b\",\"c\"]}").node("test").isEqualTo("[\"a\"]");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
+        assertThatThrownBy(() -> assertThatJson("{\"test\":[\"x\",\"b\",\"c\"]}").node("test").isEqualTo("[\"a\"]"))
+            .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has different length, expected: <1> but was: <3>.\n" +
                 "Array \"test\" has different content, expected: <[\"a\"]> but was: <[\"x\",\"b\",\"c\"]>. Extra values [\"b\", \"c\"]\n" +
-                "Different value found in node \"test[0]\", expected: <\"a\"> but was: <\"x\">.\n", e.getMessage());
-        }
+                "Different value found in node \"test[0]\", expected: <\"a\"> but was: <\"x\">.\n");
     }
 
     @Test
@@ -641,12 +488,8 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void arrayThatContainsShouldFailOnMissingNode() {
-        try {
-            assertThatJson("{\"test\":[{\"id\":36},{\"id\":37},{\"id\":38}]}").node("test").isArray().thatContains("{\"id\":42}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"test\" is '[{\"id\":36}, {\"id\":37}, {\"id\":38}]', expected to contain '{\"id\":42}'.", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":[{\"id\":36},{\"id\":37},{\"id\":38}]}").node("test").isArray().thatContains("{\"id\":42}"))
+            .hasMessage("Node \"test\" is '[{\"id\":36}, {\"id\":37}, {\"id\":38}]', expected to contain '{\"id\":42}'.");
     }
 
     @Test
@@ -676,12 +519,8 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void intValueShouldFailIfDoesNotMatch() {
-        try {
-            assertThatJson("{\"test\":1}").node("test").matches(equalTo(valueOf(2)));
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"test\" does not match.\nExpected: <2>\n     but: was <1>", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":1}").node("test").matches(equalTo(valueOf(2))))
+            .hasMessage("Node \"test\" does not match.\nExpected: <2>\n     but: was <1>");
     }
 
     @Test
@@ -692,12 +531,8 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void floatValueShouldFailIfDoesNotMatch() {
-        try {
-            assertThatJson("{\"test\":1}").node("test").matches(equalTo(valueOf(2)));
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"test\" does not match.\nExpected: <2>\n     but: was <1>", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":1}").node("test").matches(equalTo(valueOf(2))))
+            .hasMessage("Node \"test\" does not match.\nExpected: <2>\n     but: was <1>");
     }
 
 
@@ -708,22 +543,14 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void booleanValueShouldFailIfDoesNotMatch() {
-        try {
-            assertThatJson("{\"test2\":true}").node("test2").matches(equalTo(false));
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"test2\" does not match.\nExpected: <false>\n     but: was <true>", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test2\":true}").node("test2").matches(equalTo(false)))
+            .hasMessage("Node \"test2\" does not match.\nExpected: <false>\n     but: was <true>");
     }
 
     @Test
     public void missingValueShouldFail() {
-        try {
-            assertThatJson("{\"test2\":true}").node("test").matches(equalTo(false));
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Different value found in node \"test\", expected: <node to be present> but was: <missing>.", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test2\":true}").node("test").matches(equalTo(false)))
+            .hasMessage("Different value found in node \"test\", expected: <node to be present> but was: <missing>.");
     }
 
     @Test
@@ -733,12 +560,8 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void stringValueShouldFailIfDoesNotMatch() {
-        try {
-            assertThatJson("{\"test\":\"one\"}").node("test").matches(equalTo("two"));
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"test\" does not match.\nExpected: \"two\"\n     but: was \"one\"", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":\"one\"}").node("test").matches(equalTo("two")))
+            .hasMessage("Node \"test\" does not match.\nExpected: \"two\"\n     but: was \"one\"");
     }
 
     @Test
@@ -748,12 +571,8 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void nullValueShouldFailIfDoesNotMatch() {
-        try {
-            assertThatJson("{\"test\":\"one\"}").node("test").matches(equalTo(nullValue()));
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"test\" does not match.\nExpected: <null>\n     but: was \"one\"", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":\"one\"}").node("test").matches(equalTo(nullValue())))
+            .hasMessage("Node \"test\" does not match.\nExpected: <null>\n     but: was \"one\"");
     }
 
     @Test
@@ -769,13 +588,9 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void arrayMatcherShouldFailIfNotFound() {
-        try {
-            assertThatJson("{\"test\":[1,2,3]}").node("test").matches(hasItem(4));
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"test\" does not match.\nExpected: a collection containing <4>\n" +
-                "     but: was <1>, was <2>, was <3>", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":[1,2,3]}").node("test").matches(hasItem(4)))
+            .hasMessage("Node \"test\" does not match.\nExpected: a collection containing <4>\n" +
+                "     but: was <1>, was <2>, was <3>");
     }
 
     @Test
@@ -790,29 +605,21 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void objectMatcherShouldFailIfNotFound() {
-        try {
-            assertThatJson("{\"test\":[{\"value\":1},{\"value\":2},{\"value\":3}]}").node("test").matches(hasItem(jsonPartEquals("value", 4)));
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"test\" does not match.\n" +
+        assertThatThrownBy(() -> assertThatJson("{\"test\":[{\"value\":1},{\"value\":2},{\"value\":3}]}").node("test").matches(hasItem(jsonPartEquals("value", 4))))
+            .hasMessage("Node \"test\" does not match.\n" +
                 "Expected: a collection containing 4 in \"value\"\n" +
                 "     but: JSON documents are different:\n" +
                 "Different value found in node \"value\", expected: <4> but was: <1>.\n" +
                 ", JSON documents are different:\n" +
                 "Different value found in node \"value\", expected: <4> but was: <2>.\n" +
                 ", JSON documents are different:\n" +
-                "Different value found in node \"value\", expected: <4> but was: <3>.\n", e.getMessage());
-        }
+                "Different value found in node \"value\", expected: <4> but was: <3>.\n");
     }
 
     @Test
     public void isStringShouldFailIfItDoesNotExist() {
-        try {
-            assertThatJson("{\"test\":1}").node("test2").isString();
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Different value found in node \"test2\", expected: <string> but was: <missing>.", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":1}").node("test2").isString())
+            .hasMessage("Different value found in node \"test2\", expected: <string> but was: <missing>.");
     }
 
 
@@ -825,32 +632,20 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void isStringShouldFailIfItIsNotAString() {
-        try {
-            assertThatJson("{\"test\":1}").node("test").isString();
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"test\" has invalid type, expected: <string> but was: <1>.", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":1}").node("test").isString())
+            .hasMessage("Node \"test\" has invalid type, expected: <string> but was: <1>.");
     }
 
     @Test
     public void isStringEqualToShouldFailIfItIsNotAString() {
-        try {
-            assertThatJson("{\"test\":1}").node("test").isStringEqualTo("1");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"test\" has invalid type, expected: <string> but was: <1>.", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":1}").node("test").isStringEqualTo("1"))
+            .hasMessage("Node \"test\" has invalid type, expected: <string> but was: <1>.");
     }
 
     @Test
     public void isStringEqualToShouldFailIfItDiffers() {
-        try {
-            assertThatJson("{\"test\":\"2\"}").node("test").isStringEqualTo("1");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Different value found in node \"test\", expected: <\"1\"> but was: <\"2\">.", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":\"2\"}").node("test").isStringEqualTo("1"))
+            .hasMessage("Different value found in node \"test\", expected: <\"1\"> but was: <\"2\">.");
     }
 
     @Test
@@ -860,23 +655,15 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void equalsShouldFailOnStringAndANumber() {
-        try {
-            assertThatJson("{\"test\":\"1\"}").node("test").isEqualTo("1");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
-                "Different value found in node \"test\", expected: <1> but was: <\"1\">.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":\"1\"}").node("test").isEqualTo("1"))
+            .hasMessage("JSON documents are different:\n" +
+                "Different value found in node \"test\", expected: <1> but was: <\"1\">.\n");
     }
 
     @Test
     public void isStringShouldFailOnNull() {
-        try {
-            assertThatJson("{\"test\":null}").node("test").isStringEqualTo("1");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"test\" has invalid type, expected: <string> but was: <null>.", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":null}").node("test").isStringEqualTo("1"))
+            .hasMessage("Node \"test\" has invalid type, expected: <string> but was: <null>.");
     }
 
     @Test
@@ -901,22 +688,14 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void isObjectShouldFailOnBoolean() {
-        try {
-            assertThatJson("{\"test\":{\"a\":true}}").node("test.a").isObject();
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"test.a\" has invalid type, expected: <object> but was: <true>.", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":{\"a\":true}}").node("test.a").isObject())
+            .hasMessage("Node \"test.a\" has invalid type, expected: <object> but was: <true>.");
     }
 
     @Test
     public void isObjectShouldFailOnMissing() {
-        try {
-            assertThatJson("{\"test\":{\"a\":true}}").node("test.b").isObject();
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Different value found in node \"test.b\", expected: <object> but was: <missing>.", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":{\"a\":true}}").node("test.b").isObject())
+            .hasMessage("Different value found in node \"test.b\", expected: <object> but was: <missing>.");
     }
 
     @Test(expected = AssertionError.class)
@@ -966,13 +745,9 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void testNullAndAbsent() {
-        try {
-            assertThatJson("{\"test\":{\"a\":1, \"b\": null}}").isEqualTo("{\"test\":{\"a\":1}}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
-                "Different keys found in node \"test\", expected: <[a]> but was: <[a, b]>.  Extra: \"test.b\"\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":{\"a\":1, \"b\": null}}").isEqualTo("{\"test\":{\"a\":1}}"))
+            .hasMessage("JSON documents are different:\n" +
+                "Different keys found in node \"test\", expected: <[a]> but was: <[a, b]>.  Extra: \"test.b\"\n");
     }
 
     @Test
@@ -997,13 +772,9 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void shouldAcceptEscapedPathAndShowCorrectErrorMessage() {
-        try {
-            assertThatJson("{\"foo.bar\":\"boo\"}").node("foo\\.bar").isEqualTo("baz");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
-                "Different value found in node \"foo\\.bar\", expected: <\"baz\"> but was: <\"boo\">.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"foo.bar\":\"boo\"}").node("foo\\.bar").isEqualTo("baz"))
+            .hasMessage("JSON documents are different:\n" +
+                "Different value found in node \"foo\\.bar\", expected: <\"baz\"> but was: <\"boo\">.\n");
     }
 
     protected abstract Object readValue(String value);

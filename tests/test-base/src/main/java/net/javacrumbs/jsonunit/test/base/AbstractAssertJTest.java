@@ -27,7 +27,6 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
 import static net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter.inPath;
-import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.failIfNoException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.entry;
@@ -428,22 +427,14 @@ public abstract class AbstractAssertJTest {
 
     @Test
     public void anyNumberShouldFailOnNull() {
-        try {
-            assertThatJson("{\"test\":null}").isEqualTo("{\"test\":\"${json-unit.any-number}\"}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <a number> but was: <null>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":null}").isEqualTo("{\"test\":\"${json-unit.any-number}\"}"))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <a number> but was: <null>.\n");
     }
 
     @Test
     public void anyNumberShouldFailOnObject() {
-        try {
-            assertThatJson("{\"test\":{\"a\":1}}").isEqualTo("{\"test\":\"${json-unit.any-number}\"}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nDifferent value found in node \"test\", expected: <a number> but was: <{\"a\":1}>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":{\"a\":1}}").isEqualTo("{\"test\":\"${json-unit.any-number}\"}"))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <a number> but was: <{\"a\":1}>.\n");
     }
 
     @Test
@@ -504,95 +495,63 @@ public abstract class AbstractAssertJTest {
 
     @Test
     public void isArrayShouldFailIfArrayDoesNotExist() {
-        try {
-            assertThatJson("{\"test\":1}").node("test2").isArray();
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Different value found in node \"test2\", expected: <array> but was: <missing>.", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":1}").node("test2").isArray())
+            .hasMessage("Different value found in node \"test2\", expected: <array> but was: <missing>.");
     }
 
     @Test
     public void isArrayShouldFailIfItIsNotArray() {
-        try {
-            assertThatJson("{\"test\":\"1\"}").node("test").isArray();
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"test\" has invalid type, expected: <array> but was: <\"1\">.", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"test\":\"1\"}").node("test").isArray())
+            .hasMessage("Node \"test\" has invalid type, expected: <array> but was: <\"1\">.");
     }
 
     @Test
     public void arrayOfLengthShouldFailOnIncorrectSize() {
-        try {
-            assertThatJson("{\"test\":[1,2,3]}").node("test").isArray().hasSize(2);
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("[Different value found in node \"test\"] \n" +
+        assertThatThrownBy(() -> assertThatJson("{\"test\":[1,2,3]}").node("test").isArray().hasSize(2))
+            .hasMessage("[Different value found in node \"test\"] \n" +
                 "Expected size:<2> but was:<3> in:\n" +
-                "<[1, 2, 3]>", e.getMessage());
-        }
+                "<[1, 2, 3]>");
     }
 
     @Test
     public void shouldReportExtraArrayItemsWhenNotIgnoringOrder() {
-        try {
-            assertThatJson("{\"test\":[1,2,3]}").node("test").isEqualTo("[1]");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
+        assertThatThrownBy(() -> assertThatJson("{\"test\":[1,2,3]}").node("test").isEqualTo("[1]"))
+            .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has different length, expected: <1> but was: <3>.\n" +
-                "Array \"test\" has different content, expected: <[1]> but was: <[1,2,3]>. Extra values [2, 3]\n", e.getMessage());
-        }
+                "Array \"test\" has different content, expected: <[1]> but was: <[1,2,3]>. Extra values [2, 3]\n");
     }
 
     @Test
     public void shouldReportExtraArrayItemsWhenIgnoringOrder() {
-        try {
-            assertThatJson("{\"test\":[1,2,3]}").when(IGNORING_ARRAY_ORDER).node("test").isEqualTo("[1]");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
+        assertThatThrownBy(() -> assertThatJson("{\"test\":[1,2,3]}").when(IGNORING_ARRAY_ORDER).node("test").isEqualTo("[1]"))
+            .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has different length, expected: <1> but was: <3>.\n" +
-                "Array \"test\" has different content, expected: <[1]> but was: <[1,2,3]>. Missing values [], extra values [2, 3]\n", e.getMessage());
-        }
+                "Array \"test\" has different content, expected: <[1]> but was: <[1,2,3]>. Missing values [], extra values [2, 3]\n");
     }
 
     @Test
     public void shouldReportMissingArrayItemsWhenNotIgnoringOrder() {
-        try {
-            assertThatJson("{\"test\":[1]}").node("test").isEqualTo("[1, 2, 3]");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
+        assertThatThrownBy(() -> assertThatJson("{\"test\":[1]}").node("test").isEqualTo("[1, 2, 3]"))
+            .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has different length, expected: <3> but was: <1>.\n" +
-                "Array \"test\" has different content, expected: <[1,2,3]> but was: <[1]>. Missing values [2, 3]\n", e.getMessage());
-        }
+                "Array \"test\" has different content, expected: <[1,2,3]> but was: <[1]>. Missing values [2, 3]\n");
     }
 
     @Test
     public void shouldReportMissingArrayItemsWhenIgnoringOrder() {
-        try {
-            assertThatJson("{\"test\":[1]}").when(IGNORING_ARRAY_ORDER).node("test").isEqualTo("[1, 2, 3]");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
+        assertThatThrownBy(() -> assertThatJson("{\"test\":[1]}").when(IGNORING_ARRAY_ORDER).node("test").isEqualTo("[1, 2, 3]"))
+            .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has different length, expected: <3> but was: <1>.\n" +
-                "Array \"test\" has different content, expected: <[1,2,3]> but was: <[1]>. Missing values [2, 3], extra values []\n", e.getMessage());
-        }
+                "Array \"test\" has different content, expected: <[1,2,3]> but was: <[1]>. Missing values [2, 3], extra values []\n");
     }
 
     @Test
     public void shouldReportExtraArrayItemsAndDifferencesWhenNotIgnoringOrder() {
-        try {
-            assertThatJson("{\"test\":[\"x\",\"b\",\"c\"]}").node("test").isEqualTo("[\"a\"]");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
+        assertThatThrownBy(() -> assertThatJson("{\"test\":[\"x\",\"b\",\"c\"]}").node("test").isEqualTo("[\"a\"]"))
+            .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has different length, expected: <1> but was: <3>.\n" +
                 "Array \"test\" has different content, expected: <[\"a\"]> but was: <[\"x\",\"b\",\"c\"]>. Extra values [\"b\", \"c\"]\n" +
-                "Different value found in node \"test[0]\", expected: <\"a\"> but was: <\"x\">.\n", e.getMessage());
-        }
+                "Different value found in node \"test[0]\", expected: <\"a\"> but was: <\"x\">.\n");
     }
 
     @Test
@@ -632,19 +591,15 @@ public abstract class AbstractAssertJTest {
 
     @Test
     public void arrayThatContainsShouldFailOnMissingNode() {
-        try {
-            assertThatJson("{\"test\":[{\"id\":36},{\"id\":37},{\"id\":38}]}").node("test").isArray().contains("{\"id\":42}");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("[Different value found in node \"test\"] \n" +
+        assertThatThrownBy(() -> assertThatJson("{\"test\":[{\"id\":36},{\"id\":37},{\"id\":38}]}").node("test").isArray().contains("{\"id\":42}"))
+            .hasMessage("[Different value found in node \"test\"] \n" +
                 "Expecting:\n" +
                 " <[{\"id\":36}, {\"id\":37}, {\"id\":38}]>\n" +
                 "to contain:\n" +
                 " <[\"{\"id\":42}\"]>\n" +
                 "but could not find:\n" +
                 " <[\"{\"id\":42}\"]>\n" +
-                "when comparing values using JsonComparator", e.getMessage());
-        }
+                "when comparing values using JsonComparator");
     }
 
     @Test
@@ -726,39 +681,32 @@ public abstract class AbstractAssertJTest {
     // *****************************************************************************************************************
     @Test
     public void jsonPathShouldBeAbleToUseObjects() {
-        try {
-            assertThatJson(inPath(json, "$.store.book[0]"))
-                .isEqualTo(
-                    "            {\n" +
-                        "                \"category\": \"reference\",\n" +
-                        "                \"author\": \"Nigel Rees\",\n" +
-                        "                \"title\": \"Sayings of the Century\",\n" +
-                        "                \"price\": 8.96\n" +
-                        "            }"
-                );
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
-                "Different value found in node \"$.store.book[0].price\", expected: <8.96> but was: <8.95>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson(inPath(json, "$.store.book[0]"))
+            .isEqualTo(
+                "            {\n" +
+                    "                \"category\": \"reference\",\n" +
+                    "                \"author\": \"Nigel Rees\",\n" +
+                    "                \"title\": \"Sayings of the Century\",\n" +
+                    "                \"price\": 8.96\n" +
+                    "            }"
+            ))
+            .hasMessage("JSON documents are different:\n" +
+                "Different value found in node \"$.store.book[0].price\", expected: <8.96> but was: <8.95>.\n");
     }
 
     @Test
     public void jsonPathShouldBeAbleToUseArrays() {
-        try {
-            assertThatJson(inPath(json, "$.store.book"))
-                .isArray()
-                .contains(json(
-                    "            {\n" +
-                        "                \"category\": \"reference\",\n" +
-                        "                \"author\": \"Nigel Rees\",\n" +
-                        "                \"title\": \"Sayings of the Century\",\n" +
-                        "                \"price\": 8.96\n" +
-                        "            }"
-                ));
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("[Different value found in node \"$.store.book\"] \n" +
+        assertThatThrownBy(() -> assertThatJson(inPath(json, "$.store.book"))
+            .isArray()
+            .contains(json(
+                "            {\n" +
+                    "                \"category\": \"reference\",\n" +
+                    "                \"author\": \"Nigel Rees\",\n" +
+                    "                \"title\": \"Sayings of the Century\",\n" +
+                    "                \"price\": 8.96\n" +
+                    "            }"
+            )))
+            .hasMessage("[Different value found in node \"$.store.book\"] \n" +
                 "Expecting:\n" +
                 " <[{\"category\":\"reference\", \"author\":\"Nigel Rees\", \"title\":\"Sayings of the Century\", \"price\":8.95},\n" +
                 "    {\"category\":\"fiction\", \"author\":\"Evelyn Waugh\", \"title\":\"Sword of Honour\", \"price\":12.99},\n" +
@@ -768,8 +716,7 @@ public abstract class AbstractAssertJTest {
                 " <[{\"category\":\"reference\",\"author\":\"Nigel Rees\",\"title\":\"Sayings of the Century\",\"price\":8.96}]>\n" +
                 "but could not find:\n" +
                 " <[{\"category\":\"reference\",\"author\":\"Nigel Rees\",\"title\":\"Sayings of the Century\",\"price\":8.96}]>\n" +
-                "when comparing values using JsonComparator", e.getMessage());
-        }
+                "when comparing values using JsonComparator");
     }
 
     @Test

@@ -34,6 +34,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static java.math.BigDecimal.valueOf;
 import static net.javacrumbs.jsonunit.spring.JsonUnitResultMatchers.json;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.junit.Assert.assertEquals;
@@ -82,12 +83,8 @@ public class ExampleControllerTest {
 
     @Test
     public void isStringEqualToShouldFailOnNumber() throws Exception {
-        try {
-            exec().andExpect(json().node("result.array[0]").isStringEqualTo("1"));
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"result.array[0]\" is not a string. The actual value is '1'.", e.getMessage());
-        }
+        assertThatThrownBy(() -> exec().andExpect(json().node("result.array[0]").isStringEqualTo("1")))
+            .hasMessage("Node \"result.array[0]\" is not a string. The actual value is '1'.");
     }
 
     @Test
@@ -97,12 +94,8 @@ public class ExampleControllerTest {
 
     @Test
     public void isAbsentShouldFailIfNodeExists() throws Exception {
-        try {
-            exec().andExpect(json().node("result.string").isAbsent());
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"result.string\" is present.", e.getMessage());
-        }
+        assertThatThrownBy(() -> exec().andExpect(json().node("result.string").isAbsent()))
+            .hasMessage("Node \"result.string\" is present.");
     }
 
 
@@ -113,12 +106,8 @@ public class ExampleControllerTest {
 
     @Test
     public void isPresentShouldFailIfNodeIsAbsent() throws Exception {
-        try {
-            exec().andExpect(json().node("result.string2").isPresent());
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"result.string2\" is missing.", e.getMessage());
-        }
+        assertThatThrownBy(() -> exec().andExpect(json().node("result.string2").isPresent()))
+            .hasMessage("Node \"result.string2\" is missing.");
     }
 
     @Test
@@ -128,43 +117,27 @@ public class ExampleControllerTest {
 
     @Test
     public void isArrayShouldFailOnNotArray() throws Exception {
-        try {
-            exec().andExpect(json().node("result.string").isArray());
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"result.string\" is not an array. The actual value is '\"stringValue\"'.", e.getMessage());
-        }
+        assertThatThrownBy(() -> exec().andExpect(json().node("result.string").isArray()))
+            .hasMessage("Node \"result.string\" is not an array. The actual value is '\"stringValue\"'.");
     }
 
     @Test
     public void isArrayShouldFailIfNotPresent() throws Exception {
-        try {
-            exec().andExpect(json().node("result.array2").isArray());
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"result.array2\" is missing.", e.getMessage());
-        }
+        assertThatThrownBy(() -> exec().andExpect(json().node("result.array2").isArray()))
+            .hasMessage("Node \"result.array2\" is missing.");
     }
 
 
     @Test
     public void isObjectShouldFailOnArray() throws Exception {
-        try {
-            exec().andExpect(json().node("result.array").isObject());
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"result.array\" is not an object. The actual value is '[1,2,3]'.", e.getMessage());
-        }
+        assertThatThrownBy(() -> exec().andExpect(json().node("result.array").isObject()))
+            .hasMessage("Node \"result.array\" is not an object. The actual value is '[1,2,3]'.");
     }
 
     @Test
     public void isStringShouldFailOnArray() throws Exception {
-        try {
-            exec().andExpect(json().node("result.array").isString());
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"result.array\" is not a string. The actual value is '[1,2,3]'.", e.getMessage());
-        }
+        assertThatThrownBy(() -> exec().andExpect(json().node("result.array").isString()))
+    .hasMessage("Node \"result.array\" is not a string. The actual value is '[1,2,3]'.");
     }
 
     @Test
@@ -194,26 +167,16 @@ public class ExampleControllerTest {
 
     @Test
     public void isNotEqualToShouldFailIfEquals() throws Exception {
-        try {
-            exec().andExpect(json().isNotEqualTo(CORRECT_JSON));
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals(
-                "JSON is equal.", e.getMessage());
-        }
+        assertThatThrownBy(() -> exec().andExpect(json().isNotEqualTo(CORRECT_JSON)))
+            .hasMessage("JSON is equal.");
     }
 
     @Test
     public void isEqualToShouldFailIfNodeDoesNotEqual() throws Exception {
-        try {
-            exec()
-                .andExpect(json().node("result.string").isEqualTo("stringValue2"));
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
-                    "Different value found in node \"result.string\", expected: <\"stringValue2\"> but was: <\"stringValue\">.\n",
-                e.getMessage());
-        }
+        assertThatThrownBy(() -> exec()
+            .andExpect(json().node("result.string").isEqualTo("stringValue2")))
+            .hasMessage("JSON documents are different:\n" +
+                "Different value found in node \"result.string\", expected: <\"stringValue2\"> but was: <\"stringValue\">.\n");
     }
 
     @Test
@@ -223,15 +186,10 @@ public class ExampleControllerTest {
 
     @Test
     public void intValueShouldFailIfDoesNotMatch() throws Exception {
-        try {
-            exec().andExpect(json().node("result.array").matches(everyItem(lessThanOrEqualTo(valueOf(2)))));
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("Node \"result.array\" does not match.\n" +
-                    "Expected: every item is a value less than or equal to <2>\n" +
-                    "     but: an item <3> was greater than <2>",
-                e.getMessage());
-        }
+        assertThatThrownBy(() -> exec().andExpect(json().node("result.array").matches(everyItem(lessThanOrEqualTo(valueOf(2))))))
+            .hasMessage("Node \"result.array\" does not match.\n" +
+                "Expected: every item is a value less than or equal to <2>\n" +
+                "     but: an item <3> was greater than <2>");
     }
 
     private ResultActions exec() throws Exception {
