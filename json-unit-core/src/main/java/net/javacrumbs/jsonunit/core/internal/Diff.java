@@ -94,7 +94,7 @@ public class Diff {
         if (actual instanceof JsonSource) {
             return create(expected, actual, actualName, Path.create(path, ((JsonSource) actual).getPathPrefix()), configuration);
         } else {
-            return create(expected, actual, actualName, Path.create(path, ""), configuration);
+            return create(expected, actual, actualName, Path.create(path, "$"), configuration);
         }
     }
 
@@ -446,7 +446,7 @@ public class Diff {
 
                 Path expectedPath = context.getExpectedPath().toElement(missing.getIndex());
                 Path actualPath = context.getActualPath().toElement(extra.getIndex());
-                valueDifferenceFound("Different value found when comparing expected array element %s to actual element %s.", expectedPath, actualPath);
+                valueDifferenceFound("Different value found when comparing expected array element \"%s\" to actual element \"%s\".", expectedPath, actualPath);
                 compareNodes(new Context(missing.getNode(), extra.getNode(), expectedPath, actualPath, configuration));
             } else if (failOnExtraArrayItems() && (!missingValues.isEmpty() || !extraValues.isEmpty())) {
                 reportMissingValues(context, missingValues);

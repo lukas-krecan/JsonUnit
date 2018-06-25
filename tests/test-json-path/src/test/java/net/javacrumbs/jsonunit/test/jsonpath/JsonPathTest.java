@@ -32,6 +32,11 @@ public class JsonPathTest {
     }
 
     @Test
+    public void shouldBeAbleToAddessArray() {
+        assertThatJson(inPath("[1, 2, 3]", "$[1]")).isEqualTo("2");
+    }
+
+    @Test
     public void shouldBeAbleToUseSimpleValuesAndIgnoreArrayOrder() {
         assertThatJson(inPath(json, "$.store.book[*].author"))
             .when(Option.IGNORING_ARRAY_ORDER)

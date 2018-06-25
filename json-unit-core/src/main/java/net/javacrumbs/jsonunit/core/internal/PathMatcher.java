@@ -50,6 +50,16 @@ abstract class PathMatcher {
         }
     }
 
+    private static String trimDolar(String path) {
+        if (path.startsWith("$.")) {
+            return path.substring(2);
+        } else if (path.startsWith("$[")) {
+            return path.substring(1);
+        } else {
+            return path;
+        }
+    }
+
     private static class SimplePathMatcher extends PathMatcher {
         private final String path;
 
@@ -59,7 +69,7 @@ abstract class PathMatcher {
 
         @Override
         boolean matches(String pathToMatch) {
-            return path.equals(pathToMatch);
+            return path.equals(trimDolar(pathToMatch));
         }
     }
 
@@ -93,7 +103,7 @@ abstract class PathMatcher {
 
         @Override
         boolean matches(String pathToMatch) {
-            return pattern.matcher(pathToMatch).matches();
+            return pattern.matcher(trimDolar(pathToMatch)).matches();
         }
     }
 
