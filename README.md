@@ -1,67 +1,84 @@
 JsonUnit [![Apache License 2](https://img.shields.io/badge/license-ASF2-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0.txt) [![Build Status](https://travis-ci.org/lukas-krecan/JsonUnit.png?branch=master)](https://travis-ci.org/lukas-krecan/JsonUnit) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.javacrumbs.json-unit/json-unit/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.javacrumbs.json-unit/json-unit)
 ========
 
-JsonUnit is a library that simplifies JSON comparison in unit tests. The usage is
-simple:
+JsonUnit is a library that simplifies JSON comparison in unit tests.
+
+- [APIs](#apis)
+  * [AssertJ integration (beta)](#assertj)
+  * [Fluent assertions](#fluent)
+  * [Spring MVC assertions](#spring)
+  * [Standard assert](#standard)
+
+# <a name="apis"></a>APIs
+There are several different APIs you can use. They all have more or less the same capabilities, just the usage is 
+slightly different.
+
+## <a name="assertj"></a>AssertJ integration (beta)
+This is brand new API which combines power of JsonUnit and AssertJ. It's currently in beta since there 
+might be some obscure features of AssertJ which might not work correctly with some obscure features of JsonUnit. Please let me know if you 
+encounter any.    
+
 
 ```java
-import static net.javacrumbs.jsonunit.JsonAssert.*;
-import static net.javacrumbs.jsonunit.core.Option.*;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 
 ...
 
 // compares two JSON documents
-assertJsonEquals("{\"test\":1}", "{\n\"test\": 1\n}");
+assertThatJson("{\"a\":1, \"b\":2}").isEqualTo("{\"b\":2, \"a\":1}");
 
 // objects are automatically serialized before comparison
-assertJsonEquals(jsonObject, "{\n\"test\": 1\n}");
+assertThatJson(jsonObject).isEqualTo("{\n\"test\": 1\n}");
 
-// compares only part
-assertJsonPartEquals("2", "{\"test\":[{\"value\":1},{\"value\":2}]}",
-    "test[1].value");
-    
-// extra options can be specified
-assertJsonEquals("{\"test\":{\"a\":1}}",
-    "{\"test\":{\"a\":1, \"b\": null}}",
-    when(TREATING_NULL_AS_ABSENT));
+// AssertJ map assertions (numbers are converted to BigDecimals)
+assertThatJson("{\"a\":1}").isObject().containsEntry("a", BigDecimal.valueOf(1));
 
-// compares only the structure, not the values
-assertJsonEquals("[{\"test\":1}, {\"test\":2}]",
-    "[{\n\"test\": 1\n}, {\"TEST\": 4}]", when(IGNORING_VALUES))
+// Type placeholders
+assertThatJson("{\"a\":1, \"b\": {\"c\" :3}}").isObject().containsValue(json("{\"c\" :\"${json-unit.any-number}\"}"));
 
-// Lenient parsing of expected value
-assertJsonEquals("{//Look ma, no quotation marks\n test:'value'}", 
-    "{\n\"test\": \"value\"\n}");
-```
-    
-When the values are compared, order of elements and whitespaces are ignored. 
+// AssertJ array assertion
+assertThatJson("{\"a\":[{\"b\": 1}, {\"c\": 1}, {\"d\": 1}]}").node("a").isArray().contains(json("{\"c\": 1}"));
 
-Hamcrests matchers
-----------------
-You use Hamcrest matchers in the following way
+// Can ignore array order
+assertThatJson("{\"a\":[{\"b\": 1}, {\"c\": 1}, {\"d\": 1}]}").when(Option.IGNORING_ARRAY_ORDER).node("a").isArray()
+            .isEqualTo(json("[{\"c\": 1}, {\"b\": 1} ,{\"d\": 1}]"));
 
-```java
-import static net.javacrumbs.jsonunit.JsonMatchers.*;
-import static org.junit.Assert.*;
-import static net.javacrumbs.jsonunit.core.util.ResourceUtils.resource;
-...
+// custom matcher
+assertThatJson("{\"test\":-1}")
+            .withConfiguration(c -> c.withMatcher("positive", greaterThan(valueOf(0))))
+            .isEqualTo("{\"test\": \"${json-unit.matches:positive}\"}");
 
-assertThat("{\"test\":1}", jsonEquals("{\"test\": 1}"));
-assertThat("{\"test\":1}", jsonPartEquals("test", 1));
-assertThat("{\"test\":[1, 2, 3]}", jsonPartEquals("test[0]", 1));
+// JsonPath support
+assertThatJson(json)
+    .inPath("$.store.book")
+    .isArray()
+    .contains(json(
+        "            {\n" +
+            "                \"category\": \"reference\",\n" +
+            "                \"author\": \"Nigel Rees\",\n" +
+            "                \"title\": \"Sayings of the Century\",\n" +
+            "                \"price\": 8.96\n" +
+            "            }"
+    ));
 
-assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
-    jsonEquals("{\"test\":{\"b\":2}}").when(IGNORING_EXTRA_FIELDS));
-
-// Can use other Hamcrest matchers too
-assertThat("{\"test\":1}", jsonPartMatches("test", is(valueOf(1))))
-
-assertThat("{\"test\":1}", jsonEquals(resource("test.json")));
 ```
 
-Fluent assertions
----------------
-Fluent (FEST or AssertJ like) assertions are supported by a special module json-unit-fluent
+To use AssertJ integration, import
+
+```xml
+<dependency>
+    <groupId>net.javacrumbs.json-unit</groupId>
+    <artifactId>json-unit-assertj</artifactId>
+    <version>1.31.0</version>
+    <scope>test</scope>
+</dependency>
+```
+For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/master/tests/test-base/src/main/java/net/javacrumbs/jsonunit/test/base/AbstractAssertJTest.java).
+
+##<a name="fluent"></a>Fluent assertions
+Fluent assertions were inspired by FEST and later AssertJ, but do not depend on any of them. I would recommend to use
+AssertJ integration above, once it leaves beta.
 
 ```java
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
@@ -109,15 +126,11 @@ assertThatJson("{\"test\":[{\"id\":36},{\"id\":37}]}").node("test")
 // using Hamcrest matcher
 assertThatJson("{\"test\":\"one\"}").node("test")
     .matches(equalTo("one"));
-```
 
-```java
-import static java.math.BigDecimal.valueOf;
-...
 // Numbers sent to matchers are BigDecimals.
 assertThatJson("{\"test\":[{\"value\":1},{\"value\":2},{\"value\":3}]}")
     .node("test")
-    .matches(everyItem(jsonPartMatches("value", lessThanOrEqualTo(valueOf(4)))));
+    .matches(everyItem(jsonPartMatches("value", lessThanOrEqualTo(BigDecimal.valueOf(4)))));
 ```
 
 ### Hamcrest matchers in fluent assertions
@@ -132,8 +145,53 @@ assertThatJson("{\"test\":[{\"value\":1},{\"value\":2},{\"value\":3}]}")
     .matches(everyItem(jsonPartMatches("value", lessThanOrEqualTo(valueOf(4)))));
 ```
 
-Spring MVC assertions
----------------------
+To use import
+```xml
+<dependency>
+    <groupId>net.javacrumbs.json-unit</groupId>
+    <artifactId>json-unit-fluent</artifactId>
+    <version>1.31.0</version>
+    <scope>test</scope>
+</dependency>
+```
+
+For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/master/tests/test-base/src/main/java/net/javacrumbs/jsonunit/test/base/AbstractJsonFluentAssertTest.java).
+
+## <a name="hamcrest"></a>Hamcrests matchers
+You use Hamcrest matchers in the following way
+
+```java
+import static net.javacrumbs.jsonunit.JsonMatchers.*;
+import static org.junit.Assert.*;
+import static net.javacrumbs.jsonunit.core.util.ResourceUtils.resource;
+...
+
+assertThat("{\"test\":1}", jsonEquals("{\"test\": 1}"));
+assertThat("{\"test\":1}", jsonPartEquals("test", 1));
+assertThat("{\"test\":[1, 2, 3]}", jsonPartEquals("test[0]", 1));
+
+assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
+    jsonEquals("{\"test\":{\"b\":2}}").when(IGNORING_EXTRA_FIELDS));
+
+// Can use other Hamcrest matchers too
+assertThat("{\"test\":1}", jsonPartMatches("test", is(valueOf(1))))
+
+assertThat("{\"test\":1}", jsonEquals(resource("test.json")));
+```
+
+To use import 
+```xml
+<dependency>
+    <groupId>net.javacrumbs.json-unit</groupId>
+    <artifactId>json-unit</artifactId>
+    <version>1.31.0</version>
+    <scope>test</scope>
+</dependency>
+```
+
+For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/master/tests/test-base/src/main/java/net/javacrumbs/jsonunit/test/base/AbstractJsonMatchersTest.java).
+
+## <a name="spring"></a>Spring MVC assertions
 Since version 1.7.0 JsonUnit supports Spring MVC test assertions. For example
 
 ```java
@@ -154,45 +212,140 @@ this.mockMvc.perform(get("/sample").andExpect(
 );
 ```
 
-Escaping dots
--------------
-Sometimes you have dots in JSON element names and you need to address those elements. It is possible to escape dots like this
-
-```java
-assertThatJson("{\"name.with.dot\": \"value\"}").node("name\\.with\\.dot").isStringEqualTo("value");
+To use import
+```xml
+<dependency>
+    <groupId>net.javacrumbs.json-unit</groupId>
+    <artifactId>json-unit-spring</artifactId>
+    <version>1.31.0</version>
+    <scope>test</scope>
+</dependency>
 ```
 
-Ignoring values
-----------------
-Sometimes you need to ignore certain values when comparing. It is possible to use ${json-unit.ignore}
-placeholder like this
+For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/master/json-unit-spring/src/test/java/net/javacrumbs/jsonunit/spring/ExampleControllerTest.java).
+
+##<a name="standard"></a>Standard assert
+This is old, JUnit-like API, for those of us who love traditions and do not like fluent APIs. 
+
+```java
+import static net.javacrumbs.jsonunit.JsonAssert.*;
+import static net.javacrumbs.jsonunit.core.Option.*;
+
+...
+
+// compares two JSON documents
+assertJsonEquals("{\"test\":1}", "{\n\"test\": 1\n}");
+
+// objects are automatically serialized before comparison
+assertJsonEquals(jsonObject, "{\n\"test\": 1\n}");
+
+// compares only part
+assertJsonPartEquals("2", "{\"test\":[{\"value\":1},{\"value\":2}]}",
+    "test[1].value");
+    
+// extra options can be specified
+assertJsonEquals("{\"test\":{\"a\":1}}",
+    "{\"test\":{\"a\":1, \"b\": null}}",
+    when(TREATING_NULL_AS_ABSENT));
+
+// compares only the structure, not the values
+assertJsonEquals("[{\"test\":1}, {\"test\":2}]",
+    "[{\n\"test\": 1\n}, {\"TEST\": 4}]", when(IGNORING_VALUES))
+
+// Lenient parsing of expected value
+assertJsonEquals("{//Look ma, no quotation marks\n test:'value'}", 
+    "{\n\"test\": \"value\"\n}");
+```
+
+To use import 
+```xml
+<dependency>
+    <groupId>net.javacrumbs.json-unit</groupId>
+    <artifactId>json-unit</artifactId>
+    <version>1.31.0</version>
+    <scope>test</scope>
+</dependency>
+```
+
+For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/master/tests/test-base/src/main/java/net/javacrumbs/jsonunit/test/base/AbstractJsonAssertTest.java).
+
+#Capabilities
+JsonUnit support all this capabilities regardless of API you use.
+
+## JsonPath support (beta)
+You can use JsonPath navigation together with JsonUnit. It has native support in AssertJ integration so you can do something like this:
 
 ```java
 assertJsonEquals("{\"test\":\"${json-unit.ignore}\"}",
     "{\n\"test\": {\"object\" : {\"another\" : 1}}}");
 ```
 
-Ignoring paths
---------------
+## Ignoring values
+Sometimes you need to ignore certain values when comparing. It is possible to use `${json-unit.ignore}`
+placeholder like this
+
 ```java
-assertJsonEquals(
-     "{\"root\":{\"test\":1, \"ignored\": 2}}", 
-     "{\"root\":{\"test\":1, \"ignored\": 1}}", 
-     whenIgnoringPaths("root.ignored")
+assertThatJson(json)
+    .inPath("$.store.book")
+    .isArray()
+    .contains(json(
+        "            {\n" +
+            "                \"category\": \"reference\",\n" +
+            "                \"author\": \"Nigel Rees\",\n" +
+            "                \"title\": \"Sayings of the Century\",\n" +
+            "                \"price\": 8.96\n" +
+            "            }"
+    ));
+```
+
+For other API styles you have to first import JsonPath support module
+```xml
+<dependency>
+    <groupId>net.javacrumbs.json-unit</groupId>
+    <artifactId>json-unit-json-path</artifactId>
+    <version>1.31.0</version>
+</dependency>
+```
+
+and then use instead of actual value
+
+```xml
+import static net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter.inPath;
+
+...
+
+assertThatJson(inPath(json, "$.store.book[*].author"))
+    .when(Option.IGNORING_ARRAY_ORDER)
+    .isEqualTo("['J. R. R. Tolkien', 'Nigel Rees', 'Evelyn Waugh', 'Herman Melville']");
+```
+
+##Ignoring paths
+
+```java
+// AssertJ style
+assertThatJson("{\"root\":{\"test\":1, \"ignored\": 1}}")
+    .withConfiguration(c -> c.whenIgnoringPaths("root.ignored"))
+    .isEqualTo("{\"root\":{\"test\":1}}");
+
+// Hamcrest matcher
+assertThat(
+  "{\"root\":{\"test\":1, \"ignored\": 2}}", 
+  jsonEquals("{\"root\":{\"test\":1, \"ignored\": 1}}").whenIgnoringPaths("root.ignored")
 );
 ```
 
 Array index placeholder
 ```java
+// standard assert
 assertJsonEquals(
     "[{\"a\":1, \"b\":0},{\"a\":1, \"b\":0}]", 
     "[{\"a\":1, \"b\":2},{\"a\":1, \"b\":3}]", 
     JsonAssert.whenIgnoringPaths("[*].b")
 );
 ```
+Please note, that if you use JsonPath, you should start the path to be ignored by `$.`.
 
-Regular expressions
--------------------
+## Regular expressions
 It is also possible to use regular expressions to compare string values
 
 ```java
@@ -200,8 +353,7 @@ assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}",
     "{\"test\": \"ABCD\"}");
 ```
 
-Type placeholders
------------------
+## Type placeholders
 If you want to assert just a type, but you do not care about the exact value, you can use any-* placeholder like this
 
 ```java
@@ -215,8 +367,7 @@ assertThatJson("{\"test\":1.1}")
     .isEqualTo("{\"test\":\"${json-unit.any-number}\"}");
 
 ```
-Custom matchers
----------------
+## Custom matchers
 In some special cases you might want to use your own matcher in the expected document.
 ```java
  assertJsonEquals(
@@ -258,8 +409,8 @@ In even more special cases, you might want to parametrize your matcher.
  }
 ```
 
-Options
----------------
+## Options
+
 There are multiple options how you can configure the comparison
 
 **TREATING_NULL_AS_ABSENT** - fields with null values are equivalent to absent fields. For example, this test passes
@@ -293,9 +444,9 @@ assertJsonEquals("{\"test\":[1,2,3]}",
 **IGNORING_EXTRA_FIELDS** - ignores extra fields in the compared value
 
 ```java
-assertJsonEquals("{\"test\":{\"b\":2}}", 
-    "{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
-    when(IGNORING_EXTRA_FIELDS));
+assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}")
+    .when(IGNORING_EXTRA_FIELDS)
+    .isEqualTo("{\"test\":{\"b\":2}}");
 ```
 
 **IGNORE_VALUES** - ignores values and compares only types
@@ -321,23 +472,8 @@ assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
     jsonEquals("{\"test\":{\"b\":2}}").when(IGNORING_EXTRA_FIELDS));
 ```
 
-For standard asserts and Hamcrest matchers, it is possible to set the configuration globally
 
-```java
-JsonAssert.setOptions(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_FIELDS);
-```
-
-In fluent assertion, you can set options in the following way
-
-```java
-assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}")
-    .when(IGNORING_EXTRA_FIELDS).isEqualTo("{\"test\":{\"b\":2}}");
-```
-
-Please note that `when` method has to be called **before** the actual comparison.
-
-Numeric comparison
---------------------
+# Numeric comparison
 Numbers are by default compared in the following way:
 
 * If the type differs, the number is different. So 1 and 1.0 are different (int vs. float). This does not apply when Moshi is used since it [parses all numbers as Doubles](https://github.com/square/moshi/issues/192).
@@ -347,12 +483,6 @@ You can change this behavior by setting tolerance
 
 ```java
 assertJsonEquals("1", "\n1.009\n", withTolerance(0.01));
-```
-
-or globally 
-
-```java
-JsonAssert.setTolerance(0.01);
 ```
 
 or for fluent assertions
@@ -370,54 +500,31 @@ assertThatJson("{\"test\":1.10001}").node("test")
     .matches(closeTo(valueOf(1.1), valueOf(0.001)));
 ```
 
-Logging
--------
+## Escaping dots
+Sometimes you have dots in JSON element names and you need to address those elements. It is possible to escape dots like this
+
+```java
+assertThatJson("{\"name.with.dot\": \"value\"}").node("name\\.with\\.dot").isStringEqualTo("value");
+```
+
+## Lenient parsing of expected value
+Writing JSON string in Java is huge pain. JsonUnit parses expected values leniently so you do not have to quote keys 
+and you can use single quotes instead of double quotes. Please note that the actual value being compared is parsed in strict mode.  
+
+```java
+assertThatJson("{\"a\":\"1\", \"b\":2}").isEqualTo("{b:2, a:'1'}");
+```
+
+## Logging
+
 Although the differences are printed out by the assert statement, sometimes you use JsonUnit with other libraries like
 [Jadler](http://jadler.net) that do not print the differences between documents. In such case, you can switch on the
 logging. JsonUnit uses [SLF4J](http://www.slf4j.org/). The only thing you need to do is to configure your logging
 framework to log `net.javacrumbs.jsonunit.difference` on DEBUG level.
 
-Selecting underlying library
-----------------------------
+## Selecting underlying library
 JsonUnit is trying to cleverly match which JSON library to use. In case you need to change the default behavior, you can use
 json-unit.libraries system property. For example `-Djson-unit.libraries=jackson2,gson` or `System.setProperty("json-unit.libraries", "jackson1");`. Supported values are gson, json.org, moshi, jackson1, jackson2
-
-Maven dependency
-----------------
-JsonUnit is accessible in Maven central repository. In order for it to work, you need either, [Jackson](http://jackson.codehaus.org/) 1.x,
-Jackson 2.x, [Gson](https://code.google.com/p/google-gson/), [JSONObject](https://developer.android.com/reference/org/json/JSONObject.html) or [Moshi](https://github.com/square/moshi) on the classpath.
-
-
-```xml
-<dependency>
-    <groupId>net.javacrumbs.json-unit</groupId>
-    <artifactId>json-unit</artifactId>
-    <version>1.31.0</version>
-    <scope>test</scope>
-</dependency>
-```
-
-To use fluent assertions:
-
-```xml
-<dependency>
-    <groupId>net.javacrumbs.json-unit</groupId>
-    <artifactId>json-unit-fluent</artifactId>
-    <version>1.31.0</version>
-    <scope>test</scope>
-</dependency>
-```
-
-To use Spring MVC assertions:
-
-```xml
-<dependency>
-    <groupId>net.javacrumbs.json-unit</groupId>
-    <artifactId>json-unit-spring</artifactId>
-    <version>1.31.0</version>
-    <scope>test</scope>
-</dependency>
-```
 
 Licence
 -------

@@ -35,6 +35,16 @@ import static org.junit.Assert.assertEquals;
 public abstract class AbstractAssertJTest {
 
     @Test
+    public void shouldAssertSimple() {
+        assertThatJson("{\"a\":1, \"b\":2}").isEqualTo("{\"b\":2, \"a\":1}");
+    }
+
+    @Test
+    public void shouldAssertLenient() {
+        assertThatJson("{\"a\":\"1\", \"b\":2}").isEqualTo("{b:2, a:'1'}");
+    }
+
+    @Test
     public void shouldAssertObject() {
         assertThatJson("{\"a\":1}").isObject().containsEntry("a", valueOf(1));
     }
