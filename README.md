@@ -8,7 +8,7 @@ JsonUnit is a library that simplifies JSON comparison in unit tests.
   * [Fluent assertions](#fluent)
   * [Spring MVC assertions](#spring)
   * [Standard assert](#standard)
-- [Features](#featues)
+- [Features](#features)
   * [JsonPath support (beta)](#jsonpath)
   * [Ignoring values](#ignorevalues)
   * [Ignoring paths](#ignorepaths)
@@ -16,12 +16,14 @@ JsonUnit is a library that simplifies JSON comparison in unit tests.
   * [Type placeholders](#typeplc)
   * [Custom matchers](#matchers)
   * [Options](#options)
+  * [Array indexing](#arrayIndexing)
+  * [Numerical comparison](#numbers)
   * [Escaping dots](#dots)
   * [Lenient parsing of expected value](#lenient)
 
 
 # <a name="apis"></a>APIs
-There are several different APIs you can use. They all have more or less the same capabilities, just the usage is 
+There are several different APIs you can use. They all have more or less the same features, just the usage is 
 slightly different.
 
 ## <a name="assertj"></a>AssertJ integration (beta)
@@ -36,8 +38,8 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 
 ...
 
-// compares two JSON documents
-assertThatJson("{\"a\":1, \"b\":2}").isEqualTo("{\"b\":2, \"a\":1}");
+// compares two JSON documents (note lenient parsing of expected value)
+assertThatJson("{\"a\":1, \"b\":2}").isEqualTo("{b:2, a:1}");
 
 // objects are automatically serialized before comparison
 assertThatJson(jsonObject).isEqualTo("{\n\"test\": 1\n}");
@@ -81,15 +83,15 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>1.31.0</version>
+    <version>2.0.0.RC1</version>
     <scope>test</scope>
 </dependency>
 ```
 For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/master/tests/test-base/src/main/java/net/javacrumbs/jsonunit/test/base/AbstractAssertJTest.java).
 
 ## <a name="fluent"></a>Fluent assertions
-Fluent assertions were inspired by FEST and later AssertJ, but do not depend on any of them. I would recommend to use
-AssertJ integration above, once it leaves beta.
+Fluent assertions were inspired by FEST and AssertJ. This API was created before AssertJ become so popular
+so it does not depend on it. I would recommend to use AssertJ integration described above once it leaves beta.
 
 ```java
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
@@ -161,7 +163,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>1.31.0</version>
+    <version>2.0.0.RC1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -195,7 +197,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>1.31.0</version>
+    <version>2.0.0.RC1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -228,7 +230,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>1.31.0</version>
+    <version>2.0.0.RC1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -273,27 +275,18 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>1.31.0</version>
+    <version>2.0.0.RC1</version>
     <scope>test</scope>
 </dependency>
 ```
 
 For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/master/tests/test-base/src/main/java/net/javacrumbs/jsonunit/test/base/AbstractJsonAssertTest.java).
 
-# <a name="features"></a>Features
-JsonUnit support all this capabilities regardless of API you use.
+# Features
+JsonUnit support all this features regardless of API you use.
 
 ## <a name="jsonpath"></a>JsonPath support (beta)
 You can use JsonPath navigation together with JsonUnit. It has native support in AssertJ integration so you can do something like this:
-
-```java
-assertJsonEquals("{\"test\":\"${json-unit.ignore}\"}",
-    "{\n\"test\": {\"object\" : {\"another\" : 1}}}");
-```
-
-## <a name="ignorevalues"></a>Ignoring values
-Sometimes you need to ignore certain values when comparing. It is possible to use `${json-unit.ignore}`
-placeholder like this
 
 ```java
 assertThatJson(json)
@@ -314,7 +307,7 @@ For other API styles you have to first import JsonPath support module
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-json-path</artifactId>
-    <version>1.31.0</version>
+    <version>2.0.0.RC1</version>
 </dependency>
 ```
 
@@ -328,6 +321,15 @@ import static net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter.inPath;
 assertThatJson(inPath(json, "$.store.book[*].author"))
     .when(Option.IGNORING_ARRAY_ORDER)
     .isEqualTo("['J. R. R. Tolkien', 'Nigel Rees', 'Evelyn Waugh', 'Herman Melville']");
+```
+
+## <a name="ignorevalues"></a>Ignoring values
+Sometimes you need to ignore certain values when comparing. It is possible to use `${json-unit.ignore}`
+placeholder like this
+
+```java
+assertJsonEquals("{\"test\":\"${json-unit.ignore}\"}",
+    "{\n\"test\": {\"object\" : {\"another\" : 1}}}");
 ```
 
 ## <a name="ignorepaths"></a>Ignoring paths
@@ -483,8 +485,14 @@ assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
     jsonEquals("{\"test\":{\"b\":2}}").when(IGNORING_EXTRA_FIELDS));
 ```
 
+## <a name="arrayIndexing"></a>Array indexing
+You can use negative numbers to index arrays form the end
+```java
+assertThatJson("{\"root\":{\"test\":[1,2,3]}}")
+    .node("root.test[-1]").isEqualTo(3);
+```
 
-# <a name="numbers"></a>Numeric comparison
+## <a name="numbers"></a>Numerical comparison
 Numbers are by default compared in the following way:
 
 * If the type differs, the number is different. So 1 and 1.0 are different (int vs. float). This does not apply when Moshi is used since it [parses all numbers as Doubles](https://github.com/square/moshi/issues/192).
@@ -543,6 +551,14 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 2.0.0.RC1
+* Depends on Java 8
+* Some deprecated APis removed
+* Introduces AssertJ module
+* Introduces JsonPath module
+
+Please do not hesitate to report issues.
+
 ## 1.31.0
 * Introduced DifferenceContext into DifferenceListener
 
