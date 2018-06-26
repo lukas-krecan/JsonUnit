@@ -8,6 +8,17 @@ JsonUnit is a library that simplifies JSON comparison in unit tests.
   * [Fluent assertions](#fluent)
   * [Spring MVC assertions](#spring)
   * [Standard assert](#standard)
+- [Features](#featues)
+  * [JsonPath support (beta)](#jsonpath)
+  * [Ignoring values](#ignorevalues)
+  * [Ignoring paths](#ignorepaths)
+  * [Regular expressions](#regexp)
+  * [Type placeholders](#typeplc)
+  * [Custom matchers](#matchers)
+  * [Options](#options)
+  * [Escaping dots](#dots)
+  * [Lenient parsing of expected value](#lenient)
+
 
 # <a name="apis"></a>APIs
 There are several different APIs you can use. They all have more or less the same capabilities, just the usage is 
@@ -76,7 +87,7 @@ To use AssertJ integration, import
 ```
 For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/master/tests/test-base/src/main/java/net/javacrumbs/jsonunit/test/base/AbstractAssertJTest.java).
 
-##<a name="fluent"></a>Fluent assertions
+## <a name="fluent"></a>Fluent assertions
 Fluent assertions were inspired by FEST and later AssertJ, but do not depend on any of them. I would recommend to use
 AssertJ integration above, once it leaves beta.
 
@@ -192,7 +203,7 @@ To use import
 For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/master/tests/test-base/src/main/java/net/javacrumbs/jsonunit/test/base/AbstractJsonMatchersTest.java).
 
 ## <a name="spring"></a>Spring MVC assertions
-Since version 1.7.0 JsonUnit supports Spring MVC test assertions. For example
+JsonUnit supports Spring MVC test assertions. For example
 
 ```java
 import static net.javacrumbs.jsonunit.spring.JsonUnitResultMatchers.json;
@@ -224,7 +235,7 @@ To use import
 
 For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/master/json-unit-spring/src/test/java/net/javacrumbs/jsonunit/spring/ExampleControllerTest.java).
 
-##<a name="standard"></a>Standard assert
+## <a name="standard"></a>Standard assert
 This is old, JUnit-like API, for those of us who love traditions and do not like fluent APIs. 
 
 ```java
@@ -269,10 +280,10 @@ To use import
 
 For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/master/tests/test-base/src/main/java/net/javacrumbs/jsonunit/test/base/AbstractJsonAssertTest.java).
 
-#Capabilities
+# <a name="features"></a>Features
 JsonUnit support all this capabilities regardless of API you use.
 
-## JsonPath support (beta)
+## <a name="jsonpath"></a>JsonPath support (beta)
 You can use JsonPath navigation together with JsonUnit. It has native support in AssertJ integration so you can do something like this:
 
 ```java
@@ -280,7 +291,7 @@ assertJsonEquals("{\"test\":\"${json-unit.ignore}\"}",
     "{\n\"test\": {\"object\" : {\"another\" : 1}}}");
 ```
 
-## Ignoring values
+## <a name="ignorevalues"></a>Ignoring values
 Sometimes you need to ignore certain values when comparing. It is possible to use `${json-unit.ignore}`
 placeholder like this
 
@@ -319,7 +330,7 @@ assertThatJson(inPath(json, "$.store.book[*].author"))
     .isEqualTo("['J. R. R. Tolkien', 'Nigel Rees', 'Evelyn Waugh', 'Herman Melville']");
 ```
 
-##Ignoring paths
+## <a name="ignorepaths"></a>Ignoring paths
 
 ```java
 // AssertJ style
@@ -345,7 +356,7 @@ assertJsonEquals(
 ```
 Please note, that if you use JsonPath, you should start the path to be ignored by `$.`.
 
-## Regular expressions
+## <a name="regexp"></a>Regular expressions
 It is also possible to use regular expressions to compare string values
 
 ```java
@@ -353,7 +364,7 @@ assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}",
     "{\"test\": \"ABCD\"}");
 ```
 
-## Type placeholders
+## <a name="typeplc"></a>Type placeholders
 If you want to assert just a type, but you do not care about the exact value, you can use any-* placeholder like this
 
 ```java
@@ -367,7 +378,7 @@ assertThatJson("{\"test\":1.1}")
     .isEqualTo("{\"test\":\"${json-unit.any-number}\"}");
 
 ```
-## Custom matchers
+## <a name="matchers"></a>Custom matchers
 In some special cases you might want to use your own matcher in the expected document.
 ```java
  assertJsonEquals(
@@ -409,7 +420,7 @@ In even more special cases, you might want to parametrize your matcher.
  }
 ```
 
-## Options
+## <a name="options"></a>Options
 
 There are multiple options how you can configure the comparison
 
@@ -473,7 +484,7 @@ assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
 ```
 
 
-# Numeric comparison
+# <a name="numbers"></a>Numeric comparison
 Numbers are by default compared in the following way:
 
 * If the type differs, the number is different. So 1 and 1.0 are different (int vs. float). This does not apply when Moshi is used since it [parses all numbers as Doubles](https://github.com/square/moshi/issues/192).
@@ -500,14 +511,14 @@ assertThatJson("{\"test\":1.10001}").node("test")
     .matches(closeTo(valueOf(1.1), valueOf(0.001)));
 ```
 
-## Escaping dots
+## <a name="dots"></a>Escaping dots
 Sometimes you have dots in JSON element names and you need to address those elements. It is possible to escape dots like this
 
 ```java
 assertThatJson("{\"name.with.dot\": \"value\"}").node("name\\.with\\.dot").isStringEqualTo("value");
 ```
 
-## Lenient parsing of expected value
+## <a name="lenient"></a>Lenient parsing of expected value
 Writing JSON string in Java is huge pain. JsonUnit parses expected values leniently so you do not have to quote keys 
 and you can use single quotes instead of double quotes. Please note that the actual value being compared is parsed in strict mode.  
 
