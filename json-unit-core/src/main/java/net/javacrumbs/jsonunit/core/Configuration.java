@@ -40,7 +40,7 @@ public class Configuration {
         }
     };
 
-    private static final Configuration EMPTY_CONFIGURATION = new Configuration(null, Options.empty(), "${json-unit.ignore}", Matchers.empty(), Collections.<String>emptySet(), DUMMY_LISTENER);
+    private static final Configuration EMPTY_CONFIGURATION = new Configuration(null, Options.empty(), "${json-unit.ignore}", Matchers.empty(), Collections.emptySet(), DUMMY_LISTENER);
     private final BigDecimal tolerance;
     private final Options options;
     private final String ignorePlaceholder;
@@ -50,7 +50,7 @@ public class Configuration {
 
     @Deprecated
     public Configuration(BigDecimal tolerance, Options options, String ignorePlaceholder) {
-        this(tolerance, options, ignorePlaceholder, Matchers.empty(), Collections.<String>emptySet(), DUMMY_LISTENER);
+        this(tolerance, options, ignorePlaceholder, Matchers.empty(), Collections.emptySet(), DUMMY_LISTENER);
     }
 
     private Configuration(BigDecimal tolerance, Options options, String ignorePlaceholder, Matchers matchers, Collection<String> pathsToBeIgnored, DifferenceListener differenceListener) {
@@ -58,7 +58,7 @@ public class Configuration {
         this.options = options;
         this.ignorePlaceholder = ignorePlaceholder;
         this.matchers = matchers;
-        this.pathsToBeIgnored = Collections.unmodifiableSet(new HashSet<String>(pathsToBeIgnored));
+        this.pathsToBeIgnored = Collections.unmodifiableSet(new HashSet<>(pathsToBeIgnored));
         this.differenceListener = differenceListener;
     }
 

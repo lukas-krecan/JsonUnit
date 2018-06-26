@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit.test.base;
+package net.javacrumbs.jsonunit.assertj.internal;
 
-import net.javacrumbs.jsonunit.core.listener.Difference;
-import net.javacrumbs.jsonunit.core.listener.DifferenceContext;
-import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
+import net.javacrumbs.jsonunit.core.internal.Node;
+import org.assertj.core.presentation.StandardRepresentation;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
-public class RecordingDifferenceListener implements DifferenceListener {
-    private final List<Difference> differenceList = new ArrayList<>();
-
+public class JsonRepresentation extends StandardRepresentation {
     @Override
-    public void diff(Difference difference, DifferenceContext context) {
-        differenceList.add(difference);
-    }
-
-    public List<Difference> getDifferenceList() {
-        return differenceList;
+    protected String toStringOf(Map<?, ?> map) {
+        if (map instanceof Node.JsonMap) {
+            return map.toString();
+        } else {
+            return super.toStringOf(map);
+        }
     }
 }

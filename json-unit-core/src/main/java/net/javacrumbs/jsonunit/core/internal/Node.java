@@ -23,8 +23,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
-import static java.util.Collections.unmodifiableCollection;
-import static java.util.Collections.unmodifiableMap;
+import static java.util.Collections.unmodifiableList;
 
 
 /**
@@ -37,24 +36,24 @@ public interface Node {
             public Object getValue(Node node) {
                 // custom conversion to map. We want be consistent and native mapping may have different rules for
                 // serializing numbers, dates etc.
-                Map<String, Object> result = new LinkedHashMap<String, Object>();
+                JsonMap result = new JsonMap();
                 Iterator<KeyValue> fields = node.fields();
                 while (fields.hasNext()) {
                     KeyValue keyValue = fields.next();
                     result.put(keyValue.getKey(), keyValue.getValue().getValue());
                 }
-                return unmodifiableMap(result);
+                return result;
             }
         },
         ARRAY("array") {
             public Object getValue(Node node) {
                 Iterator<Node> nodeIterator = node.arrayElements();
-                LinkedList<Object> result = new LinkedList<Object>();
+                LinkedList<Object> result = new LinkedList<>();
                 while (nodeIterator.hasNext()) {
                     Node arrayNode = nodeIterator.next();
                     result.add(arrayNode.getValue());
                 }
-                return unmodifiableCollection(result);
+                return unmodifiableList(result);
             }
         },
         STRING("string") {
@@ -122,7 +121,7 @@ public interface Node {
         private final String key;
         private final Node value;
 
-        public KeyValue(String key, Node value) {
+        KeyValue(String key, Node value) {
             this.key = key;
             this.value = value;
         }
@@ -195,5 +194,30 @@ public interface Node {
     };
     interface ValueExtractor {
         Object getValue(Node node);
+    }
+
+    class JsonMap extends LinkedHashMap<String, Object> {
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder.append("{");
+            Iterator<Map.Entry<String, Object>> entries = entrySet().iterator();
+            while (entries.hasNext()) {
+                Map.Entry<String, Object> entry = entries.next();
+                builder
+                    .append('"').append(entry.getKey()).append('"')
+                    .append(":")
+                    .append(quoteString(entry.getValue()));
+                if (entries.hasNext()) {
+                    builder.append(", ");
+                }
+            }
+            builder.append("}");
+            return builder.toString();
+        }
+
+        private Object quoteString(Object value) {
+            return value instanceof String ? "\"" + value + "\"" : value;
+        }
     }
 }

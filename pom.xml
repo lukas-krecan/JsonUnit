@@ -14,7 +14,8 @@
         <symbolic.name>${project.groupId}.${project.artifactId}</symbolic.name>
         <osgi.importPackage>*</osgi.importPackage>
         <osgi.exportPackage />
-        <target.java.version>1.6</target.java.version>
+        <assertj.version>3.10.0</assertj.version>
+        <target.java.version>1.8</target.java.version>
     </properties>
     <packaging>pom</packaging>
 
@@ -39,6 +40,7 @@
         <module>json-unit</module>
         <module>json-unit-json-path</module>
         <module>json-unit-fluent</module>
+        <module>json-unit-assertj</module>
         <module>json-unit-spring</module>
         <module>tests</module>
     </modules>
@@ -47,12 +49,6 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>1.7.1</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 

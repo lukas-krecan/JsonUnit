@@ -13,24 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit.test.base;
+package net.javacrumbs.jsonunit.test.jackson2;
 
-import net.javacrumbs.jsonunit.core.listener.Difference;
-import net.javacrumbs.jsonunit.core.listener.DifferenceContext;
-import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
+import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;
 
-import java.util.ArrayList;
-import java.util.List;
+import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson2;
 
-public class RecordingDifferenceListener implements DifferenceListener {
-    private final List<Difference> differenceList = new ArrayList<>();
+public class Jackson2AssertJTest extends AbstractAssertJTest {
 
     @Override
-    public void diff(Difference difference, DifferenceContext context) {
-        differenceList.add(difference);
-    }
-
-    public List<Difference> getDifferenceList() {
-        return differenceList;
-    }
+    protected Object readValue(String value) {
+            return readByJackson2(value);
+        }
 }

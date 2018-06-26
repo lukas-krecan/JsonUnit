@@ -22,8 +22,6 @@ import org.json.JSONTokener;
 import java.io.IOException;
 import java.util.Map;
 
-import static org.junit.Assert.fail;
-
 public class JsonTestUtils {
 
     public static Object readByJackson2(String value) {
@@ -57,9 +55,5 @@ public class JsonTestUtils {
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }
-    }
-
-    public static void failIfNoException() {
-        fail("Exception expected");
     }
 }

@@ -28,7 +28,7 @@ import java.util.Map;
 class Matchers {
     private final Map<String, Matcher<?>> matcherMap;
 
-    private static final Matchers EMPTY = new Matchers(Collections.<String, Matcher<?>>emptyMap());
+    private static final Matchers EMPTY = new Matchers(Collections.emptyMap());
 
     private Matchers(Map<String, Matcher<?>> matcherMap) {
         this.matcherMap = matcherMap;
@@ -40,7 +40,7 @@ class Matchers {
     }
 
     public Matchers with(String matcherName, Matcher<?> matcher) {
-        Map<String, Matcher<?>> newMatcherMap = new HashMap<String, Matcher<?>>(matcherMap);
+        Map<String, Matcher<?>> newMatcherMap = new HashMap<>(matcherMap);
         newMatcherMap.put(matcherName, matcher);
         return new Matchers(newMatcherMap);
     }

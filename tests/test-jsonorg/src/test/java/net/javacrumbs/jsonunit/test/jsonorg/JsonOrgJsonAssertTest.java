@@ -21,9 +21,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
-import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.failIfNoException;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJsonOrg;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class JsonOrgJsonAssertTest extends AbstractJsonAssertTest {
     protected Object readValue(String value) {
@@ -42,13 +41,9 @@ public class JsonOrgJsonAssertTest extends AbstractJsonAssertTest {
 
     @Test
     public void testEqualsNodeFailJsonOrgArray() {
-        try {
-            assertJsonEquals(readByJsonOrg("[1, 2]"), readByJsonOrg("[1, 2, 3]"));
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nArray \"\" has different length, expected: <2> but was: <3>.\n" +
-                "Array \"\" has different content, expected: <[1,2]> but was: <[1,2,3]>. Extra values [3]\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertJsonEquals(readByJsonOrg("[1, 2]"), readByJsonOrg("[1, 2, 3]")))
+            .hasMessage("JSON documents are different:\nArray \"\" has different length, expected: <2> but was: <3>.\n" +
+                "Array \"\" has different content, expected: <[1,2]> but was: <[1,2,3]>. Extra values [3]\n");
     }
 
     @Test

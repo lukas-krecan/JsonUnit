@@ -21,9 +21,16 @@ import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 /**
  * Adapts json-path to json-unit.
  */
-public class JsonPathAdapter {
-    public static Object inPath(String json, String path) {
-        Object result = JsonPath.read(json, path);
-        return JsonUtils.jsonSource(result, path);
+public final class JsonPathAdapter {
+    private JsonPathAdapter() {
+
+    }
+
+    public static Object inPath(Object json, String path) {
+        if (json instanceof String) {
+            return JsonUtils.jsonSource(JsonPath.read((String) json, path), path);
+        } else {
+            return JsonUtils.jsonSource(JsonPath.read(JsonUtils.convertToJson(json, "actual").getValue(), path), path);
+        }
     }
 }

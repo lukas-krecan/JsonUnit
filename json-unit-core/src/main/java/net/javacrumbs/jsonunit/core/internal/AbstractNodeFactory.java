@@ -36,6 +36,15 @@ abstract class AbstractNodeFactory implements NodeFactory {
         }
     }
 
+    @Override
+    public Node valueToNode(Object source) {
+        if (source == null) {
+            return nullNode();
+        } else {
+            return convertValue(source);
+        }
+    }
+
     protected abstract Node convertValue(Object source);
 
     protected abstract Node readValue(Reader reader, String label, boolean lenient);

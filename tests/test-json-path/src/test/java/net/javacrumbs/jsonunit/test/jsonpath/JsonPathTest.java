@@ -20,8 +20,7 @@ import org.junit.Test;
 
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter.inPath;
-import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.failIfNoException;
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class JsonPathTest {
     @Test
@@ -41,32 +40,24 @@ public class JsonPathTest {
 
     @Test
     public void shouldBeAbleToUseSimpleValuesFailure() {
-        try {
-            assertThatJson(inPath(json, "$.store.book[*].author"))
-                .isEqualTo("['Nigel Rees', 'Evelyn Waugh', 'Herman Melville', 'Arthur C. Clark']");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
-                "Different value found in node \"$.store.book[*].author[3]\", expected: <\"Arthur C. Clark\"> but was: <\"J. R. R. Tolkien\">.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson(inPath(json, "$.store.book[*].author"))
+            .isEqualTo("['Nigel Rees', 'Evelyn Waugh', 'Herman Melville', 'Arthur C. Clark']"))
+            .hasMessage("JSON documents are different:\n" +
+                "Different value found in node \"$.store.book[*].author[3]\", expected: <\"Arthur C. Clark\"> but was: <\"J. R. R. Tolkien\">.\n");
     }
 
     @Test
     public void shouldBeAbleToUseObjects() {
-        try {
-            assertThatJson(inPath(json, "$.store.book[0]"))
-                .isEqualTo(
-                    "            {\n" +
-                        "                \"category\": \"reference\",\n" +
-                        "                \"author\": \"Nigel Rees\",\n" +
-                        "                \"title\": \"Sayings of the Century\",\n" +
-                        "                \"price\": 8.96\n" +
-                        "            }");
-            failIfNoException();
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
-                "Different value found in node \"$.store.book[0].price\", expected: <8.96> but was: <8.95>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson(inPath(json, "$.store.book[0]"))
+            .isEqualTo(
+                "            {\n" +
+                    "                \"category\": \"reference\",\n" +
+                    "                \"author\": \"Nigel Rees\",\n" +
+                    "                \"title\": \"Sayings of the Century\",\n" +
+                    "                \"price\": 8.96\n" +
+                    "            }"))
+            .hasMessage("JSON documents are different:\n" +
+                "Different value found in node \"$.store.book[0].price\", expected: <8.96> but was: <8.95>.\n");
     }
 
     @Test

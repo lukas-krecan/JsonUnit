@@ -39,14 +39,14 @@ class GenericNodeBuilder implements NodeBuilder {
             return new ArrayNode(Arrays.asList((Object[]) object), this);
         } else if (object instanceof int[]) {
             int[] array = (int[]) object;
-            List<Integer> list = new ArrayList<Integer>(array.length);
+            List<Integer> list = new ArrayList<>(array.length);
             for (int i : array) {
                 list.add(i);
             }
             return new ArrayNode(list, this);
         } else if (object instanceof double[]) {
             double[] array = (double[]) object;
-            List<Double> list = new ArrayList<Double>(array.length);
+            List<Double> list = new ArrayList<>(array.length);
             for (double i : array) {
                 list.add(i);
             }
@@ -303,11 +303,19 @@ class GenericNodeBuilder implements NodeBuilder {
         @Override
         public String toString() {
             StringBuilder builder = new StringBuilder();
-            builder.append('{');
-            for (KeyValue kv : this) {
-                builder.append('"').append(kv.getKey()).append("\":").append(kv.getValue());
+            builder.append("{");
+            Iterator<Node.KeyValue> entries = this.iterator();
+            while (entries.hasNext()) {
+                Node.KeyValue entry = entries.next();
+                builder
+                    .append('"').append(entry.getKey()).append('"')
+                    .append(":")
+                    .append(entry.getValue());
+                if (entries.hasNext()) {
+                    builder.append(",");
+                }
             }
-            builder.append('}');
+            builder.append("}");
             return builder.toString();
         }
     }

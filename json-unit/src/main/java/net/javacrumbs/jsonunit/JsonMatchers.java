@@ -54,21 +54,21 @@ public class JsonMatchers {
      * Are the JSONs equivalent?
      */
     public static <T> ConfigurableJsonMatcher<T> jsonEquals(Object expected) {
-        return new JsonPartMatcher<T>(EMPTY_PATH, expected);
+        return new JsonPartMatcher<>(EMPTY_PATH, expected);
     }
 
     /**
      * Is the part of the JSON equivalent?
      */
     public static <T> ConfigurableJsonMatcher<T> jsonPartEquals(String path, Object expected) {
-        return new JsonPartMatcher<T>(path, expected);
+        return new JsonPartMatcher<>(path, expected);
     }
 
     /**
      * Applies matcher to the part of the JSON.
      */
     public static <T> Matcher<T> jsonPartMatches(String path, Matcher<?> matcher) {
-        return new MatcherApplyingMatcher<T>(path, matcher);
+        return new MatcherApplyingMatcher<>(path, matcher);
     }
 
     /**
@@ -95,14 +95,14 @@ public class JsonMatchers {
      * Is the node in path absent?
      */
     public static <T> ConfigurableJsonMatcher<T> jsonNodeAbsent(String path) {
-        return new JsonNodeAbsenceMatcher<T>(path);
+        return new JsonNodeAbsenceMatcher<>(path);
     }
 
     /**
      * Is the node in path present?
      */
     public static <T> ConfigurableJsonMatcher<T> jsonNodePresent(String path) {
-        return new JsonNodePresenceMatcher<T>(path);
+        return new JsonNodePresenceMatcher<>(path);
     }
 
     private static abstract class AbstractMatcher<T> extends BaseMatcher<T> {

@@ -42,11 +42,11 @@ class ArrayComparison {
     }
 
     ArrayComparison(List<Node> expectedElements, List<Node> actualElements, Path path, Configuration configuration) {
-        this(0, actualElements, new ArrayList<NodeWithIndex>(), new ArrayList<NodeWithIndex>(addIndex(expectedElements)), path, configuration);
+        this(0, actualElements, new ArrayList<>(), new ArrayList<>(addIndex(expectedElements)), path, configuration);
     }
 
     private static List<NodeWithIndex> addIndex(List<Node> expectedElements) {
-        List<NodeWithIndex> result = new ArrayList<NodeWithIndex>(expectedElements.size());
+        List<NodeWithIndex> result = new ArrayList<>(expectedElements.size());
         for (int i = 0; i < expectedElements.size(); i++) {
             result.add(new NodeWithIndex(expectedElements.get(i), i));
         }
@@ -55,7 +55,7 @@ class ArrayComparison {
 
 
     ArrayComparison copy(int compareFrom) {
-        return new ArrayComparison(compareFrom, actualElements, new ArrayList<NodeWithIndex>(extraValues), new ArrayList<NodeWithIndex>(missingValues), path, configuration);
+        return new ArrayComparison(compareFrom, actualElements, new ArrayList<>(extraValues), new ArrayList<>(missingValues), path, configuration);
     }
 
     ArrayComparison compareArraysIgnoringOrder() {
@@ -95,7 +95,7 @@ class ArrayComparison {
      * Finds element in the expected elements.
      */
     private List<Integer> indexOf(List<NodeWithIndex> expectedElements, Node actual) {
-        List<Integer> result = new ArrayList<Integer>();
+        List<Integer> result = new ArrayList<>();
         int i = 0;
         for (NodeWithIndex expected : expectedElements) {
             Diff diff = new Diff(expected.getNode(), actual, Path.create("", path.toElement(i).getFullPath()), configuration.withDifferenceListener(dummyDifferenceListener()), NULL_LOGGER, NULL_LOGGER);

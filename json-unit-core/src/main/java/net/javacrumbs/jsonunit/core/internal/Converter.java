@@ -72,7 +72,7 @@ class Converter {
     }
 
     private static List<NodeFactory> createFactoriesSpecifiedInProperty(String property) {
-        List<NodeFactory> factories = new ArrayList<NodeFactory>();
+        List<NodeFactory> factories = new ArrayList<>();
         for (String factoryName : property.toLowerCase().split(",")) {
             factoryName = factoryName.trim();
             if ("moshi".equals(factoryName)) {
@@ -93,7 +93,7 @@ class Converter {
     }
 
     private static List<NodeFactory> createDefaultFactories() {
-        List<NodeFactory> factories = new ArrayList<NodeFactory>();
+        List<NodeFactory> factories = new ArrayList<>();
         if (moshiPresent) {
             factories.add(new MoshiNodeFactory());
         }
@@ -121,6 +121,16 @@ class Converter {
             NodeFactory factory = factories.get(i);
             if (isLastFactory(i) || factory.isPreferredFor(source)) {
                 return factory.convertToNode(source, label, lenient);
+            }
+        }
+        throw new IllegalStateException("Should not happen");
+    }
+
+    Node valueToNode(Object source) {
+        for (int i = 0; i < factories.size(); i++) {
+            NodeFactory factory = factories.get(i);
+            if (isLastFactory(i) || factory.isPreferredFor(source)) {
+                return factory.valueToNode(source);
             }
         }
         throw new IllegalStateException("Should not happen");

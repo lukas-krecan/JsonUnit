@@ -35,7 +35,7 @@ abstract class PathMatcher {
         if (paths == null || paths.isEmpty()) {
             return EMPTY;
         }
-        List<PathMatcher> matchers = new ArrayList<PathMatcher>(paths.size());
+        List<PathMatcher> matchers = new ArrayList<>(paths.size());
         for (String path : paths) {
             matchers.add(PathMatcher.create(path));
         }
