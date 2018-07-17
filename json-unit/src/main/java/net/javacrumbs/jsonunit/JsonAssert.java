@@ -229,17 +229,6 @@ public class JsonAssert {
     }
 
     /**
-     * Sets listener to customize diff format
-     */
-    public static void setDifferenceListener(DifferenceListener listener) {
-        configuration = configuration.withDifferenceListener(listener);
-    }
-
-    public static DifferenceListener getDifferenceListener() {
-        return configuration.getDifferenceListener();
-    }
-
-    /**
      * Sets options changing comparison behavior. For more
      * details see {@link net.javacrumbs.jsonunit.core.Option}
      *
