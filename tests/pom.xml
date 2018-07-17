@@ -20,6 +20,7 @@
         <module>test-jsonorg</module>
         <module>test-moshi</module>
         <module>test-json-path</module>
+        <module>test-patch-listener</module>
     </modules>
 
     <build>
