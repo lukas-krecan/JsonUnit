@@ -15,9 +15,7 @@ import java.util.List;
 import static java.math.BigDecimal.valueOf;
 import static java.util.Collections.singletonMap;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 
 public class DifferenceTest {
     private final RecordingDifferenceListener listener = new RecordingDifferenceListener();
@@ -99,6 +97,13 @@ public class DifferenceTest {
         assertThat(listener.getDifferenceList().get(0).getActualPath(), equalTo("test"));
         assertThat((BigDecimal) listener.getDifferenceList().get(0).getExpected(), equalTo(new BigDecimal(1)));
         assertThat((BigDecimal) listener.getDifferenceList().get(0).getActual(), equalTo(new BigDecimal(2)));
+    }
+
+    @Test
+    public void shouldIgnoreChangedPrecision() {
+        Diff diff = Diff.create("{\"test\": 1}", "{\"test\": 1.0}", "", "", commonConfig());
+        diff.similar();
+        assertThat(listener.getDifferenceList(), hasSize(0));
     }
 
     @Test

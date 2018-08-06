@@ -24,25 +24,12 @@ import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static java.util.Collections.emptySet;
-import static net.javacrumbs.jsonunit.core.Option.COMPARING_ONLY_STRUCTURE;
-import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
-import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS;
-import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
-import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
+import static net.javacrumbs.jsonunit.core.Option.*;
 import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
 import static net.javacrumbs.jsonunit.core.internal.DifferenceContextImpl.differenceContext;
 import static net.javacrumbs.jsonunit.core.internal.JsonUnitLogger.NULL_LOGGER;
@@ -295,17 +282,7 @@ public class Diff {
                     compareStringValues(context);
                     break;
                 case NUMBER:
-                    BigDecimal actualValue = actualNode.decimalValue();
-                    BigDecimal expectedValue = expectedNode.decimalValue();
-                    if (configuration.getTolerance() != null && !hasOption(IGNORING_VALUES)) {
-                        BigDecimal diff = expectedValue.subtract(actualValue).abs();
-                        if (diff.compareTo(configuration.getTolerance()) > 0) {
-                            valueDifferenceFound(context, "Different value found in node \"%s\", expected: <%s> but was: <%s>, difference is %s, tolerance is %s",
-                                    fieldPath, quoteTextValue(expectedValue), quoteTextValue(actualValue), diff.toString(), configuration.getTolerance());
-                        }
-                    } else {
-                        compareValues(context, expectedValue, actualValue);
-                    }
+                    compareBigDecimalValues(context);
                     break;
                 case BOOLEAN:
                     compareValues(context, expectedNode.asBoolean(), actualNode.asBoolean());
@@ -390,6 +367,24 @@ public class Diff {
 
     private boolean isRegexExpected(String expectedValue) {
         return expectedValue.startsWith(REGEX_PLACEHOLDER);
+    }
+
+    private void compareBigDecimalValues(Context context) {
+        BigDecimal expectedValue = context.getExpectedNode().decimalValue();
+        BigDecimal actualValue = context.getActualNode().decimalValue();
+        Path path = context.getActualPath();
+        if (hasOption(IGNORING_VALUES)) {
+            return;
+        }
+        if (configuration.getTolerance() != null) {
+            BigDecimal diff = expectedValue.subtract(actualValue).abs();
+            if (diff.compareTo(configuration.getTolerance()) > 0) {
+                valueDifferenceFound(context, "Different value found in node \"%s\", expected: <%s> but was: <%s>, difference is %s, tolerance is %s",
+                        path, quoteTextValue(expectedValue), quoteTextValue(actualValue), diff.toString(), configuration.getTolerance());
+            }
+        } else if (expectedValue.compareTo(actualValue) != 0) {
+            valueDifferenceFound(context, "Different value found in node \"%s\", expected: <%s> but was: <%s>.", path, quoteTextValue(expectedValue), quoteTextValue(actualValue));
+        }
     }
 
     private void compareValues(Context context, Object expectedValue, Object actualValue) {
