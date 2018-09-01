@@ -45,6 +45,8 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
 import static net.javacrumbs.jsonunit.core.internal.DifferenceContextImpl.differenceContext;
+import static net.javacrumbs.jsonunit.core.internal.DifferenceImpl.extra;
+import static net.javacrumbs.jsonunit.core.internal.DifferenceImpl.missing;
 import static net.javacrumbs.jsonunit.core.internal.JsonUnitLogger.NULL_LOGGER;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
@@ -141,10 +143,10 @@ public class Diff {
 
             if (!missingKeys.isEmpty() || !extraKeys.isEmpty()) {
                 for (String key : missingKeys) {
-                    reportDifference(DifferenceImpl.missing(context.inField(key)));
+                    reportDifference(missing(context.inField(key)));
                 }
                 for (String key : extraKeys) {
-                    reportDifference(DifferenceImpl.extra(context.inField(key)));
+                    reportDifference(extra(context.inField(key)));
                 }
                 String missingKeysMessage = getMissingKeysMessage(missingKeys, path);
                 String extraKeysMessage = getExtraKeysMessage(extraKeys, path);
@@ -423,8 +425,9 @@ public class Diff {
         List<Node> expectedElements = asList(expectedNode.arrayElements());
         List<Node> actualElements = asList(actualNode.arrayElements());
 
+        ArrayComparison comparison = new ArrayComparison(expectedElements, actualElements, path, configuration);
 
-        if (failOnExtraArrayItems()) {
+        if (failOnExtraArrayItems() ) {
             if (expectedElements.size() != actualElements.size()) {
                 structureDifferenceFound("Array \"%s\" has different length, expected: <%d> but was: <%d>.", path, expectedElements.size(), actualElements.size());
             }
@@ -460,12 +463,12 @@ public class Diff {
         } else {
             if (expectedElements.size() > actualElements.size()) {
                 for (int i = actualElements.size(); i < expectedElements.size(); i++) {
-                    reportDifference(DifferenceImpl.missing(context.missingElement(i)));
+                    reportDifference(missing(context.missingElement(i)));
                 }
                 valueDifferenceFound("Array \"%s\" has different content, expected: <%s> but was: <%s>. Missing values %s", path, expectedNode, actualNode, expectedElements.subList(actualElements.size(), expectedElements.size()));
             } else if (failOnExtraArrayItems() && expectedElements.size() < actualElements.size()) {
                 for (int i = expectedElements.size(); i < actualElements.size(); i++) {
-                    reportDifference(DifferenceImpl.extra(context.extraElement(i)));
+                    reportDifference(extra(context.extraElement(i)));
                 }
                 valueDifferenceFound("Array \"%s\" has different content, expected: <%s> but was: <%s>. Extra values %s", path, expectedNode, actualNode, actualElements.subList(expectedElements.size(), actualElements.size()));
             }
@@ -477,13 +480,13 @@ public class Diff {
 
     private void reportMissingValues(Context context, List<NodeWithIndex> missingValues) {
         for (NodeWithIndex missingValue : missingValues) {
-            reportDifference(DifferenceImpl.missing(context.missingElement(missingValue.getIndex())));
+            reportDifference(missing(context.missingElement(missingValue.getIndex())));
         }
     }
 
     private void reportExtraValues(Context context, List<NodeWithIndex> extraValues) {
         for (NodeWithIndex extraValue : extraValues) {
-            reportDifference(DifferenceImpl.extra(context.extraElement(extraValue.getIndex())));
+            reportDifference(extra(context.extraElement(extraValue.getIndex())));
         }
     }
 

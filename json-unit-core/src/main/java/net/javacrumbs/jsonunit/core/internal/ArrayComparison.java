@@ -19,6 +19,7 @@ import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static net.javacrumbs.jsonunit.core.Configuration.dummyDifferenceListener;
@@ -31,18 +32,20 @@ class ArrayComparison {
     private final List<NodeWithIndex> missingValues;
     private final Path path;
     private final Configuration configuration;
+    private final NodeWithIndex[] matchedValues;
 
-    private ArrayComparison(int compareFrom, List<Node> actualElements, List<NodeWithIndex> extraValues, List<NodeWithIndex> missingValues, Path path, Configuration configuration) {
+    private ArrayComparison(int compareFrom, List<Node> actualElements, List<NodeWithIndex> extraValues, List<NodeWithIndex> missingValues, NodeWithIndex[] matchedValues, Path path, Configuration configuration) {
         this.compareFrom = compareFrom;
         this.actualElements = actualElements;
         this.extraValues = extraValues;
         this.missingValues = missingValues;
         this.path = path;
         this.configuration = configuration;
+        this.matchedValues = matchedValues;
     }
 
     ArrayComparison(List<Node> expectedElements, List<Node> actualElements, Path path, Configuration configuration) {
-        this(0, actualElements, new ArrayList<>(), new ArrayList<>(addIndex(expectedElements)), path, configuration);
+        this(0, actualElements, new ArrayList<>(), copy(addIndex(expectedElements)), new NodeWithIndex[actualElements.size()], path, configuration);
     }
 
     private static List<NodeWithIndex> addIndex(List<Node> expectedElements) {
@@ -55,7 +58,15 @@ class ArrayComparison {
 
 
     ArrayComparison copy(int compareFrom) {
-        return new ArrayComparison(compareFrom, actualElements, new ArrayList<>(extraValues), new ArrayList<>(missingValues), path, configuration);
+        return new ArrayComparison(compareFrom, actualElements, copy(extraValues), copy(missingValues), copy(matchedValues), path, configuration);
+    }
+
+    private NodeWithIndex[] copy(NodeWithIndex[] values) {
+        return values.clone();
+    }
+
+    private static ArrayList<NodeWithIndex> copy(List<NodeWithIndex> values) {
+        return new ArrayList<>(values);
     }
 
     ArrayComparison compareArraysIgnoringOrder() {
@@ -63,7 +74,7 @@ class ArrayComparison {
             Node actual = actualElements.get(i);
             List<Integer> matches = indexOf(missingValues, actual);
             if (matches.size() == 1) {
-                removeMissing(matches.get(0));
+                markMatch(i, matches.get(0));
             } else if (matches.size() > 0) {
                 // we have more matches, since comparison does not have to be transitive ([1, 2] == [2] == [2, 3]), we have to check all the possibilities
                 for (int match : matches) {
@@ -75,12 +86,17 @@ class ArrayComparison {
                     }
                 }
                 // no combination matching, let's report the first difference
-                removeMissing(matches.get(0));
+                markMatch(i, matches.get(0));
             } else {
                 addExtra(new NodeWithIndex(actual, i));
             }
         }
         return this;
+    }
+
+    private void markMatch(int actualIndex, int matchIndex) {
+        matchedValues[actualIndex] = missingValues.get(matchIndex);
+        removeMissing(matchIndex);
     }
 
     private void removeMissing(int index) {
@@ -117,6 +133,19 @@ class ArrayComparison {
 
     List<NodeWithIndex> getExtraValues() {
         return extraValues;
+    }
+
+    List<NodeWithIndex> getMatchedValues() {
+        return Arrays.asList(matchedValues);
+    }
+
+    boolean isInCorrectOrder() {
+        for (int i = 0; i < matchedValues.length; i++) {
+            if (matchedValues[i] == null || matchedValues[i].getIndex() != i) {
+                return false;
+            }
+        }
+        return true;
     }
 
     static class NodeWithIndex {
