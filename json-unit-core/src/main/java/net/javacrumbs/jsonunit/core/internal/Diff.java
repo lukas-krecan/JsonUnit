@@ -150,7 +150,7 @@ public class Diff {
                 }
                 String missingKeysMessage = getMissingKeysMessage(missingKeys, path);
                 String extraKeysMessage = getExtraKeysMessage(extraKeys, path);
-                structureDifferenceFound("Different keys found in node \"%s\", expected: <%s> but was: <%s>. %s %s", path, sort(expectedFields.keySet()), sort(actualFields.keySet()), missingKeysMessage, extraKeysMessage);
+                structureDifferenceFound("Different keys found in node %s, expected: <%s> but was: <%s>. %s %s", pathDescription(context), sort(expectedFields.keySet()), sort(actualFields.keySet()), missingKeysMessage, extraKeysMessage);
             }
         }
 
@@ -257,8 +257,6 @@ public class Diff {
         NodeType expectedNodeType = expectedNode.getNodeType();
         NodeType actualNodeType = actualNode.getNodeType();
 
-        Path fieldPath = context.getActualPath();
-
         //ignoring value
         if (expectedNodeType == NodeType.STRING && configuration.getIgnorePlaceholder().equals(expectedNode.asText())) {
             return;
@@ -284,7 +282,7 @@ public class Diff {
         }
 
         if (!expectedNodeType.equals(actualNodeType)) {
-            valueDifferenceFound(context, "Different value found in node \"%s\", expected: <%s> but was: <%s>.", fieldPath, quoteTextValue(expectedNode), quoteTextValue(actualNode));
+            valueDifferenceFound(context, "Different value found in node %s, expected: <%s> but was: <%s>.", pathDescription(context), quoteTextValue(expectedNode), quoteTextValue(actualNode));
         } else {
             switch (expectedNodeType) {
                 case OBJECT:
@@ -302,8 +300,8 @@ public class Diff {
                     if (configuration.getTolerance() != null && !hasOption(IGNORING_VALUES)) {
                         BigDecimal diff = expectedValue.subtract(actualValue).abs();
                         if (diff.compareTo(configuration.getTolerance()) > 0) {
-                            valueDifferenceFound(context, "Different value found in node \"%s\", expected: <%s> but was: <%s>, difference is %s, tolerance is %s",
-                                    fieldPath, quoteTextValue(expectedValue), quoteTextValue(actualValue), diff.toString(), configuration.getTolerance());
+                            valueDifferenceFound(context, "Different value found in node %s, expected: <%s> but was: <%s>, difference is %s, tolerance is %s",
+                                    pathDescription(context), quoteTextValue(expectedValue), quoteTextValue(actualValue), diff.toString(), configuration.getTolerance());
                         }
                     } else {
                         compareValues(context, expectedValue, actualValue);
@@ -318,6 +316,16 @@ public class Diff {
                 default:
                     throw new IllegalStateException("Unexpected node type " + expectedNodeType);
             }
+        }
+    }
+
+    private String pathDescription(Context context) {
+        String actualPath = context.getActualPath().getFullPath();
+        String expectedPath = context.getExpectedPath().getFullPath();
+        if (actualPath.equals(expectedPath)) {
+            return "\"" + actualPath + "\"";
+        } else {
+            return "\"" + actualPath + "\" when compared to \"" +expectedPath + "\"";
         }
     }
 
@@ -379,7 +387,7 @@ public class Diff {
         if (isRegexExpected(expectedValue)) {
             String pattern = getRegexPattern(expectedValue);
             if (!actualValue.matches(pattern)) {
-                valueDifferenceFound(context, "Different value found in node \"%s\". Pattern %s did not match %s.", path, quoteTextValue(pattern), quoteTextValue(actualValue));
+                valueDifferenceFound(context, "Different value found in node %s. Pattern %s did not match %s.", pathDescription(context), quoteTextValue(pattern), quoteTextValue(actualValue));
             }
         } else {
             compareValues(context, expectedValue, actualValue);
@@ -397,7 +405,7 @@ public class Diff {
     private void compareValues(Context context, Object expectedValue, Object actualValue) {
         if (!hasOption(IGNORING_VALUES)) {
             if (!expectedValue.equals(actualValue)) {
-                valueDifferenceFound(context, "Different value found in node \"%s\", expected: <%s> but was: <%s>.", context.getActualPath(), quoteTextValue(expectedValue), quoteTextValue(actualValue));
+                valueDifferenceFound(context, "Different value found in node %s, expected: <%s> but was: <%s>.", pathDescription(context), quoteTextValue(expectedValue), quoteTextValue(actualValue));
             }
         }
     }
@@ -425,16 +433,14 @@ public class Diff {
         List<Node> expectedElements = asList(expectedNode.arrayElements());
         List<Node> actualElements = asList(actualNode.arrayElements());
 
-        ArrayComparison comparison = new ArrayComparison(expectedElements, actualElements, path, configuration);
-
         if (failOnExtraArrayItems() ) {
             if (expectedElements.size() != actualElements.size()) {
-                structureDifferenceFound("Array \"%s\" has different length, expected: <%d> but was: <%d>.", path, expectedElements.size(), actualElements.size());
+                structureDifferenceFound("Array %s has different length, expected: <%d> but was: <%d>.", pathDescription(context), expectedElements.size(), actualElements.size());
             }
         } else {
             // if we expect more elements in the array than we get, it's error even when IGNORING_EXTRA_ARRAY_ITEMS
             if (expectedElements.size() > actualElements.size()) {
-                structureDifferenceFound("Array \"%s\" has invalid length, expected: <at least %d> but was: <%d>.", path, expectedElements.size(), actualElements.size());
+                structureDifferenceFound("Array %s has invalid length, expected: <at least %d> but was: <%d>.", pathDescription(context), expectedElements.size(), actualElements.size());
             }
         }
 
@@ -443,34 +449,34 @@ public class Diff {
             List<NodeWithIndex> missingValues = arrayComparison.getMissingValues();
             List<NodeWithIndex> extraValues = arrayComparison.getExtraValues();
             if (expectedElements.size() == actualElements.size() && missingValues.size() == 1 && extraValues.size() == 1) {
+                valueDifferenceFound("Array %s has different content, expected: <%s> but was: <%s>.", pathDescription(context), expectedNode, actualNode);
                 // handling special case where only one difference is found.
                 NodeWithIndex missing = missingValues.get(0);
                 NodeWithIndex extra = extraValues.get(0);
 
                 Path expectedPath = context.getExpectedPath().toElement(missing.getIndex());
                 Path actualPath = context.getActualPath().toElement(extra.getIndex());
-                valueDifferenceFound("Different value found when comparing expected array element %s to actual element %s.", expectedPath, actualPath);
                 compareNodes(new Context(missing.getNode(), extra.getNode(), expectedPath, actualPath, configuration));
             } else if (failOnExtraArrayItems() && (!missingValues.isEmpty() || !extraValues.isEmpty())) {
                 reportMissingValues(context, missingValues);
                 reportExtraValues(context, extraValues);
 
-                valueDifferenceFound("Array \"%s\" has different content, expected: <%s> but was: <%s>. Missing values %s, extra values %s", path, expectedNode, actualNode, missingValues, extraValues);
+                valueDifferenceFound("Array %s has different content, expected: <%s> but was: <%s>. Missing values %s, extra values %s", pathDescription(context), expectedNode, actualNode, missingValues, extraValues);
             } else if (!missingValues.isEmpty()) {
                 reportMissingValues(context, missingValues);
-                valueDifferenceFound("Array \"%s\" has different content, expected: <%s> but was: <%s>. Missing values %s", path, expectedNode, actualNode, missingValues);
+                valueDifferenceFound("Array %s has different content, expected: <%s> but was: <%s>. Missing values %s", pathDescription(context), expectedNode, actualNode, missingValues);
             }
         } else {
             if (expectedElements.size() > actualElements.size()) {
                 for (int i = actualElements.size(); i < expectedElements.size(); i++) {
                     reportDifference(missing(context.missingElement(i)));
                 }
-                valueDifferenceFound("Array \"%s\" has different content, expected: <%s> but was: <%s>. Missing values %s", path, expectedNode, actualNode, expectedElements.subList(actualElements.size(), expectedElements.size()));
+                valueDifferenceFound("Array %s has different content, expected: <%s> but was: <%s>. Missing values %s", pathDescription(context), expectedNode, actualNode, expectedElements.subList(actualElements.size(), expectedElements.size()));
             } else if (failOnExtraArrayItems() && expectedElements.size() < actualElements.size()) {
                 for (int i = expectedElements.size(); i < actualElements.size(); i++) {
                     reportDifference(extra(context.extraElement(i)));
                 }
-                valueDifferenceFound("Array \"%s\" has different content, expected: <%s> but was: <%s>. Extra values %s", path, expectedNode, actualNode, actualElements.subList(expectedElements.size(), actualElements.size()));
+                valueDifferenceFound("Array %s has different content, expected: <%s> but was: <%s>. Extra values %s", pathDescription(context), expectedNode, actualNode, actualElements.subList(expectedElements.size(), actualElements.size()));
             }
             for (int i = 0; i < Math.min(expectedElements.size(), actualElements.size()); i++) {
                 compareNodes(context.toElement(i));

@@ -246,8 +246,8 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"a\":[{\"b\": 1}, {\"c\": 1}, {\"d\": 1}]}").when(Option.IGNORING_ARRAY_ORDER).node("a").isArray()
             .isEqualTo(json("[{\"c\": 2}, {\"b\": 1} ,{\"d\": 1}]")))
             .hasMessage("JSON documents are different:\n" +
-                "Different value found when comparing expected array element a[0] to actual element a[1].\n" +
-                "Different value found in node \"a[1].c\", expected: <2> but was: <1>.\n");
+                "Array \"a\" has different content, expected: <[{\"c\":2},{\"b\":1},{\"d\":1}]> but was: <[{\"b\":1},{\"c\":1},{\"d\":1}]>.\n" +
+                "Different value found in node \"a[1].c\" when compared to \"a[0].c\", expected: <2> but was: <1>.\n");
     }
 
     @Test
