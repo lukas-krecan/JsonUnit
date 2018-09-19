@@ -164,12 +164,19 @@ public class JsonUtils {
      * @param source
      * @return
      */
-    public static Object quoteIfNeeded(Object source) {
+    static Object quoteIfNeeded(Object source) {
         if (source instanceof String) {
             return quoteIfNeeded((String) source);
         } else {
             return source;
         }
+    }
+
+    /**
+     * Wraps deserialized object - supports null, String, numbers, maps, lists, ...
+     */
+    public static Node wrapDeserializedObject(Object source) {
+        return GenericNodeBuilder.wrapDeserializedObject(source);
     }
 
     private static boolean isNull(String trimmed) {
