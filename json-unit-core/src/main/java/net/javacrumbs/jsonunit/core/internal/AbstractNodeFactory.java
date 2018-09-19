@@ -17,6 +17,7 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.List;
 
 /**
  * Common superclass for node factories
@@ -31,6 +32,9 @@ abstract class AbstractNodeFactory implements NodeFactory {
             return readValue((String) source, label, lenient);
         } else if (source instanceof Reader) {
             return readValue((Reader) source, label, lenient);
+        } else if (source instanceof List && ((List) source).stream().allMatch(i -> i instanceof Node.JsonMap)) {
+            // special handling for list of JsonMaps, Jackson strips trailing zeros from 10 which causes mismatches
+            return new GenericNodeBuilder.ArrayNode((List)source, new GenericNodeBuilder());
         } else {
             return convertValue(source);
         }

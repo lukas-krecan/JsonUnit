@@ -24,6 +24,7 @@ import static java.math.BigDecimal.valueOf;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartMatches;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
@@ -192,6 +193,12 @@ public abstract class AbstractJsonFluentAssertTest {
     public void testMoreNodes() {
         assertThatThrownBy(() -> assertThatJson("{\"test1\":2, \"test2\":1}").node("test1").isEqualTo(2).node("test2").isEqualTo(2))
             .hasMessage("JSON documents are different:\nDifferent value found in node \"test2\", expected: <2> but was: <1>.\n");
+    }
+
+    @Test
+    public void testCompareArrays() {
+        assertThatJson("[{\"b\": 10}]")
+            .isEqualTo(json("[{\"b\": 10}]"));
     }
 
     @Test

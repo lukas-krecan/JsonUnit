@@ -367,7 +367,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"test\":1}").isNotEqualTo("{\"test\": \"${json-unit.any-number}\"}"))
             .hasMessage("\n" +
                 "Expecting:\n" +
-                " <\"{\"test\":1}\">\n" +
+                " <{\"test\":1}>\n" +
                 "not to be equal to:\n" +
                 " <\"{\"test\": \"${json-unit.any-number}\"}\">\n" +
                 "when comparing values using JsonComparator");
@@ -684,6 +684,13 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"foo.bar\":\"boo\"}").node("foo\\.bar").isEqualTo("baz"))
             .hasMessage("JSON documents are different:\n" +
                 "Different value found in node \"foo\\.bar\", expected: <\"baz\"> but was: <\"boo\">.\n");
+    }
+
+    @Test
+    public void testCompareArrays() {
+        assertThatJson("[{\"b\": 10}]")
+            .isArray()
+            .isEqualTo(json("[{\"b\": 10}]"));
     }
 
     @Test

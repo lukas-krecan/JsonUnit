@@ -18,6 +18,7 @@ package net.javacrumbs.jsonunit.assertj;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
+import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter;
@@ -49,7 +50,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     final Configuration configuration;
 
     JsonAssert(Path path, Configuration configuration, Object o) {
-        super(o, JsonAssert.class);
+        super(JsonUtils.convertToJson(o, "actual"), JsonAssert.class);
         this.path = path;
         this.configuration = configuration;
         usingComparator(new JsonComparator(configuration, path, false));
