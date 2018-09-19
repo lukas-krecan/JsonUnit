@@ -32,6 +32,7 @@ import org.assertj.core.api.StringAssert;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
@@ -61,10 +62,23 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     }
 
     /**
-     * Moves comparison to given node. Second call navigates from the last position in the JSON.
+     * Navigates to inner node using dotted notation.
+     * Comparison to the node can be made using nodeAssert Consumer.
+     * Second call navigates from the root position in the JSON exactly as first one.
      */
-    public JsonAssert node(String node) {
-        return new JsonAssert(path.to(node), configuration, getNode(actual, node));
+    public JsonAssert node(String node, Consumer<JsonAssert> nodeAssert) {
+        nodeAssert.accept(new JsonAssert(path.to(node), configuration, getNode(actual, node)));
+        return this;
+    }
+
+    /**
+     * Navigates to inner node using JSONPath.
+     * Comparison to the node can be made using nodeAssert Consumer.
+     * Second call navigates from the root position in the JSON exactly as first one.
+     */
+    public JsonAssert inPath(String jsonPath, Consumer<JsonAssert> nodeAssert) {
+        nodeAssert.accept(new JsonAssert(JsonPathAdapter.inPath(actual, jsonPath), configuration));
+        return this;
     }
 
     /**
@@ -237,10 +251,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
          */
         public ConfigurableJsonAssert withConfiguration(Function<Configuration, Configuration> configurationFunction) {
             return new ConfigurableJsonAssert(path, configurationFunction.apply(configuration), actual);
-        }
-
-        public JsonAssert inPath(String jsonPath) {
-            return new JsonAssert(JsonPathAdapter.inPath(actual, jsonPath), configuration);
         }
     }
 }
