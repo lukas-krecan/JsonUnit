@@ -800,6 +800,18 @@ public abstract class AbstractAssertJTest {
                 .containsExactlyInAnyOrder("fiction", "reference", "fiction", "fiction");
     }
 
+    @Test
+    public void testInnerString() {
+        final String json = "{\"myNode\":{\"inner\":\"foo\"}}";
+        assertThatJson(json).inPath("$.myNode.inner").isString().isEqualTo("foo");
+    }
+
+    @Test
+    public void testInnerNumber() {
+        final String json = "{\"myNode\":{\"inner\":123}}";
+        assertThatJson(json).inPath("$.myNode.inner").isNumber().isEqualByComparingTo("123");
+    }
+
     private static final String json = "{\n" +
         "    \"store\": {\n" +
         "        \"book\": [\n" +

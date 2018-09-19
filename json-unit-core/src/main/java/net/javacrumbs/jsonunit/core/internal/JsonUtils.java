@@ -164,7 +164,7 @@ public class JsonUtils {
      * @param source
      * @return
      */
-    static Object quoteIfNeeded(Object source) {
+    public static Object quoteIfNeeded(Object source) {
         if (source instanceof String) {
             return quoteIfNeeded((String) source);
         } else {
