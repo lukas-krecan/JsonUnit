@@ -670,6 +670,40 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    public void andFailure() {
+        assertThatThrownBy(() -> assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}").and(
+            a -> a.node("test").isObject(),
+            a -> a.node("test.b").isEqualTo(3)
+        )).hasMessage("JSON documents are different:\n" +
+            "Different value found in node \"test.b\", expected: <3> but was: <2>.\n");
+    }
+
+    @Test
+    public void andSucess() {
+        assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}").and(
+            a -> a.node("test").isObject(),
+            a -> a.node("test.b").isEqualTo(2)
+        );
+    }
+
+    @Test
+    public void andNestedFailure() {
+        assertThatThrownBy(() -> assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}").node("test").and(
+            a -> a.node("a").isEqualTo(1),
+            a -> a.node("b").isEqualTo(3)
+        )).hasMessage("JSON documents are different:\n" +
+            "Different value found in node \"test.b\", expected: <3> but was: <2>.\n");
+    }
+
+    @Test
+    public void andNestedSucess() {
+        assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}").node("test").and(
+            a -> a.node("a").isEqualTo(1),
+            a -> a.node("b").isEqualTo(2)
+        );
+    }
+
+    @Test
     public void shouldAcceptEscapedPath() {
         assertThatJson("{\"foo.bar\":\"baz\"}").node("foo\\.bar").isEqualTo("baz");
     }
