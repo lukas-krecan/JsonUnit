@@ -23,6 +23,11 @@ import java.util.List;
 import java.util.Map;
 
 class GenericNodeBuilder implements NodeBuilder {
+    private static final NodeBuilder INSTANCE = new GenericNodeBuilder();
+
+    static Node wrapDeserializedObject(Object object) {
+        return INSTANCE.newNode(object);
+    }
 
     public Node newNode(Object object) {
         if (object == null) {

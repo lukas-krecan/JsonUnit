@@ -18,7 +18,8 @@ package net.javacrumbs.jsonunit.jsonpath;
 import com.jayway.jsonpath.JsonPath;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
 
 /**
  * Adapts json-path to json-unit.
@@ -30,9 +31,9 @@ public final class JsonPathAdapter {
 
     public static Object inPath(Object json, String path) {
         if (json instanceof String) {
-            return JsonUtils.jsonSource(quoteIfNeeded(JsonPath.read((String) json, path)), path);
+            return jsonSource(wrapDeserializedObject(JsonPath.read((String) json, path)), path);
         } else {
-            return JsonUtils.jsonSource(quoteIfNeeded(JsonPath.read(JsonUtils.convertToJson(json, "actual").getValue(), path)), path);
+            return jsonSource(wrapDeserializedObject(JsonPath.read(JsonUtils.convertToJson(json, "actual").getValue(), path)), path);
         }
     }
 }

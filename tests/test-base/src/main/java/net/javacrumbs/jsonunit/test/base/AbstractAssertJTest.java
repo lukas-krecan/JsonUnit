@@ -802,8 +802,14 @@ public abstract class AbstractAssertJTest {
 
     @Test
     public void testInnerString() {
-        final String json = "{\"myNode\":{\"inner\":\"foo\"}}";
+        String json = "{\"myNode\":{\"inner\":\"foo\"}}";
         assertThatJson(json).inPath("$.myNode.inner").isString().isEqualTo("foo");
+    }
+
+    @Test
+    public void testInnerQuotedString() {
+        String json = "{\"myNode\":{\"inner\":\"\\\"foo\\\"\"}}";
+        assertThatJson(json).inPath("$.myNode.inner").isString().isEqualTo("\"foo\"");
     }
 
     @Test
