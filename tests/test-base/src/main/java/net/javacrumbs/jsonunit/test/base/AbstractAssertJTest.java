@@ -82,6 +82,7 @@ public abstract class AbstractAssertJTest {
         assertThatJson("{\"a\":1, \"b\": {\"c\" :3}}").isObject().doesNotContainValue(json("{\"c\" :\"${json-unit.any-string}\"}"));
     }
 
+
     @Test
     public void objecDoesContainComplexValueError() {
         assertThatThrownBy(() -> assertThatJson("{\"root\":{\"a\":1, \"b\": {\"c\" :3}}}")
@@ -683,6 +684,12 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"foo.bar\":\"boo\"}").node("foo\\.bar").isEqualTo("baz"))
             .hasMessage("JSON documents are different:\n" +
                 "Different value found in node \"foo\\.bar\", expected: <\"baz\"> but was: <\"boo\">.\n");
+    }
+
+    @Test
+    public void asStringShouldWork() {
+        String json = "{\"myNum\": \"1140.53\"}";
+        assertThatJson(json).node("myNum").asString().isEqualTo("1140.53");
     }
 
     // *****************************************************************************************************************

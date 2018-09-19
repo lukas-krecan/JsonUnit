@@ -22,6 +22,7 @@ import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter;
 import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.api.AbstractCharSequenceAssert;
 import org.assertj.core.api.BigDecimalAssert;
 import org.assertj.core.api.BooleanAssert;
 import org.assertj.core.api.ListAssert;
@@ -129,6 +130,10 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
         return new StringAssert((String) node.getValue()).as("Different value found in node \"%s\"", path);
     }
 
+    @Override
+    public AbstractCharSequenceAssert<?, String> asString() {
+        return isString();
+    }
 
     /**
      * Asserts that given node is present and is null.
