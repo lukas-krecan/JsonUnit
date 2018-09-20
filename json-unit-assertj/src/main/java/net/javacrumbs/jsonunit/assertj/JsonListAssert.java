@@ -23,6 +23,7 @@ import org.assertj.core.internal.Failures;
 
 import java.util.List;
 
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
 import static org.assertj.core.error.ShouldNotBeEqual.shouldNotBeEqual;
 
 class JsonListAssert extends ListAssert<Object> {
@@ -40,7 +41,7 @@ class JsonListAssert extends ListAssert<Object> {
     @Override
     public JsonListAssert isEqualTo(Object expected) {
         describedAs(null);
-        Diff diff = Diff.create(expected, actual, "fullJson", path, configuration);
+        Diff diff = createDiff(expected);
         if (!diff.similar()) {
             failWithMessage(diff.toString());
         }
@@ -49,11 +50,15 @@ class JsonListAssert extends ListAssert<Object> {
 
     @Override
     public JsonListAssert isNotEqualTo(Object other) {
-        Diff diff = Diff.create(other, actual, "fullJson", path, configuration);
+        Diff diff = createDiff(other);
         if (diff.similar()) {
             JsonComparisonStrategy strategy = new JsonComparisonStrategy(configuration);
             throw Failures.instance().failure(info, shouldNotBeEqual(actual, other, strategy));
         }
         return this;
+    }
+
+    private Diff createDiff(Object other) {
+        return Diff.create(other, wrapDeserializedObject(actual), "fullJson", path, configuration);
     }
 }
