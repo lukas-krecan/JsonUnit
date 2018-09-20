@@ -46,7 +46,7 @@ import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NUMBER;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
 
-public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
+public class JsonAssert<SELF extends JsonAssert<SELF>> extends AbstractAssert<SELF, Object> {
     final Path path;
     final Configuration configuration;
 
@@ -64,8 +64,8 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     /**
      * Moves comparison to given node. Second call navigates from the last position in the JSON.
      */
-    public JsonAssert node(String node) {
-        return new JsonAssert(path.to(node), configuration, getNode(actual, node));
+    public JsonAssert<SELF> node(String node) {
+        return new JsonAssert<>(path.to(node), configuration, getNode(actual, node));
     }
 
 
@@ -88,12 +88,12 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      * Compares JSONs.
      */
     @Override
-    public JsonAssert isEqualTo(Object expected) {
+    public SELF isEqualTo(Object expected) {
         Diff diff = Diff.create(expected, actual, "fullJson", path.asPrefix(), configuration);
         if (!diff.similar()) {
             failWithMessage(diff.toString());
         }
-        return this;
+        return myself;
     }
 
     /**
@@ -167,9 +167,9 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      *
      * @return
      */
-    public JsonAssert isPresent() {
+    public SELF isPresent() {
         isPresent("node to be present");
-        return this;
+        return myself;
     }
 
     /**
@@ -188,13 +188,13 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      * @return
      */
     @Override
-    public JsonAssert isNotNull() {
+    public SELF isNotNull() {
         isPresent("not null");
         Node node = getNode(actual, "");
         if (node.getNodeType() == NULL) {
             failOnType(node, "not null");
         }
-        return this;
+        return myself;
     }
 
     private Node assertType(Node.NodeType type) {
@@ -227,7 +227,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      * assertThatJson(...).isEqualsTo(...).when(...);
      * </code>
      */
-    public static class ConfigurableJsonAssert extends JsonAssert {
+    public static class ConfigurableJsonAssert extends JsonAssert<ConfigurableJsonAssert> {
         ConfigurableJsonAssert(Path path, Configuration configuration, Object o) {
             super(path, configuration, o);
         }
@@ -256,8 +256,8 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
             return new ConfigurableJsonAssert(path, configurationFunction.apply(configuration), actual);
         }
 
-        public JsonAssert inPath(String jsonPath) {
-            return new JsonAssert(JsonPathAdapter.inPath(actual, jsonPath), configuration);
+        public JsonAssert<ConfigurableJsonAssert> inPath(String jsonPath) {
+            return new JsonAssert<>(JsonPathAdapter.inPath(actual, jsonPath), configuration);
         }
     }
 }

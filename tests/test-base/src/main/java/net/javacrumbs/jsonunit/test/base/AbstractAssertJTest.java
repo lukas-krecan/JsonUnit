@@ -776,6 +776,15 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    public void jsonPathWithDescription() {
+        assertThatJson(json)
+            .describedAs("Book is good")
+            .isNotNull()
+            .inPath("$.store.book[0].title")
+            .isEqualTo("Sayings of the Century");
+    }
+
+    @Test
     public void jsonPathWithNodeError() {
         assertThatThrownBy(() ->  assertThatJson(json)
             .inPath("$.store.book[0]")
