@@ -30,6 +30,7 @@ import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.MapAssert;
 import org.assertj.core.api.StringAssert;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -65,6 +66,22 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      */
     public JsonAssert node(String node) {
         return new JsonAssert(path.to(node), configuration, getNode(actual, node));
+    }
+
+
+    /**
+     * Allows to do multiple comparisons on a document like
+     *
+     * <code>
+     *     assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}").and(
+     *         a -> a.node("test").isObject(),
+     *         a -> a.node("test.b").isEqualTo(3)
+     *     );
+     * </code>
+     */
+    public JsonAssert and(JsonAssertion... assertions) {
+        Arrays.stream(assertions).forEach(a -> a.doAssert(this));
+        return this;
     }
 
     /**
