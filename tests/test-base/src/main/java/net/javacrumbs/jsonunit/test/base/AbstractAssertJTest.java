@@ -306,6 +306,16 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    public void shouldAssertNotNullChainingSuccess() {
+        assertThatJson("{\"a\":{\"b\": 1}}")
+            .node("a")
+            .isNotNull()
+            .node("b")
+            .isNumber()
+            .isEqualByComparingTo("1");
+    }
+
+    @Test
     public void shouldAssertNotNullMissing() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": null}}").node("a.c").isNotNull())
             .hasMessage("Different value found in node \"a.c\", expected: <not null> but was: <missing>.");

@@ -50,8 +50,8 @@ public class JsonAssert<SELF extends JsonAssert<SELF>> extends AbstractAssert<SE
     final Path path;
     final Configuration configuration;
 
-    JsonAssert(Path path, Configuration configuration, Object o) {
-        super(JsonUtils.convertToJson(o, "actual"), JsonAssert.class);
+    JsonAssert(Path path, Configuration configuration, Object actual) {
+        super(JsonUtils.convertToJson(actual, "actual"), JsonAssert.class);
         this.path = path;
         this.configuration = configuration;
         usingComparator(new JsonComparator(configuration, path, false));
@@ -64,7 +64,7 @@ public class JsonAssert<SELF extends JsonAssert<SELF>> extends AbstractAssert<SE
     /**
      * Moves comparison to given node. Second call navigates from the last position in the JSON.
      */
-    public JsonAssert<SELF> node(String node) {
+    public <T extends JsonAssert<T>> JsonAssert<T> node(String node) {
         return new JsonAssert<>(path.to(node), configuration, getNode(actual, node));
     }
 
@@ -79,9 +79,9 @@ public class JsonAssert<SELF extends JsonAssert<SELF>> extends AbstractAssert<SE
      *     );
      * </code>
      */
-    public JsonAssert and(JsonAssertion... assertions) {
+    public  <T extends JsonAssert<T>> JsonAssert<T> and(JsonAssertion... assertions) {
         Arrays.stream(assertions).forEach(a -> a.doAssert(this));
-        return this;
+        return (JsonAssert<T>) this;
     }
 
     /**
