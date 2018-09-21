@@ -316,6 +316,11 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    public void canNotConfigureAfterAssertion() {
+        assertThatJson("[1, 2]").isEqualTo("[2, 1]").when(IGNORING_ARRAY_ORDER);
+    }
+
+    @Test
     public void shouldAssertNotNullMissing() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": null}}").node("a.c").isNotNull())
             .hasMessage("Different value found in node \"a.c\", expected: <not null> but was: <missing>.");
