@@ -62,6 +62,12 @@ assertThatJson("{\"test\":-1}")
             .withConfiguration(c -> c.withMatcher("positive", greaterThan(valueOf(0))))
             .isEqualTo("{\"test\": \"${json-unit.matches:positive}\"}");
 
+// and
+assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}").and(
+    a -> a.node("test.a").isEqualTo(1),
+    a -> a.node("test.b").isEqualTo(2)
+);
+
 // JsonPath support
 assertThatJson(json)
     .inPath("$.store.book")
