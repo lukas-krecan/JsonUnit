@@ -29,6 +29,7 @@ import org.assertj.core.api.BooleanAssert;
 import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.MapAssert;
 import org.assertj.core.api.StringAssert;
+import org.assertj.core.description.Description;
 
 import java.util.List;
 import java.util.Map;
@@ -49,8 +50,8 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     final Path path;
     final Configuration configuration;
 
-    JsonAssert(Path path, Configuration configuration, Object o) {
-        super(JsonUtils.convertToJson(o, "actual"), JsonAssert.class);
+    JsonAssert(Path path, Configuration configuration, Object actual) {
+        super(JsonUtils.convertToJson(actual, "actual"), JsonAssert.class);
         this.path = path;
         this.configuration = configuration;
         usingComparator(new JsonComparator(configuration, path, false));
@@ -211,8 +212,8 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      * </code>
      */
     public static class ConfigurableJsonAssert extends JsonAssert {
-        ConfigurableJsonAssert(Path path, Configuration configuration, Object o) {
-            super(path, configuration, o);
+        ConfigurableJsonAssert(Path path, Configuration configuration, Object actual) {
+            super(path, configuration, actual);
         }
 
         ConfigurableJsonAssert(Object actual, Configuration configuration) {
@@ -241,6 +242,27 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
 
         public JsonAssert inPath(String jsonPath) {
             return new JsonAssert(JsonPathAdapter.inPath(actual, jsonPath), configuration);
+        }
+
+        // Following methods are here just to return ConfigurableJsonAssert instead of JsonAssert
+        @Override
+        public ConfigurableJsonAssert describedAs(Description description) {
+            return (ConfigurableJsonAssert) super.describedAs(description);
+        }
+
+        @Override
+        public ConfigurableJsonAssert describedAs(String description, Object... args) {
+            return (ConfigurableJsonAssert) super.describedAs(description, args);
+        }
+
+        @Override
+        public ConfigurableJsonAssert as(Description description) {
+            return (ConfigurableJsonAssert) super.as(description);
+        }
+
+        @Override
+        public ConfigurableJsonAssert as(String description, Object... args) {
+            return (ConfigurableJsonAssert) super.as(description, args);
         }
     }
 }
