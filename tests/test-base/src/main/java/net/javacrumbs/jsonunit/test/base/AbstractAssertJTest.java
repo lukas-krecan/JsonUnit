@@ -339,6 +339,22 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    public void shouldAssertAsNumber() {
+        assertThatJson("{\"a\":1}").node("a").asNumber().isEqualByComparingTo("1");
+    }
+
+    @Test
+    public void shouldAssertStringNumber() {
+        assertThatJson("{\"a\":\"1\"}").node("a").asNumber().isEqualByComparingTo("1");
+    }
+
+    @Test
+    public void shouldAssertStringNumberFailure() {
+        assertThatThrownBy(() -> assertThatJson("{\"a\":\"x\"}").node("a").asNumber().isEqualByComparingTo("1"))
+            .hasMessage("Node \"a\" can not be converted to number expected: <a number> but was: <\"x\">.");
+    }
+
+    @Test
     public void shouldAssertNumberFailure() {
         assertThatThrownBy(() ->  assertThatJson("{\"a\":1}").node("a").isNumber().isEqualByComparingTo("2"))
             .hasMessage("[Different value found in node \"a\"] expected:<[2]> but was:<[1]>");

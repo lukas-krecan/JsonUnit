@@ -31,6 +31,7 @@ import org.assertj.core.api.MapAssert;
 import org.assertj.core.api.StringAssert;
 import org.assertj.core.description.Description;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -115,7 +116,31 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      */
     public BigDecimalAssert isNumber() {
         Node node = assertType(NUMBER);
-        return new BigDecimalAssert(node.decimalValue()).as("Different value found in node \"%s\"", path);
+        return createBigDecimalAssert(node.decimalValue());
+    }
+
+    /**
+     * Asserts that given node is present and is of type number or a string that can be parsed as a number.
+     */
+    public BigDecimalAssert asNumber() {
+        isPresent(NUMBER.getDescription());
+        Node node = getNode(actual, "");
+        if (node.getNodeType() == NUMBER) {
+            return createBigDecimalAssert(node.decimalValue());
+        } else if (node.getNodeType() == STRING) {
+            try {
+                return createBigDecimalAssert(new BigDecimal(node.asText()));
+            } catch (NumberFormatException e) {
+                failWithMessage("Node \"" + path + "\" can not be converted to number expected: <a number> but was: <" + quoteTextValue(node.getValue()) + ">.");
+            }
+        } else {
+            failOnType(node, "number or string");
+        }
+        return null;
+    }
+
+    private BigDecimalAssert createBigDecimalAssert(BigDecimal value) {
+        return new BigDecimalAssert(value).as("Different value found in node \"%s\"", path);
     }
 
     /**
