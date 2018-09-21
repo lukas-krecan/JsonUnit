@@ -306,6 +306,21 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    public void shouldAssertNotNullChainingSuccess() {
+        assertThatJson("{\"a\":{\"b\": 1}}")
+            .node("a")
+            .isNotNull()
+            .node("b")
+            .isNumber()
+            .isEqualByComparingTo("1");
+    }
+
+    @Test
+    public void canNotConfigureAfterAssertion() {
+        assertThatJson("[1, 2]").isEqualTo("[2, 1]").when(IGNORING_ARRAY_ORDER);
+    }
+
+    @Test
     public void shouldAssertNotNullMissing() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": null}}").node("a.c").isNotNull())
             .hasMessage("Different value found in node \"a.c\", expected: <not null> but was: <missing>.");
@@ -367,7 +382,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"test\":1}").isNotEqualTo("{\"test\": \"${json-unit.any-number}\"}"))
             .hasMessage("\n" +
                 "Expecting:\n" +
-                " <{\"test\":1}>\n" +
+                " <\"{\"test\":1}\">\n" +
                 "not to be equal to:\n" +
                 " <\"{\"test\": \"${json-unit.any-number}\"}\">\n" +
                 "when comparing values using JsonComparator");
@@ -772,6 +787,15 @@ public abstract class AbstractAssertJTest {
         assertThatJson(json)
             .inPath("$.store.book[0]")
             .node("title")
+            .isEqualTo("Sayings of the Century");
+    }
+
+    @Test
+    public void jsonPathWithDescription() {
+        assertThatJson(json)
+            .describedAs("Book is good")
+            .isNotNull()
+            .inPath("$.store.book[0].title")
             .isEqualTo("Sayings of the Century");
     }
 
