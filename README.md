@@ -83,7 +83,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>2.0.0.RC2</version>
+    <version>2.0.0.RC3</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -163,7 +163,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>2.0.0.RC2</version>
+    <version>2.0.0.RC3</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -197,7 +197,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.0.0.RC2</version>
+    <version>2.0.0.RC3</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -230,7 +230,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.0.0.RC2</version>
+    <version>2.0.0.RC3</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -275,7 +275,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.0.0.RC2</version>
+    <version>2.0.0.RC3</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -307,7 +307,7 @@ For other API styles you have to first import JsonPath support module
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-json-path</artifactId>
-    <version>2.0.0.RC2</version>
+    <version>2.0.0.RC3</version>
 </dependency>
 ```
 
@@ -551,6 +551,11 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 2.0.0.RC3
+* Support for and() in AssertJ assert
+* asNumber() in AssertJ added
+* Allow description before inPath() in AssertJ
+
 ## 2.0.0.RC2
 * Fixed JsonPath bug #132 
 * Fixed AssertJ number comparison with Jackson 2 #130
