@@ -57,15 +57,11 @@ public class JsonAssert<SELF extends JsonAssert<SELF>> extends AbstractAssert<SE
         usingComparator(new JsonComparator(configuration, path, false));
     }
 
-    JsonAssert(Object actual, Configuration configuration) {
-        this(Path.create("", getPathPrefix(actual)), configuration, actual);
-    }
-
     /**
      * Moves comparison to given node. Second call navigates from the last position in the JSON.
      */
-    public <T extends JsonAssert<T>> JsonAssert<T> node(String node) {
-        return new JsonAssert<>(path.to(node), configuration, getNode(actual, node));
+    public ConfiguredJsonAssert node(String node) {
+        return new ConfiguredJsonAssert(path.to(node), configuration, getNode(actual, node));
     }
 
 
@@ -79,9 +75,9 @@ public class JsonAssert<SELF extends JsonAssert<SELF>> extends AbstractAssert<SE
      *     );
      * </code>
      */
-    public  <T extends JsonAssert<T>> JsonAssert<T> and(JsonAssertion... assertions) {
+    public SELF and(JsonAssertion... assertions) {
         Arrays.stream(assertions).forEach(a -> a.doAssert(this));
-        return (JsonAssert<T>) this;
+        return myself;
     }
 
     /**
@@ -221,6 +217,19 @@ public class JsonAssert<SELF extends JsonAssert<SELF>> extends AbstractAssert<SE
     }
 
     /**
+     * JsonAssert after node or inPath method has been used,
+     */
+    public static class ConfiguredJsonAssert extends JsonAssert<ConfiguredJsonAssert> {
+        ConfiguredJsonAssert(Path path, Configuration configuration, Object actual) {
+            super(path, configuration, actual);
+        }
+
+        ConfiguredJsonAssert(Object actual, Configuration configuration) {
+            this(Path.create("", getPathPrefix(actual)), configuration, actual);
+        }
+    }
+
+    /**
      * JsonAssert that can be configured to prevent mistakes like
      *
      * <code>
@@ -228,8 +237,8 @@ public class JsonAssert<SELF extends JsonAssert<SELF>> extends AbstractAssert<SE
      * </code>
      */
     public static class ConfigurableJsonAssert extends JsonAssert<ConfigurableJsonAssert> {
-        ConfigurableJsonAssert(Path path, Configuration configuration, Object o) {
-            super(path, configuration, o);
+        ConfigurableJsonAssert(Path path, Configuration configuration, Object actual) {
+            super(path, configuration, actual);
         }
 
         ConfigurableJsonAssert(Object actual, Configuration configuration) {
@@ -256,8 +265,8 @@ public class JsonAssert<SELF extends JsonAssert<SELF>> extends AbstractAssert<SE
             return new ConfigurableJsonAssert(path, configurationFunction.apply(configuration), actual);
         }
 
-        public JsonAssert<ConfigurableJsonAssert> inPath(String jsonPath) {
-            return new JsonAssert<>(JsonPathAdapter.inPath(actual, jsonPath), configuration);
+        public ConfiguredJsonAssert inPath(String jsonPath) {
+            return new ConfiguredJsonAssert(JsonPathAdapter.inPath(actual, jsonPath), configuration);
         }
     }
 }
