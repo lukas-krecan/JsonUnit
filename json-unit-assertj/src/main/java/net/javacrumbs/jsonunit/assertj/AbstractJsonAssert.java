@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit.assertj;
 
 import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Path;
@@ -30,6 +31,7 @@ import org.assertj.core.api.StringAssert;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
@@ -41,7 +43,7 @@ import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NUMBER;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
 
-class AbstractJsonAssert<SELF extends AbstractJsonAssert<SELF>> extends AbstractAssert<SELF, Object> {
+abstract class AbstractJsonAssert<SELF extends AbstractJsonAssert<SELF>> extends AbstractAssert<SELF, Object> {
     final Path path;
     final Configuration configuration;
 
@@ -49,6 +51,7 @@ class AbstractJsonAssert<SELF extends AbstractJsonAssert<SELF>> extends Abstract
         super(actual, selfType);
         this.path = path;
         this.configuration = configuration;
+        usingComparator(new JsonComparator(configuration, path, false));
     }
 
     /**
@@ -186,6 +189,14 @@ class AbstractJsonAssert<SELF extends AbstractJsonAssert<SELF>> extends Abstract
         }
         return myself;
     }
+
+    /*
+      It's defined here so we have to override it in both subclasses. isEqual returns SELF so we can not change its
+      return type in ConfigurableJsonAssert to JsonAssert to prevent configuraiton.
+    */
+    public abstract SELF withConfiguration(Function<Configuration, Configuration> configurationFunction);
+
+    public abstract SELF when(Option first, Option... other);
 
     private Node assertType(Node.NodeType type) {
         isPresent(type.getDescription());

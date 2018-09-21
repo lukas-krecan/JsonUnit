@@ -34,6 +34,18 @@ public class JsonAssert extends AbstractJsonAssert<JsonAssert> {
         this(Path.create("", getPathPrefix(actual)), configuration, actual);
     }
 
+    @Override
+    @Deprecated
+    public JsonAssert withConfiguration(Function<Configuration, Configuration> configurationFunction) {
+        throw new UnsupportedOperationException("You have to configure assertions before asserting, not after");
+    }
+
+    @Override
+    @Deprecated
+    public JsonAssert when(Option first, Option... other) {
+        throw new UnsupportedOperationException("You have to configure assertions before asserting, not after");
+    }
+
 
     /**
      * JsonAssert that can be configured to prevent mistakes like
@@ -54,6 +66,7 @@ public class JsonAssert extends AbstractJsonAssert<JsonAssert> {
         /**
          * Adds comparison options.
          */
+        @Override
         public ConfigurableJsonAssert when(Option first, Option... other) {
             return withConfiguration(c -> c.when(first, other));
         }
@@ -67,6 +80,7 @@ public class JsonAssert extends AbstractJsonAssert<JsonAssert> {
          *             ....
          * </code>
          */
+        @Override
         public ConfigurableJsonAssert withConfiguration(Function<Configuration, Configuration> configurationFunction) {
             return new ConfigurableJsonAssert(path, configurationFunction.apply(configuration), actual);
         }

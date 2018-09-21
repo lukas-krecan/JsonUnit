@@ -382,7 +382,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"test\":1}").isNotEqualTo("{\"test\": \"${json-unit.any-number}\"}"))
             .hasMessage("\n" +
                 "Expecting:\n" +
-                " <{\"test\":1}>\n" +
+                " <\"{\"test\":1}\">\n" +
                 "not to be equal to:\n" +
                 " <\"{\"test\": \"${json-unit.any-number}\"}\">\n" +
                 "when comparing values using JsonComparator");
