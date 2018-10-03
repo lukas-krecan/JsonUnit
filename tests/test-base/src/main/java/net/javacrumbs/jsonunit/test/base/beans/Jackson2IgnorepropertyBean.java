@@ -13,14 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit.test.jackson1;
+package net.javacrumbs.jsonunit.test.base.beans;
 
-import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest;
-import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
 
-public class Jackson1JsonAssertTest extends AbstractJsonAssertTest {
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-    protected Object readValue(String value) {
-        return JsonTestUtils.readByJackson1(value);
+public class Jackson2IgnorepropertyBean {
+    private final String property;
+
+    public Jackson2IgnorepropertyBean(String property) {
+        this.property = property;
+    }
+
+    public String getProperty() {
+        return property;
+    }
+
+    @JsonIgnore
+    public String getProperty2() {
+        return "property2";
     }
 }

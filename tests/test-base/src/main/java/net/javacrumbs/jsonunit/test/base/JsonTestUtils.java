@@ -32,14 +32,6 @@ public class JsonTestUtils {
         }
     }
 
-    public static Object readByJackson1(String value) {
-        try {
-            return new org.codehaus.jackson.map.ObjectMapper().readTree(value);
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e);
-        }
-    }
-
     public static Object readByGson(String value) {
         return new JsonParser().parse(value);
     }

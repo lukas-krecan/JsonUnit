@@ -28,10 +28,6 @@ class Converter {
 
     private final List<NodeFactory> factories;
 
-    private static final boolean jackson1Present =
-        isClassPresent("org.codehaus.jackson.map.ObjectMapper") &&
-            isClassPresent("org.codehaus.jackson.JsonGenerator");
-
     private static final boolean jackson2Present =
         isClassPresent("com.fasterxml.jackson.databind.ObjectMapper") &&
             isClassPresent("com.fasterxml.jackson.core.JsonGenerator");
@@ -79,8 +75,6 @@ class Converter {
                 factories.add(new MoshiNodeFactory());
             } else if ("json.org".equals(factoryName)) {
                 factories.add(new JsonOrgNodeFactory());
-            } else if ("jackson1".equals(factoryName)) {
-                factories.add(new Jackson1NodeFactory());
             } else if ("jackson2".equals(factoryName)) {
                 factories.add(new Jackson2NodeFactory());
             } else if ("gson".equals(factoryName)) {
@@ -100,10 +94,6 @@ class Converter {
 
         if (jsonOrgPresent) {
             factories.add(new JsonOrgNodeFactory());
-        }
-
-        if (jackson1Present) {
-            factories.add(new Jackson1NodeFactory());
         }
 
         if (gsonPresent) {

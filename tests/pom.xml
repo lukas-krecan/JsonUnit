@@ -13,8 +13,6 @@
 
     <modules>
         <module>test-base</module>
-        <module>test-jackson1</module>
-        <module>test-jackson14</module>
         <module>test-jackson2</module>
         <module>test-gson</module>
         <module>test-jsonorg</module>

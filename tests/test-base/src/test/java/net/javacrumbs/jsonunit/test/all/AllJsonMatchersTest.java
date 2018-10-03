@@ -23,15 +23,14 @@ import java.io.IOException;
 
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
 import static net.javacrumbs.jsonunit.core.util.ResourceUtils.resource;
-import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson1;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson2;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJsonOrg;
 import static org.junit.Assert.assertThat;
 
 public class AllJsonMatchersTest extends AbstractJsonMatchersTest {
     @Test
-    public void testJsonNodeJackson1() throws IOException {
-        assertThat(readByJackson1("{\"test\":1}"), jsonEquals("{\"test\":1}"));
+    public void testJsonNodeJsonOrg() throws IOException {
+        assertThat(readByJsonOrg("{\"test\":1}"), jsonEquals("{\"test\":1}"));
     }
 
     @Test
@@ -50,6 +49,6 @@ public class AllJsonMatchersTest extends AbstractJsonMatchersTest {
     }
 
     protected Object readValue(String value) {
-            return JsonTestUtils.readByJackson1(value);
+            return JsonTestUtils.readByJackson2(value);
         }
 }

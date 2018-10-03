@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit.test.jackson14;
+package net.javacrumbs.jsonunit.test.base.beans;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
-public class Jackson14Bean {
-    public String getValue1() {
-        return "value1";
+@JsonTypeInfo(use= JsonTypeInfo.Id.NAME, include= JsonTypeInfo.As.WRAPPER_OBJECT)
+@JsonTypeName("bean")
+public class Jackson2Bean {
+    private final String property;
+
+    public Jackson2Bean(String property) {
+        this.property = property;
     }
 
-    @JsonIgnore
-    public String getValue2() {
-        return "value2";
+    public String getProperty() {
+        return property;
     }
-
 }

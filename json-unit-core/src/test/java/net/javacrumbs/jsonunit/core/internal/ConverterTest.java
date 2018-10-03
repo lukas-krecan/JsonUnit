@@ -15,7 +15,7 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import org.codehaus.jackson.node.BooleanNode;
+import com.fasterxml.jackson.databind.node.BooleanNode;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -35,21 +35,21 @@ public class ConverterTest {
 
     @Test(expected = IllegalStateException.class)
     public void shouldFailIfNoConverterSet() {
-        new Converter(Collections.<NodeFactory>emptyList());
+        new Converter(Collections.emptyList());
     }
 
     @Test
     public void shouldUseTheLastFactoryForNonPreferred() {
-        Converter converter = new Converter(Arrays.<NodeFactory>asList(new Jackson1NodeFactory(), new Jackson2NodeFactory()));
+        Converter converter = new Converter(Arrays.asList(new GsonNodeFactory(), new Jackson2NodeFactory()));
         Node node = converter.convertToNode(JSON, "", false);
         assertEquals(Jackson2NodeFactory.Jackson2Node.class, node.getClass());
     }
 
     @Test
     public void shouldUsePreferredFactory() {
-        Converter converter = new Converter(Arrays.<NodeFactory>asList(new Jackson1NodeFactory(), new Jackson2NodeFactory()));
+        Converter converter = new Converter(Arrays.asList(new Jackson2NodeFactory(), new GsonNodeFactory()));
         Node node = converter.convertToNode(BooleanNode.TRUE, "", false);
-        assertEquals(Jackson1NodeFactory.Jackson1Node.class, node.getClass());
+        assertEquals(Jackson2NodeFactory.Jackson2Node.class, node.getClass());
     }
 
 
@@ -63,9 +63,9 @@ public class ConverterTest {
 
     @Test
     public void shouldChangeOrderSpecifiedBySystemProperty() {
-        System.setProperty(LIBRARIES_PROPERTY_NAME,"jackson2, gson ,json.org,\tjackson1");
+        System.setProperty(LIBRARIES_PROPERTY_NAME,"jackson2, gson ,json.org");
         Converter converter = Converter.createDefaultConverter();
-        assertThat(converter.getFactories()).extracting("class").containsExactly(Jackson2NodeFactory.class, GsonNodeFactory.class, JsonOrgNodeFactory.class, Jackson1NodeFactory.class);
+        assertThat(converter.getFactories()).extracting("class").containsExactly(Jackson2NodeFactory.class, GsonNodeFactory.class, JsonOrgNodeFactory.class);
         System.setProperty(LIBRARIES_PROPERTY_NAME, "");
     }
 

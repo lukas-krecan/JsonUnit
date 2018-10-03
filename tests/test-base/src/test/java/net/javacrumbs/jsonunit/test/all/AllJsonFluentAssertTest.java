@@ -36,6 +36,6 @@ public class AllJsonFluentAssertTest extends AbstractJsonFluentAssertTest {
     }
 
     protected Object readValue(String value) {
-        return JsonTestUtils.readByJackson1(value);
+        return JsonTestUtils.readByJackson2(value);
     }
 }
