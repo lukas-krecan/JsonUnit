@@ -18,6 +18,8 @@ package net.javacrumbs.jsonunit.test.base;
 import net.javacrumbs.jsonunit.core.Option;
 import org.junit.Test;
 
+import java.time.ZonedDateTime;
+
 import static java.math.BigDecimal.valueOf;
 import static java.util.Collections.singletonMap;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
@@ -767,9 +769,22 @@ public abstract class AbstractAssertJTest {
 
     @Test
     public void shouldWorkWithPercentSign() {
-       assertThatThrownBy(() -> assertThatJson("{\"a\": \"1\"}").isEqualTo("{\"%\": \"2\"}"))
-           .hasMessage("JSON documents are different:\n" +
-           "Different keys found in node \"\", expected: <[%]> but was: <[a]>. Missing: \"%\" Extra: \"a\"\n");
+        assertThatThrownBy(() -> assertThatJson("{\"a\": \"1\"}").isEqualTo("{\"%\": \"2\"}"))
+            .hasMessage("JSON documents are different:\n" +
+                "Different keys found in node \"\", expected: <[%]> but was: <[a]>. Missing: \"%\" Extra: \"a\"\n");
+    }
+
+    @Test
+    public void shouldCompareJava8Classes() {
+        assertThatJson(new BeanWithJava8Stuff()).isEqualTo("{zonedDateTime:'2018-10-03T19:53:20Z'}");
+    }
+
+    private static class BeanWithJava8Stuff {
+        private final ZonedDateTime zonedDateTime = ZonedDateTime.parse("2018-10-03T19:53:20Z");
+
+        public ZonedDateTime getZonedDateTime() {
+            return zonedDateTime;
+        }
     }
 
     // *****************************************************************************************************************
