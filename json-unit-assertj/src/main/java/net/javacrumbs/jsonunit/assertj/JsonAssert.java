@@ -30,6 +30,8 @@ import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.MapAssert;
 import org.assertj.core.api.StringAssert;
 import org.assertj.core.description.Description;
+import org.assertj.core.error.MessageFormatter;
+import org.assertj.core.internal.Failures;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -96,6 +98,20 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
             failWithMessage(diff.toString());
         }
         return this;
+    }
+
+    /**
+     * Copy from AssertJ to prevent errors with percents in error message
+     */
+    private void failWithMessage(String errorMessage) {
+      AssertionError assertionError = Failures.instance().failureIfErrorMessageIsOverridden(info);
+      if (assertionError == null) {
+        // error message was not overridden, build it.
+        String description = MessageFormatter.instance().format(info.description(), info.representation(), "");
+        assertionError = new AssertionError(description + errorMessage);
+      }
+      Failures.instance().removeAssertJRelatedElementsFromStackTraceIfNeeded(assertionError);
+      throw assertionError;
     }
 
     /**
