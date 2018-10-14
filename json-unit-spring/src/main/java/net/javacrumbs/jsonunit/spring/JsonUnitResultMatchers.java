@@ -30,6 +30,7 @@ import java.math.BigDecimal;
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.ARRAY;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NULL;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -124,7 +125,7 @@ public class JsonUnitResultMatchers {
      * Fails if compared documents are equal. The expected object is converted to JSON
      * before comparison. Ignores order of sibling nodes and whitespaces.
      */
-    public ResultMatcher isNotEqualTo(final String expected) {
+    public ResultMatcher isNotEqualTo(final Object expected) {
         return new AbstractResultMatcher(path, configuration) {
             public void doMatch(Object actual) {
                 Diff diff = createDiff(expected, actual);
@@ -205,6 +206,42 @@ public class JsonUnitResultMatchers {
     }
 
     /**
+     * Fails if selected JSON is not null.
+     */
+    public ResultMatcher isNull() {
+        return new AbstractResultMatcher(path, configuration) {
+            public void doMatch(Object actual) {
+                isNull(actual);
+            }
+        };
+    }
+
+    /**
+     * Fails if selected JSON is  null.
+     */
+    public ResultMatcher isNotNull() {
+        return new AbstractResultMatcher(path, configuration) {
+            public void doMatch(Object actual) {
+                isNotNull(actual);
+            }
+        };
+    }
+
+    /**
+     * Fails if selected JSON is not true.
+     */
+    public ResultMatcher isTrue() {
+        return isEqualTo(true);
+    }
+
+    /**
+     * Fails if selected JSON is not false.
+     */
+    public ResultMatcher isFalse() {
+        return isEqualTo(false);
+    }
+
+    /**
      * Sets the placeholder that can be used to ignore values.
      * The default value is ${json-unit.ignore}
      */
@@ -273,7 +310,7 @@ public class JsonUnitResultMatchers {
         private final String path;
         private final Configuration configuration;
 
-        protected AbstractResultMatcher(String path, Configuration configuration) {
+        AbstractResultMatcher(String path, Configuration configuration) {
             this.path = path;
             this.configuration = configuration;
         }
@@ -283,30 +320,46 @@ public class JsonUnitResultMatchers {
             doMatch(actual);
         }
 
-        protected Diff createDiff(Object expected, Object actual) {
+        Diff createDiff(Object expected, Object actual) {
             return create(expected, actual, "actual", path, configuration);
         }
 
-        protected void isPresent(Object actual) {
+        void isPresent(Object actual) {
             if (nodeAbsent(actual, path, configuration)) {
                 failWithMessage("Node \"" + path + "\" is missing.");
             }
         }
 
-        protected void failOnType(Node node, String type) {
-            failWithMessage("Node \"" + path + "\" is not " + type + ". The actual value is '" + node + "'.");
+        void failOnType(Node node, String type) {
+            failWithMessage("Node \"" + path + "\" is different. Expected: <" + type + "> but was: <" + node + ">.");
         }
 
 
-        protected Node getNode(Object actual) {
+        Node getNode(Object actual) {
             return JsonUtils.getNode(actual, path);
         }
 
-        protected void isString(Object actual) {
+        void isString(Object actual) {
             isPresent(actual);
             Node node = getNode(actual);
             if (node.getNodeType() != STRING) {
                 failOnType(node, "a string");
+            }
+        }
+
+        void isNull(Object actual) {
+            isPresent(actual);
+            Node node = getNode(actual);
+            if (node.getNodeType() != NULL) {
+                failOnType(node, "a null");
+            }
+        }
+
+        void isNotNull(Object actual) {
+            isPresent(actual);
+            Node node = getNode(actual);
+            if (node.getNodeType() == NULL) {
+                failOnType(node, "not null");
             }
         }
 

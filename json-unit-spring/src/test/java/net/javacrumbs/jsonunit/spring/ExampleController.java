@@ -43,5 +43,11 @@ public class ExampleController {
         public BigDecimal getDecimal() {
             return new BigDecimal("1.00001");
         }
+        public boolean getBoolean() {
+            return true;
+        }
+        public Object getNull() {
+            return null;
+        }
     }
 }
