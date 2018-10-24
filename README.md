@@ -549,7 +549,7 @@ framework to log `net.javacrumbs.jsonunit.difference` on DEBUG level.
 
 ## Selecting underlying library
 JsonUnit is trying to cleverly match which JSON library to use. In case you need to change the default behavior, you can use
-json-unit.libraries system property. For example `-Djson-unit.libraries=jackson2,gson` or `System.setProperty("json-unit.libraries", "jackson1");`. Supported values are gson, json.org, moshi, jackson1, jackson2
+json-unit.libraries system property. For example `-Djson-unit.libraries=jackson2,gson` or `System.setProperty("json-unit.libraries", "jackson2");`. Supported values are gson, json.org, moshi, jackson2
 
 Licence
 -------
