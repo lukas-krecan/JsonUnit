@@ -260,6 +260,12 @@ public abstract class AbstractJsonFluentAssertTest {
         assertThatJson("{\"test\":1}").isEqualTo("{\"test\":\"${json-unit.ignore}\"}");
     }
 
+
+    @Test
+    public void testIgnoreHash() {
+        assertThatJson("{\"test\":1}").isEqualTo("{\"test\":\"#{json-unit.ignore}\"}");
+    }
+
     @Test
     public void testIgnoreDifferent() {
         assertThatJson("{\"test\":1}").ignoring("##IGNORE##").isEqualTo("{\"test\":\"##IGNORE##\"}");
@@ -277,7 +283,7 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void anyNumberShouldFailOnString() {
-        assertThatThrownBy(() -> assertThatJson("{\"test\":\"one\"}").isEqualTo("{\"test\":\"${json-unit.any-number}\"}"))
+        assertThatThrownBy(() -> assertThatJson("{\"test\":\"one\"}").isEqualTo("{\"test\":\"#{json-unit.any-number}\"}"))
             .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <a number> but was: <\"one\">.\n");
     }
 
@@ -300,7 +306,7 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void anyBooleanShouldFailOnString() {
-        assertThatThrownBy(() -> assertThatJson("{\"test\":\"true\"}").isEqualTo("{\"test\":\"${json-unit.any-boolean}\"}"))
+        assertThatThrownBy(() -> assertThatJson("{\"test\":\"true\"}").isEqualTo("{\"test\":\"#{json-unit.any-boolean}\"}"))
             .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <a boolean> but was: <\"true\">.\n");
     }
 
@@ -323,7 +329,7 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     public void anyStringShouldFailOnBoolean() {
-        assertThatThrownBy(() -> assertThatJson("{\"test\":true}").isEqualTo("{\"test\":\"${json-unit.any-string}\"}"))
+        assertThatThrownBy(() -> assertThatJson("{\"test\":true}").isEqualTo("{\"test\":\"#{json-unit.any-string}\"}"))
             .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <a string> but was: <true>.\n");
     }
 
@@ -347,10 +353,10 @@ public abstract class AbstractJsonFluentAssertTest {
     @Test
     public void ifMatcherDoesNotMatchReportDifference() {
         RecordingDifferenceListener listener = new RecordingDifferenceListener();
-        assertThatThrownBy(() -> assertThatJson("{\"test\":-1}").withMatcher("positive", greaterThan(valueOf(0))).withDifferenceListener(listener).isEqualTo("{\"test\": \"${json-unit.matches:positive}\"}"))
+        assertThatThrownBy(() -> assertThatJson("{\"test\":-1}").withMatcher("positive", greaterThan(valueOf(0))).withDifferenceListener(listener).isEqualTo("{\"test\": \"#{json-unit.matches:positive}\"}"))
             .hasMessage("JSON documents are different:\nMatcher \"positive\" does not match value -1 in node \"test\". <-1> was less than <0>\n");
         assertThat(listener.getDifferenceList()).hasSize(1);
-        assertThat(listener.getDifferenceList().get(0).toString()).isEqualTo("DIFFERENT Expected ${json-unit.matches:positive} in test got -1 in test");
+        assertThat(listener.getDifferenceList().get(0).toString()).isEqualTo("DIFFERENT Expected #{json-unit.matches:positive} in test got -1 in test");
     }
 
     @Test

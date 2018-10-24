@@ -869,9 +869,9 @@ public abstract class AbstractJsonAssertTest {
 
     @Test
     public void regexShouldFailOnNumberGracefully() {
-        assertThatThrownBy(() -> assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}", "{\"test\": 123}"))
+        assertThatThrownBy(() -> assertJsonEquals("{\"test\": \"#{json-unit.regex}[A-Z]+\"}", "{\"test\": 123}"))
             .hasMessage("JSON documents are different:\n" +
-                "Different value found in node \"test\", expected: <\"${json-unit.regex}[A-Z]+\"> but was: <123>.\n");
+                "Different value found in node \"test\", expected: <\"#{json-unit.regex}[A-Z]+\"> but was: <123>.\n");
     }
 
     @Test
