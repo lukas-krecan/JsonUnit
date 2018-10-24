@@ -15,28 +15,13 @@
  */
 package net.javacrumbs.jsonunit.spring;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.ViewResolver;
-import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
-import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
-
-import java.util.Collections;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
 @ComponentScan("net.javacrumbs.jsonunit.spring")
+@EnableWebMvc
 public class SpringConfig {
-
-    /*
-     * Configure ContentNegotiatingViewResolver
-     */
-    @Bean
-    public ViewResolver contentNegotiatingViewResolver() {
-        ContentNegotiatingViewResolver resolver = new ContentNegotiatingViewResolver();
-        resolver.setDefaultViews(Collections.<View>singletonList(new MappingJackson2JsonView()));
-        return resolver;
-    }
 
 }

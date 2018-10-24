@@ -15,24 +15,22 @@
  */
 package net.javacrumbs.jsonunit.spring;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 
+import static java.util.Collections.singletonMap;
+
 @RestController
 public class ExampleController {
 
     @RequestMapping(value = "/sample", method = RequestMethod.GET)
-    public Result get() {
-        return new Result();
+    public Object get() {
+        return singletonMap("result", new Result());
     }
 
-    @JsonTypeInfo(use = JsonTypeInfo.Id.NAME)
-    @JsonTypeName("result")
     private static class Result {
         public String getString() {
             return "stringValue";
