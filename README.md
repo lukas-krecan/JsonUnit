@@ -1,7 +1,7 @@
 JsonUnit [![Apache License 2](https://img.shields.io/badge/license-ASF2-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0.txt) [![Build Status](https://travis-ci.org/lukas-krecan/JsonUnit.png?branch=master)](https://travis-ci.org/lukas-krecan/JsonUnit) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.javacrumbs.json-unit/json-unit/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.javacrumbs.json-unit/json-unit)
 ========
 
-JsonUnit is a library that simplifies JSON comparison in unit tests.
+JsonUnit is a library that simplifies JSON comparison in tests.
 
 - [APIs](#apis)
   * [AssertJ integration (beta)](#assertj)
@@ -387,7 +387,7 @@ assertThatJson("{\"test\":1.1}")
 
 ```
 
-Yuo can also use hash instead of string `#{json-unit.any-string}` for cases you are using language with string interpolation
+You can also use hash instead of string `#{json-unit.any-string}` for example if you are using language with string interpolation
 like Kotlin.
 
 ## <a name="matchers"></a>Custom matchers
