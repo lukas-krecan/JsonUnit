@@ -89,7 +89,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>2.0.0.RC5</version>
+    <version>2.0.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -169,7 +169,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>2.0.0.RC5</version>
+    <version>2.0.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -203,7 +203,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.0.0.RC5</version>
+    <version>2.0.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -236,7 +236,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.0.0.RC5</version>
+    <version>2.0.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -281,7 +281,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.0.0.RC5</version>
+    <version>2.0.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -313,7 +313,7 @@ For other API styles you have to first import JsonPath support module
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-json-path</artifactId>
-    <version>2.0.0.RC5</version>
+    <version>2.0.1</version>
 </dependency>
 ```
 
@@ -330,7 +330,7 @@ assertThatJson(inPath(json, "$.store.book[*].author"))
 ```
 
 ## <a name="ignorevalues"></a>Ignoring values
-Sometimes you need to ignore certain values when comparing. It is possible to use `${json-unit.ignore}`
+Sometimes you need to ignore certain values when comparing. It is possible to use `${json-unit.ignore}` or `#{json-unit.ignore}`
 placeholder like this
 
 ```java
@@ -386,6 +386,10 @@ assertThatJson("{\"test\":1.1}")
     .isEqualTo("{\"test\":\"${json-unit.any-number}\"}");
 
 ```
+
+Yuo can also use hash instead of string `#{json-unit.any-string}` for cases you are using language with string interpolation
+like Kotlin.
+
 ## <a name="matchers"></a>Custom matchers
 In some special cases you might want to use your own matcher in the expected document.
 ```java
@@ -557,6 +561,9 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 2.0.1
+* Support for # instead of $ in placeholders
+
 ## 2.0.0.RC5
 * More expressive Spring assertions (isNull, isNotNull, isTrue, isFalse)
 
@@ -621,7 +628,7 @@ Please do not hesitate to report issues.
 * Support for ignoring paths whenIgnoringPaths()
 
 ## 1.24.0
-* Support for parametrers in custom matchers ${json-unit.matches:matcherName}param
+* Support for parametres in custom matchers ${json-unit.matches:matcherName}param
 
 ## 1.23.0
 * Support for custom matchers ${json-unit.matches:matcherName}
