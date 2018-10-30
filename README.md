@@ -89,7 +89,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -169,7 +169,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -203,7 +203,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -236,7 +236,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -281,7 +281,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -313,7 +313,7 @@ For other API styles you have to first import JsonPath support module
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-json-path</artifactId>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
 </dependency>
 ```
 
@@ -561,6 +561,9 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 2.0.2
+* Fixed #144 (AssertJ object handling)
+
 ## 2.0.1
 * Support for # instead of $ in placeholders
 
