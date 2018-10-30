@@ -37,7 +37,7 @@ class JsonComparator implements Comparator<Object> {
 
     @Override
     public int compare(Object actual, Object expected) {
-        // out comparator is not transitive, expected is usually Node and actual is usualy Map, or primitive
+        // this comparator is not transitive, `expected` is usually a Node and `actual` is usually a Map, or primitive
         if (
             (actualParsed && !(actual instanceof Node) && (expected instanceof Node)) ||
             (actual instanceof ExpectedNode)
