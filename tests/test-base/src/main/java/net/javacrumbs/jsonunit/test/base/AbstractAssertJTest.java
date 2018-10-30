@@ -16,7 +16,6 @@
 package net.javacrumbs.jsonunit.test.base;
 
 import net.javacrumbs.jsonunit.core.Option;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static java.math.BigDecimal.valueOf;
@@ -98,7 +97,6 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
-    @Ignore
     public void compareJsonInJsonPathArray() {
         assertThatJson("{\"root\": [{\"target\": 450} ]}")
                         .inPath("$.root")
