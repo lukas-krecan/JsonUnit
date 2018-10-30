@@ -78,13 +78,13 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
-    public void objecDoesContainComplexValue() {
+    public void objectDoesContainComplexValue() {
         assertThatJson("{\"a\":1, \"b\": {\"c\" :3}}").isObject().doesNotContainValue(json("{\"c\" :\"${json-unit.any-string}\"}"));
     }
 
 
     @Test
-    public void objecDoesContainComplexValueError() {
+    public void objectDoesContainComplexValueError() {
         assertThatThrownBy(() -> assertThatJson("{\"root\":{\"a\":1, \"b\": {\"c\" :3}}}")
             .node("root")
             .isObject()
