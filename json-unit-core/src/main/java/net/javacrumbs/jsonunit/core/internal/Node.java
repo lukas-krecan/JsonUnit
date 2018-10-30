@@ -36,13 +36,7 @@ public interface Node {
             public Object getValue(Node node) {
                 // custom conversion to map. We want be consistent and native mapping may have different rules for
                 // serializing numbers, dates etc.
-                JsonMap result = new JsonMap();
-                Iterator<KeyValue> fields = node.fields();
-                while (fields.hasNext()) {
-                    KeyValue keyValue = fields.next();
-                    result.put(keyValue.getKey(), keyValue.getValue().getValue());
-                }
-                return result;
+                return new JsonMap(node);
             }
         },
         ARRAY("array") {
@@ -196,7 +190,18 @@ public interface Node {
         Object getValue(Node node);
     }
 
-    class JsonMap extends LinkedHashMap<String, Object> {
+    class JsonMap extends LinkedHashMap<String, Object> implements Node {
+        private final Node wrappedNode;
+
+        JsonMap(Node node) {
+            wrappedNode = node;
+            Iterator<KeyValue> fields = node.fields();
+            while (fields.hasNext()) {
+                KeyValue keyValue = fields.next();
+                put(keyValue.getKey(), keyValue.getValue().getValue());
+            }
+        }
+
         @Override
         public String toString() {
             StringBuilder builder = new StringBuilder();
@@ -218,6 +223,54 @@ public interface Node {
 
         private Object quoteString(Object value) {
             return value instanceof String ? "\"" + value + "\"" : value;
+        }
+
+        public Node element(int index) {
+            return wrappedNode.element(index);
+        }
+
+        public Iterator<KeyValue> fields() {
+            return wrappedNode.fields();
+        }
+
+        public Node get(String key) {
+            return wrappedNode.get(key);
+        }
+
+        public boolean isMissingNode() {
+            return wrappedNode.isMissingNode();
+        }
+
+        public boolean isNull() {
+            return wrappedNode.isNull();
+        }
+
+        public Iterator<Node> arrayElements() {
+            return wrappedNode.arrayElements();
+        }
+
+        public String asText() {
+            return wrappedNode.asText();
+        }
+
+        public NodeType getNodeType() {
+            return wrappedNode.getNodeType();
+        }
+
+        public BigDecimal decimalValue() {
+            return wrappedNode.decimalValue();
+        }
+
+        public Boolean asBoolean() {
+            return wrappedNode.asBoolean();
+        }
+
+        public Object getValue() {
+            return wrappedNode.getValue();
+        }
+
+        public void ___do_not_implement_this_interface_seriously() {
+            wrappedNode.___do_not_implement_this_interface_seriously();
         }
     }
 }

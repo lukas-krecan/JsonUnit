@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit.test.base;
 
 import net.javacrumbs.jsonunit.core.Option;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static java.math.BigDecimal.valueOf;
@@ -96,6 +97,22 @@ public abstract class AbstractAssertJTest {
                 "  <{\"c\":3}>");
     }
 
+    @Test
+    @Ignore
+    public void compareJsonInJsonPathArray() {
+        assertThatJson("{\"root\": [{\"target\": 450} ]}")
+                        .inPath("$.root")
+                        .isArray()
+                        .containsExactly("{target: 450 }");
+    }
+
+    @Test
+    public void compareJsonInNodeArray() {
+        assertThatJson("{\"root\": [{\"target\": 450} ]}")
+                        .node("root")
+                        .isArray()
+                        .containsExactly("{target: 450 }");
+    }
 
     @Test
     public void shouldAssertDirectEqual() {

@@ -35,6 +35,6 @@ public final class JsonAssertions {
      * @return Object suitable for comparison. Implementation type may change in the future.
      */
     public static Object json(Object input) {
-        return JsonUtils.convertToJson(input, "", true);
+        return new ExpectedNode(JsonUtils.convertToJson(input, "", true));
     }
 }
