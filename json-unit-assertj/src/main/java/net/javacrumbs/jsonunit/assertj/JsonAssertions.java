@@ -17,7 +17,6 @@ package net.javacrumbs.jsonunit.assertj;
 
 import net.javacrumbs.jsonunit.assertj.JsonAssert.ConfigurableJsonAssert;
 import net.javacrumbs.jsonunit.assertj.internal.JsonRepresentation;
-import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.NotNull;
