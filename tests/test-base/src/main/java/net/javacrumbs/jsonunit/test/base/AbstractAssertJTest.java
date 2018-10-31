@@ -19,6 +19,7 @@ import net.javacrumbs.jsonunit.core.Option;
 import org.junit.Test;
 
 import static java.math.BigDecimal.valueOf;
+import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
@@ -110,6 +111,13 @@ public abstract class AbstractAssertJTest {
                         .node("root")
                         .isArray()
                         .containsExactly("{target: 450 }");
+    }
+
+    @Test
+    public void compareJsonArray() {
+        assertThatJson("{\"root\": [{\"target\": 450} ]}")
+                        .node("root")
+                        .isEqualTo(singletonList(singletonMap("target", 450)));
     }
 
     @Test
