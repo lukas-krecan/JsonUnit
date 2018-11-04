@@ -23,8 +23,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
-import static java.util.Collections.unmodifiableList;
-
 
 /**
  * For internal use only!!! Abstract node representation.
@@ -41,13 +39,7 @@ public interface Node {
         },
         ARRAY("array") {
             public Object getValue(Node node) {
-                Iterator<Node> nodeIterator = node.arrayElements();
-                LinkedList<Object> result = new LinkedList<>();
-                while (nodeIterator.hasNext()) {
-                    Node arrayNode = nodeIterator.next();
-                    result.add(arrayNode.getValue());
-                }
-                return unmodifiableList(result);
+                return new JsonList(node);
             }
         },
         STRING("string") {
@@ -130,60 +122,69 @@ public interface Node {
     }
 
     Node MISSING_NODE = new Node() {
-        public boolean isArray() {
-            return false;
-        }
-
+        @Override
         public Node element(int index) {
             return MISSING_NODE;
         }
 
+        @Override
         public Iterator<KeyValue> fields() {
             Set<KeyValue> emptySet = Collections.emptySet();
             return emptySet.iterator();
         }
 
+        @Override
         public Node get(String key) {
             return this;
         }
 
+        @Override
         public boolean isMissingNode() {
             return true;
         }
 
+        @Override
         public boolean isNull() {
             return false;
         }
 
+        @Override
         public Iterator<Node> arrayElements() {
             Set<Node> emptySet = Collections.emptySet();
             return emptySet.iterator();
         }
 
+        @Override
         public int size() {
             return 0;
         }
 
+        @Override
         public String asText() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public NodeType getNodeType() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public BigDecimal decimalValue() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Boolean asBoolean() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Object getValue() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void ___do_not_implement_this_interface_seriously() {}
     };
     interface ValueExtractor {
@@ -269,6 +270,84 @@ public interface Node {
             return wrappedNode.getValue();
         }
 
+        public void ___do_not_implement_this_interface_seriously() {
+            wrappedNode.___do_not_implement_this_interface_seriously();
+        }
+    }
+
+    class JsonList extends LinkedList<Object> implements Node {
+        private final Node wrappedNode;
+
+        JsonList(Node node) {
+            Iterator<Node> nodeIterator = node.arrayElements();
+            while (nodeIterator.hasNext()) {
+                Node arrayNode = nodeIterator.next();
+                add(arrayNode.getValue());
+            }
+            wrappedNode = node;
+        }
+
+        @Override
+        public Node element(int index) {
+            return wrappedNode.element(index);
+        }
+
+        @Override
+        public Iterator<KeyValue> fields() {
+            return wrappedNode.fields();
+        }
+
+        @Override
+        public Node get(String key) {
+            return wrappedNode.get(key);
+        }
+
+        @Override
+        public boolean isMissingNode() {
+            return wrappedNode.isMissingNode();
+        }
+
+        @Override
+        public boolean isNull() {
+            return wrappedNode.isNull();
+        }
+
+        @Override
+        public Iterator<Node> arrayElements() {
+            return wrappedNode.arrayElements();
+        }
+
+        @Override
+        public int size() {
+            return wrappedNode.size();
+        }
+
+        @Override
+        public String asText() {
+            return wrappedNode.asText();
+        }
+
+        @Override
+        public NodeType getNodeType() {
+            return wrappedNode.getNodeType();
+        }
+
+        @Override
+        public BigDecimal decimalValue() {
+            return wrappedNode.decimalValue();
+        }
+
+        @Override
+        public Boolean asBoolean() {
+            return wrappedNode.asBoolean();
+        }
+
+        @Override
+        public Object getValue() {
+            return wrappedNode.getValue();
+        }
+
+        @Override
         public void ___do_not_implement_this_interface_seriously() {
             wrappedNode.___do_not_implement_this_interface_seriously();
         }
