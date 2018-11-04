@@ -42,9 +42,7 @@ class JsonListAssert extends ListAssert<Object> {
     public JsonListAssert isEqualTo(Object expected) {
         describedAs(null);
         Diff diff = createDiff(expected);
-        if (!diff.similar()) {
-            failWithMessage(diff.toString());
-        }
+        diff.failIfDifferent();
         return this;
     }
 

@@ -79,9 +79,7 @@ public class JsonAssert {
      */
     public static void assertJsonPartEquals(Object expected, Object fullJson, String path, Configuration configuration) {
         Diff diff = create(expected, fullJson, FULL_JSON, path, configuration);
-        if (!diff.similar()) {
-            doFail(diff.toString());
-        }
+        diff.failIfDifferent();
     }
 
     /**

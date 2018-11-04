@@ -31,7 +31,11 @@ class JsonAssertError extends MultipleFailuresError {
     public String getMessage() {
         StringBuilder builder = new StringBuilder();
         if (heading != null && !heading.isEmpty()) {
-            builder.append('[').append(heading).append("] ");
+            if (heading.startsWith("[") && heading.endsWith("] ")) {
+                builder.append(heading);
+            } else {
+                builder.append('[').append(heading).append("] ");
+            }
         }
         differences.appendDifferences(builder);
         return builder.toString();

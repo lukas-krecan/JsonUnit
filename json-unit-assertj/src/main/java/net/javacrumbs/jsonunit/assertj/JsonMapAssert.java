@@ -43,9 +43,7 @@ class JsonMapAssert extends MapAssert<String, Object> {
     public JsonMapAssert isEqualTo(Object expected) {
         describedAs(null);
         Diff diff = Diff.create(expected, actual, "fullJson", path, configuration);
-        if (!diff.similar()) {
-            failWithMessage(diff.toString());
-        }
+        diff.failIfDifferent();
         return this;
     }
 

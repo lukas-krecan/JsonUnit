@@ -94,9 +94,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     @Override
     public JsonAssert isEqualTo(Object expected) {
         Diff diff = Diff.create(expected, actual, "fullJson", path.asPrefix(), configuration);
-        if (!diff.similar()) {
-            failWithMessage(diff.toString());
-        }
+        diff.failIfDifferent(MessageFormatter.instance().format(info.description(), info.representation(), ""));
         return this;
     }
 
