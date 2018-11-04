@@ -106,6 +106,14 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    public void compareJsonInJsonPathShallowArray() {
+        assertThatJson("{\"root\": [450]}")
+                        .inPath("$.root")
+                        .isArray()
+                        .containsExactly("450");
+    }
+
+    @Test
     public void compareJsonInPathArrayOfArrays() {
         assertThatJson("{\"root\": [[{\"target\": 450} ]]}")
                         .inPath("$.root")
@@ -119,6 +127,30 @@ public abstract class AbstractAssertJTest {
                         .node("root")
                         .isArray()
                         .containsExactly("{target: 450 }");
+    }
+
+    @Test
+    public void compareJsonInNodeShallowArray() {
+        assertThatJson("{\"root\": [450]}")
+                        .node("root")
+                        .isArray()
+                        .containsExactly("450");
+    }
+
+    @Test
+    public void compareJsonInNodeShallowArrayBigDecimal() {
+        assertThatJson("{\"root\": [450]}")
+                        .node("root")
+                        .isArray()
+                        .containsExactly(450);
+    }
+
+    @Test
+    public void compareJsonInNodeShallowArrayBoolean() {
+        assertThatJson("{\"root\": [true]}")
+                        .node("root")
+                        .isArray()
+                        .containsExactly(true);
     }
 
     @Test

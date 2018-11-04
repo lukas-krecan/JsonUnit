@@ -49,7 +49,7 @@ public interface Node {
         },
         NUMBER("number") {
             public Object getValue(Node node) {
-                return node.decimalValue();
+                return new JsonNumber(node);
             }
         },
         BOOLEAN("boolean") {
@@ -191,7 +191,7 @@ public interface Node {
         Object getValue(Node node);
     }
 
-    class JsonMap extends LinkedHashMap<String, Object> implements Node {
+    class JsonMap extends LinkedHashMap<String, Object> implements NodeWrapper {
         private final Node wrappedNode;
 
         JsonMap(Node node) {
@@ -226,56 +226,13 @@ public interface Node {
             return value instanceof String ? "\"" + value + "\"" : value;
         }
 
-        public Node element(int index) {
-            return wrappedNode.element(index);
-        }
-
-        public Iterator<KeyValue> fields() {
-            return wrappedNode.fields();
-        }
-
-        public Node get(String key) {
-            return wrappedNode.get(key);
-        }
-
-        public boolean isMissingNode() {
-            return wrappedNode.isMissingNode();
-        }
-
-        public boolean isNull() {
-            return wrappedNode.isNull();
-        }
-
-        public Iterator<Node> arrayElements() {
-            return wrappedNode.arrayElements();
-        }
-
-        public String asText() {
-            return wrappedNode.asText();
-        }
-
-        public NodeType getNodeType() {
-            return wrappedNode.getNodeType();
-        }
-
-        public BigDecimal decimalValue() {
-            return wrappedNode.decimalValue();
-        }
-
-        public Boolean asBoolean() {
-            return wrappedNode.asBoolean();
-        }
-
-        public Object getValue() {
-            return wrappedNode.getValue();
-        }
-
-        public void ___do_not_implement_this_interface_seriously() {
-            wrappedNode.___do_not_implement_this_interface_seriously();
+        @Override
+        public Node getWrappedNode() {
+            return wrappedNode;
         }
     }
 
-    class JsonList extends LinkedList<Object> implements Node {
+    class JsonList extends LinkedList<Object> implements NodeWrapper {
         private final Node wrappedNode;
 
         JsonList(Node node) {
@@ -288,68 +245,22 @@ public interface Node {
         }
 
         @Override
-        public Node element(int index) {
-            return wrappedNode.element(index);
+        public Node getWrappedNode() {
+            return wrappedNode;
+        }
+    }
+
+    class JsonNumber extends BigDecimal implements NodeWrapper {
+        private final Node wrappedNode;
+
+        JsonNumber(Node node) {
+            super(node.decimalValue().toString());
+            this.wrappedNode = node;
         }
 
         @Override
-        public Iterator<KeyValue> fields() {
-            return wrappedNode.fields();
-        }
-
-        @Override
-        public Node get(String key) {
-            return wrappedNode.get(key);
-        }
-
-        @Override
-        public boolean isMissingNode() {
-            return wrappedNode.isMissingNode();
-        }
-
-        @Override
-        public boolean isNull() {
-            return wrappedNode.isNull();
-        }
-
-        @Override
-        public Iterator<Node> arrayElements() {
-            return wrappedNode.arrayElements();
-        }
-
-        @Override
-        public int size() {
-            return wrappedNode.size();
-        }
-
-        @Override
-        public String asText() {
-            return wrappedNode.asText();
-        }
-
-        @Override
-        public NodeType getNodeType() {
-            return wrappedNode.getNodeType();
-        }
-
-        @Override
-        public BigDecimal decimalValue() {
-            return wrappedNode.decimalValue();
-        }
-
-        @Override
-        public Boolean asBoolean() {
-            return wrappedNode.asBoolean();
-        }
-
-        @Override
-        public Object getValue() {
-            return wrappedNode.getValue();
-        }
-
-        @Override
-        public void ___do_not_implement_this_interface_seriously() {
-            wrappedNode.___do_not_implement_this_interface_seriously();
+        public Node getWrappedNode() {
+            return wrappedNode;
         }
     }
 }
