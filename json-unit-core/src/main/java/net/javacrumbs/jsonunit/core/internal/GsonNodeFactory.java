@@ -40,7 +40,7 @@ class GsonNodeFactory extends AbstractNodeFactory {
     private final Gson gson = new Gson();
 
     @Override
-    protected Node convertValue(Object source) {
+    protected Node doConvertValue(Object source) {
         if (source instanceof JsonElement) {
             return newNode((JsonElement) source);
         } else {

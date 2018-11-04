@@ -21,6 +21,7 @@ import com.squareup.moshi.Moshi;
 import java.io.IOException;
 import java.io.Reader;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import static net.javacrumbs.jsonunit.core.internal.Utils.closeQuietly;
 
@@ -32,7 +33,7 @@ class MoshiNodeFactory extends AbstractNodeFactory {
     private static final NodeBuilder moshiNodeBuilder = new MoshiNodeBuilder();
 
     @Override
-    protected Node convertValue(Object source) {
+    protected Node doConvertValue(Object source) {
         return newNode(source);
     }
 
@@ -90,7 +91,8 @@ class MoshiNodeFactory extends AbstractNodeFactory {
             @Override
             public BigDecimal decimalValue() {
                 // Workaround for Moshi bug https://github.com/square/moshi/issues/192
-                return super.decimalValue().stripTrailingZeros();
+                BigDecimal value = super.decimalValue().stripTrailingZeros();
+                return value.scale() < 0 ? value.setScale(0, RoundingMode.HALF_UP) : value;
             }
 
             @Override

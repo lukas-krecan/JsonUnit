@@ -43,7 +43,7 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
 
 
     @Override
-    protected Node convertValue(Object source) {
+    protected Node doConvertValue(Object source) {
         return newNode(mapper.convertValue(source, JsonNode.class));
     }
 

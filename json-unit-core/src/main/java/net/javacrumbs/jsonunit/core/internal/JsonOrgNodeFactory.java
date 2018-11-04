@@ -34,7 +34,7 @@ import static net.javacrumbs.jsonunit.core.internal.Utils.closeQuietly;
 class JsonOrgNodeFactory extends AbstractNodeFactory {
 
     @Override
-    protected Node convertValue(Object source) {
+    protected Node doConvertValue(Object source) {
         return newNode(source);
     }
 

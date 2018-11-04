@@ -110,7 +110,23 @@ public abstract class AbstractAssertJTest {
         assertThatJson("{\"root\": [450]}")
                         .inPath("$.root")
                         .isArray()
-                        .containsExactly("450");
+                        .containsExactly(json("450"));
+    }
+
+    @Test
+    public void compareJsonInJsonPathShallowArrayString() {
+        assertThatThrownBy(() -> assertThatJson("{\"root\": [450]}")
+                        .inPath("$.root")
+                        .isArray()
+                        .containsExactly("450"))
+            .hasMessage("[Different value found in node \"$.root\"] \n" +
+                "Expecting:\n" +
+                "  <[450]>\n" +
+                "to contain exactly (and in same order):\n" +
+                "  <[\"450\"]>\n" +
+                "but some elements were not expected:\n" +
+                "  <[450]>\n" +
+                "when comparing values using JsonComparator");
     }
 
     @Test
@@ -134,7 +150,7 @@ public abstract class AbstractAssertJTest {
         assertThatJson("{\"root\": [450]}")
                         .node("root")
                         .isArray()
-                        .containsExactly("450");
+                        .containsExactly(valueOf(450));
     }
 
     @Test
@@ -142,7 +158,7 @@ public abstract class AbstractAssertJTest {
         assertThatJson("{\"root\": [450]}")
                         .node("root")
                         .isArray()
-                        .containsExactly(450);
+                        .containsExactly(valueOf(450));
     }
 
     @Test

@@ -49,7 +49,7 @@ public interface Node {
         },
         NUMBER("number") {
             public Object getValue(Node node) {
-                return new JsonNumber(node);
+                return node.decimalValue();
             }
         },
         BOOLEAN("boolean") {
@@ -242,20 +242,6 @@ public interface Node {
                 add(arrayNode.getValue());
             }
             wrappedNode = node;
-        }
-
-        @Override
-        public Node getWrappedNode() {
-            return wrappedNode;
-        }
-    }
-
-    class JsonNumber extends BigDecimal implements NodeWrapper {
-        private final Node wrappedNode;
-
-        JsonNumber(Node node) {
-            super(node.decimalValue().toString());
-            this.wrappedNode = node;
         }
 
         @Override

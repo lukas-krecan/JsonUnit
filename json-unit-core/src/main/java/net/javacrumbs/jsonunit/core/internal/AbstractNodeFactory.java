@@ -17,6 +17,7 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import java.io.Reader;
 import java.io.StringReader;
+import java.math.BigDecimal;
 
 /**
  * Common superclass for node factories
@@ -45,7 +46,15 @@ abstract class AbstractNodeFactory implements NodeFactory {
         }
     }
 
-    protected abstract Node convertValue(Object source);
+    final Node convertValue(Object source) {
+        if (source instanceof BigDecimal) {
+            return new GenericNodeBuilder.NumberNode((Number) source);
+        } else {
+            return doConvertValue(source);
+        }
+    }
+
+    protected abstract Node doConvertValue(Object source);
 
     protected abstract Node readValue(Reader reader, String label, boolean lenient);
 
