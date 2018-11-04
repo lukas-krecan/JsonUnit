@@ -24,6 +24,11 @@
 
     <dependencies>
         <dependency>
+          <groupId>org.opentest4j</groupId>
+          <artifactId>opentest4j</artifactId>
+          <version>1.1.1</version>
+        </dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson2.version}</version>

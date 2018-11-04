@@ -116,9 +116,7 @@ public class JsonFluentAssert {
      */
     public JsonFluentAssert isEqualTo(Object expected) {
         Diff diff = createDiff(expected, configuration);
-        if (!diff.similar()) {
-            failWithMessage(diff.differences());
-        }
+        diff.failIfDifferent(description);
         return this;
     }
 
@@ -167,9 +165,7 @@ public class JsonFluentAssert {
     @Deprecated
     public JsonFluentAssert hasSameStructureAs(Object expected) {
         Diff diff = createDiff(expected, configuration.withOptions(COMPARING_ONLY_STRUCTURE));
-        if (!diff.similar()) {
-            failWithMessage(diff.differences());
-        }
+        diff.failIfDifferent();
         return this;
     }
 
