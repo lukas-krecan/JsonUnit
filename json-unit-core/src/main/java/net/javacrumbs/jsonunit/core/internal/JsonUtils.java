@@ -179,6 +179,10 @@ public class JsonUtils {
         return GenericNodeBuilder.wrapDeserializedObject(source);
     }
 
+    public static Object missingNode() {
+        return Node.MISSING_NODE;
+    }
+
     private static boolean isNull(String trimmed) {
         return trimmed.equals("null");
     }

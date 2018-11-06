@@ -16,9 +16,11 @@
 package net.javacrumbs.jsonunit.jsonpath;
 
 import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.PathNotFoundException;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.missingNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
 
 /**
@@ -30,10 +32,14 @@ public final class JsonPathAdapter {
     }
 
     public static Object inPath(Object json, String path) {
-        if (json instanceof String) {
-            return jsonSource(wrapDeserializedObject(JsonPath.read((String) json, path)), path);
-        } else {
-            return jsonSource(wrapDeserializedObject(JsonPath.read(JsonUtils.convertToJson(json, "actual").getValue(), path)), path);
+        try {
+            if (json instanceof String) {
+                return jsonSource(wrapDeserializedObject(JsonPath.read((String) json, path)), path);
+            } else {
+                return jsonSource(wrapDeserializedObject(JsonPath.read(JsonUtils.convertToJson(json, "actual").getValue(), path)), path);
+            }
+        } catch (PathNotFoundException e) {
+            return jsonSource(missingNode(), path);
         }
     }
 }

@@ -920,6 +920,30 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    public void testAbsentInJsonPath() {
+        assertThatJson("{}").inPath("$.abc").isAbsent();
+    }
+
+    @Test
+    public void testAbsentInJsonPathEquals() {
+        assertThatThrownBy(() -> assertThatJson("{}").inPath("$.abc").isEqualTo("value"))
+            .hasMessage("JSON documents are different:\n" +
+                "Missing node in path \"$.abc\".\n");
+    }
+
+    @Test
+    public void testAbsentInJsonPathIsArray() {
+        assertThatThrownBy(() -> assertThatJson("{}").inPath("$.abc").isArray())
+            .hasMessage("Different value found in node \"$.abc\", expected: <array> but was: <missing>.");
+    }
+
+    @Test
+    public void testAbsentInJsonPathNotAbsent() {
+        assertThatThrownBy(() -> assertThatJson("{\"abc\": 1}").inPath("$.abc").isAbsent())
+            .hasMessage("Different value found in node \"$.abc\", expected: <node to be absent> but was: <1>.");
+    }
+
+    @Test
     public void jsonPathShouldBeAbleToUseArrays() {
         assertThatThrownBy(() -> assertThatJson(json)
             .inPath("$.store.book")
