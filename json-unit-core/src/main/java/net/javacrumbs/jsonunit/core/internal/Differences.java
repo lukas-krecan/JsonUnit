@@ -35,15 +35,6 @@ class Differences {
         return differences.isEmpty();
     }
 
-    void appendDifferences(StringBuilder builder) {
-        if (!differences.isEmpty()) {
-            builder.append("JSON documents are different:\n");
-            for (JsonDifference difference : differences) {
-                builder.append(difference.getMessage()).append("\n");
-            }
-        }
-    }
-
     List<JsonDifference> getDifferences() {
         return differences;
     }

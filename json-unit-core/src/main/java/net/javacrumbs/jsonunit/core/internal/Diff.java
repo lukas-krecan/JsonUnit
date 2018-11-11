@@ -46,6 +46,8 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
 import static net.javacrumbs.jsonunit.core.internal.DifferenceContextImpl.differenceContext;
+import static net.javacrumbs.jsonunit.core.internal.ExceptionUtils.createException;
+import static net.javacrumbs.jsonunit.core.internal.ExceptionUtils.formatDifferences;
 import static net.javacrumbs.jsonunit.core.internal.JsonUnitLogger.NULL_LOGGER;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
@@ -584,9 +586,7 @@ public class Diff {
     }
 
     private String getDifferences() {
-        StringBuilder message = new StringBuilder();
-        differences.appendDifferences(message);
-        return message.toString();
+        return formatDifferences("", differences);
     }
 
 
@@ -596,7 +596,7 @@ public class Diff {
 
     public void failIfDifferent(String message) {
         if (!similar()) {
-            throw new JsonAssertError(message, differences);
+            throw createException(message, differences);
         }
     }
 

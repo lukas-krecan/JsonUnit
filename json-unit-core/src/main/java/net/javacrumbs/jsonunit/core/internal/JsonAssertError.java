@@ -17,27 +17,20 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import org.opentest4j.MultipleFailuresError;
 
+import static net.javacrumbs.jsonunit.core.internal.ExceptionUtils.formatDifferences;
+
 class JsonAssertError extends MultipleFailuresError {
-    private final String heading;
+    private final String message;
     private final Differences differences;
 
-    JsonAssertError(String heading, Differences differences) {
-        super(heading, differences.getDifferences());
-        this.heading = heading;
+    JsonAssertError(String message, Differences differences) {
+        super(message, differences.getDifferences());
+        this.message = message;
         this.differences = differences;
     }
 
     @Override
     public String getMessage() {
-        StringBuilder builder = new StringBuilder();
-        if (heading != null && !heading.isEmpty()) {
-            if (heading.startsWith("[") && heading.endsWith("] ")) {
-                builder.append(heading);
-            } else {
-                builder.append('[').append(heading).append("] ");
-            }
-        }
-        differences.appendDifferences(builder);
-        return builder.toString();
+        return formatDifferences(message, differences);
     }
 }

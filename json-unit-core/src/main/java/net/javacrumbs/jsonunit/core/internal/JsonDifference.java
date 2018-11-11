@@ -17,8 +17,15 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import org.opentest4j.AssertionFailedError;
 
+import static java.util.Collections.singletonList;
+import static net.javacrumbs.jsonunit.core.internal.ExceptionUtils.formatDifferences;
+
 class JsonDifference extends AssertionFailedError {
     JsonDifference(Context context, String message, Object... args) {
-        super(String.format(message, args), context.getExpectedNode(), context.getActualNode());
+        super(String.format(message, args), context.getExpectedNode().getValue(), context.getActualNode().getValue());
+    }
+
+    JsonDifference(String message, JsonDifference cause) {
+        super(formatDifferences(message, singletonList(cause)), cause.getExpected(), cause.getActual());
     }
 }

@@ -182,7 +182,7 @@ public interface Node {
 
         @Override
         public Object getValue() {
-            throw new UnsupportedOperationException();
+            return null;
         }
 
         @Override
