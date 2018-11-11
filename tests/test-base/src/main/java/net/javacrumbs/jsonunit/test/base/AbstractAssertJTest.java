@@ -73,7 +73,7 @@ public abstract class AbstractAssertJTest {
             .containsValue(json("{\"c\" :5}")))
             .hasMessage("[Different value found in node \"root\"] \n" +
                 "Expecting:\n" +
-                "  <{\"a\":1, \"b\":{\"c\":3}}>\n" +
+                "  <{\"a\":1,\"b\":{\"c\":3}}>\n" +
                 "to contain value:\n" +
                 "  <{\"c\":5}>");
     }
@@ -92,7 +92,7 @@ public abstract class AbstractAssertJTest {
             .doesNotContainValue(json("{\"c\" :3}")))
             .hasMessage("[Different value found in node \"root\"] \n" +
                 "Expecting:\n" +
-                "  <{\"a\":1, \"b\":{\"c\":3}}>\n" +
+                "  <{\"a\":1,\"b\":{\"c\":3}}>\n" +
                 "not to contain value:\n" +
                 "  <{\"c\":3}>");
     }
@@ -223,7 +223,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": 1, \"c\": true}}").node("a").isObject().containsOnlyKeys("b", "c", "d"))
             .hasMessage("[Different value found in node \"a\"] \n" +
                 "Expecting:\n" +
-                "  <{\"b\":1, \"c\":true}>\n" +
+                "  <{\"b\":1,\"c\":true}>\n" +
                 "to contain only following keys:\n" +
                 "  <[\"b\", \"c\", \"d\"]>\n" +
                 "but could not find the following keys:\n" +
@@ -240,7 +240,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": 1, \"c\": true}}").node("a").isObject().containsAllEntriesOf(singletonMap("c", false)))
             .hasMessage("[Different value found in node \"a\"] \n" +
                 "Expecting:\n" +
-                " <{\"b\":1, \"c\":true}>\n" +
+                " <{\"b\":1,\"c\":true}>\n" +
                 "to contain:\n" +
                 " <[c=false]>\n" +
                 "but could not find:\n" +
@@ -958,10 +958,10 @@ public abstract class AbstractAssertJTest {
             )))
             .hasMessage("[Different value found in node \"$.store.book\"] \n" +
                 "Expecting:\n" +
-                " <[{\"category\":\"reference\", \"author\":\"Nigel Rees\", \"title\":\"Sayings of the Century\", \"price\":8.95},\n" +
-                "    {\"category\":\"fiction\", \"author\":\"Evelyn Waugh\", \"title\":\"Sword of Honour\", \"price\":12.99},\n" +
-                "    {\"category\":\"fiction\", \"author\":\"Herman Melville\", \"title\":\"Moby Dick\", \"isbn\":\"0-553-21311-3\", \"price\":8.99},\n" +
-                "    {\"category\":\"fiction\", \"author\":\"J. R. R. Tolkien\", \"title\":\"The Lord of the Rings\", \"isbn\":\"0-395-19395-8\", \"price\":22.99}]>\n" +
+                " <[{\"author\":\"Nigel Rees\",\"category\":\"reference\",\"price\":8.95,\"title\":\"Sayings of the Century\"},\n" +
+                "    {\"author\":\"Evelyn Waugh\",\"category\":\"fiction\",\"price\":12.99,\"title\":\"Sword of Honour\"},\n" +
+                "    {\"author\":\"Herman Melville\",\"category\":\"fiction\",\"isbn\":\"0-553-21311-3\",\"price\":8.99,\"title\":\"Moby Dick\"},\n" +
+                "    {\"author\":\"J. R. R. Tolkien\",\"category\":\"fiction\",\"isbn\":\"0-395-19395-8\",\"price\":22.99,\"title\":\"The Lord of the Rings\"}]>\n" +
                 "to contain:\n" +
                 " <[{\"category\":\"reference\",\"author\":\"Nigel Rees\",\"title\":\"Sayings of the Century\",\"price\":8.96}]>\n" +
                 "but could not find:\n" +

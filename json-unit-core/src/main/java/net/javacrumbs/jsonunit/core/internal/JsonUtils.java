@@ -19,6 +19,10 @@ package net.javacrumbs.jsonunit.core.internal;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeSet;
+
 /**
  * Internal utility class to parse JSON values.
  */
@@ -210,6 +214,28 @@ public class JsonUtils {
             return false;
         }
         return true;
+    }
+
+    static String prettyPrint(Map<String, Object> map) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("{");
+        Iterator<String> keys = new TreeSet<>(map.keySet()).iterator();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            builder
+                .append('"').append(key).append('"')
+                .append(":")
+                .append(quoteString(map.get(key)));
+            if (keys.hasNext()) {
+                builder.append(",");
+            }
+        }
+        builder.append("}");
+        return builder.toString();
+    }
+
+    private static Object quoteString(Object value) {
+        return value instanceof String ? "\"" + value + "\"" : value;
     }
 
 }

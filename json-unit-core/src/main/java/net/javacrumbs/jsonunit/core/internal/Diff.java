@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,6 +48,7 @@ import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
 import static net.javacrumbs.jsonunit.core.internal.DifferenceContextImpl.differenceContext;
 import static net.javacrumbs.jsonunit.core.internal.JsonUnitLogger.NULL_LOGGER;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
 import static net.javacrumbs.jsonunit.core.internal.Node.KeyValue;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType;
@@ -149,13 +151,19 @@ public class Diff {
                 }
                 String missingKeysMessage = getMissingKeysMessage(missingKeys, path);
                 String extraKeysMessage = getExtraKeysMessage(extraKeys, path);
-                structureDifferenceFound(context, "Different keys found in node \"%s\", expected: <%s> but was: <%s>. %s %s", path, expected, actual, missingKeysMessage, extraKeysMessage);
+                structureDifferenceFound(context, "Different keys found in node \"%s\", expected: <%s> but was: <%s>. %s %s", path, normalize(expected), normalize(actual), missingKeysMessage, extraKeysMessage);
             }
         }
 
         for (String fieldName : commonFields(expectedFields, actualFields)) {
             compareNodes(context.inField(fieldName));
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private String normalize(Node node) {
+        Map<String, Object> map = (Map<String, Object>) node.getValue();
+        return prettyPrint(new TreeMap<>(map));
     }
 
     private void reportDifference(Difference difference) {

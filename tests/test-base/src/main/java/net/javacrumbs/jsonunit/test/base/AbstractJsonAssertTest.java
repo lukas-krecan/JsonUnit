@@ -182,19 +182,19 @@ public abstract class AbstractJsonAssertTest {
     @Test
     public void testExtraRootKey() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":1}", "{\n\"test\": 1\n, \"foo\": 2}"))
-            .hasMessage("JSON documents are different:\nDifferent keys found in node \"\", expected: <{\"test\":1}> but was: <{\"test\":1,\"foo\":2}>.  Extra: \"foo\"\n");
+            .hasMessage("JSON documents are different:\nDifferent keys found in node \"\", expected: <{\"test\":1}> but was: <{\"foo\":2,\"test\":1}>.  Extra: \"foo\"\n");
     }
 
     @Test
     public void testIgnoreOneElement() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":\"${json-unit.ignore}\"}", "{\n\"test\": 1\n, \"foo\": 2}"))
-            .hasMessage("JSON documents are different:\nDifferent keys found in node \"\", expected: <{\"test\":\"${json-unit.ignore}\"}> but was: <{\"test\":1,\"foo\":2}>.  Extra: \"foo\"\n");
+            .hasMessage("JSON documents are different:\nDifferent keys found in node \"\", expected: <{\"test\":\"${json-unit.ignore}\"}> but was: <{\"foo\":2,\"test\":1}>.  Extra: \"foo\"\n");
     }
 
     @Test
     public void testMissingRootKey() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":1, \"foo\": 2}", "{\n\"test\": 1\n}"))
-            .hasMessage("JSON documents are different:\nDifferent keys found in node \"\", expected: <{\"test\":1,\"foo\":2}> but was: <{\"test\":1}>. Missing: \"foo\" \n");
+            .hasMessage("JSON documents are different:\nDifferent keys found in node \"\", expected: <{\"foo\":2,\"test\":1}> but was: <{\"test\":1}>. Missing: \"foo\" \n");
     }
 
     @Test
@@ -295,7 +295,7 @@ public abstract class AbstractJsonAssertTest {
                 "}"
         ))
             .hasMessage("JSON documents are different:\n" +
-                "Different keys found in node \"\", expected: <{\"test\":[1,2,{\"child\":{\"value1\":1,\"value2\":true,\"value3\":\"test\",\"value4\":{\"leaf\":5}}}],\"root2\":false,\"root3\":1}> but was: <{\"test\":[5,false,{\"child\":{\"value1\":5,\"value2\":\"true\",\"value3\":\"test\",\"value4\":{\"leaf2\":5}},\"child2\":{}}],\"root4\":\"bar\"}>. Missing: \"root2\",\"root3\" Extra: \"root4\"\n" +
+                "Different keys found in node \"\", expected: <{\"root2\":false,\"root3\":1,\"test\":[1, 2, {\"child\":{\"value1\":1,\"value2\":true,\"value3\":\"test\",\"value4\":{\"leaf\":5}}}]}> but was: <{\"root4\":\"bar\",\"test\":[5, false, {\"child\":{\"value1\":5,\"value2\":\"true\",\"value3\":\"test\",\"value4\":{\"leaf2\":5}},\"child2\":{}}]}>. Missing: \"root2\",\"root3\" Extra: \"root4\"\n" +
                 "Different value found in node \"test[0]\", expected: <1> but was: <5>.\n" +
                 "Different value found in node \"test[1]\", expected: <2> but was: <false>.\n" +
                 "Different keys found in node \"test[2]\", expected: <{\"child\":{\"value1\":1,\"value2\":true,\"value3\":\"test\",\"value4\":{\"leaf\":5}}}> but was: <{\"child\":{\"value1\":5,\"value2\":\"true\",\"value3\":\"test\",\"value4\":{\"leaf2\":5}},\"child2\":{}}>.  Extra: \"test[2].child2\"\n" +

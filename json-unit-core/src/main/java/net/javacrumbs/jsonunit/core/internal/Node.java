@@ -20,8 +20,9 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Set;
+
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
 
 
 /**
@@ -205,25 +206,7 @@ public interface Node {
 
         @Override
         public String toString() {
-            StringBuilder builder = new StringBuilder();
-            builder.append("{");
-            Iterator<Map.Entry<String, Object>> entries = entrySet().iterator();
-            while (entries.hasNext()) {
-                Map.Entry<String, Object> entry = entries.next();
-                builder
-                    .append('"').append(entry.getKey()).append('"')
-                    .append(":")
-                    .append(quoteString(entry.getValue()));
-                if (entries.hasNext()) {
-                    builder.append(", ");
-                }
-            }
-            builder.append("}");
-            return builder.toString();
-        }
-
-        private Object quoteString(Object value) {
-            return value instanceof String ? "\"" + value + "\"" : value;
+            return prettyPrint(this);
         }
 
         @Override
