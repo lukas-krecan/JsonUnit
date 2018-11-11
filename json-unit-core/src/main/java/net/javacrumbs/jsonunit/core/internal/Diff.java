@@ -149,7 +149,7 @@ public class Diff {
                 }
                 String missingKeysMessage = getMissingKeysMessage(missingKeys, path);
                 String extraKeysMessage = getExtraKeysMessage(extraKeys, path);
-                structureDifferenceFound(context, "Different keys found in node \"%s\", expected: <%s> but was: <%s>. %s %s", path, sort(expectedFields.keySet()), sort(actualFields.keySet()), missingKeysMessage, extraKeysMessage);
+                structureDifferenceFound(context, "Different keys found in node \"%s\", expected: <%s> but was: <%s>. %s %s", path, expected, actual, missingKeysMessage, extraKeysMessage);
             }
         }
 

@@ -856,7 +856,7 @@ public abstract class AbstractAssertJTest {
     public void shouldWorkWithPercentSign() {
        assertThatThrownBy(() -> assertThatJson("{\"a\": \"1\"}").isEqualTo("{\"%\": \"2\"}"))
            .hasMessage("JSON documents are different:\n" +
-           "Different keys found in node \"\", expected: <[%]> but was: <[a]>. Missing: \"%\" Extra: \"a\"\n");
+           "Different keys found in node \"\", expected: <{\"%\":\"2\"}> but was: <{\"a\":\"1\"}>. Missing: \"%\" Extra: \"a\"\n");
     }
 
     // *****************************************************************************************************************

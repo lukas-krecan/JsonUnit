@@ -150,7 +150,7 @@ public abstract class AbstractJsonFluentAssertTest {
     @Test
     public void testDifferentStructure() {
         assertThatThrownBy(() -> assertThatJson("{\"test\":1}").hasSameStructureAs("{\"test\":21, \"a\":true}"))
-            .hasMessage("JSON documents are different:\nDifferent keys found in node \"\", expected: <[a, test]> but was: <[test]>. Missing: \"a\" \n");
+            .hasMessage("JSON documents are different:\nDifferent keys found in node \"\", expected: <{\"test\":21,\"a\":true}> but was: <{\"test\":1}>. Missing: \"a\" \n");
     }
 
     @Test
@@ -760,7 +760,7 @@ public abstract class AbstractJsonFluentAssertTest {
     public void testNullAndAbsent() {
         assertThatThrownBy(() -> assertThatJson("{\"test\":{\"a\":1, \"b\": null}}").isEqualTo("{\"test\":{\"a\":1}}"))
             .hasMessage("JSON documents are different:\n" +
-                "Different keys found in node \"test\", expected: <[a]> but was: <[a, b]>.  Extra: \"test.b\"\n");
+                "Different keys found in node \"test\", expected: <{\"a\":1}> but was: <{\"a\":1,\"b\":null}>.  Extra: \"test.b\"\n");
     }
 
     @Test
