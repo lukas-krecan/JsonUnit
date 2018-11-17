@@ -15,10 +15,10 @@
  */
 package net.javacrumbs.jsonunit.test.moshi;
 
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class MoshiJsonAssertTest extends AbstractJsonAssertTest {
 

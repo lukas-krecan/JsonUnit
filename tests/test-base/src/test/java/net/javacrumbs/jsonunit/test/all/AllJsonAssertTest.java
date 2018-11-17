@@ -20,7 +20,7 @@ import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
 import net.javacrumbs.jsonunit.test.base.beans.Jackson2Bean;
 import net.javacrumbs.jsonunit.test.base.beans.Jackson2IgnorepropertyBean;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 

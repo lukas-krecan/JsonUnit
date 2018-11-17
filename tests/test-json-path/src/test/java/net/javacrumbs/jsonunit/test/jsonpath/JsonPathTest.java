@@ -16,7 +16,7 @@
 package net.javacrumbs.jsonunit.test.jsonpath;
 
 import net.javacrumbs.jsonunit.core.Option;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter.inPath;

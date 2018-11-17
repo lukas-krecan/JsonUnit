@@ -16,7 +16,7 @@
 package net.javacrumbs.jsonunit.test.base;
 
 import net.javacrumbs.jsonunit.core.Option;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static java.math.BigDecimal.valueOf;
 import static java.util.Collections.singletonList;
@@ -31,7 +31,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.entry;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractAssertJTest {
 
@@ -359,7 +358,12 @@ public abstract class AbstractAssertJTest {
     @Test
     public void shouldAssertBoolean() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": true}}").node("a.b").isBoolean().isFalse())
-            .hasMessage("[Different value found in node \"a.b\"] expected:<[fals]e> but was:<[tru]e>");
+            .hasMessage("[Different value found in node \"a.b\"] \n" +
+                "Expecting:\n" +
+                " <true>\n" +
+                "to be equal to:\n" +
+                " <false>\n" +
+                "but was not.");
     }
 
 
@@ -389,7 +393,12 @@ public abstract class AbstractAssertJTest {
     @Test
     public void shouldAssertNotNullChaining() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": 1}}").node("a").isNotNull().node("b").isNumber().isEqualByComparingTo("2"))
-            .hasMessage("[Different value found in node \"a.b\"] expected:<[2]> but was:<[1]>");
+            .hasMessage("[Different value found in node \"a.b\"] \n" +
+                "Expecting:\n" +
+                " <1>\n" +
+                "to be equal to:\n" +
+                " <2>\n" +
+                "but was not.");
     }
 
     @Test
@@ -444,7 +453,12 @@ public abstract class AbstractAssertJTest {
     @Test
     public void shouldAssertNumberFailure() {
         assertThatThrownBy(() ->  assertThatJson("{\"a\":1}").node("a").isNumber().isEqualByComparingTo("2"))
-            .hasMessage("[Different value found in node \"a\"] expected:<[2]> but was:<[1]>");
+            .hasMessage("[Different value found in node \"a\"] \n" +
+                "Expecting:\n" +
+                " <1>\n" +
+                "to be equal to:\n" +
+                " <2>\n" +
+                "but was not.");
     }
 
     @Test
@@ -690,32 +704,23 @@ public abstract class AbstractAssertJTest {
 
     @Test
     public void negativeArrayIndexShouldCountBackwardsAndReportFailure() {
-        try {
-            assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[-3]").isEqualTo(3);
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
-                "Different value found in node \"root.test[-3]\", expected: <3> but was: <1>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[-3]").isEqualTo(3))
+            .hasMessage("JSON documents are different:\n" +
+                "Different value found in node \"root.test[-3]\", expected: <3> but was: <1>.\n");
     }
 
     @Test
     public void negativeArrayIndexOutOfBounds() {
-        try {
-            assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[-5]").isEqualTo(3);
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
-                "Missing node in path \"root.test[-5]\".\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[-5]").isEqualTo(3))
+            .hasMessage("JSON documents are different:\n" +
+                "Missing node in path \"root.test[-5]\".\n");
     }
 
     @Test
     public void positiveArrayIndexOutOfBounds() {
-        try {
-            assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[5]").isEqualTo(3);
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
-                "Missing node in path \"root.test[5]\".\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[5]").isEqualTo(3))
+            .hasMessage("JSON documents are different:\n" +
+                "Missing node in path \"root.test[5]\".\n");
     }
 
     @Test

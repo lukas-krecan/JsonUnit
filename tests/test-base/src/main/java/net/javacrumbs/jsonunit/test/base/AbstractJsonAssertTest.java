@@ -20,8 +20,8 @@ import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -54,11 +54,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.extractor.Extractors.toStringMethod;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class AbstractJsonAssertTest {
 
-    @After
+    @AfterEach
     public void reset() {
         JsonAssert.setTolerance(null);
         JsonAssert.resetOptions();
@@ -76,9 +76,9 @@ public abstract class AbstractJsonAssertTest {
         assertJsonEquals("{//Comment\ntest:'1'}", "{\n\"test\": \"1\"\n}");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void shouldFailIfQuotationMarksMissingOnActualKeys() {
-        assertJsonEquals("{\"test\":1}", "{test: 1}");
+        assertThatThrownBy(() -> assertJsonEquals("{\"test\":1}", "{test: 1}")).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -115,9 +115,9 @@ public abstract class AbstractJsonAssertTest {
         assertJsonEquals("\"${json-unit.ignore}\"", "\n2\n");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testInvalidJsonActual() {
-        assertJsonEquals("{\"test\":1}", "{\n\"foo\": 1\n");
+        assertThatThrownBy(() -> assertJsonEquals("{\"test\":1}", "{\n\"foo\": 1\n")).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -908,10 +908,11 @@ public abstract class AbstractJsonAssertTest {
         assertJsonEquals("{test: '${json-unit.matches:isDivisibleBy}3'}", "{\"test\":6}", JsonAssert.withMatcher("isDivisibleBy", divisionMatcher));
     }
 
-    @Test(expected = NumberFormatException.class)
+    @Test
     public void missingParameterShouldResultInEmptyString() {
         Matcher<?> divisionMatcher = new DivisionMatcher();
-        assertJsonEquals("{test: '${json-unit.matches:isDivisibleBy}'}", "{\"test\":6}", JsonAssert.withMatcher("isDivisibleBy", divisionMatcher));
+        assertThatThrownBy(() -> assertJsonEquals("{test: '${json-unit.matches:isDivisibleBy}'}", "{\"test\":6}", JsonAssert.withMatcher("isDivisibleBy", divisionMatcher)))
+            .isInstanceOf(NumberFormatException.class);
     }
 
     @Test

@@ -16,7 +16,7 @@
 package net.javacrumbs.jsonunit.test.base;
 
 import net.javacrumbs.jsonunit.core.Option;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 
@@ -41,7 +41,7 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class AbstractJsonFluentAssertTest {
     @Test
@@ -711,9 +711,10 @@ public abstract class AbstractJsonFluentAssertTest {
             .hasMessage("Different value found in node \"test.b\", expected: <object> but was: <missing>.");
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testNotEqualsToToArray() {
-        assertThatJson("{\"test\":[1,2,3]}").node("test").isNotEqualTo(new int[]{1, 2, 3});
+        assertThatThrownBy(() -> assertThatJson("{\"test\":[1,2,3]}").node("test").isNotEqualTo(new int[]{1, 2, 3}))
+            .hasMessage("JSON is equal.");
     }
 
     @Test
@@ -726,9 +727,11 @@ public abstract class AbstractJsonFluentAssertTest {
         assertThatJson("{\"test\":null}").node("test").isEqualTo(null);
     }
 
-    @Test(expected = AssertionError.class)
+    @Test
     public void testEqualsToNullFail() {
-        assertThatJson("{\"test\":1}").node("test").isEqualTo(null);
+        assertThatThrownBy(() -> assertThatJson("{\"test\":1}").node("test").isEqualTo(null))
+            .hasMessage("JSON documents are different:\n" +
+                "Different value found in node \"test\", expected: <null> but was: <1>.\n");
     }
 
     @Test

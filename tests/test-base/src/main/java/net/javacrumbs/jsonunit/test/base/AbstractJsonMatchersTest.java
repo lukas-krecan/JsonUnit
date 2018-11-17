@@ -17,8 +17,8 @@ package net.javacrumbs.jsonunit.test.base;
 
 import net.javacrumbs.jsonunit.JsonAssert;
 import org.hamcrest.Matcher;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import static java.math.BigDecimal.valueOf;
 import static java.util.Arrays.asList;
@@ -39,14 +39,14 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractJsonMatchersTest {
-    @After
+    @AfterEach
     public void reset() {
         JsonAssert.setTolerance(null);
         JsonAssert.resetOptions();

@@ -16,7 +16,7 @@
 package net.javacrumbs.jsonunit.core.internal;
 
 import com.fasterxml.jackson.databind.node.BooleanNode;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -24,18 +24,19 @@ import java.util.Collections;
 import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
 import static net.javacrumbs.jsonunit.core.internal.Converter.LIBRARIES_PROPERTY_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class ConverterTest {
 
     private static final String JSON = "{\"test\":1}";
 
-    @Test(expected = IllegalStateException.class)
+    @Test
     public void shouldFailIfNoConverterSet() {
-        new Converter(Collections.emptyList());
+        assertThatThrownBy(() -> new Converter(Collections.emptyList())).isInstanceOf(IllegalStateException.class);
     }
 
     @Test
