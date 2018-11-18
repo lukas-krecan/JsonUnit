@@ -15,10 +15,10 @@
  */
 package net.javacrumbs.jsonunit.test.jsonorg;
 
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJsonOrg;

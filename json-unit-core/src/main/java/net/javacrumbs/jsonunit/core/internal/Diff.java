@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,8 +46,11 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
 import static net.javacrumbs.jsonunit.core.internal.DifferenceContextImpl.differenceContext;
+import static net.javacrumbs.jsonunit.core.internal.ExceptionUtils.createException;
+import static net.javacrumbs.jsonunit.core.internal.ExceptionUtils.formatDifferences;
 import static net.javacrumbs.jsonunit.core.internal.JsonUnitLogger.NULL_LOGGER;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
 import static net.javacrumbs.jsonunit.core.internal.Node.KeyValue;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType;
@@ -105,10 +109,11 @@ public class Diff {
     private void compare() {
         if (!compared) {
             Node part = startPath.getNode(actualRoot);
+            Context context = new Context(expectedRoot, part, startPath, startPath, configuration);
             if (part.isMissingNode()) {
-                structureDifferenceFound("Missing node in path \"%s\".", startPath);
+                structureDifferenceFound(context, "Missing node in path \"%s\".", startPath);
             } else {
-                compareNodes(new Context(expectedRoot, part, startPath, startPath, configuration));
+                compareNodes(context);
             }
             compared = true;
         }
@@ -148,13 +153,19 @@ public class Diff {
                 }
                 String missingKeysMessage = getMissingKeysMessage(missingKeys, path);
                 String extraKeysMessage = getExtraKeysMessage(extraKeys, path);
-                structureDifferenceFound("Different keys found in node \"%s\", expected: <%s> but was: <%s>. %s %s", path, sort(expectedFields.keySet()), sort(actualFields.keySet()), missingKeysMessage, extraKeysMessage);
+                structureDifferenceFound(context, "Different keys found in node \"%s\", expected: <%s> but was: <%s>. %s %s", path, normalize(expected), normalize(actual), missingKeysMessage, extraKeysMessage);
             }
         }
 
         for (String fieldName : commonFields(expectedFields, actualFields)) {
             compareNodes(context.inField(fieldName));
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private String normalize(Node node) {
+        Map<String, Object> map = (Map<String, Object>) node.getValue();
+        return prettyPrint(new TreeMap<>(map));
     }
 
     private void reportDifference(Difference difference) {
@@ -282,7 +293,7 @@ public class Diff {
         }
 
         if (!expectedNodeType.equals(actualNodeType)) {
-            valueDifferenceFound(context, "Different value found in node \"%s\", expected: <%s> but was: <%s>.", fieldPath, quoteTextValue(expectedNode), quoteTextValue(actualNode));
+            reportValueDifference(context, "Different value found in node \"%s\", expected: <%s> but was: <%s>.", fieldPath, quoteTextValue(expectedNode), quoteTextValue(actualNode));
         } else {
             switch (expectedNodeType) {
                 case OBJECT:
@@ -300,7 +311,7 @@ public class Diff {
                     if (configuration.getTolerance() != null && !hasOption(IGNORING_VALUES)) {
                         BigDecimal diff = expectedValue.subtract(actualValue).abs();
                         if (diff.compareTo(configuration.getTolerance()) > 0) {
-                            valueDifferenceFound(context, "Different value found in node \"%s\", expected: <%s> but was: <%s>, difference is %s, tolerance is %s",
+                            reportValueDifference(context, "Different value found in node \"%s\", expected: <%s> but was: <%s>, difference is %s, tolerance is %s",
                                     fieldPath, quoteTextValue(expectedValue), quoteTextValue(actualValue), diff.toString(), configuration.getTolerance());
                         }
                     } else {
@@ -340,10 +351,10 @@ public class Diff {
                     if (!matcher.matches(value)) {
                         Description description = new StringDescription();
                         matcher.describeMismatch(value, description);
-                        valueDifferenceFound(context, "Matcher \"%s\" does not match value %s in node \"%s\". %s", matcherName, quoteTextValue(actualNode), context.getActualPath(), description);
+                        reportValueDifference(context, "Matcher \"%s\" does not match value %s in node \"%s\". %s", matcherName, quoteTextValue(actualNode), context.getActualPath(), description);
                     }
                 } else {
-                    structureDifferenceFound("Matcher \"%s\" not found.", matcherName);
+                    structureDifferenceFound(context, "Matcher \"%s\" not found.", matcherName);
                 }
                 return true;
             }
@@ -359,7 +370,7 @@ public class Diff {
             if (actualNode.getNodeType() == type) {
                 return true;
             } else {
-                valueDifferenceFound(context, "Different value found in node \"%s\", expected: <%s> but was: <%s>.", context.getActualPath(), name, quoteTextValue(actualNode));
+                reportValueDifference(context, "Different value found in node \"%s\", expected: <%s> but was: <%s>.", context.getActualPath(), name, quoteTextValue(actualNode));
                 return true;
             }
         }
@@ -378,7 +389,7 @@ public class Diff {
         if (regexpMatcher.matches()) {
             String pattern = regexpMatcher.group(1);
             if (!actualValue.matches(pattern)) {
-                valueDifferenceFound(context, "Different value found in node \"%s\". Pattern %s did not match %s.", path, quoteTextValue(pattern), quoteTextValue(actualValue));
+                reportValueDifference(context, "Different value found in node \"%s\". Pattern %s did not match %s.", path, quoteTextValue(pattern), quoteTextValue(actualValue));
             }
         } else {
             compareValues(context, expectedValue, actualValue);
@@ -389,7 +400,7 @@ public class Diff {
     private void compareValues(Context context, Object expectedValue, Object actualValue) {
         if (!hasOption(IGNORING_VALUES)) {
             if (!expectedValue.equals(actualValue)) {
-                valueDifferenceFound(context, "Different value found in node \"%s\", expected: <%s> but was: <%s>.", context.getActualPath(), quoteTextValue(expectedValue), quoteTextValue(actualValue));
+                reportValueDifference(context, "Different value found in node \"%s\", expected: <%s> but was: <%s>.", context.getActualPath(), quoteTextValue(expectedValue), quoteTextValue(actualValue));
             }
         }
     }
@@ -420,12 +431,12 @@ public class Diff {
 
         if (failOnExtraArrayItems()) {
             if (expectedElements.size() != actualElements.size()) {
-                structureDifferenceFound("Array \"%s\" has different length, expected: <%d> but was: <%d>.", path, expectedElements.size(), actualElements.size());
+                structureDifferenceFound(context, "Array \"%s\" has different length, expected: <%d> but was: <%d>.", path, expectedElements.size(), actualElements.size());
             }
         } else {
             // if we expect more elements in the array than we get, it's error even when IGNORING_EXTRA_ARRAY_ITEMS
             if (expectedElements.size() > actualElements.size()) {
-                structureDifferenceFound("Array \"%s\" has invalid length, expected: <at least %d> but was: <%d>.", path, expectedElements.size(), actualElements.size());
+                structureDifferenceFound(context, "Array \"%s\" has invalid length, expected: <at least %d> but was: <%d>.", path, expectedElements.size(), actualElements.size());
             }
         }
 
@@ -440,28 +451,28 @@ public class Diff {
 
                 Path expectedPath = context.getExpectedPath().toElement(missing.getIndex());
                 Path actualPath = context.getActualPath().toElement(extra.getIndex());
-                valueDifferenceFound("Different value found when comparing expected array element %s to actual element %s.", expectedPath, actualPath);
+                valueDifferenceFound(context, "Different value found when comparing expected array element %s to actual element %s.", expectedPath, actualPath);
                 compareNodes(new Context(missing.getNode(), extra.getNode(), expectedPath, actualPath, configuration));
             } else if (failOnExtraArrayItems() && (!missingValues.isEmpty() || !extraValues.isEmpty())) {
                 reportMissingValues(context, missingValues);
                 reportExtraValues(context, extraValues);
 
-                valueDifferenceFound("Array \"%s\" has different content, expected: <%s> but was: <%s>. Missing values %s, extra values %s", path, expectedNode, actualNode, missingValues, extraValues);
+                valueDifferenceFound(context, "Array \"%s\" has different content, expected: <%s> but was: <%s>. Missing values %s, extra values %s", path, expectedNode, actualNode, missingValues, extraValues);
             } else if (!missingValues.isEmpty()) {
                 reportMissingValues(context, missingValues);
-                valueDifferenceFound("Array \"%s\" has different content, expected: <%s> but was: <%s>. Missing values %s", path, expectedNode, actualNode, missingValues);
+                valueDifferenceFound(context, "Array \"%s\" has different content, expected: <%s> but was: <%s>. Missing values %s", path, expectedNode, actualNode, missingValues);
             }
         } else {
             if (expectedElements.size() > actualElements.size()) {
                 for (int i = actualElements.size(); i < expectedElements.size(); i++) {
                     reportDifference(DifferenceImpl.missing(context.missingElement(i)));
                 }
-                valueDifferenceFound("Array \"%s\" has different content, expected: <%s> but was: <%s>. Missing values %s", path, expectedNode, actualNode, expectedElements.subList(actualElements.size(), expectedElements.size()));
+                valueDifferenceFound(context, "Array \"%s\" has different content, expected: <%s> but was: <%s>. Missing values %s", path, expectedNode, actualNode, expectedElements.subList(actualElements.size(), expectedElements.size()));
             } else if (failOnExtraArrayItems() && expectedElements.size() < actualElements.size()) {
                 for (int i = expectedElements.size(); i < actualElements.size(); i++) {
                     reportDifference(DifferenceImpl.extra(context.extraElement(i)));
                 }
-                valueDifferenceFound("Array \"%s\" has different content, expected: <%s> but was: <%s>. Extra values %s", path, expectedNode, actualNode, actualElements.subList(expectedElements.size(), actualElements.size()));
+                valueDifferenceFound(context, "Array \"%s\" has different content, expected: <%s> but was: <%s>. Extra values %s", path, expectedNode, actualNode, actualElements.subList(expectedElements.size(), actualElements.size()));
             }
             for (int i = 0; i < Math.min(expectedElements.size(), actualElements.size()); i++) {
                 compareNodes(context.toElement(i));
@@ -501,19 +512,19 @@ public class Diff {
     }
 
 
-    private void structureDifferenceFound(String message, Object... arguments) {
-        differences.add(message, arguments);
-    }
-
-    private void valueDifferenceFound(String message, Object... arguments) {
-        if (!hasOption(COMPARING_ONLY_STRUCTURE)) {
-            differences.add(message, arguments);
-        }
+    private void structureDifferenceFound(Context context, String message, Object... arguments) {
+        differences.add(new JsonDifference(context, message, arguments));
     }
 
     private void valueDifferenceFound(Context context, String message, Object... arguments) {
+        if (!hasOption(COMPARING_ONLY_STRUCTURE)) {
+            differences.add(new JsonDifference(context, message, arguments));
+        }
+    }
+
+    private void reportValueDifference(Context context, String message, Object... arguments) {
         reportDifference(DifferenceImpl.different(context));
-        valueDifferenceFound(message, arguments);
+        valueDifferenceFound(context, message, arguments);
     }
 
 
@@ -575,9 +586,18 @@ public class Diff {
     }
 
     private String getDifferences() {
-        StringBuilder message = new StringBuilder();
-        differences.appendDifferences(message);
-        return message.toString();
+        return formatDifferences("", differences);
+    }
+
+
+    public void failIfDifferent(){
+        failIfDifferent(null);
+    }
+
+    public void failIfDifferent(String message) {
+        if (!similar()) {
+            throw createException(message, differences);
+        }
     }
 
     private static JsonUnitLogger createLogger(String name) {

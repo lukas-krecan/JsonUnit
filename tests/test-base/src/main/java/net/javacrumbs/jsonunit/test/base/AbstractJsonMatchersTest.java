@@ -17,8 +17,8 @@ package net.javacrumbs.jsonunit.test.base;
 
 import net.javacrumbs.jsonunit.JsonAssert;
 import org.hamcrest.Matcher;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 
 import static java.math.BigDecimal.valueOf;
 import static java.util.Arrays.asList;
@@ -39,14 +39,14 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractJsonMatchersTest {
-    @After
+    @AfterEach
     public void reset() {
         JsonAssert.setTolerance(null);
         JsonAssert.resetOptions();
@@ -196,7 +196,7 @@ public abstract class AbstractJsonMatchersTest {
         assertThatThrownBy(() -> assertThat("{\"test\":1}", jsonEquals("{\n\"test2\": 2\n}")))
             .hasMessage("\nExpected: {\n\"test2\": 2\n}\n" +
                 "     but: JSON documents are different:\n" +
-                "Different keys found in node \"\", expected: <[test2]> but was: <[test]>. Missing: \"test2\" Extra: \"test\"\n");
+                "Different keys found in node \"\", expected: <{\"test2\":2}> but was: <{\"test\":1}>. Missing: \"test2\" Extra: \"test\"\n");
     }
 
     @Test
@@ -268,7 +268,7 @@ public abstract class AbstractJsonMatchersTest {
             .hasMessage("\n" +
                 "Expected: {\"test\":{\"a\":1}}\n" +
                 "     but: JSON documents are different:\n" +
-                "Different keys found in node \"test\", expected: <[a]> but was: <[a, b]>.  Extra: \"test.b\"\n");
+                "Different keys found in node \"test\", expected: <{\"a\":1}> but was: <{\"a\":1,\"b\":null}>.  Extra: \"test.b\"\n");
     }
 
     @Test

@@ -97,9 +97,7 @@ public class JsonUnitResultMatchers {
         return new AbstractResultMatcher(path, configuration) {
             public void doMatch(Object actual) {
                 Diff diff = createDiff(expected, actual);
-                if (!diff.similar()) {
-                    failWithMessage(diff.differences());
-                }
+                diff.failIfDifferent();
             }
         };
     }

@@ -16,7 +16,7 @@
 package net.javacrumbs.jsonunit.test.jsonorg;
 
 import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJsonOrg;

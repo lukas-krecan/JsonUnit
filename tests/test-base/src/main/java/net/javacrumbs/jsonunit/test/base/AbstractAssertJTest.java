@@ -16,7 +16,7 @@
 package net.javacrumbs.jsonunit.test.base;
 
 import net.javacrumbs.jsonunit.core.Option;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static java.math.BigDecimal.valueOf;
 import static java.util.Collections.singletonList;
@@ -31,7 +31,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.entry;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.Assert.assertEquals;
 
 public abstract class AbstractAssertJTest {
 
@@ -73,7 +72,7 @@ public abstract class AbstractAssertJTest {
             .containsValue(json("{\"c\" :5}")))
             .hasMessage("[Different value found in node \"root\"] \n" +
                 "Expecting:\n" +
-                "  <{\"a\":1, \"b\":{\"c\":3}}>\n" +
+                "  <{\"a\":1,\"b\":{\"c\":3}}>\n" +
                 "to contain value:\n" +
                 "  <{\"c\":5}>");
     }
@@ -92,7 +91,7 @@ public abstract class AbstractAssertJTest {
             .doesNotContainValue(json("{\"c\" :3}")))
             .hasMessage("[Different value found in node \"root\"] \n" +
                 "Expecting:\n" +
-                "  <{\"a\":1, \"b\":{\"c\":3}}>\n" +
+                "  <{\"a\":1,\"b\":{\"c\":3}}>\n" +
                 "not to contain value:\n" +
                 "  <{\"c\":3}>");
     }
@@ -223,7 +222,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": 1, \"c\": true}}").node("a").isObject().containsOnlyKeys("b", "c", "d"))
             .hasMessage("[Different value found in node \"a\"] \n" +
                 "Expecting:\n" +
-                "  <{\"b\":1, \"c\":true}>\n" +
+                "  <{\"b\":1,\"c\":true}>\n" +
                 "to contain only following keys:\n" +
                 "  <[\"b\", \"c\", \"d\"]>\n" +
                 "but could not find the following keys:\n" +
@@ -240,7 +239,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": 1, \"c\": true}}").node("a").isObject().containsAllEntriesOf(singletonMap("c", false)))
             .hasMessage("[Different value found in node \"a\"] \n" +
                 "Expecting:\n" +
-                " <{\"b\":1, \"c\":true}>\n" +
+                " <{\"b\":1,\"c\":true}>\n" +
                 "to contain:\n" +
                 " <[c=false]>\n" +
                 "but could not find:\n" +
@@ -359,7 +358,12 @@ public abstract class AbstractAssertJTest {
     @Test
     public void shouldAssertBoolean() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": true}}").node("a.b").isBoolean().isFalse())
-            .hasMessage("[Different value found in node \"a.b\"] expected:<[fals]e> but was:<[tru]e>");
+            .hasMessage("[Different value found in node \"a.b\"] \n" +
+                "Expecting:\n" +
+                " <true>\n" +
+                "to be equal to:\n" +
+                " <false>\n" +
+                "but was not.");
     }
 
 
@@ -389,7 +393,12 @@ public abstract class AbstractAssertJTest {
     @Test
     public void shouldAssertNotNullChaining() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": 1}}").node("a").isNotNull().node("b").isNumber().isEqualByComparingTo("2"))
-            .hasMessage("[Different value found in node \"a.b\"] expected:<[2]> but was:<[1]>");
+            .hasMessage("[Different value found in node \"a.b\"] \n" +
+                "Expecting:\n" +
+                " <1>\n" +
+                "to be equal to:\n" +
+                " <2>\n" +
+                "but was not.");
     }
 
     @Test
@@ -444,7 +453,12 @@ public abstract class AbstractAssertJTest {
     @Test
     public void shouldAssertNumberFailure() {
         assertThatThrownBy(() ->  assertThatJson("{\"a\":1}").node("a").isNumber().isEqualByComparingTo("2"))
-            .hasMessage("[Different value found in node \"a\"] expected:<[2]> but was:<[1]>");
+            .hasMessage("[Different value found in node \"a\"] \n" +
+                "Expecting:\n" +
+                " <1>\n" +
+                "to be equal to:\n" +
+                " <2>\n" +
+                "but was not.");
     }
 
     @Test
@@ -690,32 +704,23 @@ public abstract class AbstractAssertJTest {
 
     @Test
     public void negativeArrayIndexShouldCountBackwardsAndReportFailure() {
-        try {
-            assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[-3]").isEqualTo(3);
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
-                "Different value found in node \"root.test[-3]\", expected: <3> but was: <1>.\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[-3]").isEqualTo(3))
+            .hasMessage("JSON documents are different:\n" +
+                "Different value found in node \"root.test[-3]\", expected: <3> but was: <1>.\n");
     }
 
     @Test
     public void negativeArrayIndexOutOfBounds() {
-        try {
-            assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[-5]").isEqualTo(3);
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
-                "Missing node in path \"root.test[-5]\".\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[-5]").isEqualTo(3))
+            .hasMessage("JSON documents are different:\n" +
+                "Missing node in path \"root.test[-5]\".\n");
     }
 
     @Test
     public void positiveArrayIndexOutOfBounds() {
-        try {
-            assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[5]").isEqualTo(3);
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\n" +
-                "Missing node in path \"root.test[5]\".\n", e.getMessage());
-        }
+        assertThatThrownBy(() -> assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[5]").isEqualTo(3))
+            .hasMessage("JSON documents are different:\n" +
+                "Missing node in path \"root.test[5]\".\n");
     }
 
     @Test
@@ -856,7 +861,7 @@ public abstract class AbstractAssertJTest {
     public void shouldWorkWithPercentSign() {
        assertThatThrownBy(() -> assertThatJson("{\"a\": \"1\"}").isEqualTo("{\"%\": \"2\"}"))
            .hasMessage("JSON documents are different:\n" +
-           "Different keys found in node \"\", expected: <[%]> but was: <[a]>. Missing: \"%\" Extra: \"a\"\n");
+           "Different keys found in node \"\", expected: <{\"%\":\"2\"}> but was: <{\"a\":\"1\"}>. Missing: \"%\" Extra: \"a\"\n");
     }
 
     // *****************************************************************************************************************
@@ -958,10 +963,10 @@ public abstract class AbstractAssertJTest {
             )))
             .hasMessage("[Different value found in node \"$.store.book\"] \n" +
                 "Expecting:\n" +
-                " <[{\"category\":\"reference\", \"author\":\"Nigel Rees\", \"title\":\"Sayings of the Century\", \"price\":8.95},\n" +
-                "    {\"category\":\"fiction\", \"author\":\"Evelyn Waugh\", \"title\":\"Sword of Honour\", \"price\":12.99},\n" +
-                "    {\"category\":\"fiction\", \"author\":\"Herman Melville\", \"title\":\"Moby Dick\", \"isbn\":\"0-553-21311-3\", \"price\":8.99},\n" +
-                "    {\"category\":\"fiction\", \"author\":\"J. R. R. Tolkien\", \"title\":\"The Lord of the Rings\", \"isbn\":\"0-395-19395-8\", \"price\":22.99}]>\n" +
+                " <[{\"author\":\"Nigel Rees\",\"category\":\"reference\",\"price\":8.95,\"title\":\"Sayings of the Century\"},\n" +
+                "    {\"author\":\"Evelyn Waugh\",\"category\":\"fiction\",\"price\":12.99,\"title\":\"Sword of Honour\"},\n" +
+                "    {\"author\":\"Herman Melville\",\"category\":\"fiction\",\"isbn\":\"0-553-21311-3\",\"price\":8.99,\"title\":\"Moby Dick\"},\n" +
+                "    {\"author\":\"J. R. R. Tolkien\",\"category\":\"fiction\",\"isbn\":\"0-395-19395-8\",\"price\":22.99,\"title\":\"The Lord of the Rings\"}]>\n" +
                 "to contain:\n" +
                 " <[{\"category\":\"reference\",\"author\":\"Nigel Rees\",\"title\":\"Sayings of the Century\",\"price\":8.96}]>\n" +
                 "but could not find:\n" +

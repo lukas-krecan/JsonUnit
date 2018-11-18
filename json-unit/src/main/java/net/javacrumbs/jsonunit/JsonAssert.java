@@ -79,9 +79,7 @@ public class JsonAssert {
      */
     public static void assertJsonPartEquals(Object expected, Object fullJson, String path, Configuration configuration) {
         Diff diff = create(expected, fullJson, FULL_JSON, path, configuration);
-        if (!diff.similar()) {
-            doFail(diff.toString());
-        }
+        diff.failIfDifferent();
     }
 
     /**
@@ -130,9 +128,7 @@ public class JsonAssert {
     @Deprecated
     public static void assertJsonStructureEquals(Object expected, Object actual) {
         Diff diff = create(expected, actual, ACTUAL, ROOT, configuration.withOptions(COMPARING_ONLY_STRUCTURE));
-        if (!diff.similar()) {
-            doFail(diff.differences());
-        }
+        diff.failIfDifferent();
     }
 
     /**
@@ -144,9 +140,7 @@ public class JsonAssert {
     @Deprecated
     public static void assertJsonPartStructureEquals(Object expected, Object fullJson, String path) {
         Diff diff = create(expected, fullJson, FULL_JSON, path, configuration.withOptions(COMPARING_ONLY_STRUCTURE));
-        if (!diff.similar()) {
-            doFail(diff.differences());
-        }
+        diff.failIfDifferent();
     }
 
     /**

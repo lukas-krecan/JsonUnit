@@ -22,30 +22,20 @@ import java.util.List;
  * List of differences
  */
 class Differences {
-    private final List<String> messages = new ArrayList<>();
+    private final List<JsonDifference> differences = new ArrayList<>();
 
     Differences() {
     }
 
-    void add(String message, Object... args) {
-        add(String.format(message, args));
-    }
-
-    private void add(String message) {
-        messages.add(message);
+    void add(JsonDifference jsonDifference) {
+        differences.add(jsonDifference);
     }
 
     boolean isEmpty() {
-        return messages.isEmpty();
+        return differences.isEmpty();
     }
 
-    void appendDifferences(StringBuilder builder) {
-        if (!messages.isEmpty()) {
-            builder.append("JSON documents are different:\n");
-            for (String message : messages) {
-                builder.append(message).append("\n");
-            }
-        }
+    List<JsonDifference> getDifferences() {
+        return differences;
     }
-
 }
