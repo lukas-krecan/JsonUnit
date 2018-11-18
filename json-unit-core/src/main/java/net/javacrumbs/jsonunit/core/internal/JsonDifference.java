@@ -26,6 +26,6 @@ class JsonDifference extends AssertionFailedError {
     }
 
     JsonDifference(String message, JsonDifference cause) {
-        super(formatDifferences(message, singletonList(cause)), cause.getExpected(), cause.getActual());
+        super(formatDifferences(message, singletonList(cause)), cause.getExpected().getValue(), cause.getActual().getValue());
     }
 }
