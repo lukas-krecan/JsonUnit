@@ -85,7 +85,7 @@ abstract class PathMatcher {
             if (from < path.length()) {
                 regexp
                     .append("\\Q")
-                    .append(path.substring(from, path.length()))
+                    .append(path.substring(from))
                     .append("\\E");
             }
             pattern = Pattern.compile(regexp.toString());

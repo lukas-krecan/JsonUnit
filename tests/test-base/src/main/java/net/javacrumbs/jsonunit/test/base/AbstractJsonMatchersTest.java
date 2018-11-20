@@ -47,13 +47,13 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractJsonMatchersTest {
     @AfterEach
-    public void reset() {
+    void reset() {
         JsonAssert.setTolerance(null);
         JsonAssert.resetOptions();
     }
 
     @Test
-    public void testEquals() {
+    void testEquals() {
         assertThat("{\"test\":1}", jsonEquals("{\n\"test\": 1\n}"));
         assertThat("{\"test\":1}", not(jsonEquals("{\n\"test\": 2\n}")));
         assertThat("{\"test\":1}", jsonPartEquals("test", "1"));
@@ -66,19 +66,19 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    public void testJsonPartMatches() {
+    void testJsonPartMatches() {
         assertThat("{\"test\":1}", jsonPartMatches("test", is(valueOf(1))));
     }
 
     @Test
-    public void jsonPartMatchesShouldReturnNiceException() {
+    void jsonPartMatchesShouldReturnNiceException() {
         assertThatThrownBy(() -> assertThat("{\"test\":1}", jsonPartMatches("test", is(valueOf(2)))))
             .hasMessage("\nExpected: node \"test\" is <2>\n" +
                 "     but: was <1>");
     }
 
     @Test
-    public void jsonPartMatchesShouldFailOnMissing() {
+    void jsonPartMatchesShouldFailOnMissing() {
         assertThatThrownBy(() -> assertThat("{\"test\":1}", jsonPartMatches("test2", is(valueOf(2)))))
             .hasMessage("\n" +
                 "Expected: node \"test2\" is <2>\n" +
@@ -86,7 +86,7 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    public void shouldAddPathPrefixToPath() {
+    void shouldAddPathPrefixToPath() {
         assertThatThrownBy(() -> assertThat(jsonSource("{\"test\":1}", "$"), jsonPartMatches("test", is(valueOf(2)))))
             .hasMessage("\n" +
                 "Expected: node \"$.test\" is <2>\n" +
@@ -94,19 +94,19 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    public void testJsonPartMatchesArray() {
+    void testJsonPartMatchesArray() {
         assertThat("{\"test\":[1, 2, 3]}", jsonPartMatches("test", hasItems(valueOf(1), valueOf(2), valueOf(3))));
     }
 
     @Test
-    public void jsonPartMatchesShouldReturnNiceExceptionForArray() {
+    void jsonPartMatchesShouldReturnNiceExceptionForArray() {
         assertThatThrownBy(() -> assertThat("{\"test\":[1, 2, 3]}", jsonPartMatches("test", hasItems(valueOf(1), valueOf(2), valueOf(4)))))
             .hasMessage("\nExpected: node \"test\" (a collection containing <1> and a collection containing <2> and a collection containing <4>)\n" +
                 "     but: was <[1, 2, 3]>");
     }
 
     @Test
-    public void ifMatcherDoesNotMatchReportDifference() {
+    void ifMatcherDoesNotMatchReportDifference() {
         assertThatThrownBy(() -> assertThat("{\"test\":-1}", jsonEquals("{\"test\": \"${json-unit.matches:positive}\"}").withMatcher("positive", greaterThan(valueOf(0)))))
             .hasMessage("\n" +
                 "Expected: {\"test\": \"${json-unit.matches:positive}\"}\n" +
@@ -115,12 +115,12 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-     public void pathShouldBeIgnoredForDifferentValue() {
+    void pathShouldBeIgnoredForDifferentValue() {
         assertThat("{\"root\":{\"test\":1, \"ignored\": 2}}", jsonEquals("{\"root\":{\"test\":1, \"ignored\": 1}}").whenIgnoringPaths("root.ignored"));
      }
 
     @Test
-    public void shouldNotFailOnEmptyInput() {
+    void shouldNotFailOnEmptyInput() {
         assertThatThrownBy(() -> assertThat("", jsonEquals("{\"test\":1}")))
             .hasMessage("\nExpected: {\"test\":1}\n" +
                 "     but: JSON documents are different:\n" +
@@ -128,7 +128,7 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    public void testGenericsStringInference() {
+    void testGenericsStringInference() {
         doAssertThat("{\"test\":1}", jsonStringPartEquals("test", "1"));
         doAssertThat("{\"test\":1}", jsonStringEquals("{\"test\" : 1}"));
         doAssertThat("{\"test\":1}", jsonPartEquals("test", "1"));
@@ -140,29 +140,29 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    public void testToleranceStatic() {
+    void testToleranceStatic() {
         JsonAssert.setTolerance(0.001);
         assertThat("{\"test\":1.00001}", jsonEquals("{\"test\":1}"));
     }
 
     @Test
-    public void testTolerance() {
+    void testTolerance() {
         assertThat("{\"test\":1.00001}", jsonEquals("{\"test\":1}").withTolerance(0.001).when(IGNORING_EXTRA_FIELDS));
     }
 
     @Test
-    public void shouldIgnoreExtraFields() {
+    void shouldIgnoreExtraFields() {
         assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}", jsonEquals("{\"test\":{\"b\":2}}").when(IGNORING_EXTRA_FIELDS));
     }
 
     @Test
-    public void hasItemShouldWork() {
+    void hasItemShouldWork() {
         //assertThat(asList("{\"test\":1}"), hasItem(jsonEquals("{\"test\":1}"))); //does not compile
         assertThat(asList("{\"test\":1}"), contains(jsonEquals("{\"test\":1}")));
     }
 
     @Test
-    public void testAssertDifferentTypeInt() {
+    void testAssertDifferentTypeInt() {
         assertThatThrownBy(() -> assertThat("{\"test\":\"1\"}", jsonPartEquals("test", 1)))
             .hasMessage("\n" +
                 "Expected: 1 in \"test\"\n" +
@@ -171,20 +171,20 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    public void testGenericsInt() {
+    void testGenericsInt() {
         Matcher<Integer> intMatcher = jsonEquals(1);
         assertThat(1, intMatcher);
     }
 
     @Test
-    public void testGenericsIntAndString() {
+    void testGenericsIntAndString() {
         Matcher<String> stringMatcher = jsonPartEquals("test", 1);
         assertThat("{\"test\":1}", stringMatcher);
     }
 
 
     @Test
-    public void testDifferentValue() {
+    void testDifferentValue() {
         assertThatThrownBy(() -> assertThat("{\"test\":1}", jsonEquals("{\n\"test\": 2\n}")))
             .hasMessage("\nExpected: {\n\"test\": 2\n}\n" +
                 "     but: JSON documents are different:\n" +
@@ -192,7 +192,7 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    public void testDifferentStructure() {
+    void testDifferentStructure() {
         assertThatThrownBy(() -> assertThat("{\"test\":1}", jsonEquals("{\n\"test2\": 2\n}")))
             .hasMessage("\nExpected: {\n\"test2\": 2\n}\n" +
                 "     but: JSON documents are different:\n" +
@@ -200,7 +200,7 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    public void testDifferentPartValue() {
+    void testDifferentPartValue() {
         RecordingDifferenceListener listener = new RecordingDifferenceListener();
         assertThatThrownBy(() -> assertThat("{\"test\":1}", jsonPartEquals("test", "2").withDifferenceListener(listener)))
             .hasMessage("\nExpected: 2 in \"test\"\n" +
@@ -212,7 +212,7 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    public void testAbsent() {
+    void testAbsent() {
         assertThatThrownBy(() -> assertThat("{\"test\":1}", jsonNodeAbsent("test")))
             .hasMessage("\n" +
                 "Expected: Node \"test\" is absent.\n" +
@@ -220,7 +220,7 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    public void testAbsentShouldAddPathToThePrefix() {
+    void testAbsentShouldAddPathToThePrefix() {
         assertThatThrownBy(() -> assertThat(jsonSource("{\"test\":1}", "$"), jsonNodeAbsent("test")))
             .hasMessage("\n" +
                 "Expected: Node \"$.test\" is absent.\n" +
@@ -228,12 +228,12 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    public void testAbsentOk() {
+    void testAbsentOk() {
         assertThat("{\"test\":1}", jsonNodeAbsent("different"));
     }
 
     @Test
-    public void testPresent() {
+    void testPresent() {
         assertThatThrownBy(() -> assertThat("{\"test\":1}", jsonNodePresent("test.a")))
             .hasMessage("\n" +
                 "Expected: Node \"test.a\" is present.\n" +
@@ -242,7 +242,7 @@ public abstract class AbstractJsonMatchersTest {
 
 
     @Test
-    public void testPresentShouldAddPathToThePrefix() {
+    void testPresentShouldAddPathToThePrefix() {
         assertThatThrownBy(() -> assertThat(jsonSource("{\"test\":1}", "$"), jsonNodePresent("test.a")))
             .hasMessage("\n" +
                 "Expected: Node \"$.test.a\" is present.\n" +
@@ -250,7 +250,7 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    public void testPresentIfNullAndTreatingNullAsAbsent() {
+    void testPresentIfNullAndTreatingNullAsAbsent() {
         assertThatThrownBy(() -> assertThat("{\"test\":null}", jsonNodePresent("test").when(TREATING_NULL_AS_ABSENT)))
             .hasMessage("\n" +
                 "Expected: Node \"test\" is present.\n" +
@@ -258,12 +258,12 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    public void testPresentOk() {
+    void testPresentOk() {
         assertThat("{\"test\":1}", jsonNodePresent("test"));
     }
 
     @Test
-    public void testNullAndAbsent() {
+    void testNullAndAbsent() {
         assertThatThrownBy(() -> assertThat("{\"test\":{\"a\":1, \"b\": null}}", jsonEquals("{\"test\":{\"a\":1}}")))
             .hasMessage("\n" +
                 "Expected: {\"test\":{\"a\":1}}\n" +
@@ -272,23 +272,23 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    public void shouldIgnoreValues() {
+    void shouldIgnoreValues() {
         assertThat("{\"test\":{\"a\":3,\"b\":2,\"c\":1}}", jsonEquals("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}").when(IGNORING_VALUES));
     }
 
     @Test
-    public void testTreatNullAsAbsent() {
+    void testTreatNullAsAbsent() {
         JsonAssert.setOptions(TREATING_NULL_AS_ABSENT);
         assertThat("{\"test\":{\"a\":1, \"b\": null}}", jsonEquals("{\"test\":{\"a\":1}}"));
     }
 
     @Test
-    public void testJsonNode() {
+    void testJsonNode() {
         assertThat(readValue("{\"test\":1}"), jsonEquals("{\"test\":1}"));
     }
 
     @Test
-    public void jsonEqualsResourceShouldReturnReasonWhenDiffers() {
+    void jsonEqualsResourceShouldReturnReasonWhenDiffers() {
         try {
             assertThat("{\"test\":2}", jsonEquals(resource("test.json")));
             expectException();
@@ -300,7 +300,7 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    public void jsonEqualsResourceShouldReturnReasonWhenResourceIsMissing() {
+    void jsonEqualsResourceShouldReturnReasonWhenResourceIsMissing() {
         try {
             assertThat("{\"test\":2}", jsonEquals(resource("nonsense")));
             expectException();
@@ -310,7 +310,7 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    public void jsonEqualsResourceShouldReturnReasonWhenNullPassedAsParameter() {
+    void jsonEqualsResourceShouldReturnReasonWhenNullPassedAsParameter() {
         try {
             assertThat("{\"test\":2}", jsonEquals(resource(null)));
             expectException();
@@ -320,7 +320,7 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    public void nullPointerExceptionTest() {
+    void nullPointerExceptionTest() {
         String message = "{"
             + "     \"properties\":{"
             + "         \"attr\":\"123\""

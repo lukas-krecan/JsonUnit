@@ -16,8 +16,6 @@
 package net.javacrumbs.jsonunit.core;
 
 import net.javacrumbs.jsonunit.core.internal.Options;
-import net.javacrumbs.jsonunit.core.listener.Difference;
-import net.javacrumbs.jsonunit.core.listener.DifferenceContext;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
 
@@ -33,12 +31,7 @@ import static java.util.Arrays.asList;
  * Comparison configuration. Immutable.
  */
 public class Configuration {
-    private static final DifferenceListener DUMMY_LISTENER = new DifferenceListener() {
-        @Override
-        public void diff(Difference difference, DifferenceContext context) {
-
-        }
-    };
+    private static final DifferenceListener DUMMY_LISTENER = (difference, context) -> {};
 
     private static final String DEFAULT_IGNORE_PLACEHOLDER = "${json-unit.ignore}";
     private static final String ALTERNATIVE_IGNORE_PLACEHOLDER = "#{json-unit.ignore}";

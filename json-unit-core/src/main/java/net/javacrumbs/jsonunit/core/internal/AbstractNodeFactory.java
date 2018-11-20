@@ -58,7 +58,7 @@ abstract class AbstractNodeFactory implements NodeFactory {
 
     protected abstract Node readValue(Reader reader, String label, boolean lenient);
 
-    protected Node readValue(String source, String label, boolean lenient) {
+    Node readValue(String source, String label, boolean lenient) {
         return readValue(new StringReader(source), label, lenient);
     }
 

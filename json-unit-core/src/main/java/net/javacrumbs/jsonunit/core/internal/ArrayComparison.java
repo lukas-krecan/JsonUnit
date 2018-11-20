@@ -54,7 +54,7 @@ class ArrayComparison {
     }
 
 
-    ArrayComparison copy(int compareFrom) {
+    private ArrayComparison copy(int compareFrom) {
         return new ArrayComparison(compareFrom, actualElements, new ArrayList<>(extraValues), new ArrayList<>(missingValues), path, configuration);
     }
 

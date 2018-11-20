@@ -78,8 +78,8 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      *
      * <code>
      *     assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}").and(
-     *         a -> a.node("test").isObject(),
-     *         a -> a.node("test.b").isEqualTo(3)
+     *         a -&gt; a.node("test").isObject(),
+     *         a -&gt; a.node("test.b").isEqualTo(3)
      *     );
      * </code>
      */
@@ -288,7 +288,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
          *
          * <code>
          *     assertThatJson(...)
-         *             .withConfiguration(c -> c.withMatcher("positive", greaterThan(valueOf(0)))
+         *             .withConfiguration(c -&gt; c.withMatcher("positive", greaterThan(valueOf(0)))
          *             ....
          * </code>
          */
