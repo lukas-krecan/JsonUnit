@@ -1,3 +1,3 @@
-module net.javacrumbs.jsonunit.basic {
+module net.javacrumbs.jsonunit.classic {
 
 }

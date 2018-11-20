@@ -14,8 +14,9 @@
         <osgi.importPackage>*</osgi.importPackage>
         <osgi.exportPackage />
         <assertj.version>3.10.0</assertj.version>
-        <target.java.version>9</target.java.version>
+        <java.version>9</java.version>
         <junit-jupiter.version>5.3.1</junit-jupiter.version>
+        <hamcrest.version>1.3</hamcrest.version>
     </properties>
     <packaging>pom</packaging>
 
@@ -63,13 +64,13 @@
             <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-core</artifactId>
-                <version>1.3</version>
+                <version>${hamcrest.version}</version>
                 <optional>true</optional>
             </dependency>
             <dependency>
                 <groupId>org.hamcrest</groupId>
                 <artifactId>hamcrest-library</artifactId>
-                <version>1.3</version>
+                <version>${hamcrest.version}</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -87,9 +88,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.0</version>
                 <configuration>
-                    <source>${target.java.version}</source>
-                    <target>${target.java.version}</target>
-                    <release>${target.java.version}</release>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
             <plugin>

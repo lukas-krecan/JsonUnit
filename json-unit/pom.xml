@@ -32,7 +32,7 @@
                  <archive>
                      <manifestEntries>
                          <Automatic-Module-Name>
-                             net.javacrumbs.jsonunit.assert
+                             net.javacrumbs.jsonunit.classic
                          </Automatic-Module-Name>
                      </manifestEntries>
                  </archive>
