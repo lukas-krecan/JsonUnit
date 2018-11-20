@@ -14,7 +14,7 @@
         <osgi.importPackage>*</osgi.importPackage>
         <osgi.exportPackage />
         <assertj.version>3.10.0</assertj.version>
-        <target.java.version>1.8</target.java.version>
+        <target.java.version>9</target.java.version>
         <junit-jupiter.version>5.3.1</junit-jupiter.version>
     </properties>
     <packaging>pom</packaging>
@@ -85,16 +85,18 @@
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>3.8.0</version>
                 <configuration>
                     <source>${target.java.version}</source>
                     <target>${target.java.version}</target>
+                    <release>${target.java.version}</release>
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.0.0-M1</version>
+                <groupId>de.sormuras</groupId>
+                <artifactId>junit-platform-maven-plugin</artifactId>
+                <version>0.11.0</version>
+                <extensions>true</extensions> <!-- Necessary to execute it in 'test' phase. -->
             </plugin>
             <plugin>
                 <artifactId>maven-deploy-plugin</artifactId>
