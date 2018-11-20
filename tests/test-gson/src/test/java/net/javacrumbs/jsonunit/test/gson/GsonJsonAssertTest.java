@@ -15,9 +15,9 @@
  */
 package net.javacrumbs.jsonunit.test.gson;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class GsonJsonAssertTest extends AbstractJsonAssertTest {
@@ -26,7 +26,7 @@ public class GsonJsonAssertTest extends AbstractJsonAssertTest {
     }
 
     @Override
-    @Ignore
+    @Disabled
     @Test
     public void shouldFailIfQuotationMarksMissingOnActualKeys() {
         // GSON is by default lenient
@@ -35,7 +35,7 @@ public class GsonJsonAssertTest extends AbstractJsonAssertTest {
 
     @Test
     @Override
-    @Ignore
+    @Disabled
     public void testBinary() {
         // no support for binary
     }
