@@ -15,9 +15,9 @@
  */
 package net.javacrumbs.jsonunit.test.moshi;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class MoshiJsonAssertTest extends AbstractJsonAssertTest {
@@ -27,20 +27,20 @@ public class MoshiJsonAssertTest extends AbstractJsonAssertTest {
     }
 
     @Override
-    @Ignore
+    @Disabled
     public void testDifferentNumericTypes() {
         // https://github.com/square/moshi/issues/192
     }
 
     @Override
-    @Ignore
+    @Disabled
     public void testNotEqualWhenToleranceNotSet() {
         // https://github.com/square/moshi/issues/192
     }
 
     @Test
     @Override
-    @Ignore
+    @Disabled
     public void testBinary() {
         // no support for binary
     }
