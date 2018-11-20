@@ -15,6 +15,7 @@
  */
 package net.javacrumbs.jsonunit.test.base;
 
+import net.javacrumbs.jsonunit.assertj.JsonAssert.ConfigurableJsonAssert;
 import net.javacrumbs.jsonunit.core.Option;
 import org.junit.jupiter.api.Test;
 
@@ -1006,6 +1007,13 @@ public abstract class AbstractAssertJTest {
     public void testInnerNumber() {
         final String json = "{\"myNode\":{\"inner\":123}}";
         assertThatJson(json).inPath("$.myNode.inner").isNumber().isEqualByComparingTo("123");
+    }
+
+    @Test
+    void shouldUseInPathInAnd() {
+        ConfigurableJsonAssert json = assertThatJson("{\"key1\":\"foo\",\"key2\":\"bar\"}");
+        json.inPath("key1").isEqualTo("foo");
+        json.inPath("key2").isEqualTo("bar");
     }
 
     private static final String json = "{\n" +
