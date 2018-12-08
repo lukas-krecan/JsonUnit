@@ -623,11 +623,11 @@ public abstract class AbstractJsonFluentAssertTest {
             .hasMessage("Node \"test\" does not match.\n" +
                 "Expected: a collection containing 4 in \"value\"\n" +
                 "     but: JSON documents are different:\n" +
-                "Different value found in node \"value\", expected: <4> but was: <1>.\n" +
+                "Different value found in node \"value\", expected <4> but was <1>.\n" +
                 ", JSON documents are different:\n" +
-                "Different value found in node \"value\", expected: <4> but was: <2>.\n" +
+                "Different value found in node \"value\", expected <4> but was <2>.\n" +
                 ", JSON documents are different:\n" +
-                "Different value found in node \"value\", expected: <4> but was: <3>.\n");
+                "Different value found in node \"value\", expected <4> but was <3>.\n");
     }
 
     @Test
