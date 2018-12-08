@@ -33,7 +33,9 @@ class ExceptionUtils {
                 builder.append(difference.getMessage()).append("\n");
             }
         }
-        return builder.toString();
+        String result = builder.toString();
+        //System.out.println("XXXXXX\n" + result + "\nXXXXXXXXX");
+        return result;
     }
 
     static AssertionError createException(String message, Differences diffs) {

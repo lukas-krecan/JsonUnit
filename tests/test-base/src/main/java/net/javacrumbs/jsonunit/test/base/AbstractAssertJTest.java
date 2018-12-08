@@ -17,6 +17,7 @@ package net.javacrumbs.jsonunit.test.base;
 
 import net.javacrumbs.jsonunit.assertj.JsonAssert.ConfigurableJsonAssert;
 import net.javacrumbs.jsonunit.core.Option;
+import net.javacrumbs.jsonunit.fluent.JsonFluentAssert;
 import org.junit.jupiter.api.Test;
 
 import static java.math.BigDecimal.valueOf;
@@ -662,7 +663,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"test\":[1,2,3]}").node("test").isEqualTo("[1]"))
             .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has different length, expected: <1> but was: <3>.\n" +
-                "Array \"test\" has different content, expected: <[1]> but was: <[1,2,3]>. Extra values [2, 3]\n");
+                "Array \"test\" has different content. Extra values: [2, 3], expected: <[1]> but was: <[1,2,3]>\n");
     }
 
     @Test
@@ -670,7 +671,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"test\":[1,2,3]}").when(IGNORING_ARRAY_ORDER).node("test").isEqualTo("[1]"))
             .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has different length, expected: <1> but was: <3>.\n" +
-                "Array \"test\" has different content, expected: <[1]> but was: <[1,2,3]>. Missing values [], extra values [2, 3]\n");
+                "Array \"test\" has different content. Missing values: [], extra values: [2, 3], expected: <[1]> but was: <[1,2,3]>\n");
     }
 
     @Test
@@ -678,7 +679,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"test\":[1]}").node("test").isEqualTo("[1, 2, 3]"))
             .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has different length, expected: <3> but was: <1>.\n" +
-                "Array \"test\" has different content, expected: <[1,2,3]> but was: <[1]>. Missing values [2, 3]\n");
+                "Array \"test\" has different content. Missing values: [2, 3], expected: <[1,2,3]> but was: <[1]>\n");
     }
 
     @Test
@@ -686,7 +687,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"test\":[1]}").when(IGNORING_ARRAY_ORDER).node("test").isEqualTo("[1, 2, 3]"))
             .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has different length, expected: <3> but was: <1>.\n" +
-                "Array \"test\" has different content, expected: <[1,2,3]> but was: <[1]>. Missing values [2, 3], extra values []\n");
+                "Array \"test\" has different content. Missing values: [2, 3], extra values: [], expected: <[1,2,3]> but was: <[1]>\n");
     }
 
     @Test
@@ -694,7 +695,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"test\":[\"x\",\"b\",\"c\"]}").node("test").isEqualTo("[\"a\"]"))
             .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has different length, expected: <1> but was: <3>.\n" +
-                "Array \"test\" has different content, expected: <[\"a\"]> but was: <[\"x\",\"b\",\"c\"]>. Extra values [\"b\", \"c\"]\n" +
+                "Array \"test\" has different content. Extra values: [\"b\", \"c\"], expected: <[\"a\"]> but was: <[\"x\",\"b\",\"c\"]>\n" +
                 "Different value found in node \"test[0]\", expected: <\"a\"> but was: <\"x\">.\n");
     }
 
@@ -862,7 +863,7 @@ public abstract class AbstractAssertJTest {
     void shouldWorkWithPercentSign() {
        assertThatThrownBy(() -> assertThatJson("{\"a\": \"1\"}").isEqualTo("{\"%\": \"2\"}"))
            .hasMessage("JSON documents are different:\n" +
-           "Different keys found in node \"\", expected: <{\"%\":\"2\"}> but was: <{\"a\":\"1\"}>. Missing: \"%\" Extra: \"a\"\n");
+               "Different keys found in node \"\", missing: \"%\", extra: \"a\", expected: <{\"%\":\"2\"}> but was: <{\"a\":\"1\"}>\n");
     }
 
     // *****************************************************************************************************************

@@ -49,6 +49,7 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
+import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.extractor.Extractors.toStringMethod;
@@ -123,7 +124,8 @@ public abstract class AbstractJsonAssertTest {
     @Test
     void testObjectName() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":1}", "{\n\"foo\": 1\n}"))
-            .hasMessage("JSON documents are different:\nDifferent keys found in node \"\", expected: <{\"test\":1}> but was: <{\"foo\":1}>. Missing: \"test\" Extra: \"foo\"\n");
+            .hasMessage("JSON documents are different:\n" +
+                "Different keys found in node \"\", missing: \"test\", extra: \"foo\", expected: <{\"test\":1}> but was: <{\"foo\":1}>\n");
     }
 
     @Test
@@ -182,19 +184,22 @@ public abstract class AbstractJsonAssertTest {
     @Test
     void testExtraRootKey() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":1}", "{\n\"test\": 1\n, \"foo\": 2}"))
-            .hasMessage("JSON documents are different:\nDifferent keys found in node \"\", expected: <{\"test\":1}> but was: <{\"foo\":2,\"test\":1}>.  Extra: \"foo\"\n");
+            .hasMessage("JSON documents are different:\n" +
+                "Different keys found in node \"\", extra: \"foo\", expected: <{\"test\":1}> but was: <{\"foo\":2,\"test\":1}>\n");
     }
 
     @Test
     void testIgnoreOneElement() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":\"${json-unit.ignore}\"}", "{\n\"test\": 1\n, \"foo\": 2}"))
-            .hasMessage("JSON documents are different:\nDifferent keys found in node \"\", expected: <{\"test\":\"${json-unit.ignore}\"}> but was: <{\"foo\":2,\"test\":1}>.  Extra: \"foo\"\n");
+            .hasMessage("JSON documents are different:\n" +
+                "Different keys found in node \"\", extra: \"foo\", expected: <{\"test\":\"${json-unit.ignore}\"}> but was: <{\"foo\":2,\"test\":1}>\n");
     }
 
     @Test
     void testMissingRootKey() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":1, \"foo\": 2}", "{\n\"test\": 1\n}"))
-            .hasMessage("JSON documents are different:\nDifferent keys found in node \"\", expected: <{\"foo\":2,\"test\":1}> but was: <{\"test\":1}>. Missing: \"foo\" \n");
+            .hasMessage("JSON documents are different:\n" +
+                "Different keys found in node \"\", missing: \"foo\", expected: <{\"foo\":2,\"test\":1}> but was: <{\"test\":1}>\n");
     }
 
     @Test
@@ -222,8 +227,9 @@ public abstract class AbstractJsonAssertTest {
     @Test
     void testDifferentArrayLength() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":[1, 2, 3]}", "{\n\"test\": [1, 2]\n}"))
-            .hasMessage("JSON documents are different:\nArray \"test\" has different length, expected: <3> but was: <2>.\n" +
-                "Array \"test\" has different content, expected: <[1,2,3]> but was: <[1,2]>. Missing values [3]\n");
+            .hasMessage("JSON documents are different:\n" +
+                "Array \"test\" has different length, expected: <3> but was: <2>.\n" +
+                "Array \"test\" has different content. Missing values: [3], expected: <[1,2,3]> but was: <[1,2]>\n");
     }
 
     @Test
@@ -231,7 +237,7 @@ public abstract class AbstractJsonAssertTest {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":[\"a\", \"b\", \"c\"]}", "{\n\"test\": [\"a\", \"b\"]\n}", when(IGNORING_ARRAY_ORDER)))
             .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has different length, expected: <3> but was: <2>.\n" +
-                "Array \"test\" has different content, expected: <[\"a\",\"b\",\"c\"]> but was: <[\"a\",\"b\"]>. Missing values [\"c\"], extra values []\n");
+                "Array \"test\" has different content. Missing values: [\"c\"], extra values: [], expected: <[\"a\",\"b\",\"c\"]> but was: <[\"a\",\"b\"]>\n");
     }
 
     @Test
@@ -295,13 +301,13 @@ public abstract class AbstractJsonAssertTest {
                 "}"
         ))
             .hasMessage("JSON documents are different:\n" +
-                "Different keys found in node \"\", expected: <{\"root2\":false,\"root3\":1,\"test\":[1, 2, {\"child\":{\"value1\":1,\"value2\":true,\"value3\":\"test\",\"value4\":{\"leaf\":5}}}]}> but was: <{\"root4\":\"bar\",\"test\":[5, false, {\"child\":{\"value1\":5,\"value2\":\"true\",\"value3\":\"test\",\"value4\":{\"leaf2\":5}},\"child2\":{}}]}>. Missing: \"root2\",\"root3\" Extra: \"root4\"\n" +
+                "Different keys found in node \"\", missing: \"root2\",\"root3\", extra: \"root4\", expected: <{\"root2\":false,\"root3\":1,\"test\":[1, 2, {\"child\":{\"value1\":1,\"value2\":true,\"value3\":\"test\",\"value4\":{\"leaf\":5}}}]}> but was: <{\"root4\":\"bar\",\"test\":[5, false, {\"child\":{\"value1\":5,\"value2\":\"true\",\"value3\":\"test\",\"value4\":{\"leaf2\":5}},\"child2\":{}}]}>\n" +
                 "Different value found in node \"test[0]\", expected: <1> but was: <5>.\n" +
                 "Different value found in node \"test[1]\", expected: <2> but was: <false>.\n" +
-                "Different keys found in node \"test[2]\", expected: <{\"child\":{\"value1\":1,\"value2\":true,\"value3\":\"test\",\"value4\":{\"leaf\":5}}}> but was: <{\"child\":{\"value1\":5,\"value2\":\"true\",\"value3\":\"test\",\"value4\":{\"leaf2\":5}},\"child2\":{}}>.  Extra: \"test[2].child2\"\n" +
+                "Different keys found in node \"test[2]\", extra: \"test[2].child2\", expected: <{\"child\":{\"value1\":1,\"value2\":true,\"value3\":\"test\",\"value4\":{\"leaf\":5}}}> but was: <{\"child\":{\"value1\":5,\"value2\":\"true\",\"value3\":\"test\",\"value4\":{\"leaf2\":5}},\"child2\":{}}>\n" +
                 "Different value found in node \"test[2].child.value1\", expected: <1> but was: <5>.\n" +
                 "Different value found in node \"test[2].child.value2\", expected: <true> but was: <\"true\">.\n" +
-                "Different keys found in node \"test[2].child.value4\", expected: <{\"leaf\":5}> but was: <{\"leaf2\":5}>. Missing: \"test[2].child.value4.leaf\" Extra: \"test[2].child.value4.leaf2\"\n");
+                "Different keys found in node \"test[2].child.value4\", missing: \"test[2].child.value4.leaf\", extra: \"test[2].child.value4.leaf2\", expected: <{\"leaf\":5}> but was: <{\"leaf2\":5}>\n");
 
     }
 
@@ -487,7 +493,8 @@ public abstract class AbstractJsonAssertTest {
     @Test
     void testAssertStructureDiffers() {
         assertThatThrownBy(() -> assertJsonStructureEquals("[{\"test\":1}, {\"test\":2}]", "[{\n\"test\": 1\n}, {\"TEST\": 4}]"))
-            .hasMessage("JSON documents are different:\nDifferent keys found in node \"[1]\", expected: <{\"test\":2}> but was: <{\"TEST\":4}>. Missing: \"[1].test\" Extra: \"[1].TEST\"\n");
+            .hasMessage("JSON documents are different:\n" +
+                "Different keys found in node \"[1]\", missing: \"[1].test\", extra: \"[1].TEST\", expected: <{\"test\":2}> but was: <{\"TEST\":4}>\n");
     }
 
     @Test
@@ -499,7 +506,8 @@ public abstract class AbstractJsonAssertTest {
     @Test
     void testNullAndAbsent() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":{\"a\":1}}", "{\"test\":{\"a\":1, \"b\": null}}"))
-            .hasMessage("JSON documents are different:\nDifferent keys found in node \"test\", expected: <{\"a\":1}> but was: <{\"a\":1,\"b\":null}>.  Extra: \"test.b\"\n");
+            .hasMessage("JSON documents are different:\n" +
+                "Different keys found in node \"test\", extra: \"test.b\", expected: <{\"a\":1}> but was: <{\"a\":1,\"b\":null}>\n");
     }
 
     @Test
@@ -524,13 +532,15 @@ public abstract class AbstractJsonAssertTest {
     void testTreatNullAsNullInExpected() {
         setOptions(TREATING_NULL_AS_ABSENT);
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":{\"a\":1, \"b\": null}}", "{\"test\":{\"a\":1}}"))
-            .hasMessage("JSON documents are different:\nDifferent keys found in node \"test\", expected: <{\"a\":1,\"b\":null}> but was: <{\"a\":1}>. Missing: \"test.b\" \n");
+            .hasMessage("JSON documents are different:\n" +
+                "Different keys found in node \"test\", missing: \"test.b\", expected: <{\"a\":1,\"b\":null}> but was: <{\"a\":1}>\n");
     }
 
     @Test
     void testTreatNullAsNullInExpectedInline() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":{\"a\":1, \"b\": null}}", "{\"test\":{\"a\":1}}", when(TREATING_NULL_AS_ABSENT)))
-            .hasMessage("JSON documents are different:\nDifferent keys found in node \"test\", expected: <{\"a\":1,\"b\":null}> but was: <{\"a\":1}>. Missing: \"test.b\" \n");
+            .hasMessage("JSON documents are different:\n" +
+                "Different keys found in node \"test\", missing: \"test.b\", expected: <{\"a\":1,\"b\":null}> but was: <{\"a\":1}>\n");
     }
 
     @Test
@@ -609,7 +619,7 @@ public abstract class AbstractJsonAssertTest {
         assertThatThrownBy(() -> assertJsonEquals("[[3],[2],[1]]", "[[1,2],[2,3],[2,4]]", when(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_ARRAY_ITEMS)))
             .hasMessage("JSON documents are different:\n" +
                 "Different value found when comparing expected array element [2] to actual element [2].\n" +
-                "Array \"[2]\" has different content, expected: <[1]> but was: <[2,4]>. Missing values [1]\n");
+                "Array \"[2]\" has different content. Missing values: [1], expected: <[1]> but was: <[2,4]>\n");
     }
 
     @Test
@@ -617,7 +627,7 @@ public abstract class AbstractJsonAssertTest {
         assertThatThrownBy(() -> assertJsonEquals("[{\"a\":[\"b\"]},{\"a\":[\"a\"]}]", "[{\"a\":[\"b\",\"a\"]},{\"a\":[\"d\",\"c\"]}]", when(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_ARRAY_ITEMS)))
             .hasMessage("JSON documents are different:\n" +
                 "Different value found when comparing expected array element [1] to actual element [1].\n" +
-                "Array \"[1].a\" has different content, expected: <[\"a\"]> but was: <[\"d\",\"c\"]>. Missing values [\"a\"]\n");
+                "Array \"[1].a\" has different content. Missing values: [\"a\"], expected: <[\"a\"]> but was: <[\"d\",\"c\"]>\n");
     }
 
     @Test
@@ -625,7 +635,7 @@ public abstract class AbstractJsonAssertTest {
         RecordingDifferenceListener listener = new RecordingDifferenceListener();
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":[1,2,3]}", "{\"test\":[3,4,5]}", when(IGNORING_ARRAY_ORDER).withDifferenceListener(listener)))
             .hasMessage("JSON documents are different:\n" +
-                "Array \"test\" has different content, expected: <[1,2,3]> but was: <[3,4,5]>. Missing values [1, 2], extra values [4, 5]\n");
+                "Array \"test\" has different content. Missing values: [1, 2], extra values: [4, 5], expected: <[1,2,3]> but was: <[3,4,5]>\n");
 
         assertThat(listener.getDifferenceList()).hasSize(4);
         assertThat(listener.getDifferenceList()).extracting(toStringMethod()).containsExactly(
@@ -782,7 +792,7 @@ public abstract class AbstractJsonAssertTest {
     void shouldFailIfOneValueIsMissing() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":[1,2,3,9]}", "{\"test\":[5,5,4,4,3,3,2,2,1,1]}", when(IGNORING_EXTRA_ARRAY_ITEMS, IGNORING_ARRAY_ORDER)))
             .hasMessage("JSON documents are different:\n" +
-                "Array \"test\" has different content, expected: <[1,2,3,9]> but was: <[5,5,4,4,3,3,2,2,1,1]>. Missing values [9]\n");
+                "Array \"test\" has different content. Missing values: [9], expected: <[1,2,3,9]> but was: <[5,5,4,4,3,3,2,2,1,1]>\n");
     }
 
     @Test
@@ -790,7 +800,7 @@ public abstract class AbstractJsonAssertTest {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":[1,2,3,9]}", "{\"test\":[3,2,1]}", when(IGNORING_EXTRA_ARRAY_ITEMS, IGNORING_ARRAY_ORDER)))
             .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has invalid length, expected: <at least 4> but was: <3>.\n" +
-                "Array \"test\" has different content, expected: <[1,2,3,9]> but was: <[3,2,1]>. Missing values [9]\n");
+                "Array \"test\" has different content. Missing values: [9], expected: <[1,2,3,9]> but was: <[3,2,1]>\n");
     }
 
     @Test
@@ -798,14 +808,14 @@ public abstract class AbstractJsonAssertTest {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":[5,6,7,8]}", "{\"test\":[3,2,1]}", when(IGNORING_EXTRA_ARRAY_ITEMS, IGNORING_ARRAY_ORDER)))
             .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has invalid length, expected: <at least 4> but was: <3>.\n" +
-                "Array \"test\" has different content, expected: <[5,6,7,8]> but was: <[3,2,1]>. Missing values [5, 6, 7, 8]\n");
+                "Array \"test\" has different content. Missing values: [5, 6, 7, 8], expected: <[5,6,7,8]> but was: <[3,2,1]>\n");
     }
 
     @Test
     void shouldNotIgnoreExtraItemInTheMiddle() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":[{\"a\":1},{\"b\":2}]}", "{\"test\":[{\"a\":1},{\"c\":3},{\"b\":2}]}", when(IGNORING_EXTRA_ARRAY_ITEMS)))
             .hasMessage("JSON documents are different:\n" +
-                "Different keys found in node \"test[1]\", expected: <{\"b\":2}> but was: <{\"c\":3}>. Missing: \"test[1].b\" Extra: \"test[1].c\"\n");
+                "Different keys found in node \"test[1]\", missing: \"test[1].b\", extra: \"test[1].c\", expected: <{\"b\":2}> but was: <{\"c\":3}>\n");
     }
 
     @Test
@@ -820,7 +830,7 @@ public abstract class AbstractJsonAssertTest {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":[{\"a\":1},{\"b\":1},{\"c\":3}]}", "{\"test\":[{\"a\":1},{\"b\":1}]}", when(IGNORING_EXTRA_ARRAY_ITEMS)))
             .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has invalid length, expected: <at least 3> but was: <2>.\n" +
-                "Array \"test\" has different content, expected: <[{\"a\":1},{\"b\":1},{\"c\":3}]> but was: <[{\"a\":1},{\"b\":1}]>. Missing values [{\"c\":3}]\n");
+                "Array \"test\" has different content. Missing values: [{\"c\":3}], expected: <[{\"a\":1},{\"b\":1},{\"c\":3}]> but was: <[{\"a\":1},{\"b\":1}]>\n");
     }
 
     @Test
@@ -828,7 +838,7 @@ public abstract class AbstractJsonAssertTest {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":[{\"a\":1},{\"b\":2},{\"c\":3}]}", "{\"test\":[{\"a\":1},{\"b\":1}]}", when(IGNORING_EXTRA_ARRAY_ITEMS)))
             .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has invalid length, expected: <at least 3> but was: <2>.\n" +
-                "Array \"test\" has different content, expected: <[{\"a\":1},{\"b\":2},{\"c\":3}]> but was: <[{\"a\":1},{\"b\":1}]>. Missing values [{\"c\":3}]\n" +
+                "Array \"test\" has different content. Missing values: [{\"c\":3}], expected: <[{\"a\":1},{\"b\":2},{\"c\":3}]> but was: <[{\"a\":1},{\"b\":1}]>\n" +
                 "Different value found in node \"test[1].b\", expected: <2> but was: <1>.\n");
     }
 
@@ -878,7 +888,7 @@ public abstract class AbstractJsonAssertTest {
     void regexShouldFailOnNonexistingGracefully() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}", "{\"test2\": 123}"))
             .hasMessage("JSON documents are different:\n" +
-                "Different keys found in node \"\", expected: <{\"test\":\"${json-unit.regex}[A-Z]+\"}> but was: <{\"test2\":123}>. Missing: \"test\" Extra: \"test2\"\n");
+                "Different keys found in node \"\", missing: \"test\", extra: \"test2\", expected: <{\"test\":\"${json-unit.regex}[A-Z]+\"}> but was: <{\"test2\":123}>\n");
     }
 
 
@@ -1127,6 +1137,8 @@ public abstract class AbstractJsonAssertTest {
     }
 
     protected abstract Object readValue(String value);
+
+
 
 
 }

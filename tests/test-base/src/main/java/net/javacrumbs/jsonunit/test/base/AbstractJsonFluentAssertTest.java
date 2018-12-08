@@ -150,7 +150,8 @@ public abstract class AbstractJsonFluentAssertTest {
     @Test
     void testDifferentStructure() {
         assertThatThrownBy(() -> assertThatJson("{\"test\":1}").hasSameStructureAs("{\"test\":21, \"a\":true}"))
-            .hasMessage("JSON documents are different:\nDifferent keys found in node \"\", expected: <{\"a\":true,\"test\":21}> but was: <{\"test\":1}>. Missing: \"a\" \n");
+            .hasMessage("JSON documents are different:\n" +
+                "Different keys found in node \"\", missing: \"a\", expected: <{\"a\":true,\"test\":21}> but was: <{\"test\":1}>\n");
     }
 
     @Test
@@ -428,7 +429,7 @@ public abstract class AbstractJsonFluentAssertTest {
         assertThatThrownBy(() -> assertThatJson("{\"test\":[1,2,3]}").node("test").isEqualTo("[1]"))
             .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has different length, expected: <1> but was: <3>.\n" +
-                "Array \"test\" has different content, expected: <[1]> but was: <[1,2,3]>. Extra values [2, 3]\n");
+                "Array \"test\" has different content. Extra values: [2, 3], expected: <[1]> but was: <[1,2,3]>\n");
     }
 
     @Test
@@ -436,7 +437,7 @@ public abstract class AbstractJsonFluentAssertTest {
         assertThatThrownBy(() -> assertThatJson("{\"test\":[1,2,3]}").node("test").when(IGNORING_ARRAY_ORDER).isEqualTo("[1]"))
             .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has different length, expected: <1> but was: <3>.\n" +
-                "Array \"test\" has different content, expected: <[1]> but was: <[1,2,3]>. Missing values [], extra values [2, 3]\n");
+                "Array \"test\" has different content. Missing values: [], extra values: [2, 3], expected: <[1]> but was: <[1,2,3]>\n");
     }
 
     @Test
@@ -444,7 +445,7 @@ public abstract class AbstractJsonFluentAssertTest {
         assertThatThrownBy(() -> assertThatJson("{\"test\":[1]}").node("test").isEqualTo("[1, 2, 3]"))
             .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has different length, expected: <3> but was: <1>.\n" +
-                "Array \"test\" has different content, expected: <[1,2,3]> but was: <[1]>. Missing values [2, 3]\n");
+                "Array \"test\" has different content. Missing values: [2, 3], expected: <[1,2,3]> but was: <[1]>\n");
     }
 
     @Test
@@ -452,7 +453,7 @@ public abstract class AbstractJsonFluentAssertTest {
         assertThatThrownBy(() -> assertThatJson("{\"test\":[1]}").node("test").when(IGNORING_ARRAY_ORDER).isEqualTo("[1, 2, 3]"))
             .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has different length, expected: <3> but was: <1>.\n" +
-                "Array \"test\" has different content, expected: <[1,2,3]> but was: <[1]>. Missing values [2, 3], extra values []\n");
+                "Array \"test\" has different content. Missing values: [2, 3], extra values: [], expected: <[1,2,3]> but was: <[1]>\n");
     }
 
     @Test
@@ -460,7 +461,7 @@ public abstract class AbstractJsonFluentAssertTest {
         assertThatThrownBy(() -> assertThatJson("{\"test\":[\"x\",\"b\",\"c\"]}").node("test").isEqualTo("[\"a\"]"))
             .hasMessage("JSON documents are different:\n" +
                 "Array \"test\" has different length, expected: <1> but was: <3>.\n" +
-                "Array \"test\" has different content, expected: <[\"a\"]> but was: <[\"x\",\"b\",\"c\"]>. Extra values [\"b\", \"c\"]\n" +
+                "Array \"test\" has different content. Extra values: [\"b\", \"c\"], expected: <[\"a\"]> but was: <[\"x\",\"b\",\"c\"]>\n" +
                 "Different value found in node \"test[0]\", expected: <\"a\"> but was: <\"x\">.\n");
     }
 
@@ -763,7 +764,7 @@ public abstract class AbstractJsonFluentAssertTest {
     void testNullAndAbsent() {
         assertThatThrownBy(() -> assertThatJson("{\"test\":{\"a\":1, \"b\": null}}").isEqualTo("{\"test\":{\"a\":1}}"))
             .hasMessage("JSON documents are different:\n" +
-                "Different keys found in node \"test\", expected: <{\"a\":1}> but was: <{\"a\":1,\"b\":null}>.  Extra: \"test.b\"\n");
+                "Different keys found in node \"test\", extra: \"test.b\", expected: <{\"a\":1}> but was: <{\"a\":1,\"b\":null}>\n");
     }
 
     @Test

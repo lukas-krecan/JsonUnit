@@ -81,8 +81,9 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
     @Test
     public void testEqualsNodeFailJsonOrgArray() throws IOException {
         assertThatThrownBy(() -> assertJsonEquals(readByJsonOrg("[1, 2]"), readByJsonOrg("[1, 2, 3]")))
-            .hasMessage("JSON documents are different:\nArray \"\" has different length, expected: <2> but was: <3>.\n" +
-                "Array \"\" has different content, expected: <[1,2]> but was: <[1,2,3]>. Extra values [3]\n");
+            .hasMessage("JSON documents are different:\n" +
+                "Array \"\" has different length, expected: <2> but was: <3>.\n" +
+                "Array \"\" has different content. Extra values: [3], expected: <[1,2]> but was: <[1,2,3]>\n");
     }
 
     @Test
@@ -111,14 +112,14 @@ public class AllJsonAssertTest extends AbstractJsonAssertTest {
     public void testEqualsExtraNodeStringFail() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":\"a\"}", "{\"test\": \"a\", \"test2\": \"aa\"}"))
             .hasMessage("JSON documents are different:\n" +
-                "Different keys found in node \"\", expected: <{\"test\":\"a\"}> but was: <{\"test\":\"a\",\"test2\":\"aa\"}>.  Extra: \"test2\"\n");
+                "Different keys found in node \"\", extra: \"test2\", expected: <{\"test\":\"a\"}> but was: <{\"test\":\"a\",\"test2\":\"aa\"}>\n");
     }
 
     @Test
     public void testEqualsMissedNodeStringFail() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\": \"a\", \"test2\": \"aa\"}", "{\"test\":\"a\"}"))
             .hasMessage("JSON documents are different:\n" +
-                "Different keys found in node \"\", expected: <{\"test\":\"a\",\"test2\":\"aa\"}> but was: <{\"test\":\"a\"}>. Missing: \"test2\" \n");
+                "Different keys found in node \"\", missing: \"test2\", expected: <{\"test\":\"a\",\"test2\":\"aa\"}> but was: <{\"test\":\"a\"}>\n");
     }
 
     @Test
