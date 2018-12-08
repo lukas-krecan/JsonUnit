@@ -153,7 +153,7 @@ public class Diff {
                 }
                 String missingKeysMessage = getMissingKeysMessage(missingKeys, path);
                 String extraKeysMessage = getExtraKeysMessage(extraKeys, path);
-                structureDifferenceFound(context, "Different keys found in node \"%s\", expected: <%s> but was: <%s>. %s %s", path, normalize(expected), normalize(actual), missingKeysMessage, extraKeysMessage);
+                structureDifferenceFound(context, "Different keys found in node \"%s\"%s%s, expected: <%s> but was: <%s>", path, missingKeysMessage, extraKeysMessage, normalize(expected), normalize(actual));
             }
         }
 
@@ -205,7 +205,7 @@ public class Diff {
 
     private static String getMissingKeysMessage(Set<String> missingKeys, Path path) {
         if (!missingKeys.isEmpty()) {
-            return "Missing: " + appendKeysToPrefix(missingKeys, path);
+            return ", missing: " + appendKeysToPrefix(missingKeys, path);
         } else {
             return "";
         }
@@ -219,7 +219,7 @@ public class Diff {
 
     private static String getExtraKeysMessage(Set<String> extraKeys, Path path) {
         if (!extraKeys.isEmpty()) {
-            return "Extra: " + appendKeysToPrefix(extraKeys, path);
+            return ", extra: " + appendKeysToPrefix(extraKeys, path);
         } else {
             return "";
         }
@@ -431,12 +431,12 @@ public class Diff {
 
         if (failOnExtraArrayItems()) {
             if (expectedElements.size() != actualElements.size()) {
-                structureDifferenceFound(context, "Array \"%s\" has different length, expected: <%d> but was: <%d>.", path, expectedElements.size(), actualElements.size());
+                structureDifferenceFound(context.length(expectedElements.size()), "Array \"%s\" has different length, expected: <%d> but was: <%d>.", path, expectedElements.size(), actualElements.size());
             }
         } else {
             // if we expect more elements in the array than we get, it's error even when IGNORING_EXTRA_ARRAY_ITEMS
             if (expectedElements.size() > actualElements.size()) {
-                structureDifferenceFound(context, "Array \"%s\" has invalid length, expected: <at least %d> but was: <%d>.", path, expectedElements.size(), actualElements.size());
+                structureDifferenceFound(context.length("at least " + expectedElements.size()), "Array \"%s\" has invalid length, expected: <at least %d> but was: <%d>.", path, expectedElements.size(), actualElements.size());
             }
         }
 
@@ -457,22 +457,22 @@ public class Diff {
                 reportMissingValues(context, missingValues);
                 reportExtraValues(context, extraValues);
 
-                valueDifferenceFound(context, "Array \"%s\" has different content, expected: <%s> but was: <%s>. Missing values %s, extra values %s", path, expectedNode, actualNode, missingValues, extraValues);
+                valueDifferenceFound(context, "Array \"%s\" has different content. Missing values: %s, extra values: %s, expected: <%s> but was: <%s>", path, missingValues, extraValues, expectedNode, actualNode);
             } else if (!missingValues.isEmpty()) {
                 reportMissingValues(context, missingValues);
-                valueDifferenceFound(context, "Array \"%s\" has different content, expected: <%s> but was: <%s>. Missing values %s", path, expectedNode, actualNode, missingValues);
+                valueDifferenceFound(context, "Array \"%s\" has different content. Missing values: %s, expected: <%s> but was: <%s>", path, missingValues, expectedNode, actualNode);
             }
         } else {
             if (expectedElements.size() > actualElements.size()) {
                 for (int i = actualElements.size(); i < expectedElements.size(); i++) {
                     reportDifference(DifferenceImpl.missing(context.missingElement(i)));
                 }
-                valueDifferenceFound(context, "Array \"%s\" has different content, expected: <%s> but was: <%s>. Missing values %s", path, expectedNode, actualNode, expectedElements.subList(actualElements.size(), expectedElements.size()));
+                valueDifferenceFound(context, "Array \"%s\" has different content. Missing values: %s, expected: <%s> but was: <%s>", path, expectedElements.subList(actualElements.size(), expectedElements.size()), expectedNode, actualNode);
             } else if (failOnExtraArrayItems() && expectedElements.size() < actualElements.size()) {
                 for (int i = expectedElements.size(); i < actualElements.size(); i++) {
                     reportDifference(DifferenceImpl.extra(context.extraElement(i)));
                 }
-                valueDifferenceFound(context, "Array \"%s\" has different content, expected: <%s> but was: <%s>. Extra values %s", path, expectedNode, actualNode, actualElements.subList(expectedElements.size(), actualElements.size()));
+                valueDifferenceFound(context, "Array \"%s\" has different content. Extra values: %s, expected: <%s> but was: <%s>", path, actualElements.subList(expectedElements.size(), actualElements.size()), expectedNode, actualNode);
             }
             for (int i = 0; i < Math.min(expectedElements.size(), actualElements.size()); i++) {
                 compareNodes(context.toElement(i));

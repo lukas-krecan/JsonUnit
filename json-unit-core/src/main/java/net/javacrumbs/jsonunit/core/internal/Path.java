@@ -84,6 +84,13 @@ public final class Path {
         return copy(path + "[" + i + "]");
     }
 
+    /**
+     * Constructs path to an array element length.
+     */
+    Path length() {
+        return toField("length()");
+    }
+
     public Path to(String name) {
         if (name.startsWith("[")){
             return copy(path + name);

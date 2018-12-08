@@ -15,9 +15,9 @@
  */
 package net.javacrumbs.jsonunit.test.jsonorg;
 
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
@@ -42,13 +42,14 @@ public class JsonOrgJsonAssertTest extends AbstractJsonAssertTest {
     @Test
     public void testEqualsNodeFailJsonOrgArray() {
         assertThatThrownBy(() -> assertJsonEquals(readByJsonOrg("[1, 2]"), readByJsonOrg("[1, 2, 3]")))
-            .hasMessage("JSON documents are different:\nArray \"\" has different length, expected: <2> but was: <3>.\n" +
-                "Array \"\" has different content, expected: <[1,2]> but was: <[1,2,3]>. Extra values [3]\n");
+            .hasMessage("JSON documents are different:\n" +
+                "Array \"\" has different length, expected: <2> but was: <3>.\n" +
+                "Array \"\" has different content. Extra values: [3], expected: <[1,2]> but was: <[1,2,3]>\n");
     }
 
     @Test
     @Override
-    @Ignore
+    @Disabled
     public void testBinary() {
         // no support for binary
     }

@@ -17,6 +17,8 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import net.javacrumbs.jsonunit.core.Configuration;
 
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
+
 class Context {
 
     private final Node expectedNode;
@@ -63,6 +65,10 @@ class Context {
 
     Context extraElement(int i) {
         return new Context(null, actualNode.element(i), null, actualPath.toElement(i), configuration);
+    }
+
+    Context length(Object expectedLength) {
+        return new Context(wrapDeserializedObject(expectedLength), wrapDeserializedObject(actualNode.size()), expectedPath.length(), actualPath.length(), configuration);
     }
 
     public Configuration getConfiguration() {
