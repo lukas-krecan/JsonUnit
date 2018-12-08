@@ -15,14 +15,16 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import org.opentest4j.MultipleFailuresError;
+
 import static net.javacrumbs.jsonunit.core.internal.ExceptionUtils.formatDifferences;
 
-class JsonAssertError extends AssertionError {
+class JsonAssertError extends MultipleFailuresError {
     private final String message;
     private final Differences differences;
 
     JsonAssertError(String message, Differences differences) {
-        super(message);
+        super(message, differences.getDifferences());
         this.message = message;
         this.differences = differences;
     }
