@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.javacrumbs.jsonunit.core.Configuration.dummyDifferenceListener;
+import static net.javacrumbs.jsonunit.core.internal.Diff.DEFAULT_DIFFERENCE_STRING;
 import static net.javacrumbs.jsonunit.core.internal.JsonUnitLogger.NULL_LOGGER;
 
 class ArrayComparison {
@@ -98,7 +99,7 @@ class ArrayComparison {
         List<Integer> result = new ArrayList<>();
         int i = 0;
         for (NodeWithIndex expected : expectedElements) {
-            Diff diff = new Diff(expected.getNode(), actual, Path.create("", path.toElement(i).getFullPath()), configuration.withDifferenceListener(dummyDifferenceListener()), NULL_LOGGER, NULL_LOGGER);
+            Diff diff = new Diff(expected.getNode(), actual, Path.create("", path.toElement(i).getFullPath()), configuration.withDifferenceListener(dummyDifferenceListener()), NULL_LOGGER, NULL_LOGGER, DEFAULT_DIFFERENCE_STRING);
             if (diff.similar()) {
                 result.add(i);
             }

@@ -28,7 +28,7 @@ import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
 
-import static net.javacrumbs.jsonunit.core.internal.Diff.create;
+import static net.javacrumbs.jsonunit.core.internal.Diff.createInternal;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
@@ -175,6 +175,8 @@ public class JsonMatchers {
     }
 
     private static final class JsonPartMatcher<T> extends AbstractJsonMatcher<T> {
+        // InjelliJ integration is broken by default difference string. Hamcrest generates 'Expected:' and IntelliJ searches for last 'but was:' and everyting between is taken as expected value
+        private static final String HAMCREST_DIFFERENCE_STRING = "expected <%s> but was <%s>";
         private final Object expected;
         private String differences;
 
@@ -184,7 +186,7 @@ public class JsonMatchers {
         }
 
         boolean doMatch(Object item) {
-            Diff diff = create(expected, item, FULL_JSON, path, configuration);
+            Diff diff = createInternal(expected, item, FULL_JSON,  Path.create(path, ""), configuration, HAMCREST_DIFFERENCE_STRING);
             if (!diff.similar()) {
                 differences = diff.differences();
             }

@@ -72,6 +72,7 @@ public class Diff {
 
     private static final JsonUnitLogger DEFAULT_DIFF_LOGGER = createLogger("net.javacrumbs.jsonunit.difference.diff");
     private static final JsonUnitLogger DEFAULT_VALUE_LOGGER = createLogger("net.javacrumbs.jsonunit.difference.values");
+    static final String DEFAULT_DIFFERENCE_STRING = "expected: <%s> but was: <%s>";
 
     private final Node expectedRoot;
     private final Node actualRoot;
@@ -83,8 +84,9 @@ public class Diff {
 
     private final JsonUnitLogger diffLogger;
     private final JsonUnitLogger valuesLogger;
+    private final String differenceString;
 
-    Diff(Node expected, Node actual, Path startPath, Configuration configuration, JsonUnitLogger diffLogger, JsonUnitLogger valuesLogger) {
+    Diff(Node expected, Node actual, Path startPath, Configuration configuration, JsonUnitLogger diffLogger, JsonUnitLogger valuesLogger, String differenceString) {
         this.expectedRoot = expected;
         this.actualRoot = actual;
         this.startPath = startPath;
@@ -92,6 +94,7 @@ public class Diff {
         this.diffLogger = diffLogger;
         this.valuesLogger = valuesLogger;
         this.pathsToBeIgnored = PathMatcher.create(configuration.getPathsToBeIgnored());
+        this.differenceString = differenceString;
     }
 
     public static Diff create(Object expected, Object actual, String actualName, String path, Configuration configuration) {
@@ -103,7 +106,11 @@ public class Diff {
     }
 
     public static Diff create(Object expected, Object actual, String actualName, Path path, Configuration configuration) {
-        return new Diff(convertToJson(quoteIfNeeded(expected), "expected", true), convertToJson(actual, actualName, false), path, configuration, DEFAULT_DIFF_LOGGER, DEFAULT_VALUE_LOGGER);
+        return createInternal(expected, actual,  actualName, path, configuration, DEFAULT_DIFFERENCE_STRING);
+    }
+
+    public static Diff createInternal(Object expected, Object actual, String actualName, Path path, Configuration configuration, String differenceString) {
+        return new Diff(convertToJson(quoteIfNeeded(expected), "expected", true), convertToJson(actual, actualName, false), path, configuration, DEFAULT_DIFF_LOGGER, DEFAULT_VALUE_LOGGER, differenceString);
     }
 
     private void compare() {
@@ -153,7 +160,7 @@ public class Diff {
                 }
                 String missingKeysMessage = getMissingKeysMessage(missingKeys, path);
                 String extraKeysMessage = getExtraKeysMessage(extraKeys, path);
-                structureDifferenceFound(context, "Different keys found in node \"%s\"%s%s, expected: <%s> but was: <%s>", path, missingKeysMessage, extraKeysMessage, normalize(expected), normalize(actual));
+                structureDifferenceFound(context, "Different keys found in node \"%s\"%s%s, " + differenceString(), path, missingKeysMessage, extraKeysMessage, normalize(expected), normalize(actual));
             }
         }
 
@@ -293,7 +300,7 @@ public class Diff {
         }
 
         if (!expectedNodeType.equals(actualNodeType)) {
-            reportValueDifference(context, "Different value found in node \"%s\", expected: <%s> but was: <%s>.", fieldPath, quoteTextValue(expectedNode), quoteTextValue(actualNode));
+            reportValueDifference(context, "Different value found in node \"%s\", " + differenceString() + ".", fieldPath, quoteTextValue(expectedNode), quoteTextValue(actualNode));
         } else {
             switch (expectedNodeType) {
                 case OBJECT:
@@ -311,7 +318,7 @@ public class Diff {
                     if (configuration.getTolerance() != null && !hasOption(IGNORING_VALUES)) {
                         BigDecimal diff = expectedValue.subtract(actualValue).abs();
                         if (diff.compareTo(configuration.getTolerance()) > 0) {
-                            reportValueDifference(context, "Different value found in node \"%s\", expected: <%s> but was: <%s>, difference is %s, tolerance is %s",
+                            reportValueDifference(context, "Different value found in node \"%s\", " + differenceString() + ", difference is %s, tolerance is %s",
                                     fieldPath, quoteTextValue(expectedValue), quoteTextValue(actualValue), diff.toString(), configuration.getTolerance());
                         }
                     } else {
@@ -370,7 +377,7 @@ public class Diff {
             if (actualNode.getNodeType() == type) {
                 return true;
             } else {
-                reportValueDifference(context, "Different value found in node \"%s\", expected: <%s> but was: <%s>.", context.getActualPath(), name, quoteTextValue(actualNode));
+                reportValueDifference(context, "Different value found in node \"%s\", " + differenceString() + ".", context.getActualPath(), name, quoteTextValue(actualNode));
                 return true;
             }
         }
@@ -400,9 +407,16 @@ public class Diff {
     private void compareValues(Context context, Object expectedValue, Object actualValue) {
         if (!hasOption(IGNORING_VALUES)) {
             if (!expectedValue.equals(actualValue)) {
-                reportValueDifference(context, "Different value found in node \"%s\", expected: <%s> but was: <%s>.", context.getActualPath(), quoteTextValue(expectedValue), quoteTextValue(actualValue));
+                reportValueDifference(context, "Different value found in node \"%s\", " + differenceString() + ".", context.getActualPath(), quoteTextValue(expectedValue), quoteTextValue(actualValue));
             }
         }
+    }
+
+    /**
+     * IntelliJ is looking for this string to show comparison view.
+     */
+    private String differenceString() {
+        return differenceString;
     }
 
     /**
