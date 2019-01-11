@@ -24,6 +24,8 @@ import org.assertj.core.internal.Failures;
 
 import java.util.Map;
 
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
+import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static org.assertj.core.error.ShouldContainValue.shouldContainValue;
 import static org.assertj.core.error.ShouldNotContainValue.shouldNotContainValue;
 
@@ -41,10 +43,7 @@ class JsonMapAssert extends MapAssert<String, Object> {
 
     @Override
     public JsonMapAssert isEqualTo(Object expected) {
-        describedAs(null);
-        Diff diff = Diff.create(expected, actual, "fullJson", path, configuration);
-        diff.failIfDifferent();
-        return this;
+        return compare(expected, configuration);
     }
 
     @Override
@@ -69,6 +68,42 @@ class JsonMapAssert extends MapAssert<String, Object> {
         } else {
             return super.doesNotContainValue(expected);
         }
+    }
+
+    @Override
+    public JsonMapAssert isEqualToIgnoringGivenFields(Object other, String... propertiesOrFieldsToIgnore) {
+        return compare(other, configuration.whenIgnoringPaths(propertiesOrFieldsToIgnore));
+    }
+
+    @Override
+    public MapAssert<String, Object> isEqualToComparingOnlyGivenFields(Object other, String... propertiesOrFieldsUsedInComparison) {
+        throw unsupportedOperation();
+    }
+
+    @Override
+    public MapAssert<String, Object> isEqualToIgnoringNullFields(Object other) {
+        throw unsupportedOperation();
+    }
+
+    @Override
+    public MapAssert<String, Object> isEqualToComparingFieldByField(Object other) {
+        throw unsupportedOperation();
+    }
+
+    @Override
+    public MapAssert<String, Object> isEqualToComparingFieldByFieldRecursively(Object other) {
+        throw unsupportedOperation();
+    }
+
+    private UnsupportedOperationException unsupportedOperation() {
+        return new UnsupportedOperationException("Operation not supported for JSON documents");
+    }
+
+    private JsonMapAssert compare(Object other, Configuration configuration) {
+        describedAs(null);
+        Diff diff = Diff.create(other, actual, "fullJson", path, configuration);
+        diff.failIfDifferent();
+        return this;
     }
 
     private boolean contains(Object expected) {
