@@ -20,6 +20,7 @@ JsonUnit is a library that simplifies JSON comparison in tests.
   * [Numerical comparison](#numbers)
   * [Escaping dots](#dots)
   * [Lenient parsing of expected value](#lenient)
+  * [Jackson Object Mapper customization](#object-mapper-cust)
 
 
 # <a name="apis"></a>APIs
@@ -544,7 +545,7 @@ and you can use single quotes instead of double quotes. Please note that the act
 assertThatJson("{\"a\":\"1\", \"b\":2}").isEqualTo("{b:2, a:'1'}");
 ```
 
-## Jackson 2 Object Mapper customization
+## <a name="object-mapper-cust"></a>Jackson Object Mapper customization
 If you need to customize Jacson 2 Object Mapper, you can do using [SPI](https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html). 
 Implement `net.javacrumbs.jsonunit.providers.Jackson2ObjectMapperProvider`.
 
