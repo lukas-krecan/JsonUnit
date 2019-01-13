@@ -89,7 +89,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>2.2.0</version>
+    <version>2.3.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -169,7 +169,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>2.2.0</version>
+    <version>2.3.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -203,7 +203,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.2.0</version>
+    <version>2.3.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -236,7 +236,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.2.0</version>
+    <version>2.3.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -281,7 +281,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.2.0</version>
+    <version>2.3.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -313,7 +313,7 @@ For other API styles you have to first import JsonPath support module
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-json-path</artifactId>
-    <version>2.2.0</version>
+    <version>2.3.0</version>
 </dependency>
 ```
 
@@ -544,6 +544,37 @@ and you can use single quotes instead of double quotes. Please note that the act
 assertThatJson("{\"a\":\"1\", \"b\":2}").isEqualTo("{b:2, a:'1'}");
 ```
 
+## Jackson 2 Object Mapper customization
+If you need to customize Jacson 2 Object Mapper, you can do using [SPI](https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html). 
+Implement `net.javacrumbs.jsonunit.providers.Jackson2ObjectMapperProvider`.
+
+```java
+public class Java8ObjectMapperProvider implements Jackson2ObjectMapperProvider {
+    private final ObjectMapper mapper;
+
+    private final ObjectMapper lenientMapper;
+
+
+    public Java8ObjectMapperProvider() {
+        mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+        lenientMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        lenientMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        lenientMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+        lenientMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+    }
+
+    @Override
+    public ObjectMapper getObjectMapper(boolean lenient) {
+        return lenient ? lenientMapper : mapper;
+    }
+}
+```
+
+and register it in `META-INF/services/net.javacrumbs.jsonunit.providers.Jackson2ObjectMapperProvider`. 
+See [this example](https://github.com/lukas-krecan/JsonUnit/commit/8dc7c884448c7373886dcf3b0eabfecf47c0710b).
+
 ## Logging
 
 Although the differences are printed out by the assert statement, sometimes you use JsonUnit with other libraries like
@@ -561,6 +592,10 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 2.3.0
+* Support for Jackson 2 ObjectMapper customization
+* Some AbstractObjectAssert marked as unsupported
+
 ## 2.2.0
 * Using opentest4j
 * Refactored exception reporting 
