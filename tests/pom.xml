@@ -14,6 +14,7 @@
     <modules>
         <module>test-base</module>
         <module>test-jackson2</module>
+        <module>test-jackson2-config</module>
         <module>test-gson</module>
         <module>test-jsonorg</module>
         <module>test-moshi</module>
