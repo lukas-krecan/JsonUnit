@@ -19,12 +19,14 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.NullNode;
+import net.javacrumbs.jsonunit.providers.Jackson2ObjectMapperProvider;
 
 import java.io.IOException;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.ServiceLoader;
 
 import static net.javacrumbs.jsonunit.core.internal.Utils.closeQuietly;
 
@@ -32,19 +34,11 @@ import static net.javacrumbs.jsonunit.core.internal.Utils.closeQuietly;
  * Deserializes node using Jackson 2
  */
 class Jackson2NodeFactory extends AbstractNodeFactory {
-    private static final ObjectMapper mapper = new ObjectMapper();
-    private static final ObjectMapper lenientMapper = new ObjectMapper();
-
-    static {
-        lenientMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-        lenientMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
-        lenientMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-    }
-
+    private final ServiceLoader<Jackson2ObjectMapperProvider> serviceLoader = ServiceLoader.load(Jackson2ObjectMapperProvider.class);
 
     @Override
     protected Node doConvertValue(Object source) {
-        return newNode(mapper.convertValue(source, JsonNode.class));
+        return newNode(getMapper(false).convertValue(source, JsonNode.class));
     }
 
     @Override
@@ -63,7 +57,16 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
     }
 
     private ObjectMapper getMapper(boolean lenient) {
-        return lenient ? lenientMapper : mapper;
+        return getMapperProvider().getObjectMapper(lenient);
+    }
+
+    private Jackson2ObjectMapperProvider getMapperProvider() {
+        Iterator<Jackson2ObjectMapperProvider> iterator = serviceLoader.iterator();
+        if (iterator.hasNext()) {
+            return iterator.next();
+        } else {
+            return DefaultObjectMapperProvider.INSTANCE;
+        }
     }
 
     private static Node newNode(JsonNode jsonNode) {
@@ -175,6 +178,23 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
         @Override
         public String toString() {
             return jsonNode.toString();
+        }
+    }
+
+    private static class DefaultObjectMapperProvider implements Jackson2ObjectMapperProvider {
+        static final Jackson2ObjectMapperProvider INSTANCE = new DefaultObjectMapperProvider();
+
+        private static final ObjectMapper mapper = new ObjectMapper();
+        private static final ObjectMapper lenientMapper = new ObjectMapper();
+
+        static {
+            lenientMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+            lenientMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+            lenientMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+        }
+        @Override
+        public ObjectMapper getObjectMapper(boolean lenient) {
+            return lenient ? lenientMapper : mapper;
         }
     }
 }
