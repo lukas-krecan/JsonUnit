@@ -463,6 +463,11 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void testAssertToleranceSimple() {
+        assertThatJson("{\"test\":1.00001}").withTolerance(0.001).isEqualTo("{\"test\":1}");
+    }
+
+    @Test
     void testAssertTolerance() {
         assertThatJson("{\"test\":1.00001}").withConfiguration(c -> c.withTolerance(0.001)).isEqualTo("{\"test\":1}");
     }
@@ -600,7 +605,8 @@ public abstract class AbstractAssertJTest {
     void ifMatcherDoesNotMatchReportDifference() {
         RecordingDifferenceListener listener = new RecordingDifferenceListener();
         assertThatThrownBy(() -> assertThatJson("{\"test\":-1}")
-            .withConfiguration(c -> c.withMatcher("positive", greaterThan(valueOf(0))).withDifferenceListener(listener))
+            .withMatcher("positive", greaterThan(valueOf(0)))
+            .withDifferenceListener(listener)
             .isEqualTo("{\"test\": \"${json-unit.matches:positive}\"}"))
             .hasMessage("JSON documents are different:\nMatcher \"positive\" does not match value -1 in node \"test\". <-1> was less than <0>\n");
 
@@ -623,7 +629,7 @@ public abstract class AbstractAssertJTest {
     @Test
     void pathShouldBeIgnoredForDifferentValue() {
         assertThatJson("{\"root\":{\"test\":1, \"ignored\": 1}}")
-            .withConfiguration(c -> c.whenIgnoringPaths("root.ignored"))
+            .whenIgnoringPaths("root.ignored")
             .isEqualTo("{\"root\":{\"test\":1, \"ignored\": 2}}");
     }
 

@@ -20,7 +20,9 @@ import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 import net.javacrumbs.jsonunit.core.internal.Node;
+import net.javacrumbs.jsonunit.core.internal.Options;
 import net.javacrumbs.jsonunit.core.internal.Path;
+import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.AbstractCharSequenceAssert;
@@ -32,6 +34,7 @@ import org.assertj.core.api.StringAssert;
 import org.assertj.core.description.Description;
 import org.assertj.core.error.MessageFormatter;
 import org.assertj.core.internal.Failures;
+import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -284,6 +287,16 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
         }
 
         /**
+         * Sets comparison options.
+         *
+         * @param options
+         * @return
+         */
+        public ConfigurableJsonAssert withOptions(Options options) {
+            return withConfiguration(c -> c.withOptions(options));
+        }
+
+        /**
          * Allows to configure like this
          *
          * <code>
@@ -294,6 +307,59 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
          */
         public ConfigurableJsonAssert withConfiguration(Function<Configuration, Configuration> configurationFunction) {
             return new ConfigurableJsonAssert(path, configurationFunction.apply(configuration), actual);
+        }
+
+        /**
+         * Sets numerical comparison tolerance.
+         *
+         * @param tolerance
+         * @return
+         */
+        public ConfigurableJsonAssert withTolerance(BigDecimal tolerance) {
+            return withConfiguration(c -> c.withTolerance(tolerance));
+        }
+
+        /**
+         * Sets numerical comparison tolerance.
+         *
+         * @param tolerance
+         * @return
+         */
+        public ConfigurableJsonAssert withTolerance(double tolerance) {
+            return withTolerance(BigDecimal.valueOf(tolerance));
+        }
+
+        public ConfigurableJsonAssert whenIgnoringPaths(String... pathsToBeIgnored) {
+            return withConfiguration(c -> c.whenIgnoringPaths(pathsToBeIgnored));
+        }
+
+        /**
+         * Sets ignore placeholder.
+         *
+         * @param ignorePlaceholder
+         * @return
+         */
+        public ConfigurableJsonAssert withIgnorePlaceholder(String ignorePlaceholder) {
+            return withConfiguration(c -> c.withIgnorePlaceholder(ignorePlaceholder));
+        }
+
+        /**
+         * Adds a matcher to be used in ${json-unit.matches:matcherName} macro.
+         *
+         * @param matcherName
+         * @param matcher
+         * @return
+         */
+        public ConfigurableJsonAssert withMatcher(String matcherName, Matcher<?> matcher) {
+            return withConfiguration(c -> c.withMatcher(matcherName, matcher));
+        }
+
+
+        /**
+         * Sets difference listener
+         */
+        public ConfigurableJsonAssert withDifferenceListener(DifferenceListener differenceListener) {
+            return withConfiguration(c -> c.withDifferenceListener(differenceListener));
         }
 
         public JsonAssert inPath(String jsonPath) {
