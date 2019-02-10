@@ -627,6 +627,14 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void withFailMessageShouldWork() {
+        assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": 1}}")
+            .withFailMessage("It's broken")
+            .isEqualTo("{\"b\": 2}")
+        ).hasMessage("It's broken");
+    }
+
+    @Test
     void pathShouldBeIgnoredForDifferentValue() {
         assertThatJson("{\"root\":{\"test\":1, \"ignored\": 1}}")
             .whenIgnoringPaths("root.ignored")

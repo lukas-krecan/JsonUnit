@@ -52,6 +52,7 @@ import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NULL;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NUMBER;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
+import static org.assertj.core.util.Strings.isNullOrEmpty;
 
 public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     final Path path;
@@ -97,7 +98,13 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     @Override
     public JsonAssert isEqualTo(Object expected) {
         Diff diff = Diff.create(expected, actual, "fullJson", path.asPrefix(), configuration);
-        diff.failIfDifferent(MessageFormatter.instance().format(info.description(), info.representation(), ""));
+
+        String overridingErrorMessage = info.overridingErrorMessage();
+        if (!isNullOrEmpty(overridingErrorMessage) && !diff.similar()) {
+            failWithMessage(overridingErrorMessage);
+        } else {
+            diff.failIfDifferent(MessageFormatter.instance().format(info.description(), info.representation(), ""));
+        }
         return this;
     }
 

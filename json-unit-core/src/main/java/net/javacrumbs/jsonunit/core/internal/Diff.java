@@ -32,7 +32,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -123,6 +122,8 @@ public class Diff {
                 compareNodes(context);
             }
             compared = true;
+
+            logDifferences();
         }
     }
 
@@ -549,19 +550,13 @@ public class Diff {
     }
 
 
-    private SortedSet<String> sort(Set<String> set) {
-        return new TreeSet<>(set);
-    }
-
     public boolean similar() {
         compare();
-        boolean isSimilar = differences.isEmpty();
-        logDifferences(isSimilar);
-        return isSimilar;
+        return differences.isEmpty();
     }
 
-    private void logDifferences(boolean isSimilar) {
-        if (!isSimilar) {
+    private void logDifferences() {
+        if (!differences.isEmpty()) {
             if (diffLogger.isEnabled()) {
                 diffLogger.log(getDifferences().trim());
             }
