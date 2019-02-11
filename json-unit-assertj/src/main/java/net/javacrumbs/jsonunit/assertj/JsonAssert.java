@@ -278,12 +278,16 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      * </code>
      */
     public static class ConfigurableJsonAssert extends JsonAssert {
+        // Want to pass to inPath to not parse twice.
+        private final Object originalActual;
+
         ConfigurableJsonAssert(Path path, Configuration configuration, Object actual) {
             super(path, configuration, actual);
+            this.originalActual = actual;
         }
 
         ConfigurableJsonAssert(Object actual, Configuration configuration) {
-            super(Path.create("", getPathPrefix(actual)), configuration, actual);
+            this(Path.create("", getPathPrefix(actual)), configuration, actual);
         }
 
         /**
@@ -370,7 +374,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
         }
 
         public JsonAssert inPath(String jsonPath) {
-            return new JsonAssert(JsonPathAdapter.inPath(actual, jsonPath), configuration);
+            return new JsonAssert(JsonPathAdapter.inPath(originalActual, jsonPath), configuration);
         }
 
         // Following methods are here just to return ConfigurableJsonAssert instead of JsonAssert

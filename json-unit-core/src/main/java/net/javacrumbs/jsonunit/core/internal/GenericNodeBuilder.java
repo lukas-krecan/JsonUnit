@@ -58,6 +58,8 @@ class GenericNodeBuilder implements NodeBuilder {
             return new ArrayNode(list, this);
         } else if (object instanceof List) {
             return new ArrayNode((List<?>) object, this);
+        } else if (object instanceof Node) {
+            return (Node) object;
         } else {
             throw new IllegalArgumentException("Unsupported type " + object.getClass());
         }
