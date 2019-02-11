@@ -19,6 +19,9 @@ import net.javacrumbs.jsonunit.assertj.JsonAssert.ConfigurableJsonAssert;
 import net.javacrumbs.jsonunit.core.Option;
 import org.junit.jupiter.api.Test;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import static java.math.BigDecimal.valueOf;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
@@ -964,6 +967,17 @@ public abstract class AbstractAssertJTest {
             .inPath("$.fields[?(@.id==\"test\")].value")
             .isArray()
             .containsExactly(value("true"));
+    }
+
+    @Test
+    void stringComparisonShouldWork() {
+        final Map<String, Integer> map = new LinkedHashMap<>();
+        map.put("FOO", 4);
+        map.put("BAR", 3);
+        assertThatJson("{\"fields\": [{ \"id\": \"test\", \"value\": \"{FOO=4, BAR=3}\" }]}")
+            .inPath("$.fields[?(@.id==\"test\")].value")
+            .isArray()
+            .containsExactly(value(map.toString()));
     }
 
     @Test
