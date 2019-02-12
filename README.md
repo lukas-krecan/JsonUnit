@@ -82,7 +82,14 @@ assertThatJson(json)
             "            }"
     ));
 
+// "true" is valid JSON so it gets parsed to primitive `true`
+// Have to wrap it to JsonAssertions.value() in order to make sure it's not parsed
+assertThatJson("{\"root\":[\"true\"]}").node("root").isArray().containsExactly(value("true"));
 ```
+
+It's recommended to use `JsonAssertions.json()` if you want to parse expected value as JSON and
+`JsonAssertions.value()` if you want to use the value as is.   
+
 
 To use AssertJ integration, import
 
@@ -90,7 +97,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>2.3.0</version>
+    <version>2.4.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -170,7 +177,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>2.3.0</version>
+    <version>2.4.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -204,7 +211,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.3.0</version>
+    <version>2.4.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -237,7 +244,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.3.0</version>
+    <version>2.4.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -282,7 +289,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.3.0</version>
+    <version>2.4.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -314,7 +321,7 @@ For other API styles you have to first import JsonPath support module
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-json-path</artifactId>
-    <version>2.3.0</version>
+    <version>2.4.0</version>
 </dependency>
 ```
 
@@ -593,6 +600,10 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 2.4.0
+* Introduced JsonAssertions.value()
+* Fixed AssertJ withFailMessage 
+
 ## 2.3.0
 * Support for Jackson 2 ObjectMapper customization
 * Some AbstractObjectAssert marked as unsupported
