@@ -22,7 +22,7 @@ import net.javacrumbs.jsonunit.core.internal.Path;
 
 import java.util.Comparator;
 
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.valueToNode;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
 
 class JsonComparator implements Comparator<Object> {
     private final Configuration configuration;
@@ -39,7 +39,7 @@ class JsonComparator implements Comparator<Object> {
     public int compare(Object actual, Object expected) {
         // this comparator is not transitive, `expected` is usually a Node and `actual` is usually a Map, or primitive
         if (
-            (actualParsed && !(actual instanceof Node) && (expected instanceof Node)) ||
+            (actualParsed && !(actual instanceof Node) && (expected instanceof Node) && !(expected instanceof ExpectedNode)) ||
             (actual instanceof ExpectedNode)
         ) {
             Object tmp = actual;
@@ -48,7 +48,8 @@ class JsonComparator implements Comparator<Object> {
         }
 
         // if actual is already parsed, do not parse it again.
-        Object actual2 = actualParsed ? valueToNode(actual) : actual;
+        Object actual2 = actualParsed ? wrapDeserializedObject(actual) : actual;
+
         Diff diff = Diff.create(expected, actual2, "", path, configuration);
         if (diff.similar()) {
             return 0;

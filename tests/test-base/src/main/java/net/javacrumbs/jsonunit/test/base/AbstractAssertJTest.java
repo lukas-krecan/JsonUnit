@@ -19,11 +19,15 @@ import net.javacrumbs.jsonunit.assertj.JsonAssert.ConfigurableJsonAssert;
 import net.javacrumbs.jsonunit.core.Option;
 import org.junit.jupiter.api.Test;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import static java.math.BigDecimal.valueOf;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.value;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
@@ -118,13 +122,15 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"root\": [450]}")
                         .inPath("$.root")
                         .isArray()
-                        .containsExactly("450"))
+                        .containsExactly(value("450")))
             .hasMessage("[Different value found in node \"$.root\"] \n" +
                 "Expecting:\n" +
                 "  <[450]>\n" +
                 "to contain exactly (and in same order):\n" +
                 "  <[\"450\"]>\n" +
-                "but some elements were not expected:\n" +
+                "but some elements were not found:\n" +
+                "  <[\"450\"]>\n" +
+                "and others were not expected:\n" +
                 "  <[450]>\n" +
                 "when comparing values using JsonComparator");
     }
@@ -887,6 +893,14 @@ public abstract class AbstractAssertJTest {
 
     }
 
+    @Test
+    void arrayWithStringBooleansShouldBeComparable() {
+        assertThatJson("{\"array\": [\"true\"]}")
+            .node("array")
+            .isArray()
+            .containsExactly(value("true"));
+    }
+
     // *****************************************************************************************************************
     // ********************************************** JSON Path ********************************************************
     // *****************************************************************************************************************
@@ -945,6 +959,25 @@ public abstract class AbstractAssertJTest {
             .inPath("$..book.length()")
             .isArray()
             .containsExactly(valueOf(4));
+    }
+
+    @Test
+    void booleanArrayExtractionShouldWork() {
+        assertThatJson("{\"fields\": [{ \"id\": \"test\", \"value\": \"true\" }]}")
+            .inPath("$.fields[?(@.id==\"test\")].value")
+            .isArray()
+            .containsExactly(value("true"));
+    }
+
+    @Test
+    void stringComparisonShouldWork() {
+        final Map<String, Integer> map = new LinkedHashMap<>();
+        map.put("FOO", 4);
+        map.put("BAR", 3);
+        assertThatJson("{\"fields\": [{ \"id\": \"test\", \"value\": \"{FOO=4, BAR=3}\" }]}")
+            .inPath("$.fields[?(@.id==\"test\")].value")
+            .isArray()
+            .containsExactly(value(map.toString()));
     }
 
     @Test

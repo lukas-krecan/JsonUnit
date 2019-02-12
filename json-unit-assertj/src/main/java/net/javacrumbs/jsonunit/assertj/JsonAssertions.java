@@ -37,4 +37,12 @@ public final class JsonAssertions {
     public static Object json(Object input) {
         return new ExpectedNode(JsonUtils.convertToJson(input, "", true));
     }
+
+
+    /**
+     * Value passed here is not parsed as JSON but used as it is
+     */
+    public static Object value(Object input) {
+        return new ExpectedNode(JsonUtils.wrapDeserializedObject(input));
+    }
 }
