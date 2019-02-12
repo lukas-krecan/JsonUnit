@@ -40,6 +40,25 @@ import static org.hamcrest.Matchers.greaterThan;
 public abstract class AbstractAssertJTest {
 
     @Test
+    void demo() {
+        // Both actual value (in the left) and expected value (in the right) are parsed as JSON
+        assertThatJson("{\"root\":{\"a\":1}}").node("root").isEqualTo("{a:1}");
+
+        // Works with arrays too
+        assertThatJson("{\"root\":[{\"a\":1}]}").inPath("root").isEqualTo("[{a:1}]");
+
+        // Strings passed to AssertJ methods like containsExactly are parsed as JSON too
+        assertThatJson("{\"root\":[{\"a\":1}]}").inPath("root").isArray().containsExactly("{a:1}");
+
+        // Primitive boolean? No problem
+        assertThatJson("{\"root\":[true]}").inPath("root").isArray().containsExactly(true);
+
+        // Boolean in string? Tricky, "true" is valid JSON so it gets parsed to primitive `true`
+        // Have to wrap it to JsonAssertions.value() in order to make sure it's not parsed
+        assertThatJson("{\"root\":[\"true\"]}").inPath("root").isArray().containsExactly(value("true"));
+    }
+
+    @Test
     void shouldAssertSimple() {
         assertThatJson("{\"a\":1, \"b\":2}").isEqualTo("{\"b\":2, \"a\":1}");
     }
