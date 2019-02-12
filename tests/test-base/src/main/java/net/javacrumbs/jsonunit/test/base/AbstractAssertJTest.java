@@ -45,17 +45,17 @@ public abstract class AbstractAssertJTest {
         assertThatJson("{\"root\":{\"a\":1}}").node("root").isEqualTo("{a:1}");
 
         // Works with arrays too
-        assertThatJson("{\"root\":[{\"a\":1}]}").inPath("root").isEqualTo("[{a:1}]");
+        assertThatJson("{\"root\":[{\"a\":1}]}").node("root").isEqualTo("[{a:1}]");
 
         // Strings passed to AssertJ methods like containsExactly are parsed as JSON too
-        assertThatJson("{\"root\":[{\"a\":1}]}").inPath("root").isArray().containsExactly("{a:1}");
+        assertThatJson("{\"root\":[{\"a\":1}]}").node("root").isArray().containsExactly("{a:1}");
 
         // Primitive boolean? No problem
-        assertThatJson("{\"root\":[true]}").inPath("root").isArray().containsExactly(true);
+        assertThatJson("{\"root\":[true]}").node("root").isArray().containsExactly(true);
 
         // Boolean in string? Tricky, "true" is valid JSON so it gets parsed to primitive `true`
         // Have to wrap it to JsonAssertions.value() in order to make sure it's not parsed
-        assertThatJson("{\"root\":[\"true\"]}").inPath("root").isArray().containsExactly(value("true"));
+        assertThatJson("{\"root\":[\"true\"]}").node("root").isArray().containsExactly(value("true"));
     }
 
     @Test
