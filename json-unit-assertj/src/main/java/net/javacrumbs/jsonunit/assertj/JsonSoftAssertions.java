@@ -15,50 +15,25 @@
  */
 package net.javacrumbs.jsonunit.assertj;
 
-import org.assertj.core.api.AbstractSoftAssertions;
-import org.assertj.core.api.SoftAssertionError;
-import org.assertj.core.api.iterable.Extractor;
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.error.AssertionErrorCreator;
+import org.opentest4j.MultipleFailuresError;
 
-import java.util.Arrays;
 import java.util.List;
 
-import static java.lang.String.format;
-import static org.assertj.core.groups.FieldsOrPropertiesExtractor.extract;
+public class JsonSoftAssertions extends SoftAssertions {
 
-public class JsonSoftAssertions extends AbstractSoftAssertions {
-    private Extractor<Throwable, String> errorDescriptionExtractor = throwable -> {
-      Throwable cause = throwable.getCause();
-      if (cause == null) {
-        return throwable.getMessage();
-      }
-      // error has a cause, display the cause message and the first stack trace elements.
-      StackTraceElement[] stackTraceFirstElements = Arrays.copyOf(cause.getStackTrace(), 5);
-      String stackTraceDescription = "";
-      for (StackTraceElement stackTraceElement : stackTraceFirstElements) {
-        stackTraceDescription += format("\tat %s%n", stackTraceElement);
-      }
-      return format("%s%n" +
-                    "cause message: %s%n" +
-                    "cause first five stack trace elements:%n" +
-                    "%s",
-                    throwable.getMessage(),
-                    cause.getMessage(),
-                    stackTraceDescription);
-    };
+    private final AssertionErrorCreator assertionErrorCreator = new AssertionErrorCreator();
 
     /**
-     * Verifies that no proxied assertion methods have failed.
+     * Verifies that no soft assertions have failed.
      *
-     * @throws SoftAssertionError if any proxied assertion objects threw
+     * @throws MultipleFailuresError if possible or SoftAssertionError if any proxied assertion objects threw an {@link AssertionError}
      */
     public void assertAll() {
-      List<Throwable> errors = errorsCollected();
-      if (!errors.isEmpty()) throw new SoftAssertionError(describeErrors(errors));
+        List<Throwable> errors = errorsCollected();
+        if (!errors.isEmpty()) throw assertionErrorCreator.multipleSoftAssertionsError(errors);
     }
-
-    private List<String> describeErrors(List<Throwable> errors) {
-       return extract(errors, errorDescriptionExtractor);
-     }
 
     public JsonAssert assertThatJson(Object actual) {
         return proxy(JsonAssert.ConfigurableJsonAssert.class, Object.class, actual);

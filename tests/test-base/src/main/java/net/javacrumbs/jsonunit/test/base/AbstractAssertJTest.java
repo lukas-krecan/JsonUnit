@@ -123,29 +123,40 @@ public abstract class AbstractAssertJTest {
 
 
     @Test
-    public void objectShouldContainComplexValueErrorSoftly() {
-        JsonSoftAssertions soft = new JsonSoftAssertions();
-
-        soft.assertThatJson("{\"root\":{\"a\":1, \"b\": {\"c\" :3}}}")
-            .node("root")
-            .isObject()
-            .containsValue(json("{\"c\" :5}"));
-
-        assertThatThrownBy(soft::assertAll)
-            .hasMessage("[Different value found in node \"root\"] \n" +
-                "Expecting:\n" +
-                "  <{\"a\":1, \"b\":{\"c\":3}}>\n" +
-                "to contain value:\n" +
-                "  <{\"c\":5}>");
+    void softlyTest() {
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat("a").as("Living Guests").isEqualTo(7);
+        softly.assertThat("b").as("Living Guests").isEqualTo(7);
+        softly.assertAll();
     }
 
     @Test
-    public void testSofAssert() {
+    void objectShouldContainComplexValueErrorSoftly() {
+        JsonSoftAssertions soft = new JsonSoftAssertions();
+
+        soft.assertThatJson("{\"root\":{\"a\":1, \"b\": {\"c\" :3}}}")
+            .node("root.b")
+            .isEqualTo("{\"c\" :5}");
+
+        soft.assertThatJson("{\"root\":{\"a\":1, \"b\": {\"c\" :3}}}")
+                  .node("root.a")
+                  .isEqualTo("2");
+
+
+        soft.assertAll();
+//        assertThatThrownBy(soft::assertAll)
+//            .hasMessage("JSON documents are different:\n" +
+//                "Different value found in node \"root.b.c\", \n" +
+//                "Expected :5\n" +
+    }
+
+    @Test
+    void testSoftAssert() {
         SoftAssertions soft = new SoftAssertions();
 
         soft.assertThat("string").usingComparator(Comparator.naturalOrder()).isEqualTo("string2");
 
-        soft.assertAll();
+        assertThatThrownBy(soft::assertAll).isInstanceOf(MultipleFailuresError.class);
     }
 
     @Test
