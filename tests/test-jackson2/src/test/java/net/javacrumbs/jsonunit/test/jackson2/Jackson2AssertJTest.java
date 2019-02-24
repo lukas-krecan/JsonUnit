@@ -16,10 +16,25 @@
 package net.javacrumbs.jsonunit.test.jackson2;
 
 import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;
+import org.junit.jupiter.api.Test;
 
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson2;
 
 public class Jackson2AssertJTest extends AbstractAssertJTest {
+
+
+    @Test
+    void arrayContainsWithObjects() {
+        assertThatJson("{\"a\":[{\"b\": 1}, {\"c\": 1}]}")
+            .inPath("$.a")
+            .isArray()
+            .containsExactlyInAnyOrder(
+                json(readValue("{\"c\": 1}")),
+                json(readValue("{\"b\": 1}"))
+            );
+    }
 
     @Override
     protected Object readValue(String value) {
