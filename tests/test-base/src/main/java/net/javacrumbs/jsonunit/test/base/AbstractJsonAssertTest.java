@@ -16,11 +16,13 @@
 package net.javacrumbs.jsonunit.test.base;
 
 import net.javacrumbs.jsonunit.JsonAssert;
+import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -1125,14 +1127,56 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
-    public void testEqualsNodeStringFail() throws IOException {
+    void testEqualsNodeStringFail() throws IOException {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":\"a\"}", readValue("{\"test\": \"b\"}")))
             .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <\"a\"> but was: <\"b\">.\n");
     }
 
     @Test
-    public void testBinary() {
+    protected void testBinary() {
         assertJsonEquals("{\"binary\":\"aGk=\"}", singletonMap("binary", "hi".getBytes()));
+    }
+
+    @Test
+    @Disabled
+    void shouldCompareArrays() {
+        String actualFileM = "{\"skeletonKeys\":[" +
+            "{\"contentId\":\"product::product11\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":81,\"child\":true}," +
+            "{\"contentId\":\"product::product11\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":47,\"child\":true}," +
+            "{\"contentId\":\"product::product11\",\"namespace\":\"testcustomer-bulk-client-1\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":120,\"child\":true}," +
+            "{\"contentId\":\"category::samplecategory\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":110,\"child\":true}," +
+            "{\"contentId\":\"product::product11\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":93,\"child\":true}," +
+            "{\"contentId\":\"category::samplecategory\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":136,\"child\":true}," +
+            "{\"contentId\":\"category::samplecategory\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":156,\"child\":true}," +
+            "{\"contentId\":\"category::samplecategory\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":96,\"child\":true}," +
+            "{\"contentId\":\"product::product11\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":247,\"child\":true}," +
+            "{\"contentId\":\"product::product11\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":8,\"child\":true}," +
+            "{\"contentId\":\"category::samplecategory\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":124,\"child\":true}," +
+            "{\"contentId\":\"product::product11\",\"namespace\":\"testcustomer-bulk-client-1\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":162,\"child\":true}," +
+            "{\"contentId\":\"product::product11\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":182,\"child\":true}," +
+            "{\"contentId\":\"d04b643f-c74b-5f3f-8042-5a5346a2c34a\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":0,\"child\":false}," +
+            "{\"contentId\":\"d04b643f-c74b-5f3f-8042-5a5346a2c34a\",\"namespace\":\"testcustomer-bulk-client-1\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":0,\"child\":false}" +
+            "]}";
+
+        String expectedFileM = "{\"skeletonKeys\":[" +
+            "{\"contentId\":\"product::product11\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":81,\"child\":true}," +
+            "{\"contentId\":\"product::product11\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":47,\"child\":true}," +
+            "{\"contentId\":\"product::product11\",\"namespace\":\"testcustomer-bulk-client-1\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":120,\"child\":true}," +
+            "{\"contentId\":\"category::samplecategory\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":110,\"child\":true}," +
+            "{\"contentId\":\"product::product11\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":93,\"child\":true}," +
+            "{\"contentId\":\"category::samplecategory\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":136,\"child\":true}," +
+            "{\"contentId\":\"category::samplecategory\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":156,\"child\":true}," +
+            "{\"contentId\":\"category::samplecategory\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":96,\"child\":true}," +
+            "{\"contentId\":\"product::product11\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":247,\"child\":true}," +
+            "{\"contentId\":\"product::product11\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":8,\"child\":true}," +
+            "{\"contentId\":\"category::samplecategory\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":124,\"child\":true}," +
+            "{\"contentId\":\"product::product11\",\"namespace\":\"testcustomer-bulk-client-1\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":162,\"child\":true}," +
+            "{\"contentId\":\"product::product11\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":182,\"child\":true}," +
+            "{\"contentId\":\"d04b643f-c74b-5f3f-8042-5a5346a2c34a\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":0,\"child\":false}," +
+            "{\"contentId\":\"d04b643f-c74b-5f3f-8042-5a5346a2c34a\",\"namespace\":\"testcustomer-bulk-client-1\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":0,\"child\":false}" +
+            "]}";
+
+        assertJsonEquals(actualFileM, expectedFileM, when(Option.IGNORING_ARRAY_ORDER).whenIgnoringPaths("skeletonKeys[*].sortIndex"));
     }
 
     protected abstract Object readValue(String value);
