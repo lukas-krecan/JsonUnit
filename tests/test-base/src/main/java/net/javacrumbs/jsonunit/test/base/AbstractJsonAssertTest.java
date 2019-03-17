@@ -22,7 +22,6 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -616,11 +615,16 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
+    void arrayShouldMatch() {
+        assertJsonEquals("[[3],[2],[1]]", "[[1,2],[2,3],[2,4]]", when(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_ARRAY_ITEMS));
+    }
+
+    @Test
     void arraysMatchShouldReportErrorCorrectlyWhenIgnoringExtraFieldsComplex() {
-        assertThatThrownBy(() -> assertJsonEquals("[[3],[2],[1]]", "[[1,2],[2,3],[2,4]]", when(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_ARRAY_ITEMS)))
+        assertThatThrownBy(() -> assertJsonEquals("[[3],[2],[1]]", "[[1,2],[2,3],[4,4]]", when(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_ARRAY_ITEMS)))
             .hasMessage("JSON documents are different:\n" +
                 "Different value found when comparing expected array element [2] to actual element [2].\n" +
-                "Array \"[2]\" has different content. Missing values: [1], expected: <[1]> but was: <[2,4]>\n");
+                "Array \"[2]\" has different content. Missing values: [1], expected: <[1]> but was: <[4,4]>\n");
     }
 
     @Test
@@ -1025,8 +1029,6 @@ public abstract class AbstractJsonAssertTest {
         public void setParameter(String parameter) {
             this.param = new BigDecimal(parameter);
         }
-
-
     }
 
 
@@ -1138,7 +1140,6 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
-    @Disabled
     void shouldCompareArrays() {
         String actualFileM = "{\"skeletonKeys\":[" +
             "{\"contentId\":\"product::product11\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":81,\"child\":true}," +
