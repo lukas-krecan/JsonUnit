@@ -17,15 +17,36 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import org.opentest4j.AssertionFailedError;
 
-import static java.util.Collections.singletonList;
-import static net.javacrumbs.jsonunit.core.internal.ExceptionUtils.formatDifferences;
+class JsonDifference {
+    private final String message;
+    private final Object[] args;
+    private final Node expected;
+    private final Node actual;
 
-class JsonDifference extends AssertionFailedError {
-    JsonDifference(Context context, String message, Object... args) {
-        super(String.format(message, args), context.getExpectedNode().getValue(), context.getActualNode().getValue());
+    private JsonDifference(String message, Object[] args, Node expected, Node actual) {
+        this.message = message;
+        this.args = args;
+        this.expected = expected;
+        this.actual = actual;
     }
 
-    JsonDifference(String message, JsonDifference cause) {
-        super(formatDifferences(message, singletonList(cause)), cause.getExpected().getValue(), cause.getActual().getValue());
+    JsonDifference(Context context, String message, Object... args) {
+        this(message, args, context.getExpectedNode(), context.getActualNode());
+    }
+
+    AssertionFailedError getError() {
+        return new AssertionFailedError(message, expected.getValue(), actual.getValue());
+    }
+
+    public Node getExpected() {
+        return expected;
+    }
+
+    public Node getActual() {
+        return actual;
+    }
+
+    public String getMessage() {
+        return String.format(message, args);
     }
 }

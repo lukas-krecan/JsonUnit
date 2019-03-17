@@ -36,7 +36,7 @@ public class GsonJsonAssertTest extends AbstractJsonAssertTest {
     @Test
     @Override
     @Disabled
-    public void testBinary() {
+    protected void testBinary() {
         // no support for binary
     }
 }

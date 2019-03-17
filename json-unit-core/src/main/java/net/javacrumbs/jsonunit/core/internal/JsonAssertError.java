@@ -17,6 +17,7 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import org.opentest4j.MultipleFailuresError;
 
+import static java.util.stream.Collectors.toList;
 import static net.javacrumbs.jsonunit.core.internal.ExceptionUtils.formatDifferences;
 
 class JsonAssertError extends MultipleFailuresError {
@@ -24,7 +25,7 @@ class JsonAssertError extends MultipleFailuresError {
     private final Differences differences;
 
     JsonAssertError(String message, Differences differences) {
-        super(message, differences.getDifferences());
+        super(message, differences.getDifferences().stream().map(JsonDifference::getError).collect(toList()));
         this.message = message;
         this.differences = differences;
     }

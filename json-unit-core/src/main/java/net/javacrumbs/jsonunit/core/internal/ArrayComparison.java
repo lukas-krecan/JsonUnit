@@ -70,7 +70,7 @@ class ArrayComparison {
                 for (int match : matches) {
                     ArrayComparison copy = copy(i + 1);
                     copy.removeMissing(match);
-                    copy.compareArraysIgnoringOrder();
+                    copy = copy.compareArraysIgnoringOrder();
                     if (copy.isMatching()) {
                         return copy;
                     }

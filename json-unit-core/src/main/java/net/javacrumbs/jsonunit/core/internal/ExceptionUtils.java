@@ -15,6 +15,9 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import org.opentest4j.AssertionFailedError;
+
+import java.util.Collections;
 import java.util.List;
 
 class ExceptionUtils {
@@ -42,7 +45,7 @@ class ExceptionUtils {
         List<JsonDifference> differences = diffs.getDifferences();
         if (differences.size() == 1) {
             JsonDifference difference = differences.get(0);
-            return new JsonDifference(message, difference);
+            return new AssertionFailedError(formatDifferences(message, Collections.singletonList(difference)), difference.getExpected(), difference.getActual());
         } else {
             return new JsonAssertError(message, diffs);
         }
