@@ -18,8 +18,10 @@ package net.javacrumbs.jsonunit.core.internal;
 import net.javacrumbs.jsonunit.core.Configuration;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 
+import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 import static net.javacrumbs.jsonunit.core.Configuration.dummyDifferenceListener;
 import static net.javacrumbs.jsonunit.core.internal.Diff.DEFAULT_DIFFERENCE_STRING;
@@ -33,22 +35,24 @@ class ComparisonMatrix {
     private final int compareFrom;
     private final Integer[] matches; //matches[expectedElementIndex] = actualElementIndex
     private final List<Integer> extra;
+    private final BitSet alreadyMatched;
 
     // just for debugging
     private final List<Node> expectedElements;
     private final List<Node> actualElements;
 
-    private ComparisonMatrix(List<List<Integer>> equalElements, int compareFrom, Integer[] matches, List<Integer> extra, List<Node> expectedElements, List<Node> actualElements) {
+    private ComparisonMatrix(List<List<Integer>> equalElements, int compareFrom, Integer[] matches, List<Integer> extra, BitSet alreadyMatched, List<Node> expectedElements, List<Node> actualElements) {
         this.equalElements = equalElements;
         this.compareFrom = compareFrom;
         this.matches = matches;
         this.extra = extra;
+        this.alreadyMatched = alreadyMatched;
         this.expectedElements = expectedElements;
         this.actualElements = actualElements;
     }
 
     ComparisonMatrix(List<Node> expectedElements, List<Node> actualElements, Path path, Configuration configuration) {
-        this(generateEqualElements(expectedElements, actualElements, path, configuration), 0, new Integer[expectedElements.size()], new ArrayList<>(), expectedElements, actualElements);
+        this(generateEqualElements(expectedElements, actualElements, path, configuration), 0, new Integer[expectedElements.size()], new ArrayList<>(), new BitSet(), expectedElements, actualElements);
     }
 
     private static List<List<Integer>> generateEqualElements(List<Node> expectedElements, List<Node> actualElements, Path path, Configuration configuration) {
@@ -67,36 +71,73 @@ class ComparisonMatrix {
                 }
             }
 
-            equalElements.add(actualIsEqualTo);
+            equalElements.add(unmodifiableList(actualIsEqualTo));
         }
         //System.out.println(actualElements + " x " + expectedElements + " -> " + equalElements);
         return equalElements;
     }
 
     ComparisonMatrix compare() {
-        int actualElementsSize = equalElements.size();
-        for (int i = compareFrom; i < actualElementsSize; i++) {
-            List<Integer> matches = getEqualValues(i);
-            if (matches.size() == 1) {
-                recordMatch(i, matches.get(0));
-            } else if (matches.size() > 0) {
-                // we have more matches, since comparison does not have to be transitive ([1, 2] == [2] == [2, 3]), we have to check all the possibilities
-                for (int match : matches) {
-                    ComparisonMatrix copy = copy(i + 1);
-                    copy.recordMatch(i, match);
-                    copy = copy.compare();
-                    if (copy.isMatching()) {
-                        return copy;
+        doSimpleMatching();
+
+        for (int i = compareFrom; i < equalElements.size(); i++) {
+            if (!alreadyMatched.get(i)) {
+                List<Integer> matches = getEqualValues(i);
+                if (matches.size() == 1) {
+                    recordMatch(i, matches.get(0));
+                } else if (matches.size() > 0) {
+                    // we have more matches, since comparison does not have to be transitive ([1, 2] == [2] == [2, 3]), we have to check all the possibilities
+                    for (int match : matches) {
+                        ComparisonMatrix copy = copy(i + 1);
+                        copy.recordMatch(i, match);
+                        copy = copy.compare();
+                        if (copy.isMatching()) {
+                            return copy;
+                        }
                     }
+                    // no combination matching, let's report the first difference
+                    recordMatch(i, matches.get(0));
+                } else {
+                    addExtra(i);
                 }
-                // no combination matching, let's report the first difference
-                recordMatch(i, matches.get(0));
-            } else {
-                addExtra(i);
             }
         }
         return this;
     }
+
+    /**
+     * Algorithm above is not effective when we are comparing arrays with lot of matching values like [1,1,1,1,1,1] vs [8,1,1,1,1,1].
+     * We can make it faster if we collapse simple matching values.
+     */
+    private void doSimpleMatching() {
+        for (int i = 0; i < equalElements.size(); i++) {
+            List<Integer> equalTo = equalElements.get(i);
+            if (equalTo.size() > 0) {
+                List<Integer> equivalentElements = getEquivalentElements(equalTo);
+
+                // We have the same set matching as is equivalent, we can remove them all
+                if (equalTo.size() == equivalentElements.size()) {
+                    for (int j = 0; j < equivalentElements.size(); j++) {
+                        recordMatch(equivalentElements.get(j), equalTo.get(j));
+                    }
+                } else if (equivalentElements.size() > 1) {
+                    // if there is more equivalent elements, we can
+
+                }
+            }
+        }
+    }
+
+    private List<Integer> getEquivalentElements(List<Integer> equalTo) {
+        List<Integer> equivalentElments = new ArrayList<>();
+        for (int i = 0; i < equalElements.size(); i++) {
+            if (equalTo.equals(equalElements.get(i))) {
+                equivalentElments.add(i);
+            }
+        }
+        return equivalentElments;
+    }
+
 
     private void addExtra(int index) {
         extra.add(index);
@@ -107,17 +148,16 @@ class ComparisonMatrix {
     }
 
     ComparisonMatrix copy(int compareFrom) {
-        return new ComparisonMatrix(deepCopy(equalElements), compareFrom, matches.clone(), new ArrayList<>(extra), expectedElements, actualElements);
-    }
-
-    private List<List<Integer>> deepCopy(List<List<Integer>> list) {
-        return list.stream().map(ArrayList::new).collect(toList());
+        return new ComparisonMatrix(new ArrayList<>(equalElements), compareFrom, matches.clone(), new ArrayList<>(extra), (BitSet) alreadyMatched.clone(), expectedElements, actualElements);
     }
 
     private void recordMatch(int actualIndex, int expectedIndex) {
         matches[expectedIndex] = actualIndex;
         // remove all matches of expectedIndex
-        equalElements.forEach(l -> l.removeIf(i -> i.equals(expectedIndex)));
+        for (int i = 0; i < equalElements.size(); i++) {
+            equalElements.set(i, equalElements.get(i).stream().filter(n -> n != expectedIndex).collect(toList()));
+        }
+        alreadyMatched.set(actualIndex);
     }
 
     private boolean isMatching() {
