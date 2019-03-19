@@ -18,6 +18,7 @@ package net.javacrumbs.jsonunit.core.internal;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
+import net.javacrumbs.jsonunit.core.internal.ArrayComparison.ComparisonResult;
 import net.javacrumbs.jsonunit.core.internal.ArrayComparison.NodeWithIndex;
 import net.javacrumbs.jsonunit.core.listener.Difference;
 import org.hamcrest.Description;
@@ -456,7 +457,7 @@ public class Diff {
         }
 
         if (hasOption(IGNORING_ARRAY_ORDER)) {
-            ArrayComparison arrayComparison = compareArraysIgnoringOrder(expectedElements, actualElements, path);
+            ComparisonResult arrayComparison = compareArraysIgnoringOrder(expectedElements, actualElements, path);
             List<NodeWithIndex> missingValues = arrayComparison.getMissingValues();
             List<NodeWithIndex> extraValues = arrayComparison.getExtraValues();
             if (expectedElements.size() == actualElements.size() && missingValues.size() == 1 && extraValues.size() == 1) {
@@ -507,7 +508,7 @@ public class Diff {
         }
     }
 
-    private ArrayComparison compareArraysIgnoringOrder(List<Node> expectedElements, List<Node> actualElements, Path path) {
+    private ComparisonResult compareArraysIgnoringOrder(List<Node> expectedElements, List<Node> actualElements, Path path) {
         return new ArrayComparison(expectedElements, actualElements, path, configuration).compareArraysIgnoringOrder();
     }
 

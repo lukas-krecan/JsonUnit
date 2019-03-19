@@ -16,7 +16,6 @@
 package net.javacrumbs.jsonunit.test.base;
 
 import net.javacrumbs.jsonunit.JsonAssert;
-import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -1170,14 +1169,46 @@ public abstract class AbstractJsonAssertTest {
             "{\"contentId\":\"category::samplecategory\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":96,\"child\":true}," +
             "{\"contentId\":\"product::product11\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":247,\"child\":true}," +
             "{\"contentId\":\"product::product11\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":8,\"child\":true}," +
-            "{\"contentId\":\"category::samplecategory\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":124,\"child\":true}," +
+            "{\"contentId\":\"category::samplecategory\",\"namespace\":\"testcustomer-bulk-client-3\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":124,\"child\":true}," +
             "{\"contentId\":\"product::product11\",\"namespace\":\"testcustomer-bulk-client-1\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":162,\"child\":true}," +
             "{\"contentId\":\"product::product11\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":182,\"child\":true}," +
             "{\"contentId\":\"d04b643f-c74b-5f3f-8042-5a5346a2c34a\",\"namespace\":\"testcustomer-bulk-client-2\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":0,\"child\":false}," +
             "{\"contentId\":\"d04b643f-c74b-5f3f-8042-5a5346a2c34a\",\"namespace\":\"testcustomer-bulk-client-1\",\"type\":\"contributor\",\"dateString\":\"\",\"sortIndex\":0,\"child\":false}" +
             "]}";
 
-        assertJsonEquals(actualFileM, expectedFileM, when(Option.IGNORING_ARRAY_ORDER).whenIgnoringPaths("skeletonKeys[*].sortIndex"));
+        assertThatThrownBy(() -> assertJsonEquals(actualFileM, expectedFileM, when(IGNORING_ARRAY_ORDER).whenIgnoringPaths("skeletonKeys[*].sortIndex")))
+            .hasMessage("JSON documents are different:\n" +
+                "Different value found when comparing expected array element skeletonKeys[10] to actual element skeletonKeys[10].\n" +
+                "Different value found in node \"skeletonKeys[10].namespace\", expected: <\"testcustomer-bulk-client-2\"> but was: <\"testcustomer-bulk-client-3\">.\n");
+    }
+
+    @Test
+    void shouldCompareLongArrays() {
+        String actual = "[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]";
+
+        String expected = "[1,8,9,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]";
+
+        assertThatThrownBy(() -> assertJsonEquals(actual, expected, when(IGNORING_ARRAY_ORDER)))
+            .hasMessage("JSON documents are different:\n" +
+                "Array \"\" has different content. Missing values: [1, 1], extra values: [8, 9], expected: <[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]> " +
+                "but was: <[1,8,9,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]>\n");
+    }
+
+    @Test
+    void shouldCompareLongArraysWithTwoEquivaletSets() {
+        String actual = "[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5]";
+
+        String expected = "[1,8,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,9,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5]";
+
+        assertThatThrownBy(() -> assertJsonEquals(actual, expected, when(IGNORING_ARRAY_ORDER)))
+            .hasMessage("JSON documents are different:\n" +
+                "Array \"\" has different content. Missing values: [1, 5], extra values: [8, 9], expected: <[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5]> " +
+                "but was: <[1,8,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,9,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5]>\n");
+    }
+
+    @Test
+    void shouldUseRightValuesWhenComparingArrays() {
+        assertJsonEquals("[\"${json-unit.ignore}\",\"${json-unit.ignore}\",2]", "[1,2,1]", when(IGNORING_ARRAY_ORDER));
     }
 
     protected abstract Object readValue(String value);
