@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
+import static java.lang.Math.min;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
 import static net.javacrumbs.jsonunit.core.Configuration.dummyDifferenceListener;
@@ -111,28 +112,51 @@ class ComparisonMatrix {
      */
     private void doSimpleMatching() {
         for (int i = 0; i < equalElements.size(); i++) {
-            List<Integer> equalTo = equalElements.get(i);
-            if (equalTo.size() > 0) {
-                List<Integer> equivalentElements = getEquivalentElements(equalTo);
+            if (!alreadyMatched.get(i)) {
+                List<Integer> equalTo = equalElements.get(i);
+                if (equalTo.size() > 0) {
+                    List<Integer> equivalentElements = getEquivalentElements(equalTo);
 
-                // We have the same set matching as is equivalent, we can remove them all
-                if (equalTo.size() == equivalentElements.size()) {
-                    for (int j = 0; j < equivalentElements.size(); j++) {
-                        recordMatch(equivalentElements.get(j), equalTo.get(j));
+                    // We have the same set matching as is equivalent, we can remove them all
+                    if (equalTo.size() == equivalentElements.size()) {
+                        for (int j = 0; j < equivalentElements.size(); j++) {
+                            recordMatch(equivalentElements.get(j), equalTo.get(j));
+                        }
+                    } else if (equivalentElements.size() > 1 && equalTo.size() > 1) {
+                        List<Integer> equalToUsedOnlyInEquivalentElements = getEqualToUsedOnlyInEquivalentElements(equalTo, equivalentElements);
+                        for (int j = 0; j < min(equivalentElements.size(), equalToUsedOnlyInEquivalentElements.size()); j++) {
+                            recordMatch(equivalentElements.get(j), equalTo.get(j));
+                        }
                     }
-                } else if (equivalentElements.size() > 1) {
-                    // if there is more equivalent elements, we can
-
                 }
             }
         }
     }
 
+    /**
+     * If there are more equivalent elements, we can match those that are not used anywhere else
+     * we iterate over actual elements that are not in equivalentElements and from equalTo remove those
+     * that are used outside equivalent elements
+     */
+    private List<Integer> getEqualToUsedOnlyInEquivalentElements(List<Integer> equalTo, List<Integer> equivalentElements) {
+        List<Integer> result = new ArrayList<>(equalTo);
+        for (int i = 0; i < equalElements.size(); i++) {
+            if (!alreadyMatched.get(i)) {
+                if (!equivalentElements.contains(i)) {
+                    result.removeAll(equalElements.get(i));
+                }
+            }
+        }
+        return result;
+    }
+
     private List<Integer> getEquivalentElements(List<Integer> equalTo) {
         List<Integer> equivalentElments = new ArrayList<>();
         for (int i = 0; i < equalElements.size(); i++) {
-            if (equalTo.equals(equalElements.get(i))) {
-                equivalentElments.add(i);
+            if (!alreadyMatched.get(i)) {
+                if (equalTo.equals(equalElements.get(i))) {
+                    equivalentElments.add(i);
+                }
             }
         }
         return equivalentElments;
@@ -155,7 +179,9 @@ class ComparisonMatrix {
         matches[expectedIndex] = actualIndex;
         // remove all matches of expectedIndex
         for (int i = 0; i < equalElements.size(); i++) {
-            equalElements.set(i, equalElements.get(i).stream().filter(n -> n != expectedIndex).collect(toList()));
+            if (!alreadyMatched.get(i)) {
+                equalElements.set(i, equalElements.get(i).stream().filter(n -> n != expectedIndex).collect(toList()));
+            }
         }
         alreadyMatched.set(actualIndex);
     }
