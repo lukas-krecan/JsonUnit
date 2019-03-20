@@ -614,6 +614,14 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
+    void exactArrayMatch() {
+        assertThatThrownBy(() -> assertJsonEquals("[1,2,3]", "[1,3,2]"))
+            .hasMessage("JSON documents are different:\n" +
+                "Different value found in node \"[1]\", expected: <2> but was: <3>.\n" +
+                "Different value found in node \"[2]\", expected: <3> but was: <2>.\n");
+    }
+
+    @Test
     void arrayShouldMatch() {
         assertJsonEquals("[[3],[2],[1]]", "[[1,2],[2,3],[2,4]]", when(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_ARRAY_ITEMS));
     }
