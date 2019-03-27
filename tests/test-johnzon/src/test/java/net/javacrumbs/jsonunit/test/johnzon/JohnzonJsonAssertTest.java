@@ -39,4 +39,10 @@ public class JohnzonJsonAssertTest extends AbstractJsonAssertTest {
     public void testBinary() {
         // no support for binary
     }
+
+    @Override
+    @Disabled
+    protected void shouldParseExpectedValueLeniently() {
+        // not supported
+    }
 }

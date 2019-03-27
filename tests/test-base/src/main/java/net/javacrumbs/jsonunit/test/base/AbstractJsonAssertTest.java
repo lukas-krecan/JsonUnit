@@ -72,7 +72,7 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
-    public void shouldParseExpectedValueLeniently() {
+    protected void shouldParseExpectedValueLeniently() {
         assertJsonEquals("{//Comment\ntest:'1'}", "{\n\"test\": \"1\"\n}");
     }
 
@@ -918,7 +918,7 @@ public abstract class AbstractJsonAssertTest {
     void parametrizedMatcherShouldFail() {
         Matcher<?> divisionMatcher = new DivisionMatcher();
         try {
-            assertJsonEquals("{test: '${json-unit.matches:isDivisibleBy}3'}", "{\"test\":5}", JsonAssert.withMatcher("isDivisibleBy", divisionMatcher));
+            assertJsonEquals("{\"test\": \"${json-unit.matches:isDivisibleBy}3\"}", "{\"test\":5}", JsonAssert.withMatcher("isDivisibleBy", divisionMatcher));
         } catch (AssertionError e) {
             assertEquals("JSON documents are different:\nMatcher \"isDivisibleBy\" does not match value 5 in node \"test\". It is not divisible by <3>\n", e.getMessage());
         }
@@ -927,13 +927,13 @@ public abstract class AbstractJsonAssertTest {
     @Test
     void parametrizedMatcherShouldMatch() {
         Matcher<?> divisionMatcher = new DivisionMatcher();
-        assertJsonEquals("{test: '${json-unit.matches:isDivisibleBy}3'}", "{\"test\":6}", JsonAssert.withMatcher("isDivisibleBy", divisionMatcher));
+        assertJsonEquals("{\"test\": \"${json-unit.matches:isDivisibleBy}3\"}", "{\"test\":6}", JsonAssert.withMatcher("isDivisibleBy", divisionMatcher));
     }
 
     @Test
     void missingParameterShouldResultInEmptyString() {
         Matcher<?> divisionMatcher = new DivisionMatcher();
-        assertThatThrownBy(() -> assertJsonEquals("{test: '${json-unit.matches:isDivisibleBy}'}", "{\"test\":6}", JsonAssert.withMatcher("isDivisibleBy", divisionMatcher)))
+        assertThatThrownBy(() -> assertJsonEquals("{\"test\": \"${json-unit.matches:isDivisibleBy}\"}", "{\"test\":6}", JsonAssert.withMatcher("isDivisibleBy", divisionMatcher)))
             .isInstanceOf(NumberFormatException.class);
     }
 
@@ -943,7 +943,7 @@ public abstract class AbstractJsonAssertTest {
         Matcher<?> emptyMatcher = empty();
 
         assertJsonEquals(
-            "{test: '${json-unit.matches:isDivisibleBy}3', x: '${json-unit.matches:isEmpty}'}",
+            "{\"test\": \"${json-unit.matches:isDivisibleBy}3\", \"x\": \"${json-unit.matches:isEmpty}\"}",
             "{\"test\":6, \"x\": []}",
             JsonAssert
                 .withMatcher("isDivisibleBy", divisionMatcher)

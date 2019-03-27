@@ -17,6 +17,7 @@ package net.javacrumbs.jsonunit.test.johnzon;
 
 import net.javacrumbs.jsonunit.test.base.AbstractJsonFluentAssertTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import javax.json.Json;
@@ -37,5 +38,11 @@ public class JohnzonJsonFluentAssertTest extends AbstractJsonFluentAssertTest {
             .add("test", JsonValue.NULL)
             .build();
         assertThatJson(json).isEqualTo("{\"test\":null}");
+    }
+
+    @Override
+    @Disabled
+    public void shouldAllowUnquotedKeysAndCommentInExpectedValue() {
+        //not supported
     }
 }

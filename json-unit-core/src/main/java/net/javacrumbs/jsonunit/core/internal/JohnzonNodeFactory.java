@@ -113,9 +113,13 @@ public class JohnzonNodeFactory extends AbstractNodeFactory {
         @Override
         public Node get(String key) {
             if (jsonNode instanceof JsonObject) {
-                return newNode(((JsonObject) jsonNode).get(key));
-            }
-            else {
+                JsonObject jsonObject = (JsonObject) this.jsonNode;
+                if (jsonObject.containsKey(key)) {
+                    return newNode(jsonObject.get(key));
+                } else {
+                    return Node.MISSING_NODE;
+                }
+            } else {
                 return Node.MISSING_NODE;
             }
         }
