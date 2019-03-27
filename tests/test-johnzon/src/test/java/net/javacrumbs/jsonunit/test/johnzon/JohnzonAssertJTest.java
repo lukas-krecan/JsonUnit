@@ -17,6 +17,8 @@ package net.javacrumbs.jsonunit.test.johnzon;
 
 import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class JohnzonAssertJTest extends AbstractAssertJTest {
 
@@ -24,4 +26,24 @@ public class JohnzonAssertJTest extends AbstractAssertJTest {
     protected Object readValue(String value) {
             return JsonTestUtils.readByJohnzon(value);
         }
+
+    @Test
+    @Override
+    @Disabled
+    public void shouldAllowUnquotedKeysAndCommentInExpectedValue() {
+        // not supported
+    }
+
+    @Test
+    @Override
+    @Disabled
+    protected void demo() {
+        // not supported
+    }
+
+    @Override
+    @Disabled
+    protected void shouldAssertLenient() {
+
+    }
 }
