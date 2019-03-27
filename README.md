@@ -11,6 +11,7 @@ JsonUnit is a library that simplifies JSON comparison in tests.
 - [Features](#features)
   * [JsonPath support (beta)](#jsonpath)
   * [Ignoring values](#ignorevalues)
+  * [Ignoring elements](#ignoreelements)
   * [Ignoring paths](#ignorepaths)
   * [Regular expressions](#regexp)
   * [Type placeholders](#typeplc)
@@ -97,7 +98,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>2.5.1</version>
+    <version>2.6.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -177,7 +178,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>2.5.1</version>
+    <version>2.6.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -211,7 +212,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.5.1</version>
+    <version>2.6.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -244,7 +245,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.5.1</version>
+    <version>2.6.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -289,7 +290,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.5.1</version>
+    <version>2.6.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -321,7 +322,7 @@ For other API styles you have to first import JsonPath support module
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-json-path</artifactId>
-    <version>2.5.1</version>
+    <version>2.6.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -346,8 +347,23 @@ placeholder like this
 assertJsonEquals("{\"test\":\"${json-unit.ignore}\"}",
     "{\n\"test\": {\"object\" : {\"another\" : 1}}}");
 ```
+Please note that the assertion will fail if the `test` element is missing in the actual value.
+
+## <a name="ignoreelements"></a>Ignoring elements
+If the element needs to be ignored completely you can use `${json-unit.ignore-element}` 
+placeholder.
+
+```java
+assertThatJson("{\"root\":{\"test\":1, \"ignored\": null}}")
+      .isEqualTo("{\"root\":{\"test\":1, \"ignored\": \"${json-unit.ignore-element}\"}}");
+```
+
+The assertion will not fail if the element is missing in the actual value.
 
 ## <a name="ignorepaths"></a>Ignoring paths
+
+`whenIgnoringPaths` configuration option makes JsonUnit ignore the specified paths in the actual value. If the path
+matches, it's completely ignored. It may be missing, null or have any value.
 
 ```java
 // AssertJ style
@@ -601,6 +617,9 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 2.6.0
+* ${json-unit.ignore-elements} introduced
+
 ## 2.5.1
 * Array comparison optimization
 
