@@ -150,8 +150,9 @@ public class Diff {
                 extraKeys = getNotNullExtraKeys(actual, extraKeys);
             }
 
-
             removePathsToBeIgnored(path, extraKeys);
+
+            removeMissingIgnoredElements(expected, missingKeys);
 
             if (!missingKeys.isEmpty() || !extraKeys.isEmpty()) {
                 for (String key : missingKeys) {
@@ -171,6 +172,10 @@ public class Diff {
         }
     }
 
+    private boolean removeMissingIgnoredElements(Node expected, Set<String> missingKeys) {
+        return missingKeys.removeIf(missingKey -> shouldIgnoreElement(expected.get(missingKey)));
+    }
+
     @SuppressWarnings("unchecked")
     private String normalize(Node node) {
         Map<String, Object> map = (Map<String, Object>) node.getValue();
@@ -184,22 +189,12 @@ public class Diff {
 
     private void removePathsToBeIgnored(Path path, Set<String> extraKeys) {
         if (!configuration.getPathsToBeIgnored().isEmpty()) {
-            Iterator<String> iterator = extraKeys.iterator();
-            while (iterator.hasNext()) {
-                Path keyWithPath = path.toField(iterator.next());
-                if (shouldIgnorePath(keyWithPath)) {
-                    iterator.remove();
-                }
-            }
+            extraKeys.removeIf(key -> shouldIgnorePath(path.toField(key)));
         }
     }
 
     /**
      * Returns extra keys that are not null.
-     *
-     * @param actual
-     * @param extraKeys
-     * @return
      */
     private Set<String> getNotNullExtraKeys(Node actual, Set<String> extraKeys) {
         Set<String> notNullExtraKeys = new TreeSet<>();
@@ -282,6 +277,10 @@ public class Diff {
             return;
         }
 
+        if (shouldIgnoreElement(expectedNode)) {
+            return;
+        }
+
         // Any number
         if (checkAny(NodeType.NUMBER, ANY_NUMBER_PLACEHOLDER, "a number", context)) {
             return;
@@ -337,6 +336,10 @@ public class Diff {
                     throw new IllegalStateException("Unexpected node type " + expectedNodeType);
             }
         }
+    }
+
+    private boolean shouldIgnoreElement(Node expectedNode) {
+        return expectedNode.getNodeType() == NodeType.STRING && "${json-unit.ignore-element}".equals(expectedNode.asText());
     }
 
     private boolean shouldIgnorePath(Path fieldPath) {
