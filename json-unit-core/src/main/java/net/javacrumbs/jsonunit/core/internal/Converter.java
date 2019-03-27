@@ -82,6 +82,9 @@ class Converter {
                 factories.add(new Jackson2NodeFactory());
             } else if ("gson".equals(factoryName)) {
                 factories.add(new GsonNodeFactory());
+            } else if ("johnzon".equals(factoryName)) {
+                factories.add(new JohnzonNodeFactory());
+
             } else {
                 throw new IllegalArgumentException("'" +factoryName + "' library name not recognized.");
             }
@@ -95,6 +98,10 @@ class Converter {
             factories.add(new MoshiNodeFactory());
         }
 
+        if (johnzonPresent) {
+            factories.add(new JohnzonNodeFactory());
+        }
+
         if (jsonOrgPresent) {
             factories.add(new JsonOrgNodeFactory());
         }
@@ -105,10 +112,6 @@ class Converter {
 
         if (jackson2Present) {
             factories.add(new Jackson2NodeFactory());
-        }
-
-        if (johnzonPresent) {
-            factories.add(new JohnzonNodeFactory());
         }
         return factories;
     }

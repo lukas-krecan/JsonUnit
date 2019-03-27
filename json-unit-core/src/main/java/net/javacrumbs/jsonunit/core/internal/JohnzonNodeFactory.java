@@ -51,10 +51,6 @@ public class JohnzonNodeFactory extends AbstractNodeFactory {
 
     @Override
     protected Node readValue(Reader reader, String label, boolean lenient) {
-        // no lenient mode
-        if (lenient) {
-            throw new UnsupportedOperationException("Lenient Mode ist not supported by Johnzon");
-        }
         try (JsonReader parser = Json.createReader(reader)) {
             return newNode(parser.readValue());
         }
