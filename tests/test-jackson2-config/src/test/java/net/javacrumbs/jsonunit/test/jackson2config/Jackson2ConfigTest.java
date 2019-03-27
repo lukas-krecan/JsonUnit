@@ -33,6 +33,12 @@ class Jackson2ConfigTest {
         assertThatJson(new Bean()).isEqualTo(new Bean());
     }
 
+
+    @Test
+    void testDeserializeLowercase() {
+        assertThatJson("{\"TeSt\":{\"iNNer\":1}}").isEqualTo("{\"test\":{\"INNER\":1}}");
+    }
+
     public static class Bean {
         private final Instant time = Instant.parse("2019-01-11T18:12:00Z");
 

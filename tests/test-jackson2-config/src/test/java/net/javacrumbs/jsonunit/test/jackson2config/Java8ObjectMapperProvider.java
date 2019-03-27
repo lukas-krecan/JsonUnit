@@ -16,8 +16,11 @@
 package net.javacrumbs.jsonunit.test.jackson2config;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import net.javacrumbs.jsonunit.providers.Jackson2ObjectMapperProvider;
 
@@ -31,14 +34,49 @@ public class Java8ObjectMapperProvider implements Jackson2ObjectMapperProvider {
         mapper = new ObjectMapper().registerModule(new JavaTimeModule());
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 
+        // Test if we can deserialize lowercase keys only
+        mapper.setNodeFactory(new LowercaseNodeFactory(true));
+
         lenientMapper = new ObjectMapper().registerModule(new JavaTimeModule());
         lenientMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         lenientMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
         lenientMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+
+        // Test if we can deserialize lowercase keys only
+        lenientMapper.setNodeFactory(new LowercaseNodeFactory(true));
     }
 
     @Override
     public ObjectMapper getObjectMapper(boolean lenient) {
         return lenient ? lenientMapper : mapper;
+    }
+
+    private static class LowercaseNodeFactory extends JsonNodeFactory {
+        LowercaseNodeFactory(boolean bigDecimalExact) {
+            super(bigDecimalExact);
+        }
+
+        @Override
+        public ObjectNode objectNode() {
+            return new LowercaseObjectNode(this);
+        }
+    }
+
+    private static class LowercaseObjectNode extends ObjectNode {
+        LowercaseObjectNode(JsonNodeFactory nc) {
+            super(nc);
+        }
+
+        @Override
+        protected ObjectNode _put(String fieldName, JsonNode value) {
+            return super._put(fieldName.toLowerCase(), value);
+        }
+
+        @Override
+        public JsonNode replace(String fieldName, JsonNode value) {
+            return super.replace(fieldName.toLowerCase(), value);
+        }
+
+        //TODO: override other methods
     }
 }
