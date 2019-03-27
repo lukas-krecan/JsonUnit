@@ -215,6 +215,39 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void shouldIgnoreIfMissing() {
+        assertThatThrownBy(() ->
+            assertThatJson("{\"root\":{\"test\":1}}").isEqualTo("{\"root\":{\"test\":1, \"ignored\": \"${json-unit.ignore}\"}}")
+        ).hasMessage("JSON documents are different:\n" +
+            "Different keys found in node \"root\", missing: \"root.ignored\", expected: <{\"ignored\":\"${json-unit.ignore}\",\"test\":1}> but was: <{\"test\":1}>\n");
+    }
+
+    @Test
+    void shouldIgnoreIfNull() {
+        assertThatJson("{\"root\":{\"test\":1, \"ignored\": null}}").isEqualTo("{\"root\":{\"test\":1, \"ignored\": \"${json-unit.ignore}\"}}");
+    }
+
+    @Test
+    void shouldIgnoreIfObject() {
+        assertThatJson("{\"root\":{\"test\":1, \"ignored\": {\"a\": 1}}}").isEqualTo("{\"root\":{\"test\":1, \"ignored\": \"${json-unit.ignore}\"}}");
+    }
+
+    @Test
+    void shouldIgnoreElementIfMissing() {
+        assertThatJson("{\"root\":{\"test\":1}}").isEqualTo("{\"root\":{\"test\":1, \"ignored\": \"${json-unit.ignore-element}\"}}");
+    }
+
+    @Test
+    void shouldIgnoreElementIfNull() {
+        assertThatJson("{\"root\":{\"test\":1, \"ignored\": null}}").isEqualTo("{\"root\":{\"test\":1, \"ignored\": \"${json-unit.ignore-element}\"}}");
+    }
+
+    @Test
+    void shouldIgnoreElementIfObject() {
+        assertThatJson("{\"root\":{\"test\":1, \"ignored\": {\"a\": 1}}}").isEqualTo("{\"root\":{\"test\":1, \"ignored\": \"${json-unit.ignore-element}\"}}");
+    }
+
+    @Test
     void shouldAssertObjectJson() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": 1}}").node("a").isObject().isEqualTo(json("{\"b\": 2}")))
             .hasMessage("JSON documents are different:\n" +
