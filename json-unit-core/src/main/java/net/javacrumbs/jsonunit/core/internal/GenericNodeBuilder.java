@@ -16,11 +16,14 @@
 package net.javacrumbs.jsonunit.core.internal;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toBoolList;
+import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toDoubleList;
+import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toIntList;
 
 class GenericNodeBuilder implements NodeBuilder {
     private static final GenericNodeBuilder INSTANCE = new GenericNodeBuilder();
@@ -43,19 +46,11 @@ class GenericNodeBuilder implements NodeBuilder {
         } else if (object instanceof Object[]) {
             return new ArrayNode(Arrays.asList((Object[]) object), this);
         } else if (object instanceof int[]) {
-            int[] array = (int[]) object;
-            List<Integer> list = new ArrayList<>(array.length);
-            for (int i : array) {
-                list.add(i);
-            }
-            return new ArrayNode(list, this);
+            return new ArrayNode(toIntList((int[]) object), this);
         } else if (object instanceof double[]) {
-            double[] array = (double[]) object;
-            List<Double> list = new ArrayList<>(array.length);
-            for (double i : array) {
-                list.add(i);
-            }
-            return new ArrayNode(list, this);
+            return new ArrayNode(toDoubleList((double[]) object), this);
+        } else if (object instanceof boolean[]) {
+            return new ArrayNode(toBoolList((boolean[]) object), this);
         } else if (object instanceof List) {
             return new ArrayNode((List<?>) object, this);
         } else if (object instanceof Node) {

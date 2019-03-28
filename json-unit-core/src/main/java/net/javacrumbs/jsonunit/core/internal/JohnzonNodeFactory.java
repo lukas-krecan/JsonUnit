@@ -25,10 +25,16 @@ import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.JsonString;
 import javax.json.JsonValue;
+import javax.json.stream.JsonParsingException;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.Map;
+
+import static java.util.Arrays.asList;
+import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toBoolList;
+import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toDoubleList;
+import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toIntList;
 
 public class JohnzonNodeFactory extends AbstractNodeFactory {
 
@@ -38,8 +44,19 @@ public class JohnzonNodeFactory extends AbstractNodeFactory {
     protected Node doConvertValue(Object source) {
         if (source instanceof JsonValue) {
             return newNode((JsonValue) source);
-        }
-        else {
+        } else if (source instanceof int[]) {
+            // Johnzon can't convert arrays but it support lists
+            return newNode(mapper.toStructure(toIntList((int[]) source)));
+        } else if (source instanceof double[]) {
+            // Johnzon can't convert arrays but it support lists
+            return newNode(mapper.toStructure(toDoubleList((double[]) source)));
+        } else if (source instanceof boolean[]) {
+            // Johnzon can't convert arrays but it support lists
+            return newNode(mapper.toStructure(toBoolList((boolean[]) source)));
+        } else if (source instanceof Object[]) {
+            // Johnzon can't convert arrays but it support lists
+            return newNode(mapper.toStructure(asList((Object[]) source)));
+        } else {
             return newNode(mapper.toStructure(source));
         }
     }
@@ -52,7 +69,11 @@ public class JohnzonNodeFactory extends AbstractNodeFactory {
     @Override
     protected Node readValue(Reader reader, String label, boolean lenient) {
         try (JsonReader parser = Json.createReader(reader)) {
-            return newNode(parser.readValue());
+            try {
+                return newNode(parser.readValue());
+            } catch (JsonParsingException e) {
+                throw new IllegalArgumentException(e);
+            }
         }
     }
 

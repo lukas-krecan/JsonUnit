@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.math.BigDecimal.valueOf;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
@@ -734,8 +735,28 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void testEqualsToList() {
+        assertThatJson("{\"test\":[1,2,3]}").node("test").isEqualTo(asList(1, 2, 3));
+    }
+
+    @Test
+    void testEqualsToObjectList() {
+        assertThatJson("{\"test\":[{\"a\":1}, {\"b\":2}]}").node("test").isEqualTo(asList(readValue("{\"a\":1}"), readValue("{\"b\":2}")));
+    }
+
+    @Test
     void testEqualsToDoubleArray() {
         assertThatJson("{\"test\":[1.0,2.0,3.0]}").node("test").isEqualTo(new double[]{1, 2, 3});
+    }
+
+    @Test
+    void testEqualsToBooleanArray() {
+        assertThatJson("{\"test\":[true, false]}").node("test").isEqualTo(new boolean[]{true, false});
+    }
+
+    @Test
+    void testEqualsToObjectArray() {
+        assertThatJson("{\"test\":[{\"a\":1}, {\"b\":2}]}").node("test").isEqualTo(new Object[]{readValue("{\"a\":1}"), readValue("{\"b\":2}")});
     }
 
     @Test
