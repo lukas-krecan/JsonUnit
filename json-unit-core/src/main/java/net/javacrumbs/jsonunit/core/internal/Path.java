@@ -128,6 +128,7 @@ public final class Path {
     }
 
     private static Node doStep(String step, Node startNode) {
+        // this regexp translates to \\\. which is find one backspace following by a dot
         step = step.replaceAll("\\\\\\.", ".");
         Matcher matcher = arrayPattern.matcher(step);
         if (!matcher.matches()) {
