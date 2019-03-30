@@ -128,7 +128,7 @@ public final class Path {
     }
 
     private static Node doStep(String step, Node startNode) {
-        step = step.replaceAll("\\\\.", ".");
+        step = step.replaceAll("\\\\\\.", ".");
         Matcher matcher = arrayPattern.matcher(step);
         if (!matcher.matches()) {
             startNode = startNode.get(step);

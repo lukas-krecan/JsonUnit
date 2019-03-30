@@ -824,6 +824,23 @@ public abstract class AbstractAssertJTest {
         assertThatJson("{\"json\": \"{\\\"a\\\" : 1}\"}").node("json").isString().isEqualTo("{\"a\" : 1}");
     }
 
+    @Test
+    void pathEscapingWorks() {
+        final String json = "{\"C:\\\\path\\\\file.ext\": {\"Status\": \"OK\"}}";
+        final String pomPath = "C:\\path\\file.ext";
+
+        System.out.println(json);
+        assertThatJson(json)
+            .isObject()
+            .containsKey(pomPath);
+
+        assertThatJson(json)
+            .node(pomPath.replace(".", "\\."))
+            .isPresent()
+            .isObject()
+            .contains(entry("Status", "OK"));
+    }
+
 
     @Test
     void testArrayShouldMatchRegardlessOfOrder() {
