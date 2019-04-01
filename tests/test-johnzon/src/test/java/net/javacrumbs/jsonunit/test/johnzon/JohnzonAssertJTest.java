@@ -24,8 +24,8 @@ public class JohnzonAssertJTest extends AbstractAssertJTest {
 
     @Override
     protected Object readValue(String value) {
-            return JsonTestUtils.readByJohnzon(value);
-        }
+        return JsonTestUtils.readByJohnzon(value);
+    }
 
     @Test
     @Override
