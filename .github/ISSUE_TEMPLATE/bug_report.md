@@ -8,7 +8,7 @@ assignees: ''
 ---
 
 **Describe the bug**
-1. Describe which variant of the API are you using (AssertJ, Hmacrest, ...)
+1. Describe which variant of the API are you using (AssertJ, Hamcrest, ...)
 2. Create a small reproducible example and paste it the the bug report.
 3. Describe expected behavior
 
