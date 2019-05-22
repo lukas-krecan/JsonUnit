@@ -35,7 +35,7 @@ class JsonDifference {
     }
 
     AssertionFailedError getError() {
-        return new AssertionFailedError(message, expected.getValue(), actual.getValue());
+        return new AssertionFailedError(getMessage(), expected.getValue(), actual.getValue());
     }
 
     public Node getExpected() {
