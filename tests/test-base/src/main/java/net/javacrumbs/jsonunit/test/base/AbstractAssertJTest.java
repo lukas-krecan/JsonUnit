@@ -18,8 +18,10 @@ package net.javacrumbs.jsonunit.test.base;
 import net.javacrumbs.jsonunit.assertj.JsonAssert.ConfigurableJsonAssert;
 import net.javacrumbs.jsonunit.core.Option;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.MultipleFailuresError;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.math.BigDecimal.valueOf;
@@ -33,6 +35,7 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.entry;
 import static org.hamcrest.Matchers.greaterThan;
@@ -394,6 +397,18 @@ public abstract class AbstractAssertJTest {
             .hasMessage("JSON documents are different:\n" +
                 "Different value found when comparing expected array element a[0] to actual element a[1].\n" +
                 "Different value found in node \"a[1].c\", expected: <2> but was: <1>.\n");
+    }
+
+    @Test
+    void multipleFailuresErrorShouldbeCorrectlyFormatted() {
+        assertThatExceptionOfType(MultipleFailuresError.class)
+            .isThrownBy(() -> assertThatJson("{\"a\":[{\"b\": 1}, {\"c\": 1}, {\"d\": 1}]}").when(Option.IGNORING_ARRAY_ORDER).node("a").isArray()
+            .isEqualTo(json("[{\"c\": 2}, {\"b\": 1} ,{\"d\": 1}]")))
+            .satisfies(e -> {
+                List<Throwable> failures = e.getFailures();
+                assertThat(failures.get(0).getMessage()).isEqualTo("Different value found when comparing expected array element a[0] to actual element a[1].");
+                assertThat(failures.get(1).getMessage()).isEqualTo("Different value found in node \"a[1].c\", expected: <2> but was: <1>.");
+            });
     }
 
     @Test
