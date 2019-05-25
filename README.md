@@ -98,7 +98,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>2.6.2</version>
+    <version>2.6.3</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -178,7 +178,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>2.6.2</version>
+    <version>2.6.3</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -212,7 +212,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.6.2</version>
+    <version>2.6.3</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -245,7 +245,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.6.2</version>
+    <version>2.6.3</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -290,7 +290,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.6.2</version>
+    <version>2.6.3</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -322,7 +322,7 @@ For other API styles you have to first import JsonPath support module
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-json-path</artifactId>
-    <version>2.6.2</version>
+    <version>2.6.3</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -617,6 +617,9 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 2.6.3
+* Ignoring paths even when present in expected value #182 
+
 ## 2.6.2
 * Fixed AssertionErrors messages in MultipleFailuresError #181
 
