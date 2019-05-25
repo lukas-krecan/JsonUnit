@@ -151,6 +151,7 @@ public class Diff {
             }
 
             removePathsToBeIgnored(path, extraKeys);
+            removePathsToBeIgnored(path, missingKeys);
 
             removeMissingIgnoredElements(expected, missingKeys);
 
@@ -172,8 +173,8 @@ public class Diff {
         }
     }
 
-    private boolean removeMissingIgnoredElements(Node expected, Set<String> missingKeys) {
-        return missingKeys.removeIf(missingKey -> shouldIgnoreElement(expected.get(missingKey)));
+    private void removeMissingIgnoredElements(Node expected, Set<String> missingKeys) {
+        missingKeys.removeIf(missingKey -> shouldIgnoreElement(expected.get(missingKey)));
     }
 
     @SuppressWarnings("unchecked")
