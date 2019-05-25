@@ -412,6 +412,20 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void shouldIgnoreMissingPathEvenIfItIsInExpectedValue() {
+        assertThatJson("{\"root\":{\"foo\":1}}")
+                .whenIgnoringPaths("root.bar", "missing")
+                .isEqualTo("{\"root\":{\"foo\":1, \"bar\":2}, \"missing\":{\"quux\":\"test\"}}");
+    }
+
+    @Test
+    void shouldIgnoreArrayElement() {
+        assertThatJson("{\"root\":[0, 1, 2]}")
+                .whenIgnoringPaths("root[1]")
+                .isEqualTo("{\"root\":[0, 8, 2]}");
+    }
+
+    @Test
     void arraySimpleIgnoringOrderNotEqualComparison() {
         assertThatJson("{\"a\":[{\"b\": 1}, {\"c\": 1}, {\"d\": 1}]}").when(Option.IGNORING_ARRAY_ORDER).node("a").isArray()
             .isNotEqualTo(json("[{\"c\": 2}, {\"b\": 1} ,{\"d\": 1}]"));

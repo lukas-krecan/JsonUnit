@@ -340,6 +340,13 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
             return withTolerance(BigDecimal.valueOf(tolerance));
         }
 
+        /**
+         * Makes JsonUnit ignore the specified paths in the actual value. If the path matches,
+         * it's completely ignored. It may be missing, null or have any value
+         *
+         * @param pathsToBeIgnored
+         * @return
+         */
         public ConfigurableJsonAssert whenIgnoringPaths(String... pathsToBeIgnored) {
             return withConfiguration(c -> c.whenIgnoringPaths(pathsToBeIgnored));
         }

@@ -357,7 +357,8 @@ public class JsonFluentAssert {
         }
 
         /**
-         * Adds paths to be ignored
+         * Makes JsonUnit ignore the specified paths in the actual value. If the path matches,
+         * it's completely ignored. It may be missing, null or have any value
          */
         public ConfigurableJsonFluentAssert whenIgnoringPaths(String... pathsToBeIgnored) {
             return new ConfigurableJsonFluentAssert(actual, path, description, configuration.whenIgnoringPaths(pathsToBeIgnored));

@@ -118,6 +118,13 @@ public class Configuration {
         return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener);
     }
 
+    /**
+     * Makes JsonUnit ignore the specified paths in the actual value. If the path matches,
+     * it's completely ignored. It may be missing, null or have any value
+     *
+     * @param pathsToBeIgnored
+     * @return
+     */
     public Configuration whenIgnoringPaths(String... pathsToBeIgnored) {
         return new Configuration(tolerance, options, ignorePlaceholder, matchers, asList(pathsToBeIgnored), differenceListener);
     }

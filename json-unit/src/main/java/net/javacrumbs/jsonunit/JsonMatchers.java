@@ -163,6 +163,10 @@ public class JsonMatchers {
             return this;
         }
 
+        /**
+         * Makes JsonUnit ignore the specified paths in the actual value. If the path matches,
+         * it's completely ignored. It may be missing, null or have any value
+         */
         public ConfigurableJsonMatcher<T> whenIgnoringPaths(String... paths) {
             configuration = configuration.whenIgnoringPaths(paths);
             return this;
