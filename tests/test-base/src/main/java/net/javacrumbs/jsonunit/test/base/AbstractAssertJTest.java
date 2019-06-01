@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.math.BigDecimal.valueOf;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
@@ -43,7 +44,7 @@ import static org.hamcrest.Matchers.greaterThan;
 public abstract class AbstractAssertJTest {
 
     @Test
-    void demo() {
+    protected void demo() {
         // Both actual value (in the left) and expected value (in the right) are parsed as JSON
         assertThatJson("{\"root\":{\"a\":1}}").node("root").isEqualTo("{a:1}");
 
@@ -67,7 +68,7 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
-    void shouldAssertLenient() {
+    protected void shouldAssertLenient() {
         assertThatJson("{\"a\":\"1\", \"b\":2}").isEqualTo("{b:2, a:'1'}");
     }
 
@@ -128,7 +129,7 @@ public abstract class AbstractAssertJTest {
         assertThatJson("{\"root\": [{\"target\": 450} ]}")
                         .inPath("$.root")
                         .isArray()
-                        .containsExactly("{target: 450 }");
+                        .containsExactly("{\"target\": 450 }");
     }
 
     @Test
@@ -162,7 +163,7 @@ public abstract class AbstractAssertJTest {
         assertThatJson("{\"root\": [[{\"target\": 450} ]]}")
                         .inPath("$.root")
                         .isArray()
-                        .containsExactly("[{target: 450 }]");
+                        .containsExactly("[{\"target\": 450 }]");
     }
 
     @Test
@@ -170,7 +171,7 @@ public abstract class AbstractAssertJTest {
         assertThatJson("{\"root\": [{\"target\": 450} ]}")
                         .node("root")
                         .isArray()
-                        .containsExactly("{target: 450 }");
+                        .containsExactly("{\"target\": 450 }");
     }
 
     @Test
@@ -202,7 +203,7 @@ public abstract class AbstractAssertJTest {
         assertThatJson("{\"root\": [[{\"target\": 450} ]]}")
                         .node("root")
                         .isArray()
-                        .containsExactly("[{target: 450 }]");
+                        .containsExactly("[{\"target\": 450 }]");
     }
 
     @Test
@@ -214,7 +215,7 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void shouldAssertDirectEqual() {
-        assertThatJson("{\"a\":1}").isEqualTo(json("{'a':'${json-unit.ignore}'}"));
+        assertThatJson("{\"a\":1}").isEqualTo(json("{\"a\":\"${json-unit.ignore}\"}"));
     }
 
     @Test
@@ -317,17 +318,17 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void shouldAssertObjectJsonWithPlaceholder() {
-        assertThatJson("{\"a\":{\"b\": \"ignored\"}}").node("a").isObject().isEqualTo(json("{'b':'${json-unit.any-string}'}"));
+        assertThatJson("{\"a\":{\"b\": \"ignored\"}}").node("a").isObject().isEqualTo(json("{\"b\":\"${json-unit.any-string}\"}"));
     }
 
     @Test
     void shouldAssertObjectIsNotEqualToJsonWithPlaceholder() {
-        assertThatJson("{\"a\":{\"b\": 1}}").node("a").isObject().isNotEqualTo(json("{'b':'${json-unit.any-string}'}"));
+        assertThatJson("{\"a\":{\"b\": 1}}").node("a").isObject().isNotEqualTo(json("{\"b\":\"${json-unit.any-string}\"}"));
     }
 
     @Test
     void shouldAssertObjectIsNotEqualToJsonWithPlaceholderError() {
-        assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": \"string\"}}").node("a").isObject().isNotEqualTo(json("{'b':'${json-unit.any-string}'}")))
+        assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": \"string\"}}").node("a").isObject().isNotEqualTo(json("{\"b\":\"${json-unit.any-string}\"}")))
             .hasMessage("[Different value found in node \"a\"] \n" +
                 "Expecting:\n" +
                 " <{\"b\":\"string\"}>\n" +
@@ -338,7 +339,7 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void shouldAssertObjectJsonWithPlaceholderFailure() {
-        assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": 1}}").node("a").isObject().isEqualTo(json("{'b':'${json-unit.any-string}'}")))
+        assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": 1}}").node("a").isObject().isEqualTo(json("{\"b\":\"${json-unit.any-string}\"}")))
             .hasMessage("JSON documents are different:\n" +
                 "Different value found in node \"a.b\", expected: <a string> but was: <1>.\n");
     }
@@ -561,7 +562,7 @@ public abstract class AbstractAssertJTest {
 
     @Test
     public void shouldAllowUnquotedKeysAndCommentInExpectedValue() {
-        assertThatJson("{\"test\":1}").isEqualTo("{//comment\ntest:1}");
+        assertThatJson("{\"test\":1, \"x\":\"a\"}").isEqualTo("{//comment\ntest:1, x:'a'}");
     }
 
     @Test
@@ -734,8 +735,28 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void testEqualsToList() {
+        assertThatJson("{\"test\":[1,2,3]}").node("test").isEqualTo(asList(1, 2, 3));
+    }
+
+    @Test
+    void testEqualsToObjectList() {
+        assertThatJson("{\"test\":[{\"a\":1}, {\"b\":2}]}").node("test").isEqualTo(asList(readValue("{\"a\":1}"), readValue("{\"b\":2}")));
+    }
+
+    @Test
     void testEqualsToDoubleArray() {
         assertThatJson("{\"test\":[1.0,2.0,3.0]}").node("test").isEqualTo(new double[]{1, 2, 3});
+    }
+
+    @Test
+    void testEqualsToBooleanArray() {
+        assertThatJson("{\"test\":[true, false]}").node("test").isEqualTo(new boolean[]{true, false});
+    }
+
+    @Test
+    void testEqualsToObjectArray() {
+        assertThatJson("{\"test\":[{\"a\":1}, {\"b\":2}]}").node("test").isEqualTo(new Object[]{readValue("{\"a\":1}"), readValue("{\"b\":2}")});
     }
 
     @Test

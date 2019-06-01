@@ -19,7 +19,10 @@ import com.google.gson.JsonParser;
 import com.squareup.moshi.Moshi;
 import org.json.JSONTokener;
 
+import javax.json.Json;
+import javax.json.JsonReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.Map;
 
 public class JsonTestUtils {
@@ -29,6 +32,12 @@ public class JsonTestUtils {
             return new com.fasterxml.jackson.databind.ObjectMapper().readTree(value);
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
+        }
+    }
+
+    public static Object readByJohnzon(String value) {
+        try (JsonReader reader = Json.createReader(new StringReader(value))){
+            return reader.read();
         }
     }
 

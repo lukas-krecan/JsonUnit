@@ -325,7 +325,7 @@ public abstract class AbstractJsonFluentAssertTest {
 
     @Test
     void anyStringShouldAcceptAString() {
-        assertThatJson("{\"test\":\"value\"}").isEqualTo("{test:'${json-unit.any-string}'}");
+        assertThatJson("{\"test\":\"value\"}").isEqualTo("{\"test\":\"${json-unit.any-string}\"}");
     }
 
     @Test

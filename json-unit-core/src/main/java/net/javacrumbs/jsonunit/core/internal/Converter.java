@@ -41,6 +41,9 @@ class Converter {
     private static final boolean moshiPresent =
         isClassPresent("com.squareup.moshi.Moshi");
 
+    private static final boolean johnzonPresent =
+        isClassPresent("org.apache.johnzon.mapper.Mapper");
+
     Converter(List<NodeFactory> factories) {
         if (factories.isEmpty()) {
             throw new IllegalStateException("List of factories can not be empty");
@@ -62,7 +65,7 @@ class Converter {
         }
 
         if (factories.isEmpty()) {
-            throw new IllegalStateException("Please add either json.org, Jackson 1.x, Jackson 2.x or Gson to the classpath");
+            throw new IllegalStateException("Please add either json.org, Jackson 1.x, Jackson 2.x, Johnzon or Gson to the classpath");
         }
         return new Converter(factories);
     }
@@ -79,6 +82,9 @@ class Converter {
                 factories.add(new Jackson2NodeFactory());
             } else if ("gson".equals(factoryName)) {
                 factories.add(new GsonNodeFactory());
+            } else if ("johnzon".equals(factoryName)) {
+                factories.add(new JohnzonNodeFactory());
+
             } else {
                 throw new IllegalArgumentException("'" +factoryName + "' library name not recognized.");
             }
@@ -90,6 +96,10 @@ class Converter {
         List<NodeFactory> factories = new ArrayList<>();
         if (moshiPresent) {
             factories.add(new MoshiNodeFactory());
+        }
+
+        if (johnzonPresent) {
+            factories.add(new JohnzonNodeFactory());
         }
 
         if (jsonOrgPresent) {
