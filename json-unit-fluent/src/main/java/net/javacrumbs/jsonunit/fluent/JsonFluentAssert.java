@@ -326,6 +326,21 @@ public class JsonFluentAssert {
             // unfortunately I can't think of a better solution to make this compile
             return this;
         }
+
+        public ArrayAssert isEmpty() {
+            if (!array.isEmpty()) {
+                failWithMessage("Node \"" + path + "\" is not an empty array.");
+            }
+            return this;
+        }
+
+        public ArrayAssert isNotEmpty() {
+            if (array.isEmpty()) {
+                failWithMessage("Node \"" + path + "\" is an empty array.");
+            }
+            return this;
+        }
+
     }
 
 

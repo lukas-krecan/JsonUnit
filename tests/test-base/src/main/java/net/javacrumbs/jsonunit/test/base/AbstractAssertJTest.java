@@ -401,7 +401,7 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
-    void multipleFailuresErrorShouldbeCorrectlyFormatted() {
+    void multipleFailuresErrorShouldBeCorrectlyFormatted() {
         assertThatExceptionOfType(MultipleFailuresError.class)
             .isThrownBy(() -> assertThatJson("{\"a\":[{\"b\": 1}, {\"c\": 1}, {\"d\": 1}]}").when(Option.IGNORING_ARRAY_ORDER).node("a").isArray()
             .isEqualTo(json("[{\"c\": 2}, {\"b\": 1} ,{\"d\": 1}]")))

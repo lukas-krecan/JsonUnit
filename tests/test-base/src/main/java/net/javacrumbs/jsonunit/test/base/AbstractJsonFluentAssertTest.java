@@ -15,6 +15,7 @@
  */
 package net.javacrumbs.jsonunit.test.base;
 
+import net.javacrumbs.jsonunit.assertj.JsonAssertions;
 import net.javacrumbs.jsonunit.core.Option;
 import org.junit.jupiter.api.Test;
 
@@ -65,6 +66,38 @@ public abstract class AbstractJsonFluentAssertTest {
     @Test
     void testAssertTolerance() {
         assertThatJson("{\"test\":1.00001}").node("test").withTolerance(0.001).isEqualTo(1);
+    }
+
+    @Test
+    void shouldAssertEmptyArray() {
+        assertThatJson("{\"root\":[]}")
+                .node("root")
+                .isArray()
+                .isEmpty();
+    }
+
+    @Test
+    void shouldFailOnNonEmptyArray() {
+        assertThatThrownBy(() -> assertThatJson("{\"root\":[1]}")
+                .node("root")
+                .isArray()
+                .isEmpty()).hasMessage("Node \"root\" is not an empty array.");
+    }
+
+    @Test
+    void shouldAssertNonEmptyArray() {
+        assertThatJson("{\"root\":[1]}")
+                .node("root")
+                .isArray()
+                .isNotEmpty();
+    }
+
+    @Test
+    void shouldAssertNonEmptyArrayFailure() {
+        assertThatThrownBy(() -> assertThatJson("{\"root\":[]}")
+                .node("root")
+                .isArray()
+                .isNotEmpty()).hasMessage("Node \"root\" is an empty array.");
     }
 
     @Test
