@@ -9,7 +9,7 @@ JsonUnit is a library that simplifies JSON comparison in tests.
   * [Spring MVC assertions](#spring)
   * [Standard assert](#standard)
 - [Features](#features)
-  * [JsonPath support (beta)](#jsonpath)
+  * [JsonPath support](#jsonpath)
   * [Ignoring values](#ignorevalues)
   * [Ignoring elements](#ignoreelements)
   * [Ignoring paths](#ignorepaths)
@@ -29,7 +29,7 @@ There are several different APIs you can use. They all have more or less the sam
 slightly different.
 
 ## <a name="assertj"></a>AssertJ integration
-This is brand new API which combines power of JsonUnit and AssertJ. Use this, if you like AssertJ or lunet assertions.
+This is brand new API which combines power of JsonUnit and AssertJ. Use t if you like AssertJ or fluent assertions.
 
 
 ```java
@@ -298,7 +298,7 @@ For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/
 # Features
 JsonUnit support all this features regardless of API you use.
 
-## <a name="jsonpath"></a>JsonPath support (beta)
+## <a name="jsonpath"></a>JsonPath support
 You can use JsonPath navigation together with JsonUnit. It has native support in AssertJ integration so you can do something like this:
 
 ```java
