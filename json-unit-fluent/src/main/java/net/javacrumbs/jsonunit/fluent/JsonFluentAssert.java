@@ -206,7 +206,6 @@ public class JsonFluentAssert {
     public JsonFluentAssert isAbsent() {
         if (!nodeAbsent(actual, path, configuration)) {
             failOnDifference("node to be absent", quoteTextValue(getNode(actual, path)));
-
         }
         return this;
     }

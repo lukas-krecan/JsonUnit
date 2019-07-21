@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import java.util.function.BiConsumer;
 
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
+import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NULL;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
@@ -39,23 +40,18 @@ abstract class AbstractMatcher {
         this.matcher = matcher;
     }
 
-    public void match(MvcResult result) throws Exception {
-        Object actual = result.getResponse().getContentAsString();
-        doMatch(actual);
-    }
-
     Diff createDiff(Object expected, Object actual) {
         return create(expected, actual, "actual", path, configuration);
     }
 
     void isPresent(Object actual) {
         if (nodeAbsent(actual, path, configuration)) {
-            failWithMessage("Node \"" + path + "\" is missing.");
+            failOnDifference("node to be present", "missing");
         }
     }
 
     void failOnType(Node node, String type) {
-        failWithMessage("Node \"" + path + "\" is different. Expected: <" + type + "> but was: <" + node + ">.");
+        failWithMessage("Node \"" + path + "\" has invalid type, expected: <" + type + "> but was: <" + quoteTextValue(node.getValue()) + ">.");
     }
 
 
@@ -93,5 +89,9 @@ abstract class AbstractMatcher {
 
     static void failWithMessage(String message) {
         throw new AssertionError(message);
+    }
+
+    void failOnDifference(Object expected, Object actual) {
+        failWithMessage(String.format("Different value found in node \"%s\", expected: <%s> but was: <%s>.", path, expected, actual));
     }
 }

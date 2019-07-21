@@ -90,13 +90,13 @@ public class ExampleControllerTest {
     @Test
     public void isNullShouldFailOnNonNull() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.string").isNull()))
-            .hasMessage("Node \"result.string\" is different. Expected: <a null> but was: <\"stringValue\">.");
+            .hasMessage("Node \"result.string\" has invalid type, expected: <a null> but was: <\"stringValue\">.");
     }
 
     @Test
     public void isNullShouldFailOnMissing() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.missing").isNull()))
-            .hasMessage("Node \"result.missing\" is missing.");
+            .hasMessage("Different value found in node \"result.missing\", expected: <node to be present> but was: <missing>.");
     }
 
     @Test
@@ -107,13 +107,13 @@ public class ExampleControllerTest {
     @Test
     public void isNotNullShouldFailOnNull() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.null").isNotNull()))
-            .hasMessage("Node \"result.null\" is different. Expected: <not null> but was: <null>.");
+            .hasMessage("Node \"result.null\" has invalid type, expected: <not null> but was: <null>.");
     }
 
     @Test
     public void isStringEqualToShouldFailOnNumber() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.array[0]").isStringEqualTo("1")))
-            .hasMessage("Node \"result.array[0]\" is different. Expected: <a string> but was: <1>.");
+            .hasMessage("Node \"result.array[0]\" has invalid type, expected: <a string> but was: <1>.");
     }
 
     @Test
@@ -143,7 +143,7 @@ public class ExampleControllerTest {
     @Test
     public void isAbsentShouldFailIfNodeExists() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.string").isAbsent()))
-            .hasMessage("Node \"result.string\" is present.");
+            .hasMessage("Different value found in node \"result.string\", expected: <node to be absent> but was: <\"stringValue\">.");
     }
 
 
@@ -155,7 +155,7 @@ public class ExampleControllerTest {
     @Test
     public void isPresentShouldFailIfNodeIsAbsent() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.string2").isPresent()))
-            .hasMessage("Node \"result.string2\" is missing.");
+            .hasMessage("Different value found in node \"result.string2\", expected: <node to be present> but was: <missing>.");
     }
 
     @Test
@@ -166,26 +166,26 @@ public class ExampleControllerTest {
     @Test
     public void isArrayShouldFailOnNotArray() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.string").isArray()))
-            .hasMessage("Node \"result.string\" is different. Expected: <an array> but was: <\"stringValue\">.");
+            .hasMessage("Node \"result.string\" has invalid type, expected: <an array> but was: <\"stringValue\">.");
     }
 
     @Test
     public void isArrayShouldFailIfNotPresent() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.array2").isArray()))
-            .hasMessage("Node \"result.array2\" is missing.");
+            .hasMessage("Different value found in node \"result.array2\", expected: <node to be present> but was: <missing>.");
     }
 
 
     @Test
     public void isObjectShouldFailOnArray() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.array").isObject()))
-            .hasMessage("Node \"result.array\" is different. Expected: <an object> but was: <[1,2,3]>.");
+            .hasMessage("Node \"result.array\" has invalid type, expected: <an object> but was: <[1, 2, 3]>.");
     }
 
     @Test
     public void isStringShouldFailOnArray() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.array").isString()))
-            .hasMessage("Node \"result.array\" is different. Expected: <a string> but was: <[1,2,3]>.");
+            .hasMessage("Node \"result.array\" has invalid type, expected: <a string> but was: <[1, 2, 3]>.");
     }
 
     @Test

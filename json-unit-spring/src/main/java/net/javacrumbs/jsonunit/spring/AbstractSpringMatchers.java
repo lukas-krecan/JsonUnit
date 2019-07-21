@@ -25,6 +25,8 @@ import org.hamcrest.Matcher;
 import java.math.BigDecimal;
 import java.util.function.BiConsumer;
 
+import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.ARRAY;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
@@ -137,7 +139,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
             ctx.isString(actual);
             Node node = ctx.getNode(actual);
             if (!node.asText().equals(expected)) {
-                failWithMessage("Node \"" + path + "\" is not equal to \"" + expected + "\".");
+                ctx.failOnDifference(quoteTextValue(expected), quoteTextValue(node.asText()));
             }
         });
     }
@@ -161,7 +163,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
     public MATCHER isAbsent() {
         return matcher((actual, ctx) -> {
             if (!nodeAbsent(actual, path, configuration)) {
-                failWithMessage("Node \"" + path + "\" is present.");
+                ctx.failOnDifference("node to be absent", quoteTextValue(getNode(actual, path)));
             }
         });
     }
