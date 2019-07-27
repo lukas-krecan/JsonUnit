@@ -7,6 +7,7 @@ JsonUnit is a library that simplifies JSON comparison in tests.
   * [AssertJ integration](#assertj)
   * [Fluent assertions](#fluent)
   * [Spring MVC assertions](#spring)
+  * [Spring REST client assertions](#spring-client)
   * [Standard assert](#standard)
 - [Features](#features)
   * [JsonPath support](#jsonpath)
@@ -96,7 +97,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>2.7.0</version>
+    <version>2.8.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -176,7 +177,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>2.7.0</version>
+    <version>2.8.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -210,7 +211,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.7.0</version>
+    <version>2.8.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -243,12 +244,22 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.7.0</version>
+    <version>2.8.0</version>
     <scope>test</scope>
 </dependency>
 ```
 
 For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/master/json-unit-spring/src/test/java/net/javacrumbs/jsonunit/spring/ExampleControllerTest.java).
+
+## <a name="spring-client"></a>Spring REST client assertions
+
+```java
+import static net.javacrumbs.jsonunit.spring.JsonUnitRequestMatchers.json;
+...
+mockServer.expect(requestTo(URI))
+                          .andExpect(json().isEqualTo(json))
+                          .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON_UTF8));
+```
 
 ## <a name="standard"></a>Standard assert
 This is old, JUnit-like API, for those of us who love traditions and do not like fluent APIs. 
@@ -288,7 +299,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.7.0</version>
+    <version>2.8.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -320,7 +331,7 @@ For other API styles you have to first import JsonPath support module
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-json-path</artifactId>
-    <version>2.7.0</version>
+    <version>2.8.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -615,6 +626,10 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 2.8.0
+* #185 JsonUnitRequestMatchers for client-side REST testing
+* Support for array (non)emptiness in Fluent assert
+
 ## 2.7.0
 * Support for Johnzon (requires 1.1.12) (thanks to elexx)
 
