@@ -4,7 +4,7 @@ JsonUnit [![Apache License 2](https://img.shields.io/badge/license-ASF2-blue.svg
 JsonUnit is a library that simplifies JSON comparison in tests.
 
 - [APIs](#apis)
-  * [AssertJ integration (beta)](#assertj)
+  * [AssertJ integration](#assertj)
   * [Fluent assertions](#fluent)
   * [Spring MVC assertions](#spring)
   * [Standard assert](#standard)
@@ -29,7 +29,7 @@ There are several different APIs you can use. They all have more or less the sam
 slightly different.
 
 ## <a name="assertj"></a>AssertJ integration
-This is brand new API which combines power of JsonUnit and AssertJ. Use t if you like AssertJ or fluent assertions.
+This is brand new API which combines power of JsonUnit and AssertJ. If you are not sure, which API to use, pick this one.
 
 
 ```java
@@ -104,7 +104,7 @@ For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/
 
 ## <a name="fluent"></a>Fluent assertions
 Fluent assertions were inspired by FEST and AssertJ. This API was created before AssertJ become so popular
-so it does not depend on it. I would recommend to use AssertJ integration described above.
+so it does not depend on it. Use it if you are already using it, otherwise I would recommend to use AssertJ integration described above.
 
 ```java
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
