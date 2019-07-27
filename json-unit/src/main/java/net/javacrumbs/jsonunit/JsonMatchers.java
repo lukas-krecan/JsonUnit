@@ -179,7 +179,7 @@ public class JsonMatchers {
     }
 
     private static final class JsonPartMatcher<T> extends AbstractJsonMatcher<T> {
-        // InjelliJ integration is broken by default difference string. Hamcrest generates 'Expected:' and IntelliJ searches for last 'but was:' and everyting between is taken as expected value
+        // IntelliJ integration is broken by default difference string. Hamcrest generates 'Expected:' and IntelliJ searches for last 'but was:' and everyting between is taken as expected value
         private static final String HAMCREST_DIFFERENCE_STRING = "expected <%s> but was <%s>";
         private final Object expected;
         private String differences;

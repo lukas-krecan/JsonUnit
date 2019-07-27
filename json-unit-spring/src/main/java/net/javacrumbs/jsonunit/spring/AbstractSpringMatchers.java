@@ -17,21 +17,13 @@ package net.javacrumbs.jsonunit.spring;
 
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
-import net.javacrumbs.jsonunit.core.internal.Diff;
-import net.javacrumbs.jsonunit.core.internal.Node;
+import net.javacrumbs.jsonunit.core.internal.Path;
+import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
 import java.util.function.BiConsumer;
-
-import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
-import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.ARRAY;
-import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
-import static net.javacrumbs.jsonunit.spring.AbstractMatcher.failWithMessage;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 
 /**
@@ -40,18 +32,18 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @param <MATCHER> Type of the matcher
  */
 abstract class AbstractSpringMatchers<ME, MATCHER> {
-    final String path;
+    final Path path;
     final Configuration configuration;
 
-    AbstractSpringMatchers(String path, Configuration configuration) {
+    AbstractSpringMatchers(Path path, Configuration configuration) {
         this.path = path;
         this.configuration = configuration;
     }
 
 
-    abstract MATCHER matcher(BiConsumer<Object, AbstractMatcher> matcher);
+    abstract MATCHER matcher(BiConsumer<Object, InternalMatcher> matcher);
 
-    abstract ME matchers(String path, Configuration configuration);
+    abstract ME matchers(Path path, Configuration configuration);
 
     /**
      * Creates a matcher object that only compares given node.
@@ -61,11 +53,11 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      * this.mockMvc.perform(get("/sample").accept(MediaType.APPLICATION_JSON)).andExpect(json().node("root.test[0]").isEqualTo("1"));
      * </code>
      *
-     * @param path
+     * @param newPath
      * @return object comparing only node given by path.
      */
-    public ME node(String path) {
-        return matchers(path, configuration);
+    public ME node(String newPath) {
+        return matchers(path.copy(newPath), configuration);
     }
 
 
@@ -123,11 +115,8 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      * @return {@code this} object.
      * @see #isStringEqualTo(String)
      */
-    public MATCHER isEqualTo(final Object expected) {
-        return matcher((actual, ctx) -> {
-            Diff diff = ctx.createDiff(expected, actual);
-            diff.failIfDifferent();
-        });
+    public MATCHER isEqualTo(Object expected) {
+        return matcher((actual, ctx) -> ctx.isEqualTo(expected));
     }
 
     /**
@@ -135,13 +124,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      * is not equal to expected value.
      */
     public MATCHER isStringEqualTo(final String expected) {
-        return matcher((actual, ctx) -> {
-            ctx.isString(actual);
-            Node node = ctx.getNode(actual);
-            if (!node.asText().equals(expected)) {
-                ctx.failOnDifference(quoteTextValue(expected), quoteTextValue(node.asText()));
-            }
-        });
+        return matcher((actual, ctx) -> ctx.isStringEqualTo(expected));
     }
 
     /**
@@ -149,85 +132,56 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      * before comparison. Ignores order of sibling nodes and whitespaces.
      */
     public MATCHER isNotEqualTo(final Object expected) {
-        return matcher((actual, ctx) -> {
-            Diff diff = ctx.createDiff(expected, actual);
-            if (diff.similar()) {
-                failWithMessage("JSON is equal.");
-            }
-        });
+        return matcher((actual, ctx) -> ctx.isNotEqualTo(expected));
     }
 
     /**
      * Fails if the node exists.
      */
     public MATCHER isAbsent() {
-        return matcher((actual, ctx) -> {
-            if (!nodeAbsent(actual, path, configuration)) {
-                ctx.failOnDifference("node to be absent", quoteTextValue(getNode(actual, path)));
-            }
-        });
+        return matcher((actual, ctx) -> ctx.isAbsent());
     }
 
     /**
      * Fails if the node is missing.
      */
     public MATCHER isPresent() {
-        return matcher((actual, ctx) -> {
-            ctx.isPresent(actual);
-        });
+        return matcher((actual, ctx) -> ctx.isPresent());
     }
 
     /**
      * Fails if the selected JSON is not an Array or is not present.
      */
     public MATCHER isArray() {
-        return matcher((actual, ctx) -> {
-            ctx.isPresent(actual);
-            Node node = ctx.getNode(actual);
-            if (node.getNodeType() != ARRAY) {
-                ctx.failOnType(node, "an array");
-            }
-        });
+        return matcher((actual, ctx) -> ctx.isArray());
     }
 
     /**
      * Fails if the selected JSON is not an Object or is not present.
      */
     public MATCHER isObject() {
-        return matcher((actual, ctx) -> {
-            ctx.isPresent(actual);
-            Node node = ctx.getNode(actual);
-            if (node.getNodeType() != OBJECT) {
-                ctx.failOnType(node, "an object");
-            }
-        });
+        return matcher((actual, ctx) -> ctx.isObject());
     }
 
     /**
      * Fails if the selected JSON is not a String or is not present.
      */
     public MATCHER isString() {
-        return matcher((actual, ctx) -> {
-            ctx.isString(actual);
-        });
+        return matcher((actual, ctx) -> ctx.isString());
     }
 
     /**
      * Fails if selected JSON is not null.
      */
     public MATCHER isNull() {
-        return matcher((actual, ctx) -> {
-            ctx.isNull(actual);
-        });
+        return matcher((actual, ctx) -> ctx.isNull());
     }
 
     /**
      * Fails if selected JSON is  null.
      */
     public MATCHER isNotNull() {
-        return matcher((actual, ctx) -> {
-            ctx.isNotNull(actual);
-        });
+        return matcher((actual, ctx) -> ctx.isNotNull());
     }
 
     /**
@@ -243,11 +197,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      * @return
      */
     public MATCHER matches(final Matcher<?> matcher) {
-        return matcher((actual, ctx) -> {
-            ctx.isPresent(actual);
-            Node node = ctx.getNode(actual);
-            assertThat("Node \"" + path + "\" does not match.", node.getValue(), (Matcher<? super Object>) matcher);
-        });
+        return matcher((actual, ctx) -> ctx.matches(matcher));
     }
 
     /**

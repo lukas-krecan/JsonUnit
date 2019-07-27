@@ -113,7 +113,7 @@ public class ExampleControllerTest {
     @Test
     public void isStringEqualToShouldFailOnNumber() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.array[0]").isStringEqualTo("1")))
-            .hasMessage("Node \"result.array[0]\" has invalid type, expected: <a string> but was: <1>.");
+            .hasMessage("Node \"result.array[0]\" has invalid type, expected: <string> but was: <1>.");
     }
 
     @Test
@@ -166,26 +166,26 @@ public class ExampleControllerTest {
     @Test
     public void isArrayShouldFailOnNotArray() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.string").isArray()))
-            .hasMessage("Node \"result.string\" has invalid type, expected: <an array> but was: <\"stringValue\">.");
+            .hasMessage("Node \"result.string\" has invalid type, expected: <array> but was: <\"stringValue\">.");
     }
 
     @Test
     public void isArrayShouldFailIfNotPresent() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.array2").isArray()))
-            .hasMessage("Different value found in node \"result.array2\", expected: <node to be present> but was: <missing>.");
+            .hasMessage("Different value found in node \"result.array2\", expected: <array> but was: <missing>.");
     }
 
 
     @Test
     public void isObjectShouldFailOnArray() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.array").isObject()))
-            .hasMessage("Node \"result.array\" has invalid type, expected: <an object> but was: <[1, 2, 3]>.");
+            .hasMessage("Node \"result.array\" has invalid type, expected: <object> but was: <[1, 2, 3]>.");
     }
 
     @Test
     public void isStringShouldFailOnArray() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.array").isString()))
-            .hasMessage("Node \"result.array\" has invalid type, expected: <a string> but was: <[1, 2, 3]>.");
+            .hasMessage("Node \"result.array\" has invalid type, expected: <string> but was: <[1, 2, 3]>.");
     }
 
     @Test
