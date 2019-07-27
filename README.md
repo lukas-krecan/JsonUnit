@@ -261,6 +261,17 @@ mockServer.expect(requestTo(URI))
                           .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON_UTF8));
 ```
 
+To use import
+```xml
+<dependency>
+    <groupId>net.javacrumbs.json-unit</groupId>
+    <artifactId>json-unit-spring</artifactId>
+    <version>2.8.0</version>
+    <scope>test</scope>
+</dependency>
+```
+
+
 ## <a name="standard"></a>Standard assert
 This is old, JUnit-like API, for those of us who love traditions and do not like fluent APIs. 
 
