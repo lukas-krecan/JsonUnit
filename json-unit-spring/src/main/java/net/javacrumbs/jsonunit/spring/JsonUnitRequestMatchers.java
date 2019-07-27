@@ -16,6 +16,8 @@
 package net.javacrumbs.jsonunit.spring;
 
 import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.internal.Path;
+import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
 import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.mock.http.client.MockClientHttpRequest;
 import org.springframework.test.web.client.RequestMatcher;
@@ -37,32 +39,30 @@ import java.util.function.BiConsumer;
  */
 public class JsonUnitRequestMatchers extends AbstractSpringMatchers<JsonUnitRequestMatchers, RequestMatcher> {
 
-    private JsonUnitRequestMatchers(String path, Configuration configuration) {
+    private JsonUnitRequestMatchers(Path path, Configuration configuration) {
         super(path, configuration);
     }
 
     @Override
-    RequestMatcher matcher(BiConsumer<Object, AbstractMatcher> matcher) {
+    RequestMatcher matcher(BiConsumer<Object, InternalMatcher> matcher) {
         return new JsonRequestMatcher(path, configuration, matcher);
     }
 
     @Override
-    JsonUnitRequestMatchers matchers(String path, Configuration configuration) {
+    JsonUnitRequestMatchers matchers(Path path, Configuration configuration) {
         return new JsonUnitRequestMatchers(path, configuration);
     }
 
     /**
      * Creates JsonUnitResultMatchers to be used for JSON assertions.
-     *
-     * @return
      */
     public static JsonUnitRequestMatchers json() {
-        return new JsonUnitRequestMatchers("", Configuration.empty());
+        return new JsonUnitRequestMatchers(Path.root(), Configuration.empty());
     }
 
 
-    private static class JsonRequestMatcher extends AbstractMatcher implements RequestMatcher {
-        JsonRequestMatcher(String path, Configuration configuration, BiConsumer<Object, AbstractMatcher> matcher) {
+    private static class JsonRequestMatcher extends AbstractSpringMatcher implements RequestMatcher {
+        private JsonRequestMatcher(Path path, Configuration configuration, BiConsumer<Object, InternalMatcher> matcher) {
             super(path, configuration, matcher);
         }
 

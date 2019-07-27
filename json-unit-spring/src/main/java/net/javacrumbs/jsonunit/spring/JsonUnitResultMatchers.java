@@ -16,6 +16,8 @@
 package net.javacrumbs.jsonunit.spring;
 
 import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.internal.Path;
+import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
 
@@ -31,38 +33,36 @@ import java.util.function.BiConsumer;
  * </code>
  */
 public class JsonUnitResultMatchers extends AbstractSpringMatchers<JsonUnitResultMatchers, ResultMatcher> {
-    private JsonUnitResultMatchers(String path, Configuration configuration) {
+    private JsonUnitResultMatchers(Path path, Configuration configuration) {
         super(path, configuration);
     }
 
     /**
      * Creates JsonUnitResultMatchers to be used for JSON assertions.
-     *
-     * @return
      */
     public static JsonUnitResultMatchers json() {
-        return new JsonUnitResultMatchers("", Configuration.empty());
+        return new JsonUnitResultMatchers(Path.root(), Configuration.empty());
     }
 
-
     @Override
-    JsonResultMatcher matcher(BiConsumer<Object, AbstractMatcher> matcher) {
+    ResultMatcher matcher(BiConsumer<Object, InternalMatcher> matcher) {
         return new JsonResultMatcher(path, configuration, matcher);
     }
 
     @Override
-    JsonUnitResultMatchers matchers(String path, Configuration configuration) {
+    JsonUnitResultMatchers matchers(Path path, Configuration configuration) {
         return new JsonUnitResultMatchers(path, configuration);
     }
 
 
-    private static class JsonResultMatcher extends AbstractMatcher implements ResultMatcher {
-        JsonResultMatcher(String path, Configuration configuration, BiConsumer<Object, AbstractMatcher> matcher) {
+    private static class JsonResultMatcher extends AbstractSpringMatcher implements ResultMatcher {
+        private JsonResultMatcher(Path path, Configuration configuration, BiConsumer<Object, InternalMatcher> matcher) {
             super(path, configuration, matcher);
         }
 
+        @Override
         public void match(MvcResult result) throws Exception {
-            Object actual = result.getResponse().getContentAsString();
+            String actual = result.getResponse().getContentAsString();
             doMatch(actual);
         }
     }

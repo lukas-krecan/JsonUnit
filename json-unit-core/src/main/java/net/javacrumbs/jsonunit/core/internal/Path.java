@@ -34,6 +34,10 @@ public final class Path {
         this.pathPrefix = pathPrefix;
     }
 
+    public static Path root() {
+          return create("", "");
+      }
+
     public static Path create(String path) {
         return create(path, "");
     }

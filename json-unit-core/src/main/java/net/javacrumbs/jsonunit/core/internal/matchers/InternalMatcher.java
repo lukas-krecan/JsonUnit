@@ -34,6 +34,7 @@ import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.ARRAY;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NULL;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -260,8 +261,28 @@ public final class InternalMatcher {
         assertType(STRING);
     }
 
-    private void failOnType(Node node, final Node.NodeType expectedType) {
-        failWithMessage("Node \"" + path + "\" has invalid type, expected: <" + expectedType.getDescription() + "> but was: <" + quoteTextValue(node.getValue()) + ">.");
+    public void isNull() {
+        isPresent();
+        Node node = getNode(actual, path);
+        if (node.getNodeType() != NULL) {
+            failOnType(node, "a null");
+        }
+    }
+
+    public void isNotNull() {
+        isPresent();
+        Node node = getNode(actual, path);
+        if (node.getNodeType() == NULL) {
+            failOnType(node, "not null");
+        }
+    }
+
+    private void failOnType(Node node, Node.NodeType expectedType) {
+        failOnType(node, expectedType.getDescription());
+    }
+
+    private void failOnType(Node node, String expectedType) {
+        failWithMessage("Node \"" + path + "\" has invalid type, expected: <" + expectedType + "> but was: <" + quoteTextValue(node.getValue()) + ">.");
     }
 
 
