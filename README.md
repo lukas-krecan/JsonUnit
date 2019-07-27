@@ -104,7 +104,7 @@ For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/
 
 ## <a name="fluent"></a>Fluent assertions
 Fluent assertions were inspired by FEST and AssertJ. This API was created before AssertJ become so popular
-so it does not depend on it. Use it if you are already using it, otherwise I would recommend to use AssertJ integration described above.
+so it does not depend on it. I would recommend to use AssertJ integration described above.
 
 ```java
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
