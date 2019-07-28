@@ -222,7 +222,7 @@ public final class InternalMatcher {
         isPresent("node to be present");
     }
 
-    private void isPresent(String expectedValue) {
+    public void isPresent(String expectedValue) {
         if (nodeAbsent(actual, path, configuration)) {
             failOnDifference(expectedValue, "missing");
         }
@@ -238,7 +238,7 @@ public final class InternalMatcher {
         return new ArrayMatcher(node.arrayElements());
     }
 
-    private Node assertType(Node.NodeType type) {
+    public Node assertType(Node.NodeType type) {
         isPresent(type.getDescription());
         Node node = getNode(actual, path);
         if (node.getNodeType() != type) {
@@ -270,7 +270,7 @@ public final class InternalMatcher {
     }
 
     public void isNotNull() {
-        isPresent();
+        isPresent("not null");
         Node node = getNode(actual, path);
         if (node.getNodeType() == NULL) {
             failOnType(node, "not null");
@@ -281,7 +281,7 @@ public final class InternalMatcher {
         failOnType(node, expectedType.getDescription());
     }
 
-    private void failOnType(Node node, String expectedType) {
+    public void failOnType(Node node, String expectedType) {
         failWithMessage("Node \"" + path + "\" has invalid type, expected: <" + expectedType + "> but was: <" + quoteTextValue(node.getValue()) + ">.");
     }
 

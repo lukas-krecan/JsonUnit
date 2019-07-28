@@ -22,6 +22,7 @@ import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Options;
 import net.javacrumbs.jsonunit.core.internal.Path;
+import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter;
 import org.assertj.core.api.AbstractAssert;
@@ -57,11 +58,13 @@ import static org.assertj.core.util.Strings.isNullOrEmpty;
 public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     final Path path;
     final Configuration configuration;
+    private final InternalMatcher internalMatcher;
 
     JsonAssert(Path path, Configuration configuration, Object actual) {
         super(JsonUtils.convertToJson(actual, "actual"), JsonAssert.class);
         this.path = path;
         this.configuration = configuration;
+        this.internalMatcher = new InternalMatcher(actual, path.asPrefix(), "", configuration);
         usingComparator(new JsonComparator(configuration, path, false));
     }
 
@@ -147,7 +150,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      * Asserts that given node is present and is of type number or a string that can be parsed as a number.
      */
     public BigDecimalAssert asNumber() {
-        isPresent(NUMBER.getDescription());
+        internalMatcher.isPresent(NUMBER.getDescription());
         Node node = getNode(actual, "");
         if (node.getNodeType() == NUMBER) {
             return createBigDecimalAssert(node.decimalValue());
@@ -158,7 +161,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
                 failWithMessage("Node \"" + path + "\" can not be converted to number expected: <a number> but was: <" + quoteTextValue(node.getValue()) + ">.");
             }
         } else {
-            failOnType(node, "number or string");
+            internalMatcher.failOnType(node, "number or string");
         }
         return null;
     }
@@ -218,7 +221,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      * @return
      */
     public JsonAssert isPresent() {
-        isPresent("node to be present");
+        internalMatcher.isPresent();
         return this;
     }
 
@@ -228,9 +231,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      * @return
      */
     public void isAbsent() {
-        if (!nodeAbsent(actual, path.asPrefix(), configuration)) {
-            failOnDifference("node to be absent", quoteTextValue(actual));
-        }
+        internalMatcher.isAbsent();
     }
 
     /**
@@ -239,35 +240,12 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      */
     @Override
     public JsonAssert isNotNull() {
-        isPresent("not null");
-        Node node = getNode(actual, "");
-        if (node.getNodeType() == NULL) {
-            failOnType(node, "not null");
-        }
+        internalMatcher.isNotNull();
         return this;
     }
 
     private Node assertType(Node.NodeType type) {
-        isPresent(type.getDescription());
-        Node node = getNode(actual, "");
-        if (node.getNodeType() != type) {
-            failOnType(node, type.getDescription());
-        }
-        return node;
-    }
-
-    private void isPresent(String expectedValue) {
-        if (nodeAbsent(actual, "", configuration)) {
-            failOnDifference(expectedValue, "missing");
-        }
-    }
-
-    private void failOnDifference(Object expected, Object actual) {
-        failWithMessage(String.format("Different value found in node \"%s\", expected: <%s> but was: <%s>.", path, expected, actual));
-    }
-
-    private void failOnType(Node node, String expectedTypeDescription) {
-        failWithMessage("Node \"" + path + "\" has invalid type, expected: <" + expectedTypeDescription + "> but was: <" + quoteTextValue(node.getValue()) + ">.");
+        return internalMatcher.assertType(type);
     }
 
     /**
