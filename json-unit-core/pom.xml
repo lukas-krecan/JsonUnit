@@ -66,12 +66,7 @@
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-library</artifactId>
-            <scope>test</scope>
+            <artifactId>hamcrest</artifactId>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
