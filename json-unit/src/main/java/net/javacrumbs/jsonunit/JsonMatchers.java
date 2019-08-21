@@ -211,6 +211,7 @@ public class JsonMatchers {
 
         @Override
         public void describeMismatch(Object item, Description description) {
+            doMatch(item);
             description.appendText(differences);
         }
     }
