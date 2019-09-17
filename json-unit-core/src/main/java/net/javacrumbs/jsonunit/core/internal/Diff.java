@@ -17,12 +17,9 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
-import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
 import net.javacrumbs.jsonunit.core.internal.ArrayComparison.ComparisonResult;
 import net.javacrumbs.jsonunit.core.internal.ArrayComparison.NodeWithIndex;
 import net.javacrumbs.jsonunit.core.listener.Difference;
-import org.hamcrest.Description;
-import org.hamcrest.StringDescription;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -355,20 +352,8 @@ public class Diff {
             Matcher patternMatcher = MATCHER_PLACEHOLDER_PATTERN.matcher(expectedNode.asText());
             if (patternMatcher.matches()) {
                 String matcherName = patternMatcher.group(1);
-                org.hamcrest.Matcher<?> matcher = configuration.getMatcher(matcherName);
-                if (matcher != null) {
-                    if (matcher instanceof ParametrizedMatcher) {
-                        ((ParametrizedMatcher) matcher).setParameter(patternMatcher.group(2));
-                    }
-                    Object value = actualNode.getValue();
-                    if (!matcher.matches(value)) {
-                        Description description = new StringDescription();
-                        matcher.describeMismatch(value, description);
-                        reportValueDifference(context, "Matcher \"%s\" does not match value %s in node \"%s\". %s", matcherName, quoteTextValue(actualNode), context.getActualPath(), description);
-                    }
-                } else {
-                    structureDifferenceFound(context, "Matcher \"%s\" not found.", matcherName);
-                }
+                new HamcrestHandler(configuration, this::reportValueDifference, this::structureDifferenceFound)
+                    .matchHamcrestMatcher(context, actualNode, patternMatcher, matcherName);
                 return true;
             }
         }
@@ -546,7 +531,6 @@ public class Diff {
         reportDifference(DifferenceImpl.different(context));
         valueDifferenceFound(context, message, arguments);
     }
-
 
     private Set<String> commonFields(Map<String, Node> expectedFields, Map<String, Node> actualFields) {
         Set<String> result = new TreeSet<>(expectedFields.keySet());
