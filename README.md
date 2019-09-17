@@ -398,6 +398,7 @@ assertThat(
 );
 ```
 
+
 Array index placeholder
 ```java
 // standard assert
@@ -407,7 +408,9 @@ assertJsonEquals(
     JsonAssert.whenIgnoringPaths("[*].b")
 );
 ```
-Please note, that if you use JsonPath, you should start the path to be ignored by `$.`.
+Please note, that if you use JsonPath, you should start the path to be ignored by `$.`
+Also note that `whenIgnoringPaths` method does not support full JsonPath syntax, only 
+exact path or array index placeholder as described above.
 
 ## <a name="regexp"></a>Regular expressions
 It is also possible to use regular expressions to compare string values
