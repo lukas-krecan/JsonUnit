@@ -27,7 +27,10 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
+import java.util.IdentityHashMap;
+import java.util.Map;
 
+import static net.javacrumbs.jsonunit.core.Configuration.dummyDifferenceListener;
 import static net.javacrumbs.jsonunit.core.internal.Diff.createInternal;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix;
@@ -179,10 +182,14 @@ public class JsonMatchers {
     }
 
     private static final class JsonPartMatcher<T> extends AbstractJsonMatcher<T> {
-        // IntelliJ integration is broken by default difference string. Hamcrest generates 'Expected:' and IntelliJ searches for last 'but was:' and everyting between is taken as expected value
+        // IntelliJ integration is broken by default difference string. Hamcrest generates 'Expected:' and IntelliJ searches for last 'but was:' and everything between is taken as expected value
         private static final String HAMCREST_DIFFERENCE_STRING = "expected <%s> but was <%s>";
         private final Object expected;
-        private String differences;
+
+        // One matcher can be used to match multiple array items. We need to persist diff description between doMatch() and
+        // describeMismatch() method calls. While Hamcrest 1 called doMatch() and describeMismatch() one after each other
+        // Hamcrest 2 calls doMatch() multiple times followed by multiple calls of describeMismatch()
+        private final Map<Object, String> differences = new IdentityHashMap<>();
 
         JsonPartMatcher(String path, Object expected) {
             super(path);
@@ -192,7 +199,7 @@ public class JsonMatchers {
         boolean doMatch(Object item) {
             Diff diff = createInternal(expected, item, FULL_JSON,  Path.create(path, ""), configuration, HAMCREST_DIFFERENCE_STRING);
             if (!diff.similar()) {
-                differences = diff.differences();
+                differences.put(item, diff.differences());
             }
             return diff.similar();
         }
@@ -211,7 +218,7 @@ public class JsonMatchers {
 
         @Override
         public void describeMismatch(Object item, Description description) {
-            description.appendText(differences);
+            description.appendText(differences.get(item));
         }
     }
 
