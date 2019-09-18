@@ -66,7 +66,7 @@ class ComparisonMatrix {
 
             for (int j = 0; j < expectedElements.size(); j++) {
                 Node expected = expectedElements.get(j);
-                Diff diff = new Diff(expected, actual, Path.create("", path.toElement(i).getFullPath()), configuration.withDifferenceListener(dummyDifferenceListener()), NULL_LOGGER, NULL_LOGGER, DEFAULT_DIFFERENCE_STRING);
+                Diff diff = new Diff(expected, actual, Path.create("", path.toElement(i).getFullPath()), configuration, dummyDifferenceListener(), NULL_LOGGER, NULL_LOGGER, DEFAULT_DIFFERENCE_STRING);
                 if (diff.similar()) {
                     actualIsEqualTo.add(j);
                 }

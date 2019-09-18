@@ -182,6 +182,8 @@ public class JsonMatchers {
         // IntelliJ integration is broken by default difference string. Hamcrest generates 'Expected:' and IntelliJ searches for last 'but was:' and everyting between is taken as expected value
         private static final String HAMCREST_DIFFERENCE_STRING = "expected <%s> but was <%s>";
         private final Object expected;
+
+        private Object actual;
         private String differences;
 
         JsonPartMatcher(String path, Object expected) {
@@ -190,8 +192,15 @@ public class JsonMatchers {
         }
 
         boolean doMatch(Object item) {
-            Diff diff = createInternal(expected, item, FULL_JSON,  Path.create(path, ""), configuration, HAMCREST_DIFFERENCE_STRING);
+            DifferenceListener differenceListener = configuration.getDifferenceListener();
+            return doMatch(item, differenceListener);
+        }
+
+        private boolean doMatch(Object item, DifferenceListener differenceListener) {
+            Diff diff = createInternal(expected, item, FULL_JSON,  Path.create(path, ""), configuration,
+                    differenceListener, HAMCREST_DIFFERENCE_STRING);
             if (!diff.similar()) {
+                actual = item;
                 differences = diff.differences();
             }
             return diff.similar();
@@ -211,6 +220,9 @@ public class JsonMatchers {
 
         @Override
         public void describeMismatch(Object item, Description description) {
+            if (actual != item) {
+                doMatch(item, Configuration.dummyDifferenceListener());
+            }
             description.appendText(differences);
         }
     }

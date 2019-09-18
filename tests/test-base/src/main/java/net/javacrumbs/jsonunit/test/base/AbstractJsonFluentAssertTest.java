@@ -637,7 +637,7 @@ public abstract class AbstractJsonFluentAssertTest {
     void arrayMatcherShouldFailIfNotFound() {
         assertThatThrownBy(() -> assertThatJson("{\"test\":[1,2,3]}").node("test").matches(hasItem(4)))
             .hasMessage("Node \"test\" does not match.\nExpected: a collection containing <4>\n" +
-                "     but: was <1>, was <2>, was <3>");
+                "     but: mismatches were: [was <1>, was <2>, was <3>]");
     }
 
     @Test
@@ -655,12 +655,12 @@ public abstract class AbstractJsonFluentAssertTest {
         assertThatThrownBy(() -> assertThatJson("{\"test\":[{\"value\":1},{\"value\":2},{\"value\":3}]}").node("test").matches(hasItem(jsonPartEquals("value", 4))))
             .hasMessage("Node \"test\" does not match.\n" +
                 "Expected: a collection containing 4 in \"value\"\n" +
-                "     but: JSON documents are different:\n" +
+                "     but: mismatches were: [JSON documents are different:\n" +
                 "Different value found in node \"value\", expected <4> but was <1>.\n" +
                 ", JSON documents are different:\n" +
                 "Different value found in node \"value\", expected <4> but was <2>.\n" +
                 ", JSON documents are different:\n" +
-                "Different value found in node \"value\", expected <4> but was <3>.\n");
+                "Different value found in node \"value\", expected <4> but was <3>.\n]");
     }
 
     @Test

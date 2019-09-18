@@ -20,6 +20,7 @@ import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.ArrayComparison.ComparisonResult;
 import net.javacrumbs.jsonunit.core.internal.ArrayComparison.NodeWithIndex;
 import net.javacrumbs.jsonunit.core.listener.Difference;
+import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -77,17 +78,19 @@ public class Diff {
     private final Path startPath;
     private boolean compared = false;
     private final Configuration configuration;
+    private final DifferenceListener differenceListener;
     private final PathMatcher pathsToBeIgnored;
 
     private final JsonUnitLogger diffLogger;
     private final JsonUnitLogger valuesLogger;
     private final String differenceString;
 
-    Diff(Node expected, Node actual, Path startPath, Configuration configuration, JsonUnitLogger diffLogger, JsonUnitLogger valuesLogger, String differenceString) {
+    Diff(Node expected, Node actual, Path startPath, Configuration configuration, DifferenceListener differenceListener, JsonUnitLogger diffLogger, JsonUnitLogger valuesLogger, String differenceString) {
         this.expectedRoot = expected;
         this.actualRoot = actual;
         this.startPath = startPath;
         this.configuration = configuration;
+        this.differenceListener = differenceListener;
         this.diffLogger = diffLogger;
         this.valuesLogger = valuesLogger;
         this.pathsToBeIgnored = PathMatcher.create(configuration.getPathsToBeIgnored());
@@ -103,11 +106,11 @@ public class Diff {
     }
 
     public static Diff create(Object expected, Object actual, String actualName, Path path, Configuration configuration) {
-        return createInternal(expected, actual,  actualName, path, configuration, DEFAULT_DIFFERENCE_STRING);
+        return createInternal(expected, actual, actualName, path, configuration, configuration.getDifferenceListener(), DEFAULT_DIFFERENCE_STRING);
     }
 
-    public static Diff createInternal(Object expected, Object actual, String actualName, Path path, Configuration configuration, String differenceString) {
-        return new Diff(convertToJson(quoteIfNeeded(expected), "expected", true), convertToJson(actual, actualName, false), path, configuration, DEFAULT_DIFF_LOGGER, DEFAULT_VALUE_LOGGER, differenceString);
+    public static Diff createInternal(Object expected, Object actual, String actualName, Path path, Configuration configuration, DifferenceListener differenceListener, String differenceString) {
+        return new Diff(convertToJson(quoteIfNeeded(expected), "expected", true), convertToJson(actual, actualName, false), path, configuration, differenceListener, DEFAULT_DIFF_LOGGER, DEFAULT_VALUE_LOGGER, differenceString);
     }
 
     private void compare() {
@@ -181,8 +184,7 @@ public class Diff {
     }
 
     private void reportDifference(Difference difference) {
-        configuration.getDifferenceListener().diff(difference,
-                differenceContext(configuration, actualRoot, expectedRoot));
+        differenceListener.diff(difference, differenceContext(configuration, actualRoot, expectedRoot));
     }
 
     private void removePathsToBeIgnored(Path path, Set<String> extraKeys) {
