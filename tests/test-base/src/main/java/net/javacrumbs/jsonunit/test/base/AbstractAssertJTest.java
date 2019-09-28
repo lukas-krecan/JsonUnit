@@ -1056,6 +1056,71 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void ignoredJsonPaths() {
+        assertThatJson("{\n" +
+            "     \"category\": \"reference\",\n" +
+            "     \"author\": \"Nigel Rees\",\n" +
+            "     \"title\": \"Sayings of the Century\",\n" +
+            "     \"price\": 1111\n" +
+            "}")
+            .withConfiguration(c -> c.whenIgnoringPaths("$..price"))
+            .isEqualTo(
+                "            {\n" +
+                    "                \"category\": \"reference\",\n" +
+                    "                \"author\": \"Nigel Rees\",\n" +
+                    "                \"title\": \"Sayings of the Century\",\n" +
+                    "                \"price\": 999\n" +
+                    "            }"
+            );
+    }
+
+    @Test
+    void jsonPathWithIgnoredNonexistentPaths() {
+        assertThatJson(json)
+            .withConfiguration(c -> c.whenIgnoringPaths("$.rubbish"))
+            .inPath("$.store.book[0]")
+            .isEqualTo(
+                "            {\n" +
+                    "                \"category\": \"reference\",\n" +
+                    "                \"author\": \"Nigel Rees\",\n" +
+                    "                \"title\": \"Sayings of the Century\",\n" +
+                    "                \"price\": 8.95\n" +
+                    "            }"
+            );
+    }
+
+    @Test
+    void jsonPathWithIgnoredPathsDeep() {
+        assertThatJson(json)
+            .whenIgnoringPaths("$..price")
+            .withTolerance(0.01)
+            .inPath("$.store.book[0]")
+            .isEqualTo(
+                "            {\n" +
+                    "                \"category\": \"reference\",\n" +
+                    "                \"author\": \"Nigel Rees\",\n" +
+                    "                \"title\": \"Sayings of the Century\",\n" +
+                    "                \"price\": 999\n" +
+                    "            }"
+            );
+    }
+
+    @Test
+    void jsonPathWithIgnoredPathsDeepBracketNotation() {
+        assertThatJson(json)
+            .whenIgnoringPaths("$..price")
+            .inPath("$['store']['book'][0]")
+            .isEqualTo(
+                "            {\n" +
+                    "                \"category\": \"reference\",\n" +
+                    "                \"author\": \"Nigel Rees\",\n" +
+                    "                \"title\": \"Sayings of the Century\",\n" +
+                    "                \"price\": 999\n" +
+                    "            }"
+            );
+    }
+
+    @Test
     void jsonPathWithNode() {
         assertThatJson(json)
             .inPath("$.store.book[0]")

@@ -15,10 +15,20 @@
  */
 package net.javacrumbs.jsonunit.jsonpath;
 
+import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.Option;
+import com.jayway.jsonpath.ParseContext;
 import com.jayway.jsonpath.PathNotFoundException;
+import com.jayway.jsonpath.internal.ParseContextImpl;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static com.jayway.jsonpath.JsonPath.using;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.missingNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
@@ -32,14 +42,40 @@ public final class JsonPathAdapter {
     }
 
     public static Object inPath(Object json, String path) {
+        String normalizedPath = fromBracketNotation(path);
         try {
-            if (json instanceof String) {
-                return jsonSource(wrapDeserializedObject(JsonPath.read((String) json, path)), path);
-            } else {
-                return jsonSource(wrapDeserializedObject(JsonPath.read(JsonUtils.convertToJson(json, "actual").getValue(), path)), path);
-            }
+            return jsonSource(wrapDeserializedObject(readValue(Configuration.defaultConfiguration(), json, path)), normalizedPath);
         } catch (PathNotFoundException e) {
-            return jsonSource(missingNode(), path);
+            return jsonSource(missingNode(), normalizedPath);
         }
+    }
+
+    public static Collection<String> resolveJsonPaths(Object json, Collection<String> paths) {
+        Configuration conf = Configuration.builder()
+            .options(Option.AS_PATH_LIST, Option.SUPPRESS_EXCEPTIONS)
+            .build();
+
+        return paths.stream().flatMap(path -> {
+            if (path.startsWith("$")) {
+                List<String> resolvedPaths = readValue(conf, json, path);
+                return resolvedPaths.stream().map(JsonPathAdapter::fromBracketNotation);
+            } else {
+                return Stream.of(path);
+            }
+        }).collect(Collectors.toList());
+    }
+
+    private static <T> T readValue(Configuration conf, Object json, String path) {
+        if (json instanceof String) {
+            return using(conf).parse((String) json).read(path);
+        } else {
+            return using(conf).parse(JsonUtils.convertToJson(json, "actual").getValue()).read(path);
+        }
+    }
+
+    static String fromBracketNotation(String path) {
+        return path
+            .replace("['", ".")
+            .replace("']", "");
     }
 }
