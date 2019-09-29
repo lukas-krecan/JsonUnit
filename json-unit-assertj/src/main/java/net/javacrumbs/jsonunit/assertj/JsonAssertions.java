@@ -16,12 +16,19 @@
 package net.javacrumbs.jsonunit.assertj;
 
 import net.javacrumbs.jsonunit.assertj.JsonAssert.ConfigurableJsonAssert;
+import net.javacrumbs.jsonunit.assertj.internal.JsonRepresentation;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
+import org.assertj.core.api.Assertions;
 
 public final class JsonAssertions {
+
+    static {
+        Assertions.useRepresentation(new JsonRepresentation());
+    }
+
     private JsonAssertions() {
-        
+
     }
 
     public static ConfigurableJsonAssert assertThatJson(Object actual) {
