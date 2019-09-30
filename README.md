@@ -97,7 +97,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>2.8.1</version>
+    <version>2.9.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -177,7 +177,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>2.8.1</version>
+    <version>2.9.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -211,7 +211,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.8.1</version>
+    <version>2.9.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -244,7 +244,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.8.1</version>
+    <version>2.9.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -266,7 +266,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.8.1</version>
+    <version>2.9.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -310,7 +310,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.8.1</version>
+    <version>2.9.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -342,7 +342,7 @@ For other API styles you have to first import JsonPath support module
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-json-path</artifactId>
-    <version>2.8.1</version>
+    <version>2.9.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -640,6 +640,10 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+# 2.9.0
+* Hamcrest upgraded to 2.1
+* AssertJ dependency upgraded to 3.12.3 (requires AssertJ > 3.10.0)
+
 # 2.8.1
 * hamcrest-core dependency marked as required
 
