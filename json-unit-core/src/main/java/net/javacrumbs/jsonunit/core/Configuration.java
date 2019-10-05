@@ -20,6 +20,7 @@ import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -126,7 +127,18 @@ public class Configuration {
      * @return
      */
     public Configuration whenIgnoringPaths(String... pathsToBeIgnored) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, asList(pathsToBeIgnored), differenceListener);
+        return whenIgnoringPaths(asList(pathsToBeIgnored));
+    }
+
+    /**
+     * Makes JsonUnit ignore the specified paths in the actual value. If the path matches,
+     * it's completely ignored. It may be missing, null or have any value
+     *
+     * @param pathsToBeIgnored
+     * @return
+     */
+    public Configuration whenIgnoringPaths(Collection<String> pathsToBeIgnored) {
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener);
     }
 
     /**

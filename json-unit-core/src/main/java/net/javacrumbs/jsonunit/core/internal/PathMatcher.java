@@ -59,7 +59,7 @@ abstract class PathMatcher {
 
         @Override
         boolean matches(String pathToMatch) {
-            return path.equals(pathToMatch);
+            return path.equals(pathToMatch) || path.equals("$." + pathToMatch);
         }
     }
 
@@ -99,9 +99,9 @@ abstract class PathMatcher {
 
     private static class AggregatePathMatcher extends PathMatcher {
 
-        private final Collection<PathMatcher> pathMatchers;
+        private final Iterable<PathMatcher> pathMatchers;
 
-        private AggregatePathMatcher(Collection<PathMatcher> pathMatchers) {
+        private AggregatePathMatcher(Iterable<PathMatcher> pathMatchers) {
             this.pathMatchers = pathMatchers;
         }
 
