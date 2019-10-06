@@ -52,7 +52,7 @@ import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NULL;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NUMBER;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
-import static net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter.resolveJsonPaths;
+import static net.javacrumbs.jsonunit.jsonpath.InternalJsonPathUtils.resolveJsonPathsToBeIgnored;
 import static org.assertj.core.util.Strings.isNullOrEmpty;
 
 public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
@@ -298,7 +298,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
             Configuration newConfiguration = configurationFunction.apply(configuration);
 
             if (configuration.getPathsToBeIgnored() != newConfiguration.getPathsToBeIgnored()) {
-                newConfiguration = newConfiguration.whenIgnoringPaths(resolveJsonPaths(originalActual, newConfiguration.getPathsToBeIgnored()));
+                newConfiguration = resolveJsonPathsToBeIgnored(originalActual, newConfiguration);
             }
             return new ConfigurableJsonAssert(path, newConfiguration, actual);
         }

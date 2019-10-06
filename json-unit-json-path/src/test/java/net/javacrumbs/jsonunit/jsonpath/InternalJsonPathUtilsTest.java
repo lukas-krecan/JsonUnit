@@ -2,10 +2,11 @@ package net.javacrumbs.jsonunit.jsonpath;
 
 import org.junit.jupiter.api.Test;
 
-import static net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter.fromBracketNotation;
+
+import static net.javacrumbs.jsonunit.jsonpath.InternalJsonPathUtils.fromBracketNotation;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class JsonPathAdapterTest {
+class InternalJsonPathUtilsTest {
 
     @Test
     void shouldConvertFromBracketNotation() {
