@@ -49,6 +49,7 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
+import static net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter.inPath;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.extractor.Extractors.toStringMethod;
@@ -1052,6 +1053,11 @@ public abstract class AbstractJsonAssertTest {
     @Test
     void arrayWildcardForPathIgnoringArrayOrder() {
         assertJsonEquals("[{\"a\":1, \"b\":0},{\"a\":2, \"b\":0}]", "[{\"a\":2, \"b\":2},{\"a\":1, \"b\":3}]", JsonAssert.whenIgnoringPaths("[*].b").when(IGNORING_ARRAY_ORDER));
+    }
+
+    @Test
+    void inPathShouldWork() {
+        assertJsonEquals("[1]", inPath("{\"root\":{\"test\":1, \"ignored\": 2}}", "$..test"));
     }
 
     @Test
