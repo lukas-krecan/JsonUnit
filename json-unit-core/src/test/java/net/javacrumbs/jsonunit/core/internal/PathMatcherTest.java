@@ -17,40 +17,45 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import org.junit.jupiter.api.Test;
 
+import static net.javacrumbs.jsonunit.core.internal.Node.MISSING_NODE;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-public class PathMatcherTest {
+class PathMatcherTest {
 
     @Test
-    public void shouldMatchExactly() {
-        assertTrue(PathMatcher.create("path.other").matches("path.other"));
-        assertFalse(PathMatcher.create("path.other").matches("path.other2"));
+    void shouldMatchExactly() {
+        assertTrue(create("path.other").matches("path.other"));
+        assertFalse(create("path.other").matches("path.other2"));
     }
 
     @Test
-    public void shouldMatchExactlyArray() {
-        assertTrue(PathMatcher.create("path.other[1].next").matches("path.other[1].next"));
-        assertFalse(PathMatcher.create("path.other[1].next").matches("path.other[2].next"));
+    void shouldMatchExactlyArray() {
+        assertTrue(create("path.other[1].next").matches("path.other[1].next"));
+        assertFalse(create("path.other[1].next").matches("path.other[2].next"));
     }
 
     @Test
-    public void shouldMatchExactlyWithFalseWildcards() {
-        assertTrue(PathMatcher.create("*.\\d").matches("*.\\d"));
-        assertFalse(PathMatcher.create("*.\\d").matches("*.1"));
+    void shouldMatchExactlyWithFalseWildcards() {
+        assertTrue(create("*.\\d").matches("*.\\d"));
+        assertFalse(create("*.\\d").matches("*.1"));
     }
 
     @Test
-    public void shouldMatchWithArrayWildcard() {
-        assertTrue(PathMatcher.create("root.*.array[*].next").matches("root.*.array[2].next"));
-        assertFalse(PathMatcher.create("root.*.array[*].next").matches("root.x.array[2].next"));
-        assertFalse(PathMatcher.create("root.*.array[*].next").matches("root.*.array[2].next2"));
+    void shouldMatchWithArrayWildcard() {
+        assertTrue(create("root.*.array[*].next").matches("root.*.array[2].next"));
+        assertFalse(create("root.*.array[*].next").matches("root.x.array[2].next"));
+        assertFalse(create("root.*.array[*].next").matches("root.*.array[2].next2"));
     }
 
     @Test
-    public void shouldMatchWithArrayWildcardWice() {
-        assertTrue(PathMatcher.create("root.*.array[*].next[*]").matches("root.*.array[2].next[1]"));
-        assertFalse(PathMatcher.create("root.*.array[*].next[*]").matches("root.x.array[2].next[1]"));
+    void shouldMatchWithArrayWildcardWice() {
+        assertTrue(create("root.*.array[*].next[*]").matches("root.*.array[2].next[1]"));
+        assertFalse(create("root.*.array[*].next[*]").matches("root.x.array[2].next[1]"));
+    }
+
+    private PathMatcher create(String s) {
+        return PathMatcher.create(s);
     }
 }

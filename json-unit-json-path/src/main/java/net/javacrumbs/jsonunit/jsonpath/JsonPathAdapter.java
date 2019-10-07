@@ -15,13 +15,15 @@
  */
 package net.javacrumbs.jsonunit.jsonpath;
 
-import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.PathNotFoundException;
-import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 
+import static com.jayway.jsonpath.JsonPath.using;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.missingNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
+import static net.javacrumbs.jsonunit.jsonpath.InternalJsonPathUtils.fromBracketNotation;
+import static net.javacrumbs.jsonunit.jsonpath.InternalJsonPathUtils.readValue;
 
 /**
  * Adapts json-path to json-unit.
@@ -32,14 +34,11 @@ public final class JsonPathAdapter {
     }
 
     public static Object inPath(Object json, String path) {
+        String normalizedPath = fromBracketNotation(path);
         try {
-            if (json instanceof String) {
-                return jsonSource(wrapDeserializedObject(JsonPath.read((String) json, path)), path);
-            } else {
-                return jsonSource(wrapDeserializedObject(JsonPath.read(JsonUtils.convertToJson(json, "actual").getValue(), path)), path);
-            }
+            return jsonSource(wrapDeserializedObject(readValue(Configuration.defaultConfiguration(), json, path)), normalizedPath);
         } catch (PathNotFoundException e) {
-            return jsonSource(missingNode(), path);
+            return jsonSource(missingNode(), normalizedPath);
         }
     }
 }

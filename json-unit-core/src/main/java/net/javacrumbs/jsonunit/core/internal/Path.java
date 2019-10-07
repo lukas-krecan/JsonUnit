@@ -142,7 +142,7 @@ public final class Path {
                 startNode = startNode.get(matcher.group(1));
             }
 
-            int index = Integer.valueOf(matcher.group(2));
+            int index = Integer.parseInt(matcher.group(2));
             if (index < 0) {
                 startNode = startNode.element(startNode.size() + index);
             } else {
