@@ -36,6 +36,24 @@ public final class JsonAssertions {
     }
 
     /**
+     * Assert json properties with possibility to chain assertion callbacks like this
+     *
+     * <pre>{@code
+     * assertThatJson("{\"test1\":2, \"test2\":1}",
+     *             json -> json.inPath("test1").isEqualTo(2),
+     *             json -> json.inPath("test2").isEqualTo(1)
+     *         );
+     * }</pre>
+     */
+    public static ConfigurableJsonAssert assertThatJson(Object actual, JsonAssertionCallback... callbacks) {
+        ConfigurableJsonAssert a = assertThatJson(actual);
+        for (JsonAssertionCallback callback: callbacks) {
+            callback.doAssert(a);
+        }
+        return a;
+    }
+
+    /**
      * JSON to be used in expected part of the assertion,
      *
      * @param input
@@ -51,5 +69,11 @@ public final class JsonAssertions {
      */
     public static Object value(Object input) {
         return new ExpectedNode(JsonUtils.wrapDeserializedObject(input));
+    }
+
+    @FunctionalInterface
+    public interface JsonAssertionCallback {
+        void doAssert(ConfigurableJsonAssert assertion);
+
     }
 }
