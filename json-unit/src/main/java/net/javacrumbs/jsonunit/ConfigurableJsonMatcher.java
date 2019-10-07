@@ -15,6 +15,8 @@
  */
 package net.javacrumbs.jsonunit;
 
+import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.ConfigurationWhen;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Options;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
@@ -64,4 +66,12 @@ public interface ConfigurableJsonMatcher<T> extends Matcher<T> {
      * Sets DifferenceListener.
      */
     ConfigurableJsonMatcher<T> withDifferenceListener(DifferenceListener differenceListener);
+
+    /**
+     * Sets specific path options.
+     *
+     * @see Configuration#when(ConfigurationWhen.WhenObject, Object...)
+     */
+    @SuppressWarnings("unchecked")
+    <M> ConfigurableJsonMatcher<T> when(ConfigurationWhen.WhenObject<M> object, M... actions);
 }

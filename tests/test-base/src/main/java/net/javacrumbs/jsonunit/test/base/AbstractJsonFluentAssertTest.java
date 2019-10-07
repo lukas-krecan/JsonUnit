@@ -26,9 +26,8 @@ import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartMatches;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
-import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
-import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
-import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
+import static net.javacrumbs.jsonunit.core.ConfigurationWhen.*;
+import static net.javacrumbs.jsonunit.core.Option.*;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -233,6 +232,35 @@ public abstract class AbstractJsonFluentAssertTest {
     void testCompareArrays() {
         assertThatJson("[{\"b\": 10}]")
             .isEqualTo(json("[{\"b\": 10}]"));
+    }
+
+    @Test
+    void testCompareArraysIgnoringChildOrder() {
+        assertThatJson("[[1,2],[3,4],[5,6]]")
+            .when(path("[*]"), then(IGNORING_ARRAY_ORDER))
+            .isEqualTo(json("[[2,1],[4,3],[6,5]]"));
+    }
+
+    @Test
+    void testCompareDifferentArraysIgnoringChildOrder() {
+        assertThatJson("[[1,2],[3,4],[5,6]]")
+            .when(path("[*]"), then(IGNORING_ARRAY_ORDER))
+            .isNotEqualTo(json("[[4,3],[6,5],[2,1]]"));
+    }
+
+    @Test
+    void testCompareArraysIgnoringChildOrderAndExtraElements() {
+        assertThatJson("[[1,2,3],[3,4,5],[5,6,7]]")
+            .when(path("[*]"), then(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_ARRAY_ITEMS))
+            .isEqualTo(json("[[2,1],[4,3],[6,5]]"));
+    }
+
+    @Test
+    void testCompareArraysIgnoringChildOrderAndParentExtraElements() {
+        assertThatJson("[[1,2],[3,4],[5,6],[7,8]]")
+            .when(path("[*]"), then(IGNORING_ARRAY_ORDER))
+            .when(rootPath(), then(IGNORING_EXTRA_ARRAY_ITEMS))
+            .isEqualTo(json("[[2,1],[4,3],[6,5]]"));
     }
 
     @Test

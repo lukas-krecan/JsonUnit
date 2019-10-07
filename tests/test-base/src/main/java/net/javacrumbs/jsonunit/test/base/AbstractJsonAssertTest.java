@@ -30,19 +30,8 @@ import java.math.BigDecimal;
 import static java.math.BigDecimal.ZERO;
 import static java.math.BigDecimal.valueOf;
 import static java.util.Collections.singletonMap;
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonNodeAbsent;
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonNodePresent;
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonNotEquals;
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartEquals;
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartNotEquals;
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartStructureEquals;
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonStructureEquals;
-import static net.javacrumbs.jsonunit.JsonAssert.setOptions;
-import static net.javacrumbs.jsonunit.JsonAssert.setTolerance;
-import static net.javacrumbs.jsonunit.JsonAssert.when;
-import static net.javacrumbs.jsonunit.JsonAssert.whenIgnoringPaths;
-import static net.javacrumbs.jsonunit.JsonAssert.withMatcher;
+import static net.javacrumbs.jsonunit.JsonAssert.*;
+import static net.javacrumbs.jsonunit.core.ConfigurationWhen.*;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
@@ -1045,6 +1034,11 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
+    void pathShouldBeIgnoredForDifferentValueWithWhen() {
+        assertJsonEquals("{\"root\":{\"test\":1, \"ignored\": 2}}", "{\"root\":{\"test\":1, \"ignored\": 1}}", JsonAssert.when(path("root.ignored"), thenIgnore()));
+    }
+
+    @Test
     void arrayWildcardForPathIgnoring() {
         assertJsonEquals("[{\"a\":1, \"b\":0},{\"a\":2, \"b\":0}]", "[{\"a\":1, \"b\":2},{\"a\":2, \"b\":3}]", JsonAssert.whenIgnoringPaths("[*].b"));
     }
@@ -1217,6 +1211,118 @@ public abstract class AbstractJsonAssertTest {
     @Test
     void shouldUseRightValuesWhenComparingArrays() {
         assertJsonEquals("[\"${json-unit.ignore}\",\"${json-unit.ignore}\",2]", "[1,2,1]", when(IGNORING_ARRAY_ORDER));
+    }
+
+    @Test
+    void shouldIgnoreArrayOrderInSpecificPath() {
+        assertJsonEquals("[{\"b\":[1,2,3]},{\"b\":[4,5,6]}]", "[{\"b\":[2,1,3]},{\"b\":[6,4,5]}]",
+            when(path("[*].b"), then(IGNORING_ARRAY_ORDER)));
+    }
+
+    @Test
+    void shouldNotIgnoreArrayOrderWhenNotSpecified() {
+        assertThatThrownBy(() -> assertJsonEquals(
+            "[{\"b\":[1,2,3]},{\"b\":[4,5,6]}]",
+            "[{\"b\":[6,4,5]},{\"b\":[2,1,3]}]",
+            when(path("[*].b"), then(IGNORING_ARRAY_ORDER))))
+            .hasMessage("JSON documents are different:\n" +
+                "Array \"[0].b\" has different content. Missing values: [1, 2, 3], extra values: [6, 4, 5], expected: <[1,2,3]> but was: <[6,4,5]>\n" +
+                "Array \"[1].b\" has different content. Missing values: [4, 5, 6], extra values: [2, 1, 3], expected: <[4,5,6]> but was: <[2,1,3]>\n");
+    }
+
+    @Test
+    void shouldExcludeIgnoringArrayOrderFromPath() {
+        assertJsonEquals("[{\"b\":[1,2,3]},{\"b\":[4,5,6]}]", "[{\"b\":[4,5,6]},{\"b\":[1,2,3]}]",
+            when(IGNORING_ARRAY_ORDER).when(path("[*].b"), thenNot(IGNORING_ARRAY_ORDER)));
+    }
+
+    @Test
+    void shouldExcludeIgnoringArrayOrderFromPathAndIgnoreInRoot() {
+        assertJsonEquals("[{\"b\":[1,2,3]},{\"b\":[4,5,6]}]", "[{\"b\":[4,5,6]},{\"b\":[1,2,3]}]",
+            when(rootPath(), then(IGNORING_ARRAY_ORDER)).when(path("[*].b"), thenNot(IGNORING_ARRAY_ORDER)));
+    }
+
+    @Test
+    void shouldIgnoreArrayOrderEverywhereButTheFirstElement() {
+        assertThatThrownBy(() -> assertJsonEquals(
+            "[{\"b\":[1,2,3]},{\"b\":[4,5,6]},{\"b\":[7,8,9]}]",
+            "[{\"b\":[1,3,2]},{\"b\":[5,4,6]},{\"b\":[8,7,9]}]",
+            when(path("[*].b"), then(IGNORING_ARRAY_ORDER)).when(path("[0].b"), thenNot(IGNORING_ARRAY_ORDER))))
+            .hasMessage("JSON documents are different:\n" +
+                "Different value found in node \"[0].b[1]\", expected: <2> but was: <3>.\n" +
+                "Different value found in node \"[0].b[2]\", expected: <3> but was: <2>.\n");
+    }
+
+    @Test
+    void shouldIgnoreArrayOrderInSeveralSpecificPaths() {
+        assertJsonEquals(
+            "[{\"b\":[1,2,3],\"c\":[-1,-2,-3]},{\"b\":[4,5,6],\"c\":[-4,-5,-6]}]",
+            "[{\"b\":[3,1,2],\"c\":[-2,-3,-1]},{\"b\":[6,5,4],\"c\":[-5,-4,-6]}]",
+            when(paths("[*].b", "[*].c"), then(IGNORING_ARRAY_ORDER)));
+    }
+
+    @Test
+    void shouldTreatNullAsAbsentInSpecificPath() {
+        assertJsonEquals("{\"a\":1}", "{\"a\":1,\"b\":null}",
+            when(path("b"), then(TREATING_NULL_AS_ABSENT)));
+    }
+
+    @Test
+    void shouldNotTreatNullAsAbsentWhenNotSpecified() {
+        assertThatThrownBy(() -> assertJsonEquals("{\"a\":1}", "{\"a\":1,\"b\":null,\"c\":null}",
+            when(path("b"), then(TREATING_NULL_AS_ABSENT))))
+            .hasMessage("JSON documents are different:\n" +
+                "Different keys found in node \"\", extra: \"c\", expected: <{\"a\":1}> but was: <{\"a\":1,\"b\":null,\"c\":null}>\n");
+    }
+
+    @Test
+    void shouldIgnoreExtraFieldsInSpecificPath() {
+        assertJsonEquals("{\"a\":{\"a1\":1}}", "{\"a\":{\"a1\":1,\"a2\":2}}",
+            when(path("a"), then(IGNORING_EXTRA_FIELDS)));
+    }
+
+    @Test
+    void shouldNotIgnoreExtraFieldsWhenNotSpecified() {
+        assertThatThrownBy(() -> assertJsonEquals(
+            "{\"a\":{\"a1\":1},\"b\":{\"b1\":1}}",
+            "{\"a\":{\"a1\":1,\"a2\":2},\"b\":{\"b1\":1,\"b2\":2}}",
+            when(path("a"), then(IGNORING_EXTRA_FIELDS))))
+            .hasMessage("JSON documents are different:\n" +
+                "Different keys found in node \"b\", extra: \"b.b2\", expected: <{\"b1\":1}> but was: <{\"b1\":1,\"b2\":2}>\n");
+    }
+
+    @Test
+    void shouldIgnoreExtraArrayItemsInSpecificPath() {
+        assertJsonEquals("{\"a\":[1,2]}", "{\"a\":[1,2,3]}",
+            when(path("a"), then(IGNORING_EXTRA_ARRAY_ITEMS)));
+    }
+
+    @Test
+    void shouldNotIgnoreExtraArrayItemsWhenNotSpecified() {
+        assertThatThrownBy(() -> assertJsonEquals(
+            "{\"a\":[1,2],\"b\":[1,2]}",
+            "{\"a\":[1,2,3],\"b\":[1,2,3]}",
+            when(path("a"), then(IGNORING_EXTRA_ARRAY_ITEMS))))
+            .hasMessage("JSON documents are different:\n" +
+                "Array \"b\" has different length, expected: <2> but was: <3>.\n" +
+                "Array \"b\" has different content. Extra values: [3], expected: <[1,2]> but was: <[1,2,3]>\n");
+    }
+
+    @Test
+    void shouldIgnoreValuesInSpecificPath() {
+        assertJsonEquals("{\"a\":1,\"b\":\"string\"}",
+            "{\"a\":2,\"b\":\"string2\"}",
+            when(paths("a", "b"), then(IGNORING_VALUES)));
+    }
+
+    @Test
+    void shouldNotIgnoreValuesWhenNotSpecified() {
+        assertThatThrownBy(() -> assertJsonEquals(
+            "{\"a\":1,\"b\":\"string\",\"c\":2}",
+            "{\"a\":2,\"b\":\"string2\",\"c\":3}",
+            when(paths("a", "b"), then(IGNORING_VALUES))))
+            .hasMessage("JSON documents are different:\n" +
+                "Different value found in node \"c\", expected: <2> but was: <3>.\n");
     }
 
     protected abstract Object readValue(String value);

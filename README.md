@@ -383,18 +383,27 @@ The assertion will not fail if the element is missing in the actual value.
 ## <a name="ignorepaths"></a>Ignoring paths
 
 `whenIgnoringPaths` configuration option makes JsonUnit ignore the specified paths in the actual value. If the path
-matches, it's completely ignored. It may be missing, null or have any value.
+matches, it's completely ignored. It may be missing, null or have any value. Also `when(paths(...), thenIgnore()` can be used.
 
 ```java
 // AssertJ style
 assertThatJson("{\"root\":{\"test\":1, \"ignored\": 1}}")
     .withConfiguration(c -> c.whenIgnoringPaths("root.ignored"))
     .isEqualTo("{\"root\":{\"test\":1}}");
+// or
+assertThatJson("{\"root\":{\"test\":1, \"ignored\": 1}}")
+    .withConfiguration(c -> c.when(path("root.ignored"), thenIgnore()))
+    .isEqualTo("{\"root\":{\"test\":1}}");
 
 // Hamcrest matcher
 assertThat(
   "{\"root\":{\"test\":1, \"ignored\": 2}}", 
   jsonEquals("{\"root\":{\"test\":1, \"ignored\": 1}}").whenIgnoringPaths("root.ignored")
+);
+// or
+assertThat(
+  "{\"root\":{\"test\":1, \"ignored\": 2}}", 
+  jsonEquals("{\"root\":{\"test\":1, \"ignored\": 1}}").when(path("root.ignored"), thenIgnore())
 );
 ```
 
@@ -542,6 +551,38 @@ In Hamcrest assertion you can set the option like this
 assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
     jsonEquals("{\"test\":{\"b\":2}}").when(IGNORING_EXTRA_FIELDS));
 ```
+
+You can define options locally (for specific paths) by using `when(path(...), then(...))`:
+```java
+// ignore array order for [*].a
+assertJsonEquals("[{\"a\": [1,2,3]}, {\"a\": [4,5,6]}]", "[{\"a\": [2,1,3]}, {\"a\": [6,4,5]}]",
+    when(path("[*].a"), then(IGNORING_ARRAY_ORDER)));
+// ignore array order everywhere but [*].a
+assertJsonEquals("[{\"a\": [1,2,3]}, {\"a\": [4,5,6]}]", "[{\"a\": [4,5,6]}, {\"a\": [1,2,3]}]",
+    when(IGNORING_ARRAY_ORDER).when(path("[*].a"), thenNot(IGNORING_ARRAY_ORDER)));
+// ignore extra fields in the object obj
+assertJsonEquals("{\"obj\":{\"a1\":1}}", "{\"obj\":{\"a1\":1,\"a2\":2}}",
+    when(path("obj"), then(IGNORING_EXTRA_FIELDS)));
+// ignore extra array items in the array
+assertJsonEquals("{\"array\":[1,2]}", "{\"array\":[1,2,3]}",
+    when(path("array"), then(IGNORING_EXTRA_ARRAY_ITEMS)));
+// Hamcrest
+assertThat("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}",
+    jsonEquals("{\"test\":{\"a\":1,\"b\":2,\"c\":4}}").when(path("test.c"), then(IGNORING_VALUES)));
+// AssertJ
+assertThatJson("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}").when(paths("test.c"), then(IGNORING_VALUES))
+    .isEqualTo("{\"test\":{\"a\":1,\"b\":2,\"c\":4}}");
+```
+Note that **TREATING_NULL_AS_ABSENT** and **IGNORING_VALUES** require exact paths to ignored fields:
+```java
+// ignoring number and str
+assertJsonEquals("{\"number\":1,\"str\":\"string\"}", "{\"number\":2,\"str\":\"string2\"}", 
+    when(paths("a", "b"), then(IGNORING_VALUES)));
+// treat null B as absent B
+assertJsonEquals("{\"A\":1}", "{\"A\":1,\"B\":null}",
+    when(path("B"), then(TREATING_NULL_AS_ABSENT)));
+```
+All other options require paths to objects or arrays where values or order should be ignored.
 
 ## <a name="arrayIndexing"></a>Array indexing
 You can use negative numbers to index arrays form the end

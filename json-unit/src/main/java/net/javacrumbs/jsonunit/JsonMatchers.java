@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit;
 
 import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.ConfigurationWhen;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Node;
@@ -30,7 +31,6 @@ import java.math.BigDecimal;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-import static net.javacrumbs.jsonunit.core.Configuration.dummyDifferenceListener;
 import static net.javacrumbs.jsonunit.core.internal.Diff.createInternal;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix;
@@ -155,6 +155,13 @@ public class JsonMatchers {
 
         public ConfigurableJsonMatcher<T> withOptions(Options options) {
             configuration = configuration.withOptions(options);
+            return this;
+        }
+
+        @SafeVarargs
+        @Override
+        public final <M> ConfigurableJsonMatcher<T> when(ConfigurationWhen.WhenObject<M> object, M... actions) {
+            configuration = configuration.when(object, actions);
             return this;
         }
 
