@@ -15,6 +15,8 @@
  */
 package net.javacrumbs.jsonunit.core;
 
+import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
+import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
 import net.javacrumbs.jsonunit.core.internal.Options;
 import net.javacrumbs.jsonunit.core.internal.PathOption;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
@@ -131,10 +133,9 @@ public class Configuration {
      *
      * @see ConfigurationWhen#path
      */
-    @SafeVarargs
-    public final <T> Configuration when(ConfigurationWhen.WhenObject<T> object, T... actions) {
+    public final Configuration when(PathsParam object, ApplicableForPath... actions) {
         Configuration configuration = this;
-        for (T action : actions) {
+        for (ApplicableForPath action : actions) {
             configuration = object.apply(configuration, action);
         }
         return configuration;

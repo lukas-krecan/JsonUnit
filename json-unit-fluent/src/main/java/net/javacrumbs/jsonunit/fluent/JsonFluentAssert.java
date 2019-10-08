@@ -17,6 +17,8 @@ package net.javacrumbs.jsonunit.fluent;
 
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen;
+import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
+import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
@@ -367,14 +369,11 @@ public class JsonFluentAssert {
 
         /**
          * Sets advanced/local options. This method has to be called <b>before</b> assertion.
-         * For more information see {@link Configuration#when(ConfigurationWhen.WhenObject, Object...)}
+         * For more information see {@link Configuration#when(PathsParam, ApplicableForPath...)}
          *
-         * @param object
-         * @param actions
-         * @see Configuration#when(ConfigurationWhen.WhenObject, Object...)
+         * @see Configuration#when(ConfigurationWhen.PathsParam, ApplicableForPath...)
          */
-        @SafeVarargs
-        public final <T> ConfigurableJsonFluentAssert when(ConfigurationWhen.WhenObject<T> object, T... actions) {
+        public final ConfigurableJsonFluentAssert when(PathsParam object, ApplicableForPath... actions) {
             return new ConfigurableJsonFluentAssert(internalMatcher.when(object, actions));
         }
     }
