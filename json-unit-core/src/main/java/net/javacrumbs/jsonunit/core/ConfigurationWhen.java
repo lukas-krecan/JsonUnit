@@ -2,7 +2,10 @@ package net.javacrumbs.jsonunit.core;
 
 import net.javacrumbs.jsonunit.core.internal.PathOption;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.List;
 
 /**
  * Everything for {@link Configuration#when(WhenObject, Object...)}

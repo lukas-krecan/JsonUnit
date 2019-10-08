@@ -1,12 +1,12 @@
 /**
  * Copyright 2009-2019 the original author or authors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,10 +31,16 @@ import static java.util.Collections.singletonMap;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.value;
-import static net.javacrumbs.jsonunit.core.ConfigurationWhen.*;
+import static net.javacrumbs.jsonunit.core.ConfigurationWhen.path;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.paths;
-import static net.javacrumbs.jsonunit.core.Option.*;
+import static net.javacrumbs.jsonunit.core.ConfigurationWhen.rootPath;
+import static net.javacrumbs.jsonunit.core.ConfigurationWhen.then;
+import static net.javacrumbs.jsonunit.core.ConfigurationWhen.thenNot;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
+import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -128,25 +134,25 @@ public abstract class AbstractAssertJTest {
     @Test
     void compareJsonInJsonPathArray() {
         assertThatJson("{\"root\": [{\"target\": 450} ]}")
-                        .inPath("$.root")
-                        .isArray()
-                        .containsExactly("{\"target\": 450 }");
+            .inPath("$.root")
+            .isArray()
+            .containsExactly("{\"target\": 450 }");
     }
 
     @Test
     void compareJsonInJsonPathShallowArray() {
         assertThatJson("{\"root\": [450]}")
-                        .inPath("$.root")
-                        .isArray()
-                        .containsExactly(json("450"));
+            .inPath("$.root")
+            .isArray()
+            .containsExactly(json("450"));
     }
 
     @Test
     void compareJsonInJsonPathShallowArrayString() {
         assertThatThrownBy(() -> assertThatJson("{\"root\": [450]}")
-                        .inPath("$.root")
-                        .isArray()
-                        .containsExactly(value("450")))
+            .inPath("$.root")
+            .isArray()
+            .containsExactly(value("450")))
             .hasMessage("[Different value found in node \"$.root\"] \n" +
                 "Expecting:\n" +
                 "  <[450]>\n" +
@@ -162,56 +168,56 @@ public abstract class AbstractAssertJTest {
     @Test
     void compareJsonInPathArrayOfArrays() {
         assertThatJson("{\"root\": [[{\"target\": 450} ]]}")
-                        .inPath("$.root")
-                        .isArray()
-                        .containsExactly("[{\"target\": 450 }]");
+            .inPath("$.root")
+            .isArray()
+            .containsExactly("[{\"target\": 450 }]");
     }
 
     @Test
     void compareJsonInNodeArray() {
         assertThatJson("{\"root\": [{\"target\": 450} ]}")
-                        .node("root")
-                        .isArray()
-                        .containsExactly("{\"target\": 450 }");
+            .node("root")
+            .isArray()
+            .containsExactly("{\"target\": 450 }");
     }
 
     @Test
     void compareJsonInNodeShallowArray() {
         assertThatJson("{\"root\": [450]}")
-                        .node("root")
-                        .isArray()
-                        .containsExactly(valueOf(450));
+            .node("root")
+            .isArray()
+            .containsExactly(valueOf(450));
     }
 
     @Test
     void compareJsonInNodeShallowArrayBigDecimal() {
         assertThatJson("{\"root\": [450]}")
-                        .node("root")
-                        .isArray()
-                        .containsExactly(valueOf(450));
+            .node("root")
+            .isArray()
+            .containsExactly(valueOf(450));
     }
 
     @Test
     void compareJsonInNodeShallowArrayBoolean() {
         assertThatJson("{\"root\": [true]}")
-                        .node("root")
-                        .isArray()
-                        .containsExactly(true);
+            .node("root")
+            .isArray()
+            .containsExactly(true);
     }
 
     @Test
     void compareJsonInNodeArrayOfArrays() {
         assertThatJson("{\"root\": [[{\"target\": 450} ]]}")
-                        .node("root")
-                        .isArray()
-                        .containsExactly("[{\"target\": 450 }]");
+            .node("root")
+            .isArray()
+            .containsExactly("[{\"target\": 450 }]");
     }
 
     @Test
     void compareJsonArray() {
         assertThatJson("{\"root\": [{\"target\": 450} ]}")
-                        .node("root")
-                        .isEqualTo(singletonList(singletonMap("target", 450)));
+            .node("root")
+            .isEqualTo(singletonList(singletonMap("target", 450)));
     }
 
     @Test
@@ -405,7 +411,7 @@ public abstract class AbstractAssertJTest {
     void multipleFailuresErrorShouldBeCorrectlyFormatted() {
         assertThatExceptionOfType(MultipleFailuresError.class)
             .isThrownBy(() -> assertThatJson("{\"a\":[{\"b\": 1}, {\"c\": 1}, {\"d\": 1}]}").when(Option.IGNORING_ARRAY_ORDER).node("a").isArray()
-            .isEqualTo(json("[{\"c\": 2}, {\"b\": 1} ,{\"d\": 1}]")))
+                .isEqualTo(json("[{\"c\": 2}, {\"b\": 1} ,{\"d\": 1}]")))
             .satisfies(e -> {
                 List<Throwable> failures = e.getFailures();
                 assertThat(failures.get(0).getMessage()).isEqualTo("Different value found when comparing expected array element a[0] to actual element a[1].");
@@ -416,15 +422,15 @@ public abstract class AbstractAssertJTest {
     @Test
     void shouldIgnoreMissingPathEvenIfItIsInExpectedValue() {
         assertThatJson("{\"root\":{\"foo\":1}}")
-                .whenIgnoringPaths("root.bar", "missing")
-                .isEqualTo("{\"root\":{\"foo\":1, \"bar\":2}, \"missing\":{\"quux\":\"test\"}}");
+            .whenIgnoringPaths("root.bar", "missing")
+            .isEqualTo("{\"root\":{\"foo\":1, \"bar\":2}, \"missing\":{\"quux\":\"test\"}}");
     }
 
     @Test
     void shouldIgnoreArrayElement() {
         assertThatJson("{\"root\":[0, 1, 2]}")
-                .whenIgnoringPaths("root[1]")
-                .isEqualTo("{\"root\":[0, 8, 2]}");
+            .whenIgnoringPaths("root[1]")
+            .isEqualTo("{\"root\":[0, 8, 2]}");
     }
 
     @Test
@@ -542,7 +548,7 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void shouldAssertNumberFailure() {
-        assertThatThrownBy(() ->  assertThatJson("{\"a\":1}").node("a").isNumber().isEqualByComparingTo("2"))
+        assertThatThrownBy(() -> assertThatJson("{\"a\":1}").node("a").isNumber().isEqualByComparingTo("2"))
             .hasMessage("[Different value found in node \"a\"] \n" +
                 "Expecting:\n" +
                 " <1>\n" +
@@ -1000,16 +1006,16 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void shouldWorkWithPercentSign() {
-       assertThatThrownBy(() -> assertThatJson("{\"a\": \"1\"}").isEqualTo("{\"%\": \"2\"}"))
-           .hasMessage("JSON documents are different:\n" +
-               "Different keys found in node \"\", missing: \"%\", extra: \"a\", expected: <{\"%\":\"2\"}> but was: <{\"a\":\"1\"}>\n");
+        assertThatThrownBy(() -> assertThatJson("{\"a\": \"1\"}").isEqualTo("{\"%\": \"2\"}"))
+            .hasMessage("JSON documents are different:\n" +
+                "Different keys found in node \"\", missing: \"%\", extra: \"a\", expected: <{\"%\":\"2\"}> but was: <{\"a\":\"1\"}>\n");
     }
 
     @Test
     void shouldIgnoreFields() {
         assertThatJson("{\"root\":{\"test\":1, \"ignored\": 1}}")
-               .isObject()
-               .isEqualToIgnoringGivenFields("{\"root\":{\"test\":1, \"ignored\": 2}}", "root.ignored");
+            .isObject()
+            .isEqualToIgnoringGivenFields("{\"root\":{\"test\":1, \"ignored\": 2}}", "root.ignored");
 
     }
 
@@ -1131,7 +1137,7 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void jsonPathWithNodeError() {
-        assertThatThrownBy(() ->  assertThatJson(json)
+        assertThatThrownBy(() -> assertThatJson(json)
             .inPath("$.store.book[0]")
             .node("title")
             .isEqualTo("Sayings of the Century2")
@@ -1217,18 +1223,18 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void jsonPathShouldBeAbleToUseArraysDeep() {
-            assertThatJson(json)
-                .inPath("$.store.book[*].category")
-                .isArray()
-                .containsExactlyInAnyOrder("fiction", "reference", "fiction", "fiction");
+        assertThatJson(json)
+            .inPath("$.store.book[*].category")
+            .isArray()
+            .containsExactlyInAnyOrder("fiction", "reference", "fiction", "fiction");
     }
 
     @Test
     void jsonPathShouldBeAbleToUseArraysFromObject() {
-            assertThatJson(readValue(json))
-                .inPath("$.store.book[*].category")
-                .isArray()
-                .containsExactlyInAnyOrder("fiction", "reference", "fiction", "fiction");
+        assertThatJson(readValue(json))
+            .inPath("$.store.book[*].category")
+            .isArray()
+            .containsExactlyInAnyOrder("fiction", "reference", "fiction", "fiction");
     }
 
     @Test
