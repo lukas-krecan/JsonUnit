@@ -17,6 +17,8 @@ package net.javacrumbs.jsonunit.assertj;
 
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen;
+import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
+import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
@@ -279,10 +281,9 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
         /**
          * Adds path specific options.
          *
-         * @see Configuration#when(ConfigurationWhen.WhenObject, Object...)
+         * @see Configuration#when(PathsParam, ApplicableForPath...)
          */
-        @SafeVarargs
-        public final <T> ConfigurableJsonAssert when(ConfigurationWhen.WhenObject<T> object, T... actions) {
+        public final ConfigurableJsonAssert when(PathsParam object, ApplicableForPath... actions) {
             return withConfiguration(c -> c.when(object, actions));
         }
 

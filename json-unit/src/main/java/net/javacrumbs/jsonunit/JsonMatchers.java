@@ -17,6 +17,8 @@ package net.javacrumbs.jsonunit;
 
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen;
+import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
+import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Node;
@@ -158,9 +160,8 @@ public class JsonMatchers {
             return this;
         }
 
-        @SafeVarargs
         @Override
-        public final <M> ConfigurableJsonMatcher<T> when(ConfigurationWhen.WhenObject<M> object, M... actions) {
+        public final ConfigurableJsonMatcher<T> when(PathsParam object, ApplicableForPath... actions) {
             configuration = configuration.when(object, actions);
             return this;
         }

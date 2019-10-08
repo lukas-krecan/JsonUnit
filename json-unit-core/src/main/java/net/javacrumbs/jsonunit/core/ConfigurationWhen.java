@@ -8,7 +8,7 @@ import java.util.EnumSet;
 import java.util.List;
 
 /**
- * Everything for {@link Configuration#when(WhenObject, Object...)}
+ * Everything for {@link Configuration#when(PathsParam, ApplicableForPath...)}
  */
 public class ConfigurationWhen {
     private ConfigurationWhen() {}
@@ -68,7 +68,7 @@ public class ConfigurationWhen {
         return new IgnoredParam();
     }
 
-    public static class PathsParam implements WhenObject<ApplicableForPath> {
+    public static class PathsParam {
         private final List<String> paths;
 
         private PathsParam(String path) {
@@ -79,12 +79,11 @@ public class ConfigurationWhen {
             this.paths = Arrays.asList(paths);
         }
 
-        public List<String> getPaths() {
+        List<String> getPaths() {
             return paths;
         }
 
-        @Override
-        public Configuration apply(Configuration configuration, ApplicableForPath action) {
+        Configuration apply(Configuration configuration, ApplicableForPath action) {
             return action.applyForPaths(configuration, this);
         }
     }
@@ -93,7 +92,7 @@ public class ConfigurationWhen {
         Configuration applyForPaths(Configuration configuration, PathsParam pathsParam);
     }
 
-    public static class OptionsParam implements ApplicableForPath {
+    static class OptionsParam implements ApplicableForPath {
         private final EnumSet<Option> options;
         private final boolean included;
 
@@ -108,7 +107,7 @@ public class ConfigurationWhen {
         }
     }
 
-    public static class IgnoredParam implements ApplicableForPath {
+    static class IgnoredParam implements ApplicableForPath {
         private IgnoredParam() {
         }
 
@@ -116,9 +115,5 @@ public class ConfigurationWhen {
         public Configuration applyForPaths(Configuration configuration, PathsParam pathsParam) {
             return configuration.whenIgnoringPaths(pathsParam.paths);
         }
-    }
-
-    public interface WhenObject<T> {
-        <K extends T> Configuration apply(Configuration configuration, K action);
     }
 }
