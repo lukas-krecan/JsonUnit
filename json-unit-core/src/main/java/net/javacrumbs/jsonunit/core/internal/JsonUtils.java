@@ -17,6 +17,7 @@ package net.javacrumbs.jsonunit.core.internal;
 
 
 import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.ConfigurationSource;
 import net.javacrumbs.jsonunit.core.Option;
 
 import java.util.Iterator;
@@ -101,12 +102,12 @@ public class JsonUtils {
         return !getNode(json, path).isMissingNode();
     }
 
-    public static boolean nodeAbsent(Object json, String path, Configuration configuration) {
+    public static boolean nodeAbsent(Object json, String path, ConfigurationSource configuration) {
         return nodeAbsent(json, Path.create(path), configuration);
     }
 
-    public static boolean nodeAbsent(Object json, Path path, Configuration configuration) {
-        return nodeAbsent(json, path, configuration.getOptions().contains(Option.TREATING_NULL_AS_ABSENT));
+    public static boolean nodeAbsent(Object json, Path path, ConfigurationSource configuration) {
+        return nodeAbsent(json, path, configuration.hasOption(path.getFullPath(), Option.TREATING_NULL_AS_ABSENT));
     }
 
     public static Object jsonSource(final Object json, final String pathPrefix) {

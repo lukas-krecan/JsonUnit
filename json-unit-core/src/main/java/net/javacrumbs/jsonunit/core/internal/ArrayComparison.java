@@ -15,7 +15,7 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.ConfigurationSource;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +25,7 @@ class ArrayComparison {
     private final List<Node> actualElements;
     private final List<Node> expectedElements;
 
-    ArrayComparison(List<Node> expectedElements, List<Node> actualElements, Path path, Configuration configuration) {
+    ArrayComparison(List<Node> expectedElements, List<Node> actualElements, Path path, ConfigurationSource configuration) {
         comparisonMatrix = new ComparisonMatrix(expectedElements, actualElements, path, configuration);
         this.actualElements = actualElements;
         this.expectedElements = expectedElements;

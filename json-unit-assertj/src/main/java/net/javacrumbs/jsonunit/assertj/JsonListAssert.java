@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit.assertj;
 
 import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.ConfigurationSource;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import org.assertj.core.api.ListAssert;
@@ -27,10 +28,10 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedOb
 import static org.assertj.core.error.ShouldNotBeEqual.shouldNotBeEqual;
 
 class JsonListAssert extends ListAssert<Object> {
-    private final Configuration configuration;
+    private final ConfigurationSource configuration;
     private final Path path;
 
-    JsonListAssert(List<?> actual, Path path, Configuration configuration) {
+    JsonListAssert(List<?> actual, Path path, ConfigurationSource configuration) {
         super(actual);
         this.path = path;
         this.configuration = configuration;

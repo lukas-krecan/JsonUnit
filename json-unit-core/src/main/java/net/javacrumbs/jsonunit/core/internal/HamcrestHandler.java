@@ -1,6 +1,6 @@
 package net.javacrumbs.jsonunit.core.internal;
 
-import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.ConfigurationSource;
 import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
@@ -14,11 +14,11 @@ import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
  * Hamcrest dependent classes moved here so we can theoretically work without it.
  */
 class HamcrestHandler {
-    private final Configuration configuration;
+    private final ConfigurationSource configuration;
     private final DifferenceReporter valueDifferenceReporter;
     private final DifferenceReporter structureDifferenceReporter;
 
-    HamcrestHandler(Configuration configuration, DifferenceReporter valueDifferenceReporter, DifferenceReporter structureDifferenceReporter) {
+    HamcrestHandler(ConfigurationSource configuration, DifferenceReporter valueDifferenceReporter, DifferenceReporter structureDifferenceReporter) {
         this.configuration = configuration;
         this.valueDifferenceReporter = valueDifferenceReporter;
         this.structureDifferenceReporter = structureDifferenceReporter;

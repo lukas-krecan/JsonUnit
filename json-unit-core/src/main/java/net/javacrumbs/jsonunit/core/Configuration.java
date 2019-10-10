@@ -20,7 +20,6 @@ import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -31,7 +30,7 @@ import static java.util.Arrays.asList;
 /**
  * Comparison configuration. Immutable.
  */
-public class Configuration {
+public class Configuration implements ConfigurationSource {
     private static final DifferenceListener DUMMY_LISTENER = (difference, context) -> {};
 
     private static final String DEFAULT_IGNORE_PLACEHOLDER = "${json-unit.ignore}";
@@ -183,6 +182,11 @@ public class Configuration {
 
     public Options getOptions() {
         return options;
+    }
+
+    @Override
+    public boolean hasOption(String path, Option option) {
+        return options.contains(option);
     }
 
     public String getIgnorePlaceholder() {

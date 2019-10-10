@@ -15,7 +15,7 @@
  */
 package net.javacrumbs.jsonunit.assertj;
 
-import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.ConfigurationSource;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Path;
@@ -25,11 +25,11 @@ import java.util.Comparator;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
 
 class JsonComparator implements Comparator<Object> {
-    private final Configuration configuration;
+    private final ConfigurationSource configuration;
     private final Path path;
     private final boolean actualParsed;
 
-    JsonComparator(Configuration configuration, Path path, boolean actualParsed) {
+    JsonComparator(ConfigurationSource configuration, Path path, boolean actualParsed) {
         this.configuration = configuration;
         this.path = path;
         this.actualParsed = actualParsed;

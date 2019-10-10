@@ -16,15 +16,16 @@
 package net.javacrumbs.jsonunit.assertj;
 
 import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.ConfigurationSource;
 import net.javacrumbs.jsonunit.core.Option;
 import org.assertj.core.internal.ComparisonStrategy;
 
 import java.util.Set;
 
 class JsonComparisonStrategy implements ComparisonStrategy {
-    private final Configuration configuration;
+    private final ConfigurationSource configuration;
 
-    JsonComparisonStrategy(Configuration configuration) {
+    JsonComparisonStrategy(ConfigurationSource configuration) {
         this.configuration = configuration;
     }
 
@@ -100,7 +101,6 @@ class JsonComparisonStrategy implements ComparisonStrategy {
 
     @Override
     public String toString() {
-        Set<Option> options = configuration.getOptions().values();
-        return "when comparing as JSON" + (!options.isEmpty() ? " with " + options : "");
+        return "when comparing as JSON";
     }
 }

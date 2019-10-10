@@ -15,6 +15,7 @@
  */
 package net.javacrumbs.jsonunit.assertj;
 
+import net.javacrumbs.jsonunit.core.ConfigurationSource;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
@@ -23,8 +24,8 @@ import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Options;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
+import net.javacrumbs.jsonunit.core.internal.matchers.SimpleInternalMatcher;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
-import net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.AbstractStringAssert;
 import org.assertj.core.api.BigDecimalAssert;
@@ -32,7 +33,6 @@ import org.assertj.core.api.BooleanAssert;
 import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.MapAssert;
 import org.assertj.core.api.StringAssert;
-import org.assertj.core.description.Description;
 import org.assertj.core.error.MessageFormatter;
 import org.assertj.core.internal.Failures;
 import org.hamcrest.Matcher;
@@ -57,18 +57,18 @@ import static org.assertj.core.util.Strings.isNullOrEmpty;
 
 public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     final Path path;
-    final Configuration configuration;
-    private final InternalMatcher internalMatcher;
+    final ConfigurationSource configuration;
+    private final SimpleInternalMatcher internalMatcher;
 
-    JsonAssert(Path path, Configuration configuration, Object actual) {
+    JsonAssert(Path path, ConfigurationSource configuration, Object actual) {
         super(JsonUtils.convertToJson(actual, "actual"), JsonAssert.class);
         this.path = path;
         this.configuration = configuration;
-        this.internalMatcher = new InternalMatcher(actual, path.asPrefix(), "", configuration);
+        this.internalMatcher = new SimpleInternalMatcher(actual, path.asPrefix(), "", configuration);
         usingComparator(new JsonComparator(configuration, path, false));
     }
 
-    JsonAssert(Object actual, Configuration configuration) {
+    JsonAssert(Object actual, ConfigurationSource configuration) {
         this(Path.create("", getPathPrefix(actual)), configuration, actual);
     }
 
@@ -248,6 +248,17 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
         return internalMatcher.assertType(type);
     }
 
+    static class CommonConfigurableJsonAssert extends JsonAssert {
+        // Want to pass to inPath to not parse twice.
+        protected final Object originalActual;
+
+        CommonConfigurableJsonAssert(Path path, ConfigurationSource configuration, Object actual) {
+            super(path, configuration, actual);
+            this.originalActual = actual;
+        }
+
+    }
+
     /**
      * JsonAssert that can be configured to prevent mistakes like
      *
@@ -255,17 +266,17 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      * assertThatJson(...).isEqualsTo(...).when(...);
      * </code>
      */
-    public static class ConfigurableJsonAssert extends JsonAssert {
-        // Want to pass to inPath to not parse twice.
-        private final Object originalActual;
-
-        ConfigurableJsonAssert(Path path, Configuration configuration, Object actual) {
+    public static class ConfigurableJsonAssert extends CommonConfigurableJsonAssert {
+        ConfigurableJsonAssert(Path path, ConfigurationSource configuration, Object actual) {
             super(path, configuration, actual);
-            this.originalActual = actual;
         }
 
         ConfigurableJsonAssert(Object actual, Configuration configuration) {
             this(Path.create("", getPathPrefix(actual)), configuration, actual);
+        }
+
+        public  ConfigurableJsonAssert with(ConfigurationSource configuration) {
+            return new ConfigurableJsonAssert(path, configuration, actual);
         }
 
         /**
@@ -361,31 +372,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
          */
         public ConfigurableJsonAssert withDifferenceListener(DifferenceListener differenceListener) {
             return withConfiguration(c -> c.withDifferenceListener(differenceListener));
-        }
-
-        public JsonAssert inPath(String jsonPath) {
-            return new JsonAssert(JsonPathAdapter.inPath(originalActual, jsonPath), configuration);
-        }
-
-        // Following methods are here just to return ConfigurableJsonAssert instead of JsonAssert
-        @Override
-        public ConfigurableJsonAssert describedAs(Description description) {
-            return (ConfigurableJsonAssert) super.describedAs(description);
-        }
-
-        @Override
-        public ConfigurableJsonAssert describedAs(String description, Object... args) {
-            return (ConfigurableJsonAssert) super.describedAs(description, args);
-        }
-
-        @Override
-        public ConfigurableJsonAssert as(Description description) {
-            return (ConfigurableJsonAssert) super.as(description);
-        }
-
-        @Override
-        public ConfigurableJsonAssert as(String description, Object... args) {
-            return (ConfigurableJsonAssert) super.as(description, args);
         }
     }
 }

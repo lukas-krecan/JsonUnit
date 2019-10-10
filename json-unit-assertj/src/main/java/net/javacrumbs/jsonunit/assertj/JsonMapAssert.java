@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit.assertj;
 
 import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.ConfigurationSource;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Path;
@@ -28,11 +29,11 @@ import static org.assertj.core.error.ShouldContainValue.shouldContainValue;
 import static org.assertj.core.error.ShouldNotContainValue.shouldNotContainValue;
 
 class JsonMapAssert extends MapAssert<String, Object> {
-    private final Configuration configuration;
+    private final ConfigurationSource configuration;
     private final Path path;
     private final Failures failures = Failures.instance();
 
-    JsonMapAssert(Map<String, Object> actual, Path path, Configuration configuration) {
+    JsonMapAssert(Map<String, Object> actual, Path path, ConfigurationSource configuration) {
         super(actual);
         this.path = path;
         this.configuration = configuration;
@@ -97,7 +98,7 @@ class JsonMapAssert extends MapAssert<String, Object> {
         return new UnsupportedOperationException("Operation not supported for JSON documents");
     }
 
-    private JsonMapAssert compare(Object other, Configuration configuration) {
+    private JsonMapAssert compare(Object other, ConfigurationSource configuration) {
         describedAs(null);
         Diff diff = Diff.create(other, actual, "fullJson", path, configuration);
         diff.failIfDifferent();

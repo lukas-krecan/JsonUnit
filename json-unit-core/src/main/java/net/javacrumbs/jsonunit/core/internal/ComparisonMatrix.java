@@ -15,7 +15,7 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.ConfigurationSource;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -24,7 +24,6 @@ import java.util.List;
 import static java.lang.Math.min;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
-import static net.javacrumbs.jsonunit.core.Configuration.dummyDifferenceListener;
 import static net.javacrumbs.jsonunit.core.internal.Diff.DEFAULT_DIFFERENCE_STRING;
 import static net.javacrumbs.jsonunit.core.internal.JsonUnitLogger.NULL_LOGGER;
 
@@ -52,11 +51,11 @@ class ComparisonMatrix {
         this.actualElements = actualElements;
     }
 
-    ComparisonMatrix(List<Node> expectedElements, List<Node> actualElements, Path path, Configuration configuration) {
+    ComparisonMatrix(List<Node> expectedElements, List<Node> actualElements, Path path, ConfigurationSource configuration) {
         this(generateEqualElements(expectedElements, actualElements, path, configuration), 0, new Integer[expectedElements.size()], new ArrayList<>(), new BitSet(), expectedElements, actualElements);
     }
 
-    private static List<List<Integer>> generateEqualElements(List<Node> expectedElements, List<Node> actualElements, Path path, Configuration configuration) {
+    private static List<List<Integer>> generateEqualElements(List<Node> expectedElements, List<Node> actualElements, Path path, ConfigurationSource configuration) {
         List<List<Integer>> equalElements = new ArrayList<>(actualElements.size());
 
         // Compare all elements
@@ -66,7 +65,7 @@ class ComparisonMatrix {
 
             for (int j = 0; j < expectedElements.size(); j++) {
                 Node expected = expectedElements.get(j);
-                Diff diff = new Diff(expected, actual, Path.create("", path.toElement(i).getFullPath()), configuration.withDifferenceListener(dummyDifferenceListener()), NULL_LOGGER, NULL_LOGGER, DEFAULT_DIFFERENCE_STRING);
+                Diff diff = new Diff(expected, actual, Path.create("", path.toElement(i).getFullPath()), new ConfigurationWithDummyDifferenceListener(configuration), NULL_LOGGER, NULL_LOGGER, DEFAULT_DIFFERENCE_STRING);
                 if (diff.similar()) {
                     actualIsEqualTo.add(j);
                 }

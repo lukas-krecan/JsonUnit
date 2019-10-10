@@ -15,7 +15,7 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.ConfigurationSource;
 
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
 
@@ -25,9 +25,9 @@ class Context {
     private final Node actualNode;
     private final Path expectedPath;
     private final Path actualPath;
-    private final Configuration configuration;
+    private final ConfigurationSource configuration;
 
-    Context(Node expectedNode, Node actualNode, Path expectedPath, Path actualPath, Configuration configuration) {
+    Context(Node expectedNode, Node actualNode, Path expectedPath, Path actualPath, ConfigurationSource configuration) {
         this.expectedNode = expectedNode;
         this.actualNode = actualNode;
         this.expectedPath = expectedPath;
@@ -71,7 +71,7 @@ class Context {
         return new Context(wrapDeserializedObject(expectedLength), wrapDeserializedObject(actualNode.size()), expectedPath.length(), actualPath.length(), configuration);
     }
 
-    public Configuration getConfiguration() {
+    public ConfigurationSource getConfiguration() {
         return configuration;
     }
 }
