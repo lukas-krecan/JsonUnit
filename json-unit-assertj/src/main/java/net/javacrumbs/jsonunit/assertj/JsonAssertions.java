@@ -32,7 +32,7 @@ public final class JsonAssertions {
     }
 
     public static ConfigurableJsonAssert assertThatJson(Object actual) {
-        return new ConfigurableJsonAssert(actual, Configuration.empty());
+        return new ConfigurableJsonAssert(actual, Configuration.withActualRoot(actual));
     }
 
     /**

@@ -53,6 +53,7 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
 import static net.javacrumbs.jsonunit.core.internal.Node.KeyValue;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType;
+import static net.javacrumbs.jsonunit.core.internal.PathOptionMatcher.createMatchersFromPathOption;
 
 
 /**
@@ -93,9 +94,9 @@ public class Diff {
         this.configuration = configuration;
         this.diffLogger = diffLogger;
         this.valuesLogger = valuesLogger;
-        this.pathsToBeIgnored = PathMatcher.create(configuration.getPathsToBeIgnored());
+        this.pathsToBeIgnored = PathMatcher.create(configuration.getPathsToBeIgnored(), configuration.getActualRoot());
         this.specificPathOptions = configuration.getPathOptions().stream()
-                .flatMap(PathOptionMatcher::createMatchersFromPathOption).collect(Collectors.groupingBy(PathOptionMatcher::getOption));
+            .flatMap(o -> createMatchersFromPathOption(o, configuration.getActualRoot())).collect(Collectors.groupingBy(PathOptionMatcher::getOption));
         this.differenceString = differenceString;
     }
 

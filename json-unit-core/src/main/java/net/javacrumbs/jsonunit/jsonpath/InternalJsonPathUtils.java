@@ -17,7 +17,6 @@ package net.javacrumbs.jsonunit.jsonpath;
 
 
 import com.jayway.jsonpath.Option;
-import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 
 import java.util.Collection;
@@ -32,11 +31,7 @@ public class InternalJsonPathUtils {
 
     }
 
-    public static Configuration resolveJsonPathsToBeIgnored(Object json, Configuration configuration) {
-        return configuration.whenIgnoringPaths(resolveJsonPaths(json, configuration.getPathsToBeIgnored()));
-    }
-
-    private static Collection<String> resolveJsonPaths(Object json, Collection<String> paths) {
+    public static Collection<String> resolveJsonPaths(Object json, Collection<String> paths) {
         com.jayway.jsonpath.Configuration conf = com.jayway.jsonpath.Configuration.builder()
             .options(Option.AS_PATH_LIST, Option.SUPPRESS_EXCEPTIONS)
             .build();

@@ -17,7 +17,6 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import org.junit.jupiter.api.Test;
 
-import static net.javacrumbs.jsonunit.core.internal.Node.MISSING_NODE;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

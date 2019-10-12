@@ -15,11 +15,12 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
+
+import static java.util.stream.Collectors.toList;
+import static net.javacrumbs.jsonunit.jsonpath.InternalJsonPathUtils.resolveJsonPaths;
 
 abstract class PathMatcher {
     private static final PathMatcher EMPTY = new PathMatcher() {
@@ -31,14 +32,13 @@ abstract class PathMatcher {
 
     abstract boolean matches(String pathToMatch);
 
-    static PathMatcher create(Set<String> paths) {
+    static PathMatcher create(Collection<String> paths, Object actualRoot) {
         if (paths == null || paths.isEmpty()) {
             return EMPTY;
         }
-        List<PathMatcher> matchers = new ArrayList<>(paths.size());
-        for (String path : paths) {
-            matchers.add(PathMatcher.create(path));
-        }
+
+        List<PathMatcher> matchers = resolveJsonPaths(actualRoot, paths).stream()
+            .map(PathMatcher::create).collect(toList());
         return new AggregatePathMatcher(matchers);
     }
 
@@ -50,6 +50,7 @@ abstract class PathMatcher {
         }
     }
 
+
     private static class SimplePathMatcher extends PathMatcher {
         private final String path;
 
@@ -59,7 +60,7 @@ abstract class PathMatcher {
 
         @Override
         boolean matches(String pathToMatch) {
-            return path.equals(pathToMatch) || path.equals("$." + pathToMatch);
+            return path.equals(pathToMatch) || path.equals("$." + pathToMatch) || path.equals("$" + pathToMatch);
         }
     }
 
@@ -99,20 +100,15 @@ abstract class PathMatcher {
 
     private static class AggregatePathMatcher extends PathMatcher {
 
-        private final Iterable<PathMatcher> pathMatchers;
+        private final Collection<PathMatcher> pathMatchers;
 
-        private AggregatePathMatcher(Iterable<PathMatcher> pathMatchers) {
+        private AggregatePathMatcher(Collection<PathMatcher> pathMatchers) {
             this.pathMatchers = pathMatchers;
         }
 
         @Override
         boolean matches(String path) {
-            for (PathMatcher matcher : pathMatchers) {
-                if (matcher.matches(path)) {
-                    return true;
-                }
-            }
-            return false;
+            return pathMatchers.stream().anyMatch(m -> m.matches(path));
         }
     }
 }

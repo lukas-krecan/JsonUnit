@@ -18,7 +18,6 @@ package net.javacrumbs.jsonunit.jsonpath;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.PathNotFoundException;
 
-import static com.jayway.jsonpath.JsonPath.using;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.missingNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;

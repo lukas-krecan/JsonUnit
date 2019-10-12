@@ -13,28 +13,6 @@
         <version>2.9.1-SNAPSHOT</version>
     </parent>
 
-    <properties>
-        <osgi.exportPackage>net.javacrumbs.jsonunit.jsonpath.*</osgi.exportPackage>
-    </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>net.javacrumbs.json-unit</groupId>
-            <artifactId>json-unit-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.jayway.jsonpath</groupId>
-            <artifactId>json-path</artifactId>
-            <version>${json-path.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>${assertj.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
 
     <build>
         <plugins>
