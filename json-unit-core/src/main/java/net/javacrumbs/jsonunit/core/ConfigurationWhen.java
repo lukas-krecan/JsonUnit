@@ -103,7 +103,7 @@ public class ConfigurationWhen {
 
         @Override
         public Configuration applyForPaths(Configuration configuration, PathsParam pathsParam) {
-            return configuration.withPathOptions(new PathOption(pathsParam.getPaths(), options, included));
+            return configuration.addPathOption(new PathOption(pathsParam.getPaths(), options, included));
         }
     }
 

@@ -141,7 +141,7 @@ public class Configuration {
         return configuration;
     }
 
-    Configuration withPathOptions(PathOption pathOption) {
+    Configuration addPathOption(PathOption pathOption) {
         List<PathOption> newOptions = new ArrayList<>(this.pathOptions);
         newOptions.add(pathOption);
         return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener,
