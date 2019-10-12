@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit.core.internal.matchers;
 
 import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.ConfigurationWhen;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Node;
@@ -124,6 +125,19 @@ public final class InternalMatcher {
      */
     public InternalMatcher withOptions(Option firstOption, Option... otherOptions) {
         return new InternalMatcher(actual, path, description, configuration.withOptions(firstOption, otherOptions));
+    }
+
+    /**
+     * Sets advanced/local options. This method has to be called <b>before</b> assertion.
+     * For more info see {@link Configuration#when(ConfigurationWhen.WhenObject, Object...)}
+     *
+     * @param object
+     * @param actions
+     * @see Configuration#when(ConfigurationWhen.WhenObject, Object...)
+     */
+    @SafeVarargs
+    public final <T> InternalMatcher when(ConfigurationWhen.WhenObject<T> object, T... actions) {
+        return new InternalMatcher(actual, path, description, configuration.when(object, actions));
     }
 
 

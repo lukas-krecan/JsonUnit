@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit;
 
 import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.ConfigurationWhen;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Options;
@@ -287,6 +288,16 @@ public class JsonAssert {
      */
     public static Configuration whenIgnoringPaths(String... paths) {
         return Configuration.empty().whenIgnoringPaths(paths);
+    }
+
+    /**
+     * Creates an empty configuration with specific path options.
+     *
+     * @see Configuration#when(ConfigurationWhen.WhenObject, Object...)
+     */
+    @SafeVarargs
+    public static <T> Configuration when(ConfigurationWhen.WhenObject<T> subject, T... actions) {
+        return Configuration.empty().when(subject, actions);
     }
 
     /**

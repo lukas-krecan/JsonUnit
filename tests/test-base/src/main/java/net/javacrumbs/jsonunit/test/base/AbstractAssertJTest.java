@@ -1,12 +1,12 @@
 /**
  * Copyright 2009-2019 the original author or authors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,8 +31,15 @@ import static java.util.Collections.singletonMap;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.value;
+import static net.javacrumbs.jsonunit.core.ConfigurationWhen.path;
+import static net.javacrumbs.jsonunit.core.ConfigurationWhen.paths;
+import static net.javacrumbs.jsonunit.core.ConfigurationWhen.rootPath;
+import static net.javacrumbs.jsonunit.core.ConfigurationWhen.then;
+import static net.javacrumbs.jsonunit.core.ConfigurationWhen.thenNot;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -127,25 +134,25 @@ public abstract class AbstractAssertJTest {
     @Test
     void compareJsonInJsonPathArray() {
         assertThatJson("{\"root\": [{\"target\": 450} ]}")
-                        .inPath("$.root")
-                        .isArray()
-                        .containsExactly("{\"target\": 450 }");
+            .inPath("$.root")
+            .isArray()
+            .containsExactly("{\"target\": 450 }");
     }
 
     @Test
     void compareJsonInJsonPathShallowArray() {
         assertThatJson("{\"root\": [450]}")
-                        .inPath("$.root")
-                        .isArray()
-                        .containsExactly(json("450"));
+            .inPath("$.root")
+            .isArray()
+            .containsExactly(json("450"));
     }
 
     @Test
     void compareJsonInJsonPathShallowArrayString() {
         assertThatThrownBy(() -> assertThatJson("{\"root\": [450]}")
-                        .inPath("$.root")
-                        .isArray()
-                        .containsExactly(value("450")))
+            .inPath("$.root")
+            .isArray()
+            .containsExactly(value("450")))
             .hasMessage("[Different value found in node \"$.root\"] \n" +
                 "Expecting:\n" +
                 "  <[450]>\n" +
@@ -161,56 +168,56 @@ public abstract class AbstractAssertJTest {
     @Test
     void compareJsonInPathArrayOfArrays() {
         assertThatJson("{\"root\": [[{\"target\": 450} ]]}")
-                        .inPath("$.root")
-                        .isArray()
-                        .containsExactly("[{\"target\": 450 }]");
+            .inPath("$.root")
+            .isArray()
+            .containsExactly("[{\"target\": 450 }]");
     }
 
     @Test
     void compareJsonInNodeArray() {
         assertThatJson("{\"root\": [{\"target\": 450} ]}")
-                        .node("root")
-                        .isArray()
-                        .containsExactly("{\"target\": 450 }");
+            .node("root")
+            .isArray()
+            .containsExactly("{\"target\": 450 }");
     }
 
     @Test
     void compareJsonInNodeShallowArray() {
         assertThatJson("{\"root\": [450]}")
-                        .node("root")
-                        .isArray()
-                        .containsExactly(valueOf(450));
+            .node("root")
+            .isArray()
+            .containsExactly(valueOf(450));
     }
 
     @Test
     void compareJsonInNodeShallowArrayBigDecimal() {
         assertThatJson("{\"root\": [450]}")
-                        .node("root")
-                        .isArray()
-                        .containsExactly(valueOf(450));
+            .node("root")
+            .isArray()
+            .containsExactly(valueOf(450));
     }
 
     @Test
     void compareJsonInNodeShallowArrayBoolean() {
         assertThatJson("{\"root\": [true]}")
-                        .node("root")
-                        .isArray()
-                        .containsExactly(true);
+            .node("root")
+            .isArray()
+            .containsExactly(true);
     }
 
     @Test
     void compareJsonInNodeArrayOfArrays() {
         assertThatJson("{\"root\": [[{\"target\": 450} ]]}")
-                        .node("root")
-                        .isArray()
-                        .containsExactly("[{\"target\": 450 }]");
+            .node("root")
+            .isArray()
+            .containsExactly("[{\"target\": 450 }]");
     }
 
     @Test
     void compareJsonArray() {
         assertThatJson("{\"root\": [{\"target\": 450} ]}")
-                        .node("root")
-                        .isEqualTo(singletonList(singletonMap("target", 450)));
+            .node("root")
+            .isEqualTo(singletonList(singletonMap("target", 450)));
     }
 
     @Test
@@ -404,7 +411,7 @@ public abstract class AbstractAssertJTest {
     void multipleFailuresErrorShouldBeCorrectlyFormatted() {
         assertThatExceptionOfType(MultipleFailuresError.class)
             .isThrownBy(() -> assertThatJson("{\"a\":[{\"b\": 1}, {\"c\": 1}, {\"d\": 1}]}").when(Option.IGNORING_ARRAY_ORDER).node("a").isArray()
-            .isEqualTo(json("[{\"c\": 2}, {\"b\": 1} ,{\"d\": 1}]")))
+                .isEqualTo(json("[{\"c\": 2}, {\"b\": 1} ,{\"d\": 1}]")))
             .satisfies(e -> {
                 List<Throwable> failures = e.getFailures();
                 assertThat(failures.get(0).getMessage()).isEqualTo("Different value found when comparing expected array element a[0] to actual element a[1].");
@@ -415,15 +422,15 @@ public abstract class AbstractAssertJTest {
     @Test
     void shouldIgnoreMissingPathEvenIfItIsInExpectedValue() {
         assertThatJson("{\"root\":{\"foo\":1}}")
-                .whenIgnoringPaths("root.bar", "missing")
-                .isEqualTo("{\"root\":{\"foo\":1, \"bar\":2}, \"missing\":{\"quux\":\"test\"}}");
+            .whenIgnoringPaths("root.bar", "missing")
+            .isEqualTo("{\"root\":{\"foo\":1, \"bar\":2}, \"missing\":{\"quux\":\"test\"}}");
     }
 
     @Test
     void shouldIgnoreArrayElement() {
         assertThatJson("{\"root\":[0, 1, 2]}")
-                .whenIgnoringPaths("root[1]")
-                .isEqualTo("{\"root\":[0, 8, 2]}");
+            .whenIgnoringPaths("root[1]")
+            .isEqualTo("{\"root\":[0, 8, 2]}");
     }
 
     @Test
@@ -541,7 +548,7 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void shouldAssertNumberFailure() {
-        assertThatThrownBy(() ->  assertThatJson("{\"a\":1}").node("a").isNumber().isEqualByComparingTo("2"))
+        assertThatThrownBy(() -> assertThatJson("{\"a\":1}").node("a").isNumber().isEqualByComparingTo("2"))
             .hasMessage("[Different value found in node \"a\"] \n" +
                 "Expecting:\n" +
                 " <1>\n" +
@@ -999,16 +1006,16 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void shouldWorkWithPercentSign() {
-       assertThatThrownBy(() -> assertThatJson("{\"a\": \"1\"}").isEqualTo("{\"%\": \"2\"}"))
-           .hasMessage("JSON documents are different:\n" +
-               "Different keys found in node \"\", missing: \"%\", extra: \"a\", expected: <{\"%\":\"2\"}> but was: <{\"a\":\"1\"}>\n");
+        assertThatThrownBy(() -> assertThatJson("{\"a\": \"1\"}").isEqualTo("{\"%\": \"2\"}"))
+            .hasMessage("JSON documents are different:\n" +
+                "Different keys found in node \"\", missing: \"%\", extra: \"a\", expected: <{\"%\":\"2\"}> but was: <{\"a\":\"1\"}>\n");
     }
 
     @Test
     void shouldIgnoreFields() {
         assertThatJson("{\"root\":{\"test\":1, \"ignored\": 1}}")
-               .isObject()
-               .isEqualToIgnoringGivenFields("{\"root\":{\"test\":1, \"ignored\": 2}}", "root.ignored");
+            .isObject()
+            .isEqualToIgnoringGivenFields("{\"root\":{\"test\":1, \"ignored\": 2}}", "root.ignored");
 
     }
 
@@ -1130,7 +1137,7 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void jsonPathWithNodeError() {
-        assertThatThrownBy(() ->  assertThatJson(json)
+        assertThatThrownBy(() -> assertThatJson(json)
             .inPath("$.store.book[0]")
             .node("title")
             .isEqualTo("Sayings of the Century2")
@@ -1216,18 +1223,18 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void jsonPathShouldBeAbleToUseArraysDeep() {
-            assertThatJson(json)
-                .inPath("$.store.book[*].category")
-                .isArray()
-                .containsExactlyInAnyOrder("fiction", "reference", "fiction", "fiction");
+        assertThatJson(json)
+            .inPath("$.store.book[*].category")
+            .isArray()
+            .containsExactlyInAnyOrder("fiction", "reference", "fiction", "fiction");
     }
 
     @Test
     void jsonPathShouldBeAbleToUseArraysFromObject() {
-            assertThatJson(readValue(json))
-                .inPath("$.store.book[*].category")
-                .isArray()
-                .containsExactlyInAnyOrder("fiction", "reference", "fiction", "fiction");
+        assertThatJson(readValue(json))
+            .inPath("$.store.book[*].category")
+            .isArray()
+            .containsExactlyInAnyOrder("fiction", "reference", "fiction", "fiction");
     }
 
     @Test
@@ -1253,6 +1260,122 @@ public abstract class AbstractAssertJTest {
         ConfigurableJsonAssert json = assertThatJson("{\"key1\":\"foo\",\"key2\":\"bar\"}");
         json.inPath("key1").isEqualTo("foo");
         json.inPath("key2").isEqualTo("bar");
+    }
+
+    @Test
+    void shouldIgnoreArrayOrderInSpecificPath() {
+        assertThatJson("{\"obj\":{\"a\": [1, 2], \"b\": [3, 4]}}")
+            .when(path("obj.a"), then(IGNORING_ARRAY_ORDER))
+            .isEqualTo("{\"obj\":{\"a\": [2, 1], \"b\": [3, 4]}}");
+    }
+
+    @Test
+    void shouldNotIgnoreArrayOrderWhenNotSpecified() {
+        assertThatJson("{\"obj\":{\"a\": [1, 2], \"b\": [3, 4]}}")
+            .when(path("obj.a"), then(IGNORING_ARRAY_ORDER))
+            .isNotEqualTo("{\"obj\":{\"a\": [2, 1], \"b\": [4, 3]}}");
+    }
+
+    @Test
+    void shouldExcludeIgnoringArrayOrderFromPath() {
+        assertThatJson("[{\"b\":[4,5,6]},{\"b\":[1,2,3]}]")
+            .when(IGNORING_ARRAY_ORDER)
+            .when(path("[*].b"), thenNot(IGNORING_ARRAY_ORDER))
+            .isEqualTo("[{\"b\":[1,2,3]},{\"b\":[4,5,6]}]");
+    }
+
+    @Test
+    void shouldExcludeIgnoringArrayOrderFromPathAndIgnoreInRoot() {
+        assertThatJson("[{\"b\":[4,5,6]},{\"b\":[1,2,3]},{\"b\":[7,8,9]}]")
+            .when(rootPath(), then(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_ARRAY_ITEMS))
+            .when(path("[*].b"), thenNot(IGNORING_ARRAY_ORDER))
+            .isEqualTo("[{\"b\":[1,2,3]},{\"b\":[4,5,6]}]");
+    }
+
+    @Test
+    void shouldIgnoreArrayOrderEverywhereButTheFirstElement() {
+        assertThatThrownBy(() -> assertThatJson("[{\"b\":[1,3,2]},{\"b\":[5,4,6]},{\"b\":[8,7,9]}]")
+            .when(path("[*].b"), then(IGNORING_ARRAY_ORDER)).when(path("[0].b"), thenNot(IGNORING_ARRAY_ORDER))
+            .isEqualTo("[{\"b\":[1,2,3]},{\"b\":[4,5,6]},{\"b\":[7,8,9]}]"))
+            .hasMessage("JSON documents are different:\n" +
+                "Different value found in node \"[0].b[1]\", expected: <2> but was: <3>.\n" +
+                "Different value found in node \"[0].b[2]\", expected: <3> but was: <2>.\n");
+    }
+
+    @Test
+    void shouldIgnoreArrayOrderInSeveralSpecificPaths() {
+        assertThatJson("[{\"b\":[3,1,2],\"c\":[-2,-3,-1]},{\"b\":[6,5,4],\"c\":[-5,-4,-6]}]")
+            .when(paths("[*].b", "[*].c"), then(IGNORING_ARRAY_ORDER))
+            .isEqualTo("[{\"b\":[1,2,3],\"c\":[-1,-2,-3]},{\"b\":[4,5,6],\"c\":[-4,-5,-6]}]");
+    }
+
+    @Test
+    void shouldTreatNullAsAbsentInSpecificPath() {
+        assertThatJson("{\"a\":1,\"b\":null}")
+            .when(path("b"), then(TREATING_NULL_AS_ABSENT))
+            .isEqualTo("{\"a\":1}");
+    }
+
+    @Test
+    void shouldNotTreatNullAsAbsentWhenNotSpecified() {
+        assertThatThrownBy(() ->
+            assertThatJson("{\"a\":1,\"b\":null,\"c\":null}")
+                .when(path("b"), then(TREATING_NULL_AS_ABSENT))
+                .isEqualTo("{\"a\":1}"))
+            .hasMessage("JSON documents are different:\n" +
+                "Different keys found in node \"\", extra: \"c\", expected: <{\"a\":1}> but was: <{\"a\":1,\"b\":null,\"c\":null}>\n");
+    }
+
+    @Test
+    void shouldIgnoreExtraFieldsInSpecificPath() {
+        assertThatJson("{\"a\":{\"a1\":1,\"a2\":2}}")
+            .when(path("a"), then(IGNORING_EXTRA_FIELDS))
+            .isEqualTo("{\"a\":{\"a1\":1}}");
+    }
+
+    @Test
+    void shouldNotIgnoreExtraFieldsWhenNotSpecified() {
+        assertThatThrownBy(() ->
+            assertThatJson("{\"a\":{\"a1\":1,\"a2\":2},\"b\":{\"b1\":1,\"b2\":2}}")
+                .when(path("a"), then(IGNORING_EXTRA_FIELDS))
+                .isEqualTo("{\"a\":{\"a1\":1},\"b\":{\"b1\":1}}"))
+            .hasMessage("JSON documents are different:\n" +
+                "Different keys found in node \"b\", extra: \"b.b2\", expected: <{\"b1\":1}> but was: <{\"b1\":1,\"b2\":2}>\n");
+    }
+
+    @Test
+    void shouldIgnoreExtraArrayItemsInSpecificPath() {
+        assertThatJson("{\"a\":[1,2,3]}")
+            .when(path("a"), then(IGNORING_EXTRA_ARRAY_ITEMS))
+            .isEqualTo("{\"a\":[1,2]}");
+    }
+
+    @Test
+    void shouldNotIgnoreExtraArrayItemsWhenNotSpecified() {
+        assertThatThrownBy(() ->
+            assertThatJson("{\"a\":[1,2,3],\"b\":[1,2,3]}")
+                .when(path("a"), then(IGNORING_EXTRA_ARRAY_ITEMS))
+                .isEqualTo("{\"a\":[1,2],\"b\":[1,2]}"))
+            .hasMessage("JSON documents are different:\n" +
+                "Array \"b\" has different length, expected: <2> but was: <3>.\n" +
+                "Array \"b\" has different content. Extra values: [3], expected: <[1,2]> but was: <[1,2,3]>\n");
+    }
+
+    @Test
+    void shouldIgnoreValuesInSpecificPath() {
+        assertThatJson("{\"a\":2,\"b\":\"string2\"}")
+            .when(paths("a", "b"), then(IGNORING_VALUES))
+            .isEqualTo("{\"a\":1,\"b\":\"string\"}");
+    }
+
+    @Test
+    void shouldNotIgnoreValuesWhenNotSpecified() {
+        assertThatThrownBy(() ->
+            assertThatJson("{\"a\":2,\"b\":\"string2\",\"c\":3}")
+                .when(paths("a", "b"), then(IGNORING_VALUES))
+                .isEqualTo("{\"a\":1,\"b\":\"string\",\"c\":2}"))
+            .hasMessage("JSON documents are different:\n" +
+                "Different value found in node \"c\", expected: <2> but was: <3>.\n");
     }
 
     private static final String json = "{\n" +

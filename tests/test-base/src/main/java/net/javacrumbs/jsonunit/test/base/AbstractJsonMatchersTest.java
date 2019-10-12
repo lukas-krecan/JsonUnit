@@ -29,6 +29,9 @@ import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartMatches;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonStringEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonStringPartEquals;
+import static net.javacrumbs.jsonunit.core.ConfigurationWhen.path;
+import static net.javacrumbs.jsonunit.core.ConfigurationWhen.then;
+import static net.javacrumbs.jsonunit.core.ConfigurationWhen.thenNot;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
@@ -329,6 +332,18 @@ public abstract class AbstractJsonMatchersTest {
         String path = "properties.another[0]";
         String expected = "VALUE";
         jsonPartEquals(path, expected).matches(message);
+    }
+
+    @Test
+    void testSpecificPath() {
+        assertThat("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}",
+            jsonEquals("{\"test\":{\"a\":1,\"b\":2,\"c\":4}}").when(path("test.c"), then(IGNORING_VALUES)));
+    }
+
+    @Test
+    void testSpecificPathNot() {
+        assertThat("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}",
+            jsonEquals("{\"test\":{\"a\":5,\"b\":6,\"c\":3}}").when(IGNORING_VALUES).when(path("test.c"), thenNot(IGNORING_VALUES)));
     }
 
     private void expectException() {
