@@ -15,7 +15,6 @@
  */
 package net.javacrumbs.jsonunit.test.base;
 
-import net.javacrumbs.jsonunit.assertj.JsonAssertions;
 import net.javacrumbs.jsonunit.core.Option;
 import org.junit.jupiter.api.Test;
 
@@ -460,6 +459,11 @@ public abstract class AbstractJsonFluentAssertTest {
     @Test
     void pathShouldBeIgnoredForDifferentValue() {
         assertThatJson("{\"root\":{\"test\":1, \"ignored\": 1}}").whenIgnoringPaths("root.ignored").isEqualTo("{\"root\":{\"test\":1, \"ignored\": 2}}");
+    }
+
+    @Test
+    void shouldIgnorePathInNode() {
+        assertThatJson("{\"root\":{\"test\":1, \"ignored\": 1}}").node("root").whenIgnoringPaths("root.ignored").isEqualTo("{\"test\":1, \"ignored\": 2}");
     }
 
     @Test

@@ -16,7 +16,6 @@
 package net.javacrumbs.jsonunit.assertj;
 
 import net.javacrumbs.jsonunit.core.Configuration;
-import net.javacrumbs.jsonunit.core.ConfigurationWhen;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
 import net.javacrumbs.jsonunit.core.Option;
@@ -55,31 +54,35 @@ import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NULL;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NUMBER;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
-import static net.javacrumbs.jsonunit.jsonpath.InternalJsonPathUtils.resolveJsonPathsToBeIgnored;
 import static org.assertj.core.util.Strings.isNullOrEmpty;
 
 public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     final Path path;
+    /**
+     * Need to keep the original actual object to be able to resolve paths even after calling node() and inPath()
+     */
+    final Object originalActual;
     final Configuration configuration;
     private final InternalMatcher internalMatcher;
 
-    JsonAssert(Path path, Configuration configuration, Object actual) {
+    JsonAssert(Path path, Configuration configuration, Object originalActual, Object actual) {
         super(JsonUtils.convertToJson(actual, "actual"), JsonAssert.class);
+        this.originalActual = originalActual;
         this.path = path;
         this.configuration = configuration;
         this.internalMatcher = new InternalMatcher(actual, path.asPrefix(), "", configuration);
         usingComparator(new JsonComparator(configuration, path, false));
     }
 
-    JsonAssert(Object actual, Configuration configuration) {
-        this(Path.create("", getPathPrefix(actual)), configuration, actual);
+    JsonAssert(Object originalActual, Object actual, Configuration configuration) {
+        this(Path.create("", getPathPrefix(actual)), configuration, originalActual, actual);
     }
 
     /**
      * Moves comparison to given node. Second call navigates from the last position in the JSON.
      */
     public JsonAssert node(String node) {
-        return new JsonAssert(path.to(node), configuration, getNode(actual, node));
+        return new JsonAssert(path.to(node), configuration, originalActual, getNode(actual, node));
     }
 
 
@@ -259,16 +262,12 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      * </code>
      */
     public static class ConfigurableJsonAssert extends JsonAssert {
-        // Want to pass to inPath to not parse twice.
-        private final Object originalActual;
-
-        ConfigurableJsonAssert(Path path, Configuration configuration, Object actual) {
-            super(path, configuration, actual);
-            this.originalActual = actual;
+        ConfigurableJsonAssert(Path path, Configuration configuration, Object originalActual, Object actual) {
+            super(path, configuration, originalActual, actual);
         }
 
         ConfigurableJsonAssert(Object actual, Configuration configuration) {
-            this(Path.create("", getPathPrefix(actual)), configuration, actual);
+            this(Path.create("", getPathPrefix(actual)), configuration, actual, actual);
         }
 
         /**
@@ -307,12 +306,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
          * </code>
          */
         public ConfigurableJsonAssert withConfiguration(Function<Configuration, Configuration> configurationFunction) {
-            Configuration newConfiguration = configurationFunction.apply(configuration);
-
-            if (configuration.getPathsToBeIgnored() != newConfiguration.getPathsToBeIgnored()) {
-                newConfiguration = resolveJsonPathsToBeIgnored(originalActual, newConfiguration);
-            }
-            return new ConfigurableJsonAssert(path, newConfiguration, actual);
+            return new ConfigurableJsonAssert(path, configurationFunction.apply(configuration), originalActual, actual);
         }
 
         /**
@@ -376,7 +370,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
         }
 
         public JsonAssert inPath(String jsonPath) {
-            return new JsonAssert(JsonPathAdapter.inPath(originalActual, jsonPath), configuration);
+            return new JsonAssert(originalActual, JsonPathAdapter.inPath(originalActual, jsonPath), configuration);
         }
 
         // Following methods are here just to return ConfigurableJsonAssert instead of JsonAssert
