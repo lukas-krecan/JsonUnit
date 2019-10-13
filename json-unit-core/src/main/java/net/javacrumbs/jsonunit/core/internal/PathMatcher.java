@@ -96,20 +96,15 @@ abstract class PathMatcher {
 
     private static class AggregatePathMatcher extends PathMatcher {
 
-        private final Iterable<PathMatcher> pathMatchers;
+        private final Collection<PathMatcher> pathMatchers;
 
-        private AggregatePathMatcher(Iterable<PathMatcher> pathMatchers) {
+        private AggregatePathMatcher(Collection<PathMatcher> pathMatchers) {
             this.pathMatchers = pathMatchers;
         }
 
         @Override
         boolean matches(String path) {
-            for (PathMatcher matcher : pathMatchers) {
-                if (matcher.matches(path)) {
-                    return true;
-                }
-            }
-            return false;
+            return pathMatchers.stream().anyMatch(pm -> pm.matches(path));
         }
     }
 }
