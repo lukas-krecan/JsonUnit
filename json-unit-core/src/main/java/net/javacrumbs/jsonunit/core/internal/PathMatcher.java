@@ -15,11 +15,11 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
+
+import static java.util.stream.Collectors.toList;
 
 abstract class PathMatcher {
     private static final PathMatcher EMPTY = new PathMatcher() {
@@ -31,14 +31,11 @@ abstract class PathMatcher {
 
     abstract boolean matches(String pathToMatch);
 
-    static PathMatcher create(Set<String> paths) {
+    static PathMatcher create(Collection<String> paths) {
         if (paths == null || paths.isEmpty()) {
             return EMPTY;
         }
-        List<PathMatcher> matchers = new ArrayList<>(paths.size());
-        for (String path : paths) {
-            matchers.add(PathMatcher.create(path));
-        }
+        List<PathMatcher> matchers = paths.stream().map(PathMatcher::create).collect(toList());
         return new AggregatePathMatcher(matchers);
     }
 

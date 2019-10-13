@@ -3,12 +3,11 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import net.javacrumbs.jsonunit.core.Option;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.stream.Stream;
 
 class PathOptionMatcher {
-    private final PathMatcher matcher;
+    private final PathMatcher pathMatcher;
     private final Option option;
 
     /**
@@ -16,24 +15,19 @@ class PathOptionMatcher {
      */
     private final boolean added;
 
-    private PathOptionMatcher(String path, Option option, boolean added) {
-        this.matcher = PathMatcher.create(path);
+    private PathOptionMatcher(Collection<String> paths, Option option, boolean added) {
+        this.pathMatcher = PathMatcher.create(paths);
         this.option = option;
         this.added = added;
     }
 
     static Stream<PathOptionMatcher> createMatchersFromPathOption(PathOption pathOption) {
-        List<PathOptionMatcher> result = new ArrayList<>();
-        for (Option option : pathOption.getOptions()) {
-            for (String path : pathOption.getPaths()) {
-                result.add(new PathOptionMatcher(path, option, pathOption.isIncluded()));
-            }
-        }
-        return result.stream();
+        return pathOption.getOptions().stream()
+            .map(option -> new PathOptionMatcher(pathOption.getPaths(), option, pathOption.isIncluded()));
     }
 
     public boolean matches(String path) {
-        return matcher.matches(path);
+        return pathMatcher.matches(path);
     }
 
     public Option getOption() {

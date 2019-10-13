@@ -16,7 +16,6 @@
 package net.javacrumbs.jsonunit;
 
 import net.javacrumbs.jsonunit.core.Configuration;
-import net.javacrumbs.jsonunit.core.ConfigurationWhen;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
 import net.javacrumbs.jsonunit.core.Option;
@@ -295,7 +294,7 @@ public class JsonAssert {
     /**
      * Creates an empty configuration with specific path options.
      *
-     * @see Configuration#when(ConfigurationWhen.WhenObject, Object...)
+     * @see Configuration#when(PathsParam, ApplicableForPath...)
      */
     public static Configuration when(PathsParam subject, ApplicableForPath... actions) {
         return Configuration.empty().when(subject, actions);
