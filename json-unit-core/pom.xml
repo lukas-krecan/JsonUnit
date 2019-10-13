@@ -7,6 +7,10 @@
     <properties>
         <osgi.importPackage>
             com.fasterxml.jackson.core;resolution:=optional,
+            org.apache.johnzon.mapper;resolution:=optional,
+            com.google.gson;resolution:=optional,
+            com.squareup.moshi;resolution:=optional,
+            org.json;resolution:=optional,
             *
         </osgi.importPackage>
         <osgi.exportPackage>
