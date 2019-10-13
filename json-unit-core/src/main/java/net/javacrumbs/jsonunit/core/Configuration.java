@@ -60,7 +60,7 @@ public class Configuration {
         this.ignorePlaceholder = ignorePlaceholder;
         this.matchers = matchers;
         this.pathsToBeIgnored = Collections.unmodifiableSet(new HashSet<>(pathsToBeIgnored));
-        this.pathOptions = pathOptions;
+        this.pathOptions = Collections.unmodifiableList(new ArrayList<>(pathOptions));
         this.differenceListener = differenceListener;
     }
 
@@ -144,8 +144,11 @@ public class Configuration {
     Configuration addPathOption(PathOption pathOption) {
         List<PathOption> newOptions = new ArrayList<>(this.pathOptions);
         newOptions.add(pathOption);
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener,
-            Collections.unmodifiableList(newOptions));
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, newOptions);
+    }
+
+    public Configuration withPathOptions(List<PathOption> pathOptions) {
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions);
     }
 
     public Configuration whenIgnoringPaths(Collection<String> pathsToBeIgnored) {

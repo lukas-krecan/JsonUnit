@@ -19,24 +19,34 @@ package net.javacrumbs.jsonunit.jsonpath;
 import com.jayway.jsonpath.Option;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
+import net.javacrumbs.jsonunit.core.internal.PathOption;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.jayway.jsonpath.JsonPath.using;
+import static java.util.stream.Collectors.toList;
 
 public class InternalJsonPathUtils {
     private InternalJsonPathUtils() {
 
     }
 
-    public static Configuration resolveJsonPathsToBeIgnored(Object json, Configuration configuration) {
-        return configuration.whenIgnoringPaths(resolveJsonPaths(json, configuration.getPathsToBeIgnored()));
+    public static Configuration resolveJsonPaths(Object json, Configuration configuration) {
+        Collection<String> pathsToBeIgnored = resolveJsonPaths(json, configuration.getPathsToBeIgnored());
+        List<PathOption> pathOptions = configuration.getPathOptions()
+            .stream().map(po -> {
+                List<String> newPoPaths = resolveJsonPaths(json, po.getPaths());
+                return po.withPaths(newPoPaths);
+            }).collect(toList());
+
+        return configuration
+            .whenIgnoringPaths(pathsToBeIgnored)
+            .withPathOptions(pathOptions);
     }
 
-    private static Collection<String> resolveJsonPaths(Object json, Collection<String> paths) {
+    private static List<String> resolveJsonPaths(Object json, Collection<String> paths) {
         com.jayway.jsonpath.Configuration conf = com.jayway.jsonpath.Configuration.builder()
             .options(Option.AS_PATH_LIST, Option.SUPPRESS_EXCEPTIONS)
             .build();
@@ -48,7 +58,7 @@ public class InternalJsonPathUtils {
             } else {
                 return Stream.of(path);
             }
-        }).collect(Collectors.toList());
+        }).collect(toList());
     }
 
     static <T> T readValue(com.jayway.jsonpath.Configuration conf, Object json, String path) {

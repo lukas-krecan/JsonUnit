@@ -1285,6 +1285,13 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void shouldIgnoreArrayOrderInSpecificJsonPath() {
+        assertThatJson("{\"obj\":{\"a\": [1, 2], \"b\": [3, 4]}}")
+            .when(path("$..a"), then(IGNORING_ARRAY_ORDER))
+            .isEqualTo("{\"obj\":{\"a\": [2, 1], \"b\": [3, 4]}}");
+    }
+
+    @Test
     void shouldExcludeIgnoringArrayOrderFromPathAndIgnoreInRoot() {
         assertThatJson("[{\"b\":[4,5,6]},{\"b\":[1,2,3]},{\"b\":[7,8,9]}]")
             .when(rootPath(), then(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_ARRAY_ITEMS))

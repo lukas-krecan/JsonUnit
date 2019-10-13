@@ -17,13 +17,13 @@ public class PathOption {
      */
     private final boolean included;
 
-    public PathOption(List<String> paths, EnumSet<Option> options, boolean included) {
+    public PathOption(List<String> paths, Set<Option> options, boolean included) {
         this.paths = Collections.unmodifiableList(paths);
         this.options = Collections.unmodifiableSet(EnumSet.copyOf(options));
         this.included = included;
     }
 
-    List<String> getPaths() {
+    public List<String> getPaths() {
         return paths;
     }
 
@@ -33,5 +33,9 @@ public class PathOption {
 
     boolean isIncluded() {
         return included;
+    }
+
+    public PathOption withPaths(List<String> newPoPaths) {
+        return new PathOption(newPoPaths, options, included);
     }
 }
