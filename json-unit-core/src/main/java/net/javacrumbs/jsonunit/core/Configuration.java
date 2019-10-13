@@ -54,13 +54,13 @@ public class Configuration {
         this(tolerance, options, ignorePlaceholder, Matchers.empty(), Collections.emptySet(), DUMMY_LISTENER, Collections.emptyList());
     }
 
-    private Configuration(BigDecimal tolerance, Options options, String ignorePlaceholder, Matchers matchers, Collection<String> pathsToBeIgnored, DifferenceListener differenceListener, List<PathOption> pathOptions) {
+    private Configuration(BigDecimal tolerance, Options options, String ignorePlaceholder, Matchers matchers, Set<String> pathsToBeIgnored, DifferenceListener differenceListener, List<PathOption> pathOptions) {
         this.tolerance = tolerance;
         this.options = options;
         this.ignorePlaceholder = ignorePlaceholder;
         this.matchers = matchers;
-        this.pathsToBeIgnored = Collections.unmodifiableSet(new HashSet<>(pathsToBeIgnored));
-        this.pathOptions = Collections.unmodifiableList(new ArrayList<>(pathOptions));
+        this.pathsToBeIgnored = pathsToBeIgnored;
+        this.pathOptions = pathOptions;
         this.differenceListener = differenceListener;
     }
 
@@ -144,18 +144,15 @@ public class Configuration {
     Configuration addPathOption(PathOption pathOption) {
         List<PathOption> newOptions = new ArrayList<>(this.pathOptions);
         newOptions.add(pathOption);
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, newOptions);
+        return withPathOptions(newOptions);
     }
 
     public Configuration withPathOptions(List<PathOption> pathOptions) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions);
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, Collections.unmodifiableList(new ArrayList<>(pathOptions)));
     }
 
     public Configuration whenIgnoringPaths(Collection<String> pathsToBeIgnored) {
-        List<String> newPaths = new ArrayList<>(this.pathsToBeIgnored);
-        newPaths.addAll(pathsToBeIgnored);
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, Collections.unmodifiableList(newPaths),
-            differenceListener, pathOptions);
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers, Collections.unmodifiableSet(new HashSet<>(pathsToBeIgnored)), differenceListener, pathOptions);
     }
 
     /**
