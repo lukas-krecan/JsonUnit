@@ -648,6 +648,14 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void testAnd() {
+        assertThatJson("{\"test1\":2, \"test2\":1}",
+            json -> json.inPath("test1").isEqualTo(2),
+            json -> json.inPath("test2").isEqualTo(1)
+        );
+    }
+
+    @Test
     void testNodePresentNull() {
         assertThatJson("{\"test1\":2, \"test2\":null}").node("test2").isPresent();
     }
