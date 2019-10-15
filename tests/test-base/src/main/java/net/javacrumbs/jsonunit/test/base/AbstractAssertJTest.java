@@ -743,7 +743,7 @@ public abstract class AbstractAssertJTest {
             .describedAs("It's broken")
             .isEqualTo("{\"b\": 2}")
         ).hasMessage("[It's broken] JSON documents are different:\n" +
-            "Different keys found in node \"\", missing: \"b\", extra: \"a\", expected: <{\"b\":2}> but was: <{\"a\":{\"b\":1}}>");
+            "Different keys found in node \"\", missing: \"b\", extra: \"a\", expected: <{\"b\":2}> but was: <{\"a\":{\"b\":1}}>\n");
     }
 
     @Test
