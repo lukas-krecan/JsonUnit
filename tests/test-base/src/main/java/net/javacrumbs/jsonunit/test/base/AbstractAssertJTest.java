@@ -738,6 +738,15 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void describedAsShouldWork() {
+        assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": 1}}")
+            .describedAs("It's broken")
+            .isEqualTo("{\"b\": 2}")
+        ).hasMessage("[It's broken] JSON documents are different:\n" +
+            "Different keys found in node \"\", missing: \"b\", extra: \"a\", expected: <{\"b\":2}> but was: <{\"a\":{\"b\":1}}>");
+    }
+
+    @Test
     void pathShouldBeIgnoredForDifferentValue() {
         assertThatJson("{\"root\":{\"test\":1, \"ignored\": 1}}")
             .whenIgnoringPaths("root.ignored")
