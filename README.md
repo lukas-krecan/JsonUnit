@@ -56,12 +56,12 @@ assertThatJson("{\"a\":[{\"b\": 1}, {\"c\": 1}, {\"d\": 1}]}").node("a").isArray
 
 // Can ignore array order
 assertThatJson("{\"a\":[{\"b\": 1}, {\"c\": 1}, {\"d\": 1}]}").when(Option.IGNORING_ARRAY_ORDER).node("a").isArray()
-            .isEqualTo(json("[{\"c\": 1}, {\"b\": 1} ,{\"d\": 1}]"));
+    .isEqualTo(json("[{\"c\": 1}, {\"b\": 1} ,{\"d\": 1}]"));
 
 // custom matcher
 assertThatJson("{\"test\":-1}")
-            .withConfiguration(c -> c.withMatcher("positive", greaterThan(valueOf(0))))
-            .isEqualTo("{\"test\": \"${json-unit.matches:positive}\"}");
+    .withConfiguration(c -> c.withMatcher("positive", greaterThan(valueOf(0))))
+    .isEqualTo("{\"test\": \"${json-unit.matches:positive}\"}");
 
 // and
 assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}").and(
@@ -97,7 +97,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>2.9.0</version>
+    <version>2.10.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -148,7 +148,7 @@ assertThatJson("{\"test\":[1,2,3]}").node("test")
     
 // array contains node
 assertThatJson("{\"test\":[{\"id\":36},{\"id\":37}]}").node("test")
-.isArray().thatContains("{\"id\":37}");
+    .isArray().thatContains("{\"id\":37}");
 
 // using Hamcrest matcher
 assertThatJson("{\"test\":\"one\"}").node("test")
@@ -177,7 +177,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>2.9.0</version>
+    <version>2.10.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -211,7 +211,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.9.0</version>
+    <version>2.10.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -244,7 +244,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.9.0</version>
+    <version>2.10.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -257,8 +257,8 @@ For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/
 import static net.javacrumbs.jsonunit.spring.JsonUnitRequestMatchers.json;
 ...
 mockServer.expect(requestTo(URI))
-                          .andExpect(json().isEqualTo(json))
-                          .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON_UTF8));
+      .andExpect(json().isEqualTo(json))
+      .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON_UTF8));
 ```
 
 To use import
@@ -266,7 +266,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.9.0</version>
+    <version>2.10.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -310,7 +310,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.9.0</version>
+    <version>2.10.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -342,7 +342,7 @@ For other API styles you have to first import JsonPath support module
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-json-path</artifactId>
-    <version>2.9.0</version>
+    <version>2.10.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -388,22 +388,13 @@ matches, it's completely ignored. It may be missing, null or have any value. Als
 ```java
 // AssertJ style
 assertThatJson("{\"root\":{\"test\":1, \"ignored\": 1}}")
-    .withConfiguration(c -> c.whenIgnoringPaths("root.ignored"))
-    .isEqualTo("{\"root\":{\"test\":1}}");
-// or
-assertThatJson("{\"root\":{\"test\":1, \"ignored\": 1}}")
-    .withConfiguration(c -> c.when(path("root.ignored"), thenIgnore()))
+    .whenIgnoringPaths("root.ignored"))
     .isEqualTo("{\"root\":{\"test\":1}}");
 
 // Hamcrest matcher
 assertThat(
   "{\"root\":{\"test\":1, \"ignored\": 2}}", 
   jsonEquals("{\"root\":{\"test\":1, \"ignored\": 1}}").whenIgnoringPaths("root.ignored")
-);
-// or
-assertThat(
-  "{\"root\":{\"test\":1, \"ignored\": 2}}", 
-  jsonEquals("{\"root\":{\"test\":1, \"ignored\": 1}}").when(path("root.ignored"), thenIgnore())
 );
 ```
 
@@ -417,8 +408,8 @@ assertJsonEquals(
     JsonAssert.whenIgnoringPaths("[*].b")
 );
 ```
-Please note, that if you use JsonPath, you should start the path to be ignored by `$.`
-Also note that `whenIgnoringPaths` method does not support full JsonPath syntax, only 
+Please note, that if you use JsonPath, you should start the path to be ignored by `$`
+Also note that `whenIgnoringPaths` method supports full JsonPath syntax only in AssertJ API, all the other flavors support only 
 exact path or array index placeholder as described above.
 
 ## <a name="regexp"></a>Regular expressions
@@ -555,6 +546,10 @@ assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
 You can define options locally (for specific paths) by using `when(path(...), then(...))`:
 ```java
 // ignore array order for [*].a
+// AssertJ
+assertThatJson("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}").when(paths("test.c"), then(IGNORING_VALUES))
+    .isEqualTo("{\"test\":{\"a\":1,\"b\":2,\"c\":4}}");
+// Vintage
 assertJsonEquals("[{\"a\": [1,2,3]}, {\"a\": [4,5,6]}]", "[{\"a\": [2,1,3]}, {\"a\": [6,4,5]}]",
     when(path("[*].a"), then(IGNORING_ARRAY_ORDER)));
 // ignore array order everywhere but [*].a
@@ -569,9 +564,7 @@ assertJsonEquals("{\"array\":[1,2]}", "{\"array\":[1,2,3]}",
 // Hamcrest
 assertThat("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}",
     jsonEquals("{\"test\":{\"a\":1,\"b\":2,\"c\":4}}").when(path("test.c"), then(IGNORING_VALUES)));
-// AssertJ
-assertThatJson("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}").when(paths("test.c"), then(IGNORING_VALUES))
-    .isEqualTo("{\"test\":{\"a\":1,\"b\":2,\"c\":4}}");
+
 ```
 Note that **TREATING_NULL_AS_ABSENT** and **IGNORING_VALUES** require exact paths to ignored fields:
 ```java
@@ -681,6 +674,11 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+# 2.10.0
+* Support for PathOptions
+* AssertJ - support for chaining assertions in the same root
+* Support for json-path in AssertJ `whenIgnoringPaths`
+
 # 2.9.0
 * Hamcrest upgraded to 2.1
 * AssertJ dependency upgraded to 3.12.3 (requires AssertJ > 3.10.0)
