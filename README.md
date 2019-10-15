@@ -49,13 +49,16 @@ assertThatJson(jsonObject).isEqualTo("{\n\"test\": 1\n}");
 assertThatJson("{\"a\":1}").isObject().containsEntry("a", BigDecimal.valueOf(1));
 
 // Type placeholders
-assertThatJson("{\"a\":1, \"b\": {\"c\" :3}}").isObject().containsValue(json("{\"c\" :\"${json-unit.any-number}\"}"));
+assertThatJson("{\"a\":1, \"b\": {\"c\" :3}}")
+    .isObject().containsValue(json("{\"c\" :\"${json-unit.any-number}\"}"));
 
 // AssertJ array assertion
-assertThatJson("{\"a\":[{\"b\": 1}, {\"c\": 1}, {\"d\": 1}]}").node("a").isArray().contains(json("{\"c\": 1}"));
+assertThatJson("{\"a\":[{\"b\": 1}, {\"c\": 1}, {\"d\": 1}]}")
+    .node("a").isArray().contains(json("{\"c\": 1}"));
 
 // Can ignore array order
-assertThatJson("{\"a\":[{\"b\": 1}, {\"c\": 1}, {\"d\": 1}]}").when(Option.IGNORING_ARRAY_ORDER).node("a").isArray()
+assertThatJson("{\"a\":[{\"b\": 1}, {\"c\": 1}, {\"d\": 1}]}")
+    .when(Option.IGNORING_ARRAY_ORDER).node("a").isArray()
     .isEqualTo(json("[{\"c\": 1}, {\"b\": 1} ,{\"d\": 1}]"));
 
 // custom matcher
