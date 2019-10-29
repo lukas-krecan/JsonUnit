@@ -92,7 +92,7 @@ public class ConfigurationWhen {
         Configuration applyForPaths(Configuration configuration, PathsParam pathsParam);
     }
 
-    static class OptionsParam implements ApplicableForPath {
+    public static class OptionsParam implements ApplicableForPath {
         private final EnumSet<Option> options;
         private final boolean included;
 
@@ -107,7 +107,7 @@ public class ConfigurationWhen {
         }
     }
 
-    static class IgnoredParam implements ApplicableForPath {
+    public static class IgnoredParam implements ApplicableForPath {
         private IgnoredParam() {
         }
 
