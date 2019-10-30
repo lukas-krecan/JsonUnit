@@ -49,7 +49,7 @@ public class ConfigurationWhen {
      * <code>when(path("a.array"), then(IGNORING_ARRAY_ORDER))</code> for <code>{"a": {"array": [1, 2, 3]}}</code>
      *
      */
-    public static OptionsParam then(Option first, Option... next) {
+    public static ApplicableForPath then(Option first, Option... next) {
         return new OptionsParam(true, first, next);
     }
 
@@ -57,14 +57,14 @@ public class ConfigurationWhen {
      * Explicitly remove options from the objects.
      * @see #then
      */
-    public static OptionsParam thenNot(Option first, Option... next) {
+    public static ApplicableForPath thenNot(Option first, Option... next) {
         return new OptionsParam(false, first, next);
     }
 
     /**
      * Marks that the object should be ignored.
      */
-    public static IgnoredParam thenIgnore() {
+    public static ApplicableForPath thenIgnore() {
         return new IgnoredParam();
     }
 
