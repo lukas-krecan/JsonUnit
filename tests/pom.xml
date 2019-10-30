@@ -21,6 +21,7 @@
         <module>test-moshi</module>
         <module>test-json-path</module>
         <module>test-no-hamcrest</module>
+        <module>test-kotlin</module>
     </modules>
 
     <build>
