@@ -48,6 +48,11 @@ public class AllJsonMatchersTest extends AbstractJsonMatchersTest {
         assertThat("{\"test\":1}", jsonEquals(resource("test.json")));
     }
 
+    @Test
+    public void testEqualsUnicodeResource() throws Exception {
+        assertThat("{\"face\":\"\uD83D\uDE10\"}", jsonEquals(resource("unicode.json")));
+    }
+
     protected Object readValue(String value) {
             return JsonTestUtils.readByJackson2(value);
         }
