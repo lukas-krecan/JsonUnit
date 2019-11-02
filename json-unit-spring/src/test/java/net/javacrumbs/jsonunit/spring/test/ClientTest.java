@@ -27,17 +27,17 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-public class ClientTest {
+class ClientTest {
     private static final String URI = "/sample";
     private final RestTemplate restTemplate = new RestTemplate();
 
     private final MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
 
+    private final String jsonResponse = "{\"response\": \"€\"}";
+    private final String json = "{\"test\": 1}";
+
     @Test
     void shouldAssertClient() {
-        String jsonResponse = "{\"response\": 2}";
-        String json = "{\"test\": 1}";
-
         mockServer.expect(requestTo(URI))
                           .andExpect(json().isEqualTo(json))
                           .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON_UTF8));
@@ -48,9 +48,6 @@ public class ClientTest {
 
     @Test
     void shouldAssertClientComplex() {
-        String jsonResponse = "{\"response\": 2}";
-        String json = "{\"test\": 1}";
-
         mockServer.expect(requestTo(URI))
                           .andExpect(method(HttpMethod.POST))
                           .andExpect(json().node("test").withTolerance(0.1).isEqualTo(0.99))

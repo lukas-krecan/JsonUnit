@@ -15,8 +15,7 @@
  */
 package net.javacrumbs.jsonunit.spring.test;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
@@ -26,7 +25,7 @@ import static java.util.Collections.singletonMap;
 @RestController
 public class ExampleController {
 
-    @RequestMapping(value = "/sample", method = RequestMethod.GET)
+    @GetMapping(value = "/sample")
     public Object get() {
         return singletonMap("result", new Result());
     }
@@ -46,6 +45,10 @@ public class ExampleController {
         }
         public Object getNull() {
             return null;
+        }
+
+        public String getUtf8() {
+            return "€";
         }
     }
 }
