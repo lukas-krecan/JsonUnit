@@ -18,9 +18,12 @@ package net.javacrumbs.jsonunit.spring;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.function.BiConsumer;
 
 /**
@@ -62,8 +65,14 @@ public class JsonUnitResultMatchers extends AbstractSpringMatchers<JsonUnitResul
 
         @Override
         public void match(MvcResult result) throws Exception {
-            String actual = result.getResponse().getContentAsString();
+            String actual = getContentAsString(result.getResponse());
             doMatch(actual);
+        }
+
+        private String getContentAsString(MockHttpServletResponse response) throws UnsupportedEncodingException {
+            // copy from MockHttpServletResponse.getContentAsString(Charset) in order to keep compatibility with older Spring versions
+            String charset = response.isCharset() && response.getCharacterEncoding() != null ? response.getCharacterEncoding() : StandardCharsets.UTF_8.name();
+            return new String(response.getContentAsByteArray(), charset);
         }
     }
 }

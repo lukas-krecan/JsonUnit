@@ -60,6 +60,11 @@ class ExampleControllerTest {
     }
 
     @Test
+    void shouldPassIfEqualsWithProduces() throws Exception {
+        exec("/sampleProduces").andExpect(json().isEqualTo(CORRECT_JSON));
+    }
+
+    @Test
     void shouldPassIfEquals() throws Exception {
         exec().andExpect(json().isEqualTo(CORRECT_JSON));
     }
@@ -241,8 +246,12 @@ class ExampleControllerTest {
     }
 
     private ResultActions exec() {
+        return exec("/sample");
+    }
+
+    private ResultActions exec(String path) {
         try {
-            return this.mockMvc.perform(get("/sample").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+            return this.mockMvc.perform(get(path).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }

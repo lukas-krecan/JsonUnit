@@ -16,7 +16,6 @@
 package net.javacrumbs.jsonunit.spring.test;
 
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,8 +27,14 @@ import static java.util.Collections.singletonMap;
 public class ExampleController {
 
     @GetMapping(value = "/sample")
-    public ResponseEntity<Object> get() {
-        return ResponseEntity.ok().contentType(MediaType.parseMediaType("application/json;charset=ISO-8859-2")).body(singletonMap("result", new Result()));
+    public Object get() {
+        return singletonMap("result", new Result());
+    }
+
+
+    @GetMapping(value = "/sampleProduces", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Object getWithProduces() {
+        return singletonMap("result", new Result());
     }
 
     private static class Result {
