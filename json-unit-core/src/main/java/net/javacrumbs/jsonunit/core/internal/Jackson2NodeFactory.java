@@ -180,6 +180,16 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
         }
 
         @Override
+        @SuppressWarnings("unchecked")
+        public <T> T getValueAs(Class<T> klass) {
+            if (klass.equals(JsonNode.class)) {
+                return (T) jsonNode;
+            } else {
+                throw new UnsupportedOperationException("Unly JsonNode is supported in getValueAs");
+            }
+        }
+
+        @Override
         public String toString() {
             return jsonNode.toString();
         }

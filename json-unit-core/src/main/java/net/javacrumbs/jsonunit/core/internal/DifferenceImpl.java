@@ -39,13 +39,33 @@ class DifferenceImpl implements Difference {
     @Override
     public Object getActual() {
         Node actualNode = context.getActualNode();
-        return actualNode != null && !actualNode.isMissingNode() ? actualNode.getValue() : null;
+        return getValue(actualNode);
+    }
+
+    @Override
+    public <T> T getActualAs(Class<T> klass) {
+        Node actualNode = context.getActualNode();
+        return  getValueAs(actualNode, klass);
     }
 
     @Override
     public Object getExpected() {
         Node expectedNode = context.getExpectedNode();
-        return expectedNode != null && !expectedNode.isMissingNode() ? expectedNode.getValue() : null;
+        return getValue(expectedNode);
+    }
+
+    @Override
+    public <T> T getExpectedAs(Class<T> klass) {
+        Node expectedNode = context.getExpectedNode();
+        return getValueAs(expectedNode, klass);
+    }
+
+    private Object getValue(Node node) {
+        return node != null && !node.isMissingNode() ? node.getValue() : null;
+    }
+
+    private <T> T getValueAs(Node node, Class<T> klass) {
+        return node != null && !node.isMissingNode() ? node.getValueAs(klass) : null;
     }
 
     @Override

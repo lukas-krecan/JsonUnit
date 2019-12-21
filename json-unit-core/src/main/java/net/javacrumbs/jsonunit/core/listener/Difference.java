@@ -36,11 +36,29 @@ public interface Difference {
      */
     Object getActual();
 
+    /**
+     * Actual node serialized converted to klass
+     *
+     * @throws UnsupportedOperationException if the conversion is not supported
+     */
+    default <T> T getActualAs(Class<T> klass) {
+        throw new UnsupportedOperationException();
+    }
+
 
     /**
      * Expected node serialized as Map&lt;String, Object&gt; for objects, BigDecimal for numbers, ...
      */
     Object getExpected();
+
+    /**
+     * Expected node serialized converted to klass
+     *
+     * @throws UnsupportedOperationException if the conversion is not supported
+     */
+    default <T> T getExpectedAs(Class<T> klass) {
+        throw new UnsupportedOperationException();
+    }
 
     /**
      * Type of the difference

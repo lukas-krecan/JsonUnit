@@ -15,12 +15,16 @@
  */
 package net.javacrumbs.jsonunit.test.jackson2;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;
+import net.javacrumbs.jsonunit.test.base.RecordingDifferenceListener;
 import org.junit.jupiter.api.Test;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson2;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class Jackson2AssertJTest extends AbstractAssertJTest {
 
@@ -34,6 +38,19 @@ public class Jackson2AssertJTest extends AbstractAssertJTest {
                 json(readValue("{\"c\": 1}")),
                 json(readValue("{\"b\": 1}"))
             );
+    }
+
+    @Test
+    void canConvertDifferenceToJsonNode() {
+        RecordingDifferenceListener listener = new RecordingDifferenceListener();
+        assertThatThrownBy(() -> assertThatJson("{\"test\":-1}")
+            .withDifferenceListener(listener)
+            .inPath("test")
+            .isEqualTo("{\"test\": 2}"));
+
+        assertThat(listener.getDifferenceList()).hasSize(1);
+        assertThat(listener.getDifferenceList().get(0).getActualAs(JsonNode.class).asInt()).isEqualTo(2);
+        assertThat(listener.getDifferenceList().get(0).getExpectedAs(JsonNode.class).asInt()).isEqualTo(-1);
     }
 
     @Override

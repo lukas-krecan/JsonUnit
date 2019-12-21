@@ -102,6 +102,10 @@ public interface Node {
 
     Object getValue();
 
+    default <T> T getValueAs(Class<T> klass) {
+        throw new UnsupportedOperationException();
+    }
+
     void ___do_not_implement_this_interface_seriously();
 
     class KeyValue {
