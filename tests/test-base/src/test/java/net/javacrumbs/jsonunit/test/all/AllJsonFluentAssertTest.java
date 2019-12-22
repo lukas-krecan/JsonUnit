@@ -26,15 +26,16 @@ import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJsonOrg;
 
 public class AllJsonFluentAssertTest extends AbstractJsonFluentAssertTest {
     @Test
-    public void testMixedGsonAndJackson() {
+    void testMixedGsonAndJackson() {
         assertThatJson(readByGson("{\"test\":1}")).isEqualTo(readByJackson2("{\"test\": 1}"));
     }
 
     @Test
-    public void testMixedGsonAndJsonOrg() {
+    void testMixedGsonAndJsonOrg() {
         assertThatJson(readByGson("{\"test\":1}")).isEqualTo(readByJsonOrg("{\"test\": 1}"));
     }
 
+    @Override
     protected Object readValue(String value) {
         return JsonTestUtils.readByJackson2(value);
     }

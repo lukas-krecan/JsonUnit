@@ -22,16 +22,16 @@ import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter.inPath;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class JsonPathTest {
+class JsonPathTest {
     @Test
-    public void shouldBeAbleToUseSimpleValues() {
+    void shouldBeAbleToUseSimpleValues() {
         assertThatJson(inPath(json, "$.store.book[*].author"))
             .isEqualTo("['Nigel Rees', 'Evelyn Waugh', 'Herman Melville', 'J. R. R. Tolkien']");
 
     }
 
     @Test
-    public void shouldBeAbleToUseSimpleValuesAndIgnoreArrayOrder() {
+    void shouldBeAbleToUseSimpleValuesAndIgnoreArrayOrder() {
         assertThatJson(inPath(json, "$.store.book[*].author"))
             .when(Option.IGNORING_ARRAY_ORDER)
             .isEqualTo("['J. R. R. Tolkien', 'Nigel Rees', 'Evelyn Waugh', 'Herman Melville']");
@@ -39,7 +39,7 @@ public class JsonPathTest {
     }
 
     @Test
-    public void shouldBeAbleToUseSimpleValuesFailure() {
+    void shouldBeAbleToUseSimpleValuesFailure() {
         assertThatThrownBy(() -> assertThatJson(inPath(json, "$.store.book[*].author"))
             .isEqualTo("['Nigel Rees', 'Evelyn Waugh', 'Herman Melville', 'Arthur C. Clark']"))
             .hasMessage("JSON documents are different:\n" +
@@ -47,7 +47,7 @@ public class JsonPathTest {
     }
 
     @Test
-    public void shouldBeAbleToUseObjects() {
+    void shouldBeAbleToUseObjects() {
         assertThatThrownBy(() -> assertThatJson(inPath(json, "$.store.book[0]"))
             .isEqualTo(
                 "            {\n" +
@@ -61,7 +61,7 @@ public class JsonPathTest {
     }
 
     @Test
-    public void shouldIgnorePath() {
+    void shouldIgnorePath() {
         assertThatJson(inPath(json, "$.store.book[0]"))
             .whenIgnoringPaths("$.store.book[*].price")
             .isEqualTo(

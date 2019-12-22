@@ -36,7 +36,7 @@ public class JsonOrgAssertJTest extends AbstractAssertJTest {
 
     @Test
     @Override
-    public void jsonPathShouldBeAbleToUseArrays() {
+    protected void jsonPathShouldBeAbleToUseArrays() {
         // ignored, json org does not keep the order in JSON
     }
 }

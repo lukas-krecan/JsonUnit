@@ -74,19 +74,24 @@ class Converter {
         List<NodeFactory> factories = new ArrayList<>();
         for (String factoryName : property.toLowerCase().split(",")) {
             factoryName = factoryName.trim();
-            if ("moshi".equals(factoryName)) {
-                factories.add(new MoshiNodeFactory());
-            } else if ("json.org".equals(factoryName)) {
-                factories.add(new JsonOrgNodeFactory());
-            } else if ("jackson2".equals(factoryName)) {
-                factories.add(new Jackson2NodeFactory());
-            } else if ("gson".equals(factoryName)) {
-                factories.add(new GsonNodeFactory());
-            } else if ("johnzon".equals(factoryName)) {
-                factories.add(new JohnzonNodeFactory());
-
-            } else {
-                throw new IllegalArgumentException("'" +factoryName + "' library name not recognized.");
+            switch (factoryName) {
+                case "moshi":
+                    factories.add(new MoshiNodeFactory());
+                    break;
+                case "json.org":
+                    factories.add(new JsonOrgNodeFactory());
+                    break;
+                case "jackson2":
+                    factories.add(new Jackson2NodeFactory());
+                    break;
+                case "gson":
+                    factories.add(new GsonNodeFactory());
+                    break;
+                case "johnzon":
+                    factories.add(new JohnzonNodeFactory());
+                    break;
+                default:
+                    throw new IllegalArgumentException("'" + factoryName + "' library name not recognized.");
             }
         }
         return factories;

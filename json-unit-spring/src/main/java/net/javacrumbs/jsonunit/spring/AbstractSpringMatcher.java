@@ -18,7 +18,6 @@ package net.javacrumbs.jsonunit.spring;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
-import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.function.BiConsumer;
 

@@ -28,10 +28,8 @@ import org.hamcrest.Matcher;
 import java.math.BigDecimal;
 
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix;
 import static net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher.ACTUAL;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 
 /**

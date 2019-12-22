@@ -33,7 +33,7 @@ public class JohnzonJsonFluentAssertTest extends AbstractJsonFluentAssertTest {
     }
 
     @Test
-    public void shouldNotChangeObject() {
+    void shouldNotChangeObject() {
         JsonObject json = Json.createObjectBuilder()
             .add("test", JsonValue.NULL)
             .build();
@@ -42,7 +42,7 @@ public class JohnzonJsonFluentAssertTest extends AbstractJsonFluentAssertTest {
 
     @Override
     @Disabled
-    public void shouldAllowUnquotedKeysAndCommentInExpectedValue() {
+    protected void shouldAllowUnquotedKeysAndCommentInExpectedValue() {
         //not supported
     }
 }

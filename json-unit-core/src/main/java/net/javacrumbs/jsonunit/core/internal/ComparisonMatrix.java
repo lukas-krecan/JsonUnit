@@ -171,7 +171,7 @@ class ComparisonMatrix {
         return equalElements.get(actualIndex);
     }
 
-    ComparisonMatrix copy(int compareFrom) {
+    private ComparisonMatrix copy(int compareFrom) {
         return new ComparisonMatrix(new ArrayList<>(equalElements), compareFrom, matches.clone(), new ArrayList<>(extra), (BitSet) alreadyMatched.clone(), expectedElements, actualElements);
     }
 

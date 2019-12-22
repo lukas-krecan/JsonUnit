@@ -15,7 +15,6 @@
  */
 package net.javacrumbs.jsonunit.test.base;
 
-import net.javacrumbs.jsonunit.assertj.JsonAssertions;
 import net.javacrumbs.jsonunit.core.Option;
 import org.junit.jupiter.api.Test;
 
@@ -105,7 +104,7 @@ public abstract class AbstractJsonFluentAssertTest {
     }
 
     @Test
-    public void shouldAllowUnquotedKeysAndCommentInExpectedValue() {
+    protected void shouldAllowUnquotedKeysAndCommentInExpectedValue() {
         assertThatJson("{\"test\":1}").isEqualTo("{//comment\ntest:1}");
     }
 

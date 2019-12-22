@@ -29,7 +29,7 @@ public class JsonOrgJsonFluentAssertTest extends AbstractJsonFluentAssertTest {
 
     @Test
     @Override
-    public void shouldAllowUnquotedKeysAndCommentInExpectedValue() {
+    protected void shouldAllowUnquotedKeysAndCommentInExpectedValue() {
         assertThatJson("{\"test\":1}").isEqualTo("{test:1}");
     }
 }

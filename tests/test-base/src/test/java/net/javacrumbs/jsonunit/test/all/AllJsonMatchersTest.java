@@ -27,32 +27,33 @@ import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson2;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJsonOrg;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class AllJsonMatchersTest extends AbstractJsonMatchersTest {
+class AllJsonMatchersTest extends AbstractJsonMatchersTest {
     @Test
-    public void testJsonNodeJsonOrg() throws IOException {
+    void testJsonNodeJsonOrg() throws IOException {
         assertThat(readByJsonOrg("{\"test\":1}"), jsonEquals("{\"test\":1}"));
     }
 
     @Test
-    public void testJsonNodeJackson2() throws IOException {
+    void testJsonNodeJackson2() throws IOException {
         assertThat(readByJackson2("{\"test\":1}"), jsonEquals("{\"test\":1}"));
     }
 
     @Test
-    public void shouldCompareJSONArrays() {
+    void shouldCompareJSONArrays() {
         assertThat(readByJsonOrg("[{\"a\":1}, {\"a\":2}, {\"a\":2}]"), jsonEquals(readByJsonOrg("[{\"a\":1}, {\"a\":2}, {\"a\":2}]")));
     }
 
     @Test
-    public void testEqualsResource() throws Exception {
+    void testEqualsResource() throws Exception {
         assertThat("{\"test\":1}", jsonEquals(resource("test.json")));
     }
 
     @Test
-    public void testEqualsUnicodeResource() throws Exception {
+    void testEqualsUnicodeResource() throws Exception {
         assertThat("{\"face\":\"\uD83D\uDE10\"}", jsonEquals(resource("unicode.json")));
     }
 
+    @Override
     protected Object readValue(String value) {
             return JsonTestUtils.readByJackson2(value);
         }

@@ -145,7 +145,7 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
-    public void testNotEqualWhenToleranceNotSet() {
+    protected void testNotEqualWhenToleranceNotSet() {
         assertThatThrownBy(() -> assertJsonEquals("1", "\n1.0\n"))
             .hasMessage("JSON documents are different:\n" +
                 "Different value found in node \"\", expected: <1> but was: <1.0>.\n");
@@ -336,7 +336,7 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
-    public void testDifferentNumericTypes() {
+    protected void testDifferentNumericTypes() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":1}", "{\n\"test\": 1.0\n}"))
             .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <1> but was: <1.0>.\n");
     }
@@ -868,12 +868,12 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
-    public void testEqualsNode() throws IOException {
+    void testEqualsNode() throws IOException {
         assertJsonEquals(readValue("{\"test\":1}"), readValue("{\"test\": 1}"));
     }
 
     @Test
-    public void testEqualsNodeIgnore() throws IOException {
+    void testEqualsNodeIgnore() throws IOException {
         assertJsonEquals(readValue("{\"test\":\"${json-unit.ignore}\"}"), readValue("{\"test\": 1}"));
     }
 

@@ -15,7 +15,7 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-public interface NodeFactory {
+interface NodeFactory {
     /**
      * Returns true if this factory is preferred for given source.
      *

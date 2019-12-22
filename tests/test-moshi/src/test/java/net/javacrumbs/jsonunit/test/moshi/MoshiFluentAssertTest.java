@@ -28,7 +28,7 @@ public class MoshiFluentAssertTest extends AbstractJsonFluentAssertTest {
     }
 
     @Test
-    public void testOkWithLibrary() {
+    void testOkWithLibrary() {
         System.setProperty("json-unit.libraries", "moshi");
         try {
             assertThatJson("{\"test\":1}").isEqualTo("{\"test\":1}");

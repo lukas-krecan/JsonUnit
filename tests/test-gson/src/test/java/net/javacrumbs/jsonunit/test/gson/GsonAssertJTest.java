@@ -22,6 +22,6 @@ public class GsonAssertJTest  extends AbstractAssertJTest {
 
     @Override
     protected Object readValue(String value) {
-            return JsonTestUtils.readByGson(value);
-        }
+        return JsonTestUtils.readByGson(value);
+    }
 }

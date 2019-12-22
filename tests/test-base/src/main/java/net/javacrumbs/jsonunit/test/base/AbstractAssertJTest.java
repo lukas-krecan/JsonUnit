@@ -1213,7 +1213,7 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
-    public void jsonPathShouldBeAbleToUseArrays() {
+    protected void jsonPathShouldBeAbleToUseArrays() {
         assertThatThrownBy(() -> assertThatJson(json)
             .inPath("$.store.book")
             .isArray()

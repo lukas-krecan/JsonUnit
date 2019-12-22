@@ -30,24 +30,24 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class ConverterTest {
+class ConverterTest {
 
     private static final String JSON = "{\"test\":1}";
 
     @Test
-    public void shouldFailIfNoConverterSet() {
+    void shouldFailIfNoConverterSet() {
         assertThatThrownBy(() -> new Converter(Collections.emptyList())).isInstanceOf(IllegalStateException.class);
     }
 
     @Test
-    public void shouldUseTheLastFactoryForNonPreferred() {
+    void shouldUseTheLastFactoryForNonPreferred() {
         Converter converter = new Converter(Arrays.asList(new GsonNodeFactory(), new Jackson2NodeFactory()));
         Node node = converter.convertToNode(JSON, "", false);
         assertEquals(Jackson2NodeFactory.Jackson2Node.class, node.getClass());
     }
 
     @Test
-    public void shouldUsePreferredFactory() {
+    void shouldUsePreferredFactory() {
         Converter converter = new Converter(Arrays.asList(new Jackson2NodeFactory(), new GsonNodeFactory()));
         Node node = converter.convertToNode(BooleanNode.TRUE, "", false);
         assertEquals(Jackson2NodeFactory.Jackson2Node.class, node.getClass());
@@ -55,7 +55,7 @@ public class ConverterTest {
 
 
     @Test
-    public void shouldUseOnlyFactorySpecifiedBySystemProperty() {
+    void shouldUseOnlyFactorySpecifiedBySystemProperty() {
         System.setProperty(LIBRARIES_PROPERTY_NAME,"gson");
         Converter converter = Converter.createDefaultConverter();
         assertThat(converter.getFactories()).extracting("class").containsExactly(GsonNodeFactory.class);
@@ -63,7 +63,7 @@ public class ConverterTest {
     }
 
     @Test
-    public void shouldChangeOrderSpecifiedBySystemProperty() {
+    void shouldChangeOrderSpecifiedBySystemProperty() {
         System.setProperty(LIBRARIES_PROPERTY_NAME,"jackson2, gson ,json.org");
         Converter converter = Converter.createDefaultConverter();
         assertThat(converter.getFactories()).extracting("class").containsExactly(Jackson2NodeFactory.class, GsonNodeFactory.class, JsonOrgNodeFactory.class);
@@ -71,7 +71,7 @@ public class ConverterTest {
     }
 
     @Test
-    public void shouldFailOnUnknownFactory() {
+    void shouldFailOnUnknownFactory() {
         System.setProperty(LIBRARIES_PROPERTY_NAME,"unknown");
         try {
             Converter.createDefaultConverter();
@@ -84,12 +84,12 @@ public class ConverterTest {
     }
 
     @Test
-    public void classShouldBePresent() {
+    void classShouldBePresent() {
         assertTrue(isClassPresent("java.lang.String"));
     }
 
     @Test
-    public void classShouldNotBePresent() {
+    void classShouldNotBePresent() {
         assertFalse(isClassPresent("garbage"));
     }
 }

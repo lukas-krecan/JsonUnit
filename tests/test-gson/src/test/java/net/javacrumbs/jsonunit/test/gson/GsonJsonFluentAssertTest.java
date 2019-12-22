@@ -29,7 +29,7 @@ public class GsonJsonFluentAssertTest extends AbstractJsonFluentAssertTest {
     }
 
     @Test
-    public void shouldNotChangeObject() {
+    void shouldNotChangeObject() {
         JsonObject json = new JsonObject();
         json.add("test", null);
         assertThatJson(json).isEqualTo("{\"test\":null}");

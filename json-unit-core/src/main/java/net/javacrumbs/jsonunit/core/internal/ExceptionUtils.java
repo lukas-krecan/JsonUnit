@@ -27,7 +27,7 @@ class ExceptionUtils {
         return formatDifferences(message, differences.getDifferences());
     }
 
-    static String formatDifferences(String message, List<JsonDifference> differences) {
+    private static String formatDifferences(String message, List<JsonDifference> differences) {
         StringBuilder builder = new StringBuilder();
         if (!differences.isEmpty()) {
             addHeading(message, builder);
@@ -36,9 +36,7 @@ class ExceptionUtils {
                 builder.append(difference.getMessage()).append("\n");
             }
         }
-        String result = builder.toString();
-        //System.out.println("XXXXXX\n" + result + "\nXXXXXXXXX");
-        return result;
+        return builder.toString();
     }
 
     static AssertionError createException(String message, Differences diffs) {

@@ -73,7 +73,7 @@ abstract class PathMatcher {
             while ((to = path.indexOf("[*]", from)) >= 0) {
                 regexp
                     .append("\\Q")
-                    .append(path.substring(from, to))
+                    .append(path, from, to)
                     .append("\\E")
                     .append("\\[\\d+\\]");
                 from = to + 3; // length of the placeholder [*]
