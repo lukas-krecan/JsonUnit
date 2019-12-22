@@ -59,7 +59,7 @@
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-json_1.1_spec</artifactId>
-            <version>${geronimo.json11.version}</version>
+            <version>${geronimo.jsonp.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
