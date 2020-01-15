@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Objects;
 
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -33,9 +34,7 @@ public class ResourceUtils {
      * Helper method to read a classpath resource.
      */
     public static Reader resource(String resourceName) {
-        if (resourceName == null) {
-            throw new NullPointerException("'null' passed instead of resource name");
-        }
+        Objects.requireNonNull(resourceName, "'null' passed instead of resource name");
 
         final InputStream resourceStream = ClassLoader.getSystemResourceAsStream(resourceName);
         if (resourceStream == null) {

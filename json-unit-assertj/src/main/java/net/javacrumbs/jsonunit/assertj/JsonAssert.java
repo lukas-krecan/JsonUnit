@@ -38,6 +38,8 @@ import org.assertj.core.description.Description;
 import org.assertj.core.error.MessageFormatter;
 import org.assertj.core.internal.Failures;
 import org.hamcrest.Matcher;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -77,7 +79,8 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     /**
      * Moves comparison to given node. Second call navigates from the last position in the JSON.
      */
-    public JsonAssert node(String node) {
+    @NotNull
+    public JsonAssert node(@NotNull String node) {
         return new JsonAssert(path.to(node), configuration, getNode(actual, node));
     }
 
@@ -92,7 +95,8 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      *     );
      * </code>
      */
-    public JsonAssert and(JsonAssertion... assertions) {
+    @NotNull
+    public JsonAssert and(@NotNull JsonAssertion... assertions) {
         Arrays.stream(assertions).forEach(a -> a.doAssert(this));
         return this;
     }
@@ -101,7 +105,8 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      * Compares JSONs.
      */
     @Override
-    public JsonAssert isEqualTo(Object expected) {
+    @NotNull
+    public JsonAssert isEqualTo(@Nullable Object expected) {
         Diff diff = Diff.create(expected, actual, "fullJson", path.asPrefix(), configuration);
 
         String overridingErrorMessage = info.overridingErrorMessage();
@@ -132,6 +137,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      *
      * @return MapAssert where the object is serialized as Map
      */
+    @NotNull
     public MapAssert<String, Object> isObject() {
         Node node = assertType(OBJECT);
         return new JsonMapAssert((Map<String, Object>) node.getValue(), path.asPrefix(), configuration)
@@ -143,6 +149,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      *
      * @return
      */
+    @NotNull
     public BigDecimalAssert isNumber() {
         Node node = assertType(NUMBER);
         return createBigDecimalAssert(node.decimalValue());
@@ -151,6 +158,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     /**
      * Asserts that given node is present and is of type number or a string that can be parsed as a number.
      */
+    @NotNull
     public BigDecimalAssert asNumber() {
         internalMatcher.isPresent(NUMBER.getDescription());
         Node node = getNode(actual, "");
@@ -177,6 +185,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      *
      * @return
      */
+    @NotNull
     public ListAssert<Object> isArray() {
         Node node = assertType(ARRAY);
         return new JsonListAssert((List<?>)node.getValue(), path.asPrefix(), configuration)
@@ -188,6 +197,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      *
      * @return
      */
+    @NotNull
     public BooleanAssert isBoolean() {
         Node node = assertType(BOOLEAN);
         return new BooleanAssert((Boolean) node.getValue()).as("Different value found in node \"%s\"", path);
@@ -198,12 +208,14 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      *
      * @return
      */
+    @NotNull
     public StringAssert isString() {
         Node node = assertType(STRING);
         return new StringAssert((String) node.getValue()).as("Different value found in node \"%s\"", path);
     }
 
     @Override
+    @NotNull
     public AbstractStringAssert<?> asString() {
         return isString();
     }
@@ -222,6 +234,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      *
      * @return
      */
+    @NotNull
     public JsonAssert isPresent() {
         internalMatcher.isPresent();
         return this;
@@ -241,6 +254,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      * @return
      */
     @Override
+    @NotNull
     public JsonAssert isNotNull() {
         internalMatcher.isNotNull();
         return this;
@@ -273,7 +287,8 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
         /**
          * Adds comparison options.
          */
-        public ConfigurableJsonAssert when(Option first, Option... other) {
+        @NotNull
+        public ConfigurableJsonAssert when(@NotNull Option first, @NotNull Option... other) {
             return withConfiguration(c -> c.when(first, other));
         }
 
@@ -282,7 +297,8 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
          *
          * @see Configuration#when(PathsParam, ApplicableForPath...)
          */
-        public final ConfigurableJsonAssert when(PathsParam object, ApplicableForPath... actions) {
+        @NotNull
+        public final ConfigurableJsonAssert when(@NotNull PathsParam object, @NotNull ApplicableForPath... actions) {
             return withConfiguration(c -> c.when(object, actions));
         }
 
@@ -292,7 +308,8 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
          * @param options
          * @return
          */
-        public ConfigurableJsonAssert withOptions(Options options) {
+        @NotNull
+        public ConfigurableJsonAssert withOptions(@NotNull Options options) {
             return withConfiguration(c -> c.withOptions(options));
         }
 
@@ -305,7 +322,8 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
          *             ....
          * </code>
          */
-        public ConfigurableJsonAssert withConfiguration(Function<Configuration, Configuration> configurationFunction) {
+        @NotNull
+        public ConfigurableJsonAssert withConfiguration(@NotNull Function<Configuration, Configuration> configurationFunction) {
             Configuration newConfiguration = configurationFunction.apply(configuration);
             newConfiguration = resolveJsonPaths(originalActual, newConfiguration);
             return new ConfigurableJsonAssert(path, newConfiguration, actual);
@@ -317,7 +335,8 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
          * @param tolerance
          * @return
          */
-        public ConfigurableJsonAssert withTolerance(BigDecimal tolerance) {
+        @NotNull
+        public ConfigurableJsonAssert withTolerance(@Nullable BigDecimal tolerance) {
             return withConfiguration(c -> c.withTolerance(tolerance));
         }
 
@@ -327,6 +346,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
          * @param tolerance
          * @return
          */
+        @NotNull
         public ConfigurableJsonAssert withTolerance(double tolerance) {
             return withTolerance(BigDecimal.valueOf(tolerance));
         }
@@ -338,7 +358,8 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
          * @param pathsToBeIgnored
          * @return
          */
-        public ConfigurableJsonAssert whenIgnoringPaths(String... pathsToBeIgnored) {
+        @NotNull
+        public ConfigurableJsonAssert whenIgnoringPaths(@NotNull String... pathsToBeIgnored) {
             return withConfiguration(c -> c.whenIgnoringPaths(pathsToBeIgnored));
         }
 
@@ -348,7 +369,8 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
          * @param ignorePlaceholder
          * @return
          */
-        public ConfigurableJsonAssert withIgnorePlaceholder(String ignorePlaceholder) {
+        @NotNull
+        public ConfigurableJsonAssert withIgnorePlaceholder(@NotNull String ignorePlaceholder) {
             return withConfiguration(c -> c.withIgnorePlaceholder(ignorePlaceholder));
         }
 
@@ -359,7 +381,8 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
          * @param matcher
          * @return
          */
-        public ConfigurableJsonAssert withMatcher(String matcherName, Matcher<?> matcher) {
+        @NotNull
+        public ConfigurableJsonAssert withMatcher(@NotNull String matcherName, @NotNull Matcher<?> matcher) {
             return withConfiguration(c -> c.withMatcher(matcherName, matcher));
         }
 
@@ -367,32 +390,38 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
         /**
          * Sets difference listener
          */
-        public ConfigurableJsonAssert withDifferenceListener(DifferenceListener differenceListener) {
+        @NotNull
+        public ConfigurableJsonAssert withDifferenceListener(@NotNull DifferenceListener differenceListener) {
             return withConfiguration(c -> c.withDifferenceListener(differenceListener));
         }
 
-        public JsonAssert inPath(String jsonPath) {
+        @NotNull
+        public JsonAssert inPath(@NotNull String jsonPath) {
             return new JsonAssert(JsonPathAdapter.inPath(originalActual, jsonPath), configuration);
         }
 
         // Following methods are here just to return ConfigurableJsonAssert instead of JsonAssert
         @Override
-        public ConfigurableJsonAssert describedAs(Description description) {
+        @NotNull
+        public ConfigurableJsonAssert describedAs(@NotNull Description description) {
             return (ConfigurableJsonAssert) super.describedAs(description);
         }
 
         @Override
-        public ConfigurableJsonAssert describedAs(String description, Object... args) {
+        @NotNull
+        public ConfigurableJsonAssert describedAs(@NotNull String description, Object... args) {
             return (ConfigurableJsonAssert) super.describedAs(description, args);
         }
 
         @Override
-        public ConfigurableJsonAssert as(Description description) {
+        @NotNull
+        public ConfigurableJsonAssert as(@NotNull Description description) {
             return (ConfigurableJsonAssert) super.as(description);
         }
 
         @Override
-        public ConfigurableJsonAssert as(String description, Object... args) {
+        @NotNull
+        public ConfigurableJsonAssert as(@NotNull String description, Object... args) {
             return (ConfigurableJsonAssert) super.as(description, args);
         }
     }

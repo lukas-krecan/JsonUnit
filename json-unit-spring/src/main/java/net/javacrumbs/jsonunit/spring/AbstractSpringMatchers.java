@@ -21,6 +21,8 @@ import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
 import java.util.function.BiConsumer;
@@ -35,15 +37,17 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
     final Path path;
     final Configuration configuration;
 
-    AbstractSpringMatchers(Path path, Configuration configuration) {
+    AbstractSpringMatchers(@NotNull Path path, @NotNull Configuration configuration) {
         this.path = path;
         this.configuration = configuration;
     }
 
 
-    abstract MATCHER matcher(BiConsumer<Object, InternalMatcher> matcher);
+    @NotNull
+    abstract MATCHER matcher(@NotNull BiConsumer<Object, InternalMatcher> matcher);
 
-    abstract ME matchers(Path path, Configuration configuration);
+    @NotNull
+    abstract ME matchers(@NotNull Path path, @NotNull Configuration configuration);
 
     /**
      * Creates a matcher object that only compares given node.
@@ -56,6 +60,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      * @param newPath
      * @return object comparing only node given by path.
      */
+    @NotNull
     public ME node(String newPath) {
         return matchers(path.copy(newPath), configuration);
     }
@@ -65,7 +70,8 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      * Sets the placeholder that can be used to ignore values.
      * The default value is ${json-unit.ignore}
      */
-    public ME ignoring(String ignorePlaceholder) {
+    @NotNull
+    public ME ignoring(@NotNull String ignorePlaceholder) {
         return matchers(path, configuration.withIgnorePlaceholder(ignorePlaceholder));
     }
 
@@ -73,6 +79,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      * Sets the tolerance for floating number comparison. If set to null, requires exact match of the values.
      * For example, if set to 0.01, ignores all differences lower than 0.01, so 1 and 0.9999 are considered equal.
      */
+    @NotNull
     public ME withTolerance(double tolerance) {
         return withTolerance(BigDecimal.valueOf(tolerance));
     }
@@ -81,11 +88,13 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      * Sets the tolerance for floating number comparison. If set to null, requires exact match of the values.
      * For example, if set to 0.01, ignores all differences lower than 0.01, so 1 and 0.9999 are considered equal.
      */
-    public ME withTolerance(BigDecimal tolerance) {
+    @NotNull
+    public ME withTolerance(@Nullable BigDecimal tolerance) {
         return matchers(path, configuration.withTolerance(tolerance));
     }
 
-    public ME withDifferenceListener(DifferenceListener differenceListener) {
+    @NotNull
+    public ME withDifferenceListener(@NotNull DifferenceListener differenceListener) {
         return matchers(path, configuration.withDifferenceListener(differenceListener));
     }
 
@@ -95,7 +104,8 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      *
      * @see net.javacrumbs.jsonunit.core.Option
      */
-    public ME when(Option firstOption, Option... otherOptions) {
+    @NotNull
+    public ME when(@NotNull Option firstOption, @NotNull Option... otherOptions) {
         return matchers(path, configuration.withOptions(firstOption, otherOptions));
     }
 
@@ -115,7 +125,8 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      * @return {@code this} object.
      * @see #isStringEqualTo(String)
      */
-    public MATCHER isEqualTo(Object expected) {
+    @NotNull
+    public MATCHER isEqualTo(@Nullable Object expected) {
         return matcher((actual, ctx) -> ctx.isEqualTo(expected));
     }
 
@@ -123,7 +134,8 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      * Fails if the selected JSON is not a String or is not present or the value
      * is not equal to expected value.
      */
-    public MATCHER isStringEqualTo(final String expected) {
+    @NotNull
+    public MATCHER isStringEqualTo(@Nullable  final String expected) {
         return matcher((actual, ctx) -> ctx.isStringEqualTo(expected));
     }
 
@@ -131,13 +143,15 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      * Fails if compared documents are equal. The expected object is converted to JSON
      * before comparison. Ignores order of sibling nodes and whitespaces.
      */
-    public MATCHER isNotEqualTo(final Object expected) {
+    @NotNull
+    public MATCHER isNotEqualTo(@Nullable Object expected) {
         return matcher((actual, ctx) -> ctx.isNotEqualTo(expected));
     }
 
     /**
      * Fails if the node exists.
      */
+    @NotNull
     public MATCHER isAbsent() {
         return matcher((actual, ctx) -> ctx.isAbsent());
     }
@@ -145,6 +159,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
     /**
      * Fails if the node is missing.
      */
+    @NotNull
     public MATCHER isPresent() {
         return matcher((actual, ctx) -> ctx.isPresent());
     }
@@ -152,6 +167,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
     /**
      * Fails if the selected JSON is not an Array or is not present.
      */
+    @NotNull
     public MATCHER isArray() {
         return matcher((actual, ctx) -> ctx.isArray());
     }
@@ -159,6 +175,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
     /**
      * Fails if the selected JSON is not an Object or is not present.
      */
+    @NotNull
     public MATCHER isObject() {
         return matcher((actual, ctx) -> ctx.isObject());
     }
@@ -166,6 +183,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
     /**
      * Fails if the selected JSON is not a String or is not present.
      */
+    @NotNull
     public MATCHER isString() {
         return matcher((actual, ctx) -> ctx.isString());
     }
@@ -173,6 +191,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
     /**
      * Fails if selected JSON is not null.
      */
+    @NotNull
     public MATCHER isNull() {
         return matcher((actual, ctx) -> ctx.isNull());
     }
@@ -180,6 +199,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
     /**
      * Fails if selected JSON is  null.
      */
+    @NotNull
     public MATCHER isNotNull() {
         return matcher((actual, ctx) -> ctx.isNotNull());
     }
@@ -196,13 +216,15 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      * @param matcher
      * @return
      */
-    public MATCHER matches(final Matcher<?> matcher) {
+    @NotNull
+    public MATCHER matches(@NotNull final Matcher<?> matcher) {
         return matcher((actual, ctx) -> ctx.matches(matcher));
     }
 
     /**
      * Fails if selected JSON is not true.
      */
+    @NotNull
     public MATCHER isTrue() {
         return isEqualTo(true);
     }
@@ -210,6 +232,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
     /**
      * Fails if selected JSON is not false.
      */
+    @NotNull
     public MATCHER isFalse() {
         return isEqualTo(false);
     }

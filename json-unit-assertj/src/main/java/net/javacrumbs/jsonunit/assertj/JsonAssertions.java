@@ -20,6 +20,7 @@ import net.javacrumbs.jsonunit.assertj.internal.JsonRepresentation;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 import org.assertj.core.api.Assertions;
+import org.jetbrains.annotations.NotNull;
 
 public final class JsonAssertions {
 
@@ -31,7 +32,8 @@ public final class JsonAssertions {
 
     }
 
-    public static ConfigurableJsonAssert assertThatJson(Object actual) {
+    @NotNull
+    public static ConfigurableJsonAssert assertThatJson(@NotNull Object actual) {
         return new ConfigurableJsonAssert(actual, Configuration.empty());
     }
 
@@ -45,7 +47,8 @@ public final class JsonAssertions {
      *         );
      * }</pre>
      */
-    public static ConfigurableJsonAssert assertThatJson(Object actual, JsonAssertionCallback... callbacks) {
+    @NotNull
+    public static ConfigurableJsonAssert assertThatJson(@NotNull Object actual, @NotNull JsonAssertionCallback... callbacks) {
         ConfigurableJsonAssert a = assertThatJson(actual);
         for (JsonAssertionCallback callback: callbacks) {
             callback.doAssert(a);
@@ -59,6 +62,7 @@ public final class JsonAssertions {
      * @param input
      * @return Object suitable for comparison. Implementation type may change in the future.
      */
+    @NotNull
     public static Object json(Object input) {
         return new ExpectedNode(JsonUtils.convertToJson(input, "", true));
     }
@@ -67,13 +71,13 @@ public final class JsonAssertions {
     /**
      * Value passed here is not parsed as JSON but used as it is
      */
+    @NotNull
     public static Object value(Object input) {
         return new ExpectedNode(JsonUtils.wrapDeserializedObject(input));
     }
 
     @FunctionalInterface
     public interface JsonAssertionCallback {
-        void doAssert(ConfigurableJsonAssert assertion);
-
+        void doAssert(@NotNull ConfigurableJsonAssert assertion);
     }
 }

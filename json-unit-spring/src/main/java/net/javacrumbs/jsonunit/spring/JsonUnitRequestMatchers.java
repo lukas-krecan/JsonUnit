@@ -18,6 +18,7 @@ package net.javacrumbs.jsonunit.spring;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.mock.http.client.MockClientHttpRequest;
 import org.springframework.test.web.client.RequestMatcher;
@@ -43,31 +44,34 @@ public class JsonUnitRequestMatchers extends AbstractSpringMatchers<JsonUnitRequ
         super(path, configuration);
     }
 
+    @NotNull
     @Override
-    RequestMatcher matcher(BiConsumer<Object, InternalMatcher> matcher) {
+    RequestMatcher matcher(@NotNull BiConsumer<Object, InternalMatcher> matcher) {
         return new JsonRequestMatcher(path, configuration, matcher);
     }
 
     @Override
-    JsonUnitRequestMatchers matchers(Path path, Configuration configuration) {
+    @NotNull
+    JsonUnitRequestMatchers matchers(@NotNull Path path, @NotNull Configuration configuration) {
         return new JsonUnitRequestMatchers(path, configuration);
     }
 
     /**
      * Creates JsonUnitResultMatchers to be used for JSON assertions.
      */
+    @NotNull
     public static JsonUnitRequestMatchers json() {
         return new JsonUnitRequestMatchers(Path.root(), Configuration.empty());
     }
 
 
     private static class JsonRequestMatcher extends AbstractSpringMatcher implements RequestMatcher {
-        private JsonRequestMatcher(Path path, Configuration configuration, BiConsumer<Object, InternalMatcher> matcher) {
+        private JsonRequestMatcher(@NotNull Path path, @NotNull Configuration configuration, @NotNull BiConsumer<Object, InternalMatcher> matcher) {
             super(path, configuration, matcher);
         }
 
         @Override
-        public void match(ClientHttpRequest request) throws IOException, AssertionError {
+        public void match(@NotNull ClientHttpRequest request) throws IOException, AssertionError {
             Object actual = ((MockClientHttpRequest) request).getBodyAsString();
             doMatch(actual);
         }

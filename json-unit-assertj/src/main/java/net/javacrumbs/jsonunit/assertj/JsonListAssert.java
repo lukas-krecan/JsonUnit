@@ -20,6 +20,8 @@ import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import org.assertj.core.api.ListAssert;
 import org.assertj.core.internal.Failures;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -39,7 +41,8 @@ class JsonListAssert extends ListAssert<Object> {
     }
 
     @Override
-    public JsonListAssert isEqualTo(Object expected) {
+    @NotNull
+    public JsonListAssert isEqualTo(@Nullable Object expected) {
         describedAs(null);
         Diff diff = createDiff(expected);
         diff.failIfDifferent();
@@ -47,7 +50,8 @@ class JsonListAssert extends ListAssert<Object> {
     }
 
     @Override
-    public JsonListAssert isNotEqualTo(Object other) {
+    @NotNull
+    public JsonListAssert isNotEqualTo(@Nullable Object other) {
         Diff diff = createDiff(other);
         if (diff.similar()) {
             JsonComparisonStrategy strategy = new JsonComparisonStrategy(configuration);
@@ -56,6 +60,7 @@ class JsonListAssert extends ListAssert<Object> {
         return this;
     }
 
+    @NotNull
     private Diff createDiff(Object other) {
         return Diff.create(other, wrapDeserializedObject(actual), "fullJson", path, configuration);
     }

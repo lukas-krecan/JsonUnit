@@ -18,6 +18,7 @@ package net.javacrumbs.jsonunit.spring;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -48,28 +49,31 @@ public class JsonUnitResultMatchers extends AbstractSpringMatchers<JsonUnitResul
     }
 
     @Override
-    ResultMatcher matcher(BiConsumer<Object, InternalMatcher> matcher) {
+    @NotNull
+    ResultMatcher matcher(@NotNull BiConsumer<Object, InternalMatcher> matcher) {
         return new JsonResultMatcher(path, configuration, matcher);
     }
 
     @Override
-    JsonUnitResultMatchers matchers(Path path, Configuration configuration) {
+    @NotNull
+    JsonUnitResultMatchers matchers(@NotNull Path path, @NotNull Configuration configuration) {
         return new JsonUnitResultMatchers(path, configuration);
     }
 
 
     private static class JsonResultMatcher extends AbstractSpringMatcher implements ResultMatcher {
-        private JsonResultMatcher(Path path, Configuration configuration, BiConsumer<Object, InternalMatcher> matcher) {
+        private JsonResultMatcher(@NotNull Path path, @NotNull Configuration configuration, @NotNull BiConsumer<Object, InternalMatcher> matcher) {
             super(path, configuration, matcher);
         }
 
         @Override
-        public void match(MvcResult result) throws Exception {
+        public void match(@NotNull MvcResult result) throws Exception {
             String actual = getContentAsString(result.getResponse());
             doMatch(actual);
         }
 
-        private String getContentAsString(MockHttpServletResponse response) throws UnsupportedEncodingException {
+        @NotNull
+        private String getContentAsString(@NotNull MockHttpServletResponse response) throws UnsupportedEncodingException {
             // copy from MockHttpServletResponse.getContentAsString(Charset) in order to keep compatibility with older Spring versions
             String charset = response.isCharset() && response.getCharacterEncoding() != null ? response.getCharacterEncoding() : StandardCharsets.UTF_8.name();
             return new String(response.getContentAsByteArray(), charset);

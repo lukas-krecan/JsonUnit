@@ -16,6 +16,8 @@
 package net.javacrumbs.jsonunit.core;
 
 import org.hamcrest.Matcher;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,13 +41,15 @@ class Matchers {
         return EMPTY;
     }
 
-    public Matchers with(String matcherName, Matcher<?> matcher) {
+    @NotNull
+    public Matchers with(@NotNull String matcherName, @NotNull Matcher<?> matcher) {
         Map<String, Matcher<?>> newMatcherMap = new HashMap<>(matcherMap);
         newMatcherMap.put(matcherName, matcher);
         return new Matchers(newMatcherMap);
     }
 
-    public Matcher<?> getMatcher(String matcherName) {
+    @Nullable
+    Matcher<?> getMatcher(String matcherName) {
         return matcherMap.get(matcherName);
     }
 }

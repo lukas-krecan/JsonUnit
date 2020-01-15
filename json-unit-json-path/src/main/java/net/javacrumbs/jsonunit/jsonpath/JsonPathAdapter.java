@@ -17,6 +17,7 @@ package net.javacrumbs.jsonunit.jsonpath;
 
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.PathNotFoundException;
+import org.jetbrains.annotations.NotNull;
 
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.missingNode;
@@ -32,7 +33,7 @@ public final class JsonPathAdapter {
 
     }
 
-    public static Object inPath(Object json, String path) {
+    public static Object inPath(@NotNull Object json, @NotNull String path) {
         String normalizedPath = fromBracketNotation(path);
         try {
             return jsonSource(wrapDeserializedObject(readValue(Configuration.defaultConfiguration(), json, path)), normalizedPath);

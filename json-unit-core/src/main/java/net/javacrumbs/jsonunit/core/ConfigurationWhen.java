@@ -1,6 +1,7 @@
 package net.javacrumbs.jsonunit.core;
 
 import net.javacrumbs.jsonunit.core.internal.PathOption;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -89,7 +90,8 @@ public class ConfigurationWhen {
     }
 
     public interface ApplicableForPath {
-        Configuration applyForPaths(Configuration configuration, PathsParam pathsParam);
+        @NotNull
+        Configuration applyForPaths(@NotNull Configuration configuration, @NotNull PathsParam pathsParam);
     }
 
     static class OptionsParam implements ApplicableForPath {
@@ -102,7 +104,8 @@ public class ConfigurationWhen {
         }
 
         @Override
-        public Configuration applyForPaths(Configuration configuration, PathsParam pathsParam) {
+        @NotNull
+        public Configuration applyForPaths(@NotNull Configuration configuration, @NotNull PathsParam pathsParam) {
             return configuration.addPathOption(new PathOption(pathsParam.getPaths(), options, included));
         }
     }
@@ -112,7 +115,8 @@ public class ConfigurationWhen {
         }
 
         @Override
-        public Configuration applyForPaths(Configuration configuration, PathsParam pathsParam) {
+        @NotNull
+        public Configuration applyForPaths(@NotNull Configuration configuration, @NotNull PathsParam pathsParam) {
             return configuration.whenIgnoringPaths(pathsParam.paths);
         }
     }

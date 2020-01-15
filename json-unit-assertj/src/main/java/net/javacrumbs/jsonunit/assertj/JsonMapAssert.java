@@ -21,6 +21,8 @@ import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import org.assertj.core.api.MapAssert;
 import org.assertj.core.internal.Failures;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
@@ -40,12 +42,14 @@ class JsonMapAssert extends MapAssert<String, Object> {
     }
 
     @Override
-    public JsonMapAssert isEqualTo(Object expected) {
+    @NotNull
+    public JsonMapAssert isEqualTo(@Nullable Object expected) {
         return compare(expected, configuration);
     }
 
     @Override
-    public MapAssert<String, Object> containsValue(Object expected) {
+    @NotNull
+    public MapAssert<String, Object> containsValue(@Nullable Object expected) {
         if (expected instanceof Node) {
             if (!contains(expected)) {
                 throw failures.failure(info, shouldContainValue(actual, expected));
@@ -57,7 +61,8 @@ class JsonMapAssert extends MapAssert<String, Object> {
     }
 
     @Override
-    public MapAssert<String, Object> doesNotContainValue(Object expected) {
+    @NotNull
+    public MapAssert<String, Object> doesNotContainValue(@Nullable Object expected) {
         if (expected instanceof Node) {
             if (contains(expected)) {
                 throw failures.failure(info, shouldNotContainValue(actual, expected));
@@ -69,35 +74,42 @@ class JsonMapAssert extends MapAssert<String, Object> {
     }
 
     @Override
-    public JsonMapAssert isEqualToIgnoringGivenFields(Object other, String... propertiesOrFieldsToIgnore) {
+    @NotNull
+    public JsonMapAssert isEqualToIgnoringGivenFields(@Nullable Object other, @NotNull String... propertiesOrFieldsToIgnore) {
         return compare(other, configuration.whenIgnoringPaths(propertiesOrFieldsToIgnore));
     }
 
     @Override
-    public MapAssert<String, Object> isEqualToComparingOnlyGivenFields(Object other, String... propertiesOrFieldsUsedInComparison) {
+    @NotNull
+    public MapAssert<String, Object> isEqualToComparingOnlyGivenFields(@Nullable Object other, @NotNull String... propertiesOrFieldsUsedInComparison) {
         throw unsupportedOperation();
     }
 
     @Override
-    public MapAssert<String, Object> isEqualToIgnoringNullFields(Object other) {
+    @NotNull
+    public MapAssert<String, Object> isEqualToIgnoringNullFields(@Nullable Object other) {
         throw unsupportedOperation();
     }
 
     @Override
-    public MapAssert<String, Object> isEqualToComparingFieldByField(Object other) {
+    @NotNull
+    public MapAssert<String, Object> isEqualToComparingFieldByField(@Nullable Object other) {
         throw unsupportedOperation();
     }
 
     @Override
-    public MapAssert<String, Object> isEqualToComparingFieldByFieldRecursively(Object other) {
+    @NotNull
+    public MapAssert<String, Object> isEqualToComparingFieldByFieldRecursively(@Nullable Object other) {
         throw unsupportedOperation();
     }
 
+    @NotNull
     private UnsupportedOperationException unsupportedOperation() {
         return new UnsupportedOperationException("Operation not supported for JSON documents");
     }
 
-    private JsonMapAssert compare(Object other, Configuration configuration) {
+    @NotNull
+    private JsonMapAssert compare(@Nullable Object other, @NotNull Configuration configuration) {
         describedAs(null);
         Diff diff = Diff.create(other, actual, "fullJson", path, configuration);
         diff.failIfDifferent();

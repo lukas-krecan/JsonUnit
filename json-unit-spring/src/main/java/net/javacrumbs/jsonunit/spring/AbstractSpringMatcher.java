@@ -18,6 +18,7 @@ package net.javacrumbs.jsonunit.spring;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.BiConsumer;
 
@@ -26,7 +27,7 @@ abstract class AbstractSpringMatcher {
     private final Configuration configuration;
     private final BiConsumer<Object, InternalMatcher> matcher;
 
-    AbstractSpringMatcher(Path path, Configuration configuration, BiConsumer<Object, InternalMatcher> matcher) {
+    AbstractSpringMatcher(@NotNull Path path, @NotNull Configuration configuration, @NotNull BiConsumer<Object, InternalMatcher> matcher) {
         this.path = path;
         this.configuration = configuration;
         this.matcher = matcher;
