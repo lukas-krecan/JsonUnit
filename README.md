@@ -101,7 +101,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>2.11.1</version>
+    <version>2.12.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -181,7 +181,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-fluent</artifactId>
-    <version>2.11.1</version>
+    <version>2.12.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -215,7 +215,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.11.1</version>
+    <version>2.12.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -248,7 +248,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.11.1</version>
+    <version>2.12.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -270,7 +270,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.11.1</version>
+    <version>2.12.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -314,7 +314,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.11.1</version>
+    <version>2.12.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -346,7 +346,7 @@ For other API styles you have to first import JsonPath support module
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-json-path</artifactId>
-    <version>2.11.1</version>
+    <version>2.12.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -678,6 +678,10 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+# 2.12.0
+* Updated dependencies
+* Jackson node is not reparsed when compared #214 
+
 # 2.11.1
 * Parse content as UTF-8 in Spring MVC test if not specified otherwise #212
 
