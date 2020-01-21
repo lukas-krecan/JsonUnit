@@ -6,7 +6,7 @@
         Spring Mock assertions
     </description>
     <properties>
-        <spring.version>5.1.11.RELEASE</spring.version>
+        <spring.version>5.2.3.RELEASE</spring.version>
         <osgi.exportPackage>net.javacrumbs.jsonunit.spring</osgi.exportPackage>
     </properties>
 
