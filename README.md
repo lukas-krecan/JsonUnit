@@ -678,32 +678,32 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
-# 2.13.0
+## 2.13.0
 * Recompiled with AssertJ 3.15.0 to fix https://github.com/lukas-krecan/JsonUnit/issues/216
 * (Not)Null annotations added
 * Spring dependency updated to 5.2.3.RELEASE
 
-# 2.12.0
+## 2.12.0
 * Updated dependencies
 * Jackson node is not reparsed when compared #214 
 
-# 2.11.1
+## 2.11.1
 * Parse content as UTF-8 in Spring MVC test if not specified otherwise #212
 
-# 2.11.0
+## 2.11.0
 * Fix Kotlin 'Inaccessible type' warning in when-path (@Vladiatro)
 * Load resources as UTF-8 (@bencampion)
 
-# 2.10.0
+## 2.10.0
 * Support for PathOptions
 * AssertJ - support for chaining assertions in the same root
 * Support for json-path in AssertJ `whenIgnoringPaths`
 
-# 2.9.0
+## 2.9.0
 * Hamcrest upgraded to 2.1
 * AssertJ dependency upgraded to 3.12.3 (requires AssertJ > 3.10.0)
 
-# 2.8.1
+## 2.8.1
 * hamcrest-core dependency marked as required
 
 ## 2.8.0
