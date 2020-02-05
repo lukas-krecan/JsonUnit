@@ -679,7 +679,7 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 Release notes
 =============
 # 2.13.0
-* Recompiled with AssertJ 3.15.0 to fix #216
+* Recompiled with AssertJ 3.15.0 to fix https://github.com/lukas-krecan/JsonUnit/issues/216
 * (Not)Null annotations added
 * Spring dependency updated to 5.2.3.RELEASE
 
