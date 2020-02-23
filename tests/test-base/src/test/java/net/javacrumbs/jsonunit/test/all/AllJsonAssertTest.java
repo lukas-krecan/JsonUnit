@@ -19,7 +19,7 @@ import net.javacrumbs.jsonunit.JsonAssert;
 import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
 import net.javacrumbs.jsonunit.test.base.beans.Jackson2Bean;
-import net.javacrumbs.jsonunit.test.base.beans.Jackson2IgnorepropertyBean;
+import net.javacrumbs.jsonunit.test.base.beans.Jackson2IgnorePropertyBean;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -134,7 +134,7 @@ class AllJsonAssertTest extends AbstractJsonAssertTest {
 
     @Test
     void shouldSerializeBasedOnMethodAnnotation() {
-        assertJsonEquals("{\"property\": \"value\"}", new Jackson2IgnorepropertyBean("value"));
+        assertJsonEquals("{\"property\": \"value\"}", new Jackson2IgnorePropertyBean("value"));
     }
 
     @Test

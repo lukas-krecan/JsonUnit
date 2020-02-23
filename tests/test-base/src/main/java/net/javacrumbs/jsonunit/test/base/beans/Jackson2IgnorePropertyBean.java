@@ -18,10 +18,10 @@ package net.javacrumbs.jsonunit.test.base.beans;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class Jackson2IgnorepropertyBean {
+public class Jackson2IgnorePropertyBean {
     private final String property;
 
-    public Jackson2IgnorepropertyBean(String property) {
+    public Jackson2IgnorePropertyBean(String property) {
         this.property = property;
     }
 
