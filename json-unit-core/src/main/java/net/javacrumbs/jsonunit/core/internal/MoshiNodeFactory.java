@@ -96,6 +96,11 @@ class MoshiNodeFactory extends AbstractNodeFactory {
             }
 
             @Override
+            public boolean isIntegralNumber() {
+                throw new UnsupportedOperationException("Moshi is not able to tell apart integer and decimal number");
+            }
+
+            @Override
             public String toString() {
                 return decimalValue().toString();
             }

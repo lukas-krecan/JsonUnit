@@ -186,6 +186,12 @@ class GsonNodeFactory extends AbstractNodeFactory {
             return jsonNode.getAsBigDecimal();
         }
 
+        @Override
+        public boolean isIntegralNumber() {
+            String string = jsonNode.getAsString();
+            return jsonNode.getAsBigDecimal().scale() == 0 && !string.contains("e") && !string.contains("E");
+        }
+
         public Boolean asBoolean() {
             return jsonNode.getAsBoolean();
         }

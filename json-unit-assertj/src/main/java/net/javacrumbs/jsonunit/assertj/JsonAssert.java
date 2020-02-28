@@ -30,6 +30,7 @@ import net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.AbstractStringAssert;
 import org.assertj.core.api.BigDecimalAssert;
+import org.assertj.core.api.BigIntegerAssert;
 import org.assertj.core.api.BooleanAssert;
 import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.MapAssert;
@@ -153,6 +154,15 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     public BigDecimalAssert isNumber() {
         Node node = assertType(NUMBER);
         return createBigDecimalAssert(node.decimalValue());
+    }
+
+    /**
+     * Asserts that the value is an integer. 1 is an integer 1.0, 1.1, 1e3, 1e0, 1e-3 is not.
+     */
+    public BigIntegerAssert isIntegralNumber() {
+        Node node = internalMatcher.assertIntegralNumber();
+        return new BigIntegerAssert(node.decimalValue().toBigIntegerExact())
+            .as("Different value found in node \"%s\"", path);
     }
 
     /**

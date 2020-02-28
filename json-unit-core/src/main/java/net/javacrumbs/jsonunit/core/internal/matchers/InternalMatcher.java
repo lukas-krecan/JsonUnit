@@ -40,6 +40,7 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.ARRAY;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NULL;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NUMBER;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -274,6 +275,15 @@ public final class InternalMatcher {
         return node;
     }
 
+    @NotNull
+    public Node assertIntegralNumber() {
+        Node node = assertType(NUMBER);
+        if (!node.isIntegralNumber()) {
+            failOnType(node, "integer");
+        }
+        return node;
+    }
+
     /**
      * Fails if the selected JSON is not an Object or is not present.
      */
@@ -309,9 +319,12 @@ public final class InternalMatcher {
     }
 
     public void failOnType(@NotNull Node node, @NotNull String expectedType) {
-        failWithMessage("Node \"" + path + "\" has invalid type, expected: <" + expectedType + "> but was: <" + quoteTextValue(node.getValue()) + ">.");
+        failOnType(expectedType, quoteTextValue(node.getValue()));
     }
 
+    private void failOnType(@NotNull String expectedType, @Nullable Object actualType) {
+        failWithMessage("Node \"" + path + "\" has invalid type, expected: <" + expectedType + "> but was: <" + actualType + ">.");
+    }
 
     /**
      * Matches the node using Hamcrest matcher.
