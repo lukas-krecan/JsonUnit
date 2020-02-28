@@ -64,7 +64,7 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
         return getMapperProvider().getObjectMapper(lenient);
     }
 
-    private Jackson2ObjectMapperProvider getMapperProvider() {
+    private synchronized Jackson2ObjectMapperProvider getMapperProvider() {
         Iterator<Jackson2ObjectMapperProvider> iterator = serviceLoader.iterator();
         if (iterator.hasNext()) {
             return iterator.next();
