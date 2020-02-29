@@ -16,8 +16,11 @@
 package net.javacrumbs.jsonunit.test.moshi;
 
 import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;
+import org.junit.jupiter.api.Test;
 
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByMoshi;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class MoshiAssertJTest extends AbstractAssertJTest {
 
@@ -25,4 +28,16 @@ public class MoshiAssertJTest extends AbstractAssertJTest {
     protected Object readValue(String value) {
             return readByMoshi(value);
         }
+
+    @Test
+    void shouldAssertInteger() {
+        assertThatThrownBy(() ->assertThatJson("{\"a\":1}").node("a").isIntegralNumber())
+            .isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    @Test
+    void shouldAssertIntegerFailure() {
+        assertThatThrownBy(() -> assertThatJson("{\"a\":1.0}").node("a").isIntegralNumber())
+            .isInstanceOf(UnsupportedOperationException.class);
+    }
 }

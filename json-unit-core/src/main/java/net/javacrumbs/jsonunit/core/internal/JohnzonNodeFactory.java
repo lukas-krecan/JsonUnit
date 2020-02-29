@@ -15,6 +15,7 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import org.apache.johnzon.core.JsonLongImpl;
 import org.apache.johnzon.mapper.Mapper;
 import org.apache.johnzon.mapper.MapperBuilder;
 
@@ -219,10 +220,20 @@ public class JohnzonNodeFactory extends AbstractNodeFactory {
 
         @Override
         public BigDecimal decimalValue() {
-            if (jsonNode.getValueType() == JsonValue.ValueType.NUMBER)
+            if (isNumber()) {
                 return ((JsonNumber) jsonNode).bigDecimalValue();
-            else
+            } else {
                 throw new IllegalStateException("Not a JsonNumber: " + jsonNode);
+            }
+        }
+
+        @Override
+        public boolean isIntegralNumber() {
+            return jsonNode instanceof JsonLongImpl;
+        }
+
+        private boolean isNumber() {
+            return jsonNode.getValueType() == JsonValue.ValueType.NUMBER;
         }
 
         @Override

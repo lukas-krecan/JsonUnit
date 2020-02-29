@@ -536,6 +536,41 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void shouldAssertInteger() {
+        assertThatJson("{\"a\":1}").node("a").isIntegralNumber().isEqualTo(1);
+        assertThatJson("{\"a\":10}").node("a").isIntegralNumber();
+        assertThatJson("{\"a\":0}").node("a").isIntegralNumber();
+        assertThatJson("{\"a\":-10}").node("a").isIntegralNumber();
+    }
+
+    @Test
+    void shouldAssertIntegerFailure() {
+        assertThatThrownBy(() -> assertThatJson("{\"a\":1.0}").node("a").isIntegralNumber())
+            .hasMessage("Node \"a\" has invalid type, expected: <integer> but was: <1.0>.");
+
+        assertThatThrownBy(() -> assertThatJson("{\"a\":0.0}").node("a").isIntegralNumber())
+            .hasMessage("Node \"a\" has invalid type, expected: <integer> but was: <0.0>.");
+
+        assertThatThrownBy(() -> assertThatJson("{\"a\":10.0}").node("a").isIntegralNumber())
+            .hasMessage("Node \"a\" has invalid type, expected: <integer> but was: <10.0>.");
+
+        assertThatThrownBy(() -> assertThatJson("{\"a\":-10.0}").node("a").isIntegralNumber())
+            .hasMessage("Node \"a\" has invalid type, expected: <integer> but was: <-10.0>.");
+
+        assertThatThrownBy(() -> assertThatJson("{\"a\":1.1}").node("a").isIntegralNumber())
+            .hasMessage("Node \"a\" has invalid type, expected: <integer> but was: <1.1>.");
+
+        assertThatThrownBy(() -> assertThatJson("{\"a\":1e3}").node("a").isIntegralNumber())
+            .hasMessageStartingWith("Node \"a\" has invalid type, expected: <integer> but was:");
+
+        assertThatThrownBy(() -> assertThatJson("{\"a\":1e-3}").node("a").isIntegralNumber())
+            .hasMessage("Node \"a\" has invalid type, expected: <integer> but was: <0.001>.");
+
+        assertThatThrownBy(() -> assertThatJson("{\"a\":1e0}").node("a").isIntegralNumber())
+            .hasMessageStartingWith("Node \"a\" has invalid type, expected: <integer> but was:");
+    }
+
+    @Test
     void shouldAssertStringNumber() {
         assertThatJson("{\"a\":\"1\"}").node("a").asNumber().isEqualByComparingTo("1");
     }

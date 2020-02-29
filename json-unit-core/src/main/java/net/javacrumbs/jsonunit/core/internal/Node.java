@@ -98,6 +98,15 @@ public interface Node {
 
     BigDecimal decimalValue();
 
+    /**
+     * Returns true if the value is an integer. 1 is an integer 1.0, 1.1, 1e3, 1e0, 1e-3 is not.
+     */
+    default boolean isIntegralNumber() {
+        BigDecimal decimalValue = decimalValue();
+        String text = decimalValue.toString();
+        return decimalValue.scale() == 0 && !text.contains("e") && !text.contains("E");
+    }
+
     Boolean asBoolean();
 
     Object getValue();
