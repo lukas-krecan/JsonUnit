@@ -90,8 +90,9 @@ class GsonNodeFactory extends AbstractNodeFactory {
                 } catch (IndexOutOfBoundsException e) {
                     return MISSING_NODE;
                 }
+            } else {
+                return MISSING_NODE;
             }
-            throw new IllegalStateException("Can call element() only on an JsonArray");
         }
 
 

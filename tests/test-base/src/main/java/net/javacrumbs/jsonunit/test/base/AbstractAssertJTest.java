@@ -18,6 +18,7 @@ package net.javacrumbs.jsonunit.test.base;
 import net.javacrumbs.jsonunit.assertj.JsonAssert.ConfigurableJsonAssert;
 import net.javacrumbs.jsonunit.core.Option;
 import org.junit.jupiter.api.Test;
+import org.opentest4j.AssertionFailedError;
 import org.opentest4j.MultipleFailuresError;
 
 import java.util.LinkedHashMap;
@@ -600,6 +601,15 @@ public abstract class AbstractAssertJTest {
     @Test
     void testAssertTolerance() {
         assertThatJson("{\"test\":1.00001}").withConfiguration(c -> c.withTolerance(0.001)).isEqualTo("{\"test\":1}");
+    }
+
+    @Test
+    void shouldFailCorrectlyOnMissingNode() {
+        assertThatThrownBy(() -> assertThatJson("[{\"a\":\"01\", \"b\":\"text\"}]")
+            .node("[0].a").isEqualTo("\"01\"")
+            .node("[0].b").isEqualTo("text"))
+            .hasMessage("JSON documents are different:\nMissing node in path \"[0].a[0].b\".\n")
+            .matches(e -> ((AssertionFailedError)e).getActual().getStringRepresentation().equals("<missing>"));
     }
 
     @Test

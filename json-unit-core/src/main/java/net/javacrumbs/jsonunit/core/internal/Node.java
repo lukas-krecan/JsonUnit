@@ -196,6 +196,11 @@ public interface Node {
 
         @Override
         public void ___do_not_implement_this_interface_seriously() {}
+
+        @Override
+        public String toString() {
+            return "<missing>";
+        }
     };
     interface ValueExtractor {
         Object getValue(Node node);

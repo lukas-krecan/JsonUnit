@@ -62,7 +62,7 @@ class GenericNodeBuilder implements NodeBuilder {
 
     static abstract class NodeSkeleton extends AbstractNode {
         public Node element(int index) {
-            throw new UnsupportedOperationException();
+            return MISSING_NODE;
         }
 
         public Iterator<KeyValue> fields() {
