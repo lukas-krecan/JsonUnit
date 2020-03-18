@@ -223,7 +223,8 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void shouldAssertDirectEqual() {
-        assertThatJson("{\"a\":1}").isEqualTo(json("{\"a\":\"${json-unit.ignore}\"}"));
+        assertThatJson("{\"a\":1}")
+            .isEqualTo("{\"a\":\"${json-unit.ignore}\"}");
     }
 
     @Test

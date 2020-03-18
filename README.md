@@ -328,6 +328,7 @@ JsonUnit support all this features regardless of API you use.
 You can use JsonPath navigation together with JsonUnit. It has native support in AssertJ integration so you can do something like this:
 
 ```java
+// AssertJ style
 assertThatJson(json)
     .inPath("$.store.book")
     .isArray()
@@ -357,7 +358,7 @@ and then use instead of actual value
 import static net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter.inPath;
 
 ...
-
+// Fluent assertions
 assertThatJson(inPath(json, "$.store.book[*].author"))
     .when(Option.IGNORING_ARRAY_ORDER)
     .isEqualTo("['J. R. R. Tolkien', 'Nigel Rees', 'Evelyn Waugh', 'Herman Melville']");
@@ -368,8 +369,9 @@ Sometimes you need to ignore certain values when comparing. It is possible to us
 placeholder like this
 
 ```java
-assertJsonEquals("{\"test\":\"${json-unit.ignore}\"}",
-    "{\n\"test\": {\"object\" : {\"another\" : 1}}}");
+// AssertJ API
+assertThatJson("{\"a\":1}")
+    .isEqualTo(json("{\"a\":\"${json-unit.ignore}\"}"));
 ```
 Please note that the assertion will fail if the `test` element is missing in the actual value.
 
@@ -378,6 +380,7 @@ If the element needs to be ignored completely you can use `${json-unit.ignore-el
 placeholder.
 
 ```java
+// AssertJ API
 assertThatJson("{\"root\":{\"test\":1, \"ignored\": null}}")
       .isEqualTo("{\"root\":{\"test\":1, \"ignored\": \"${json-unit.ignore-element}\"}}");
 ```
@@ -417,6 +420,7 @@ exact path or array index placeholder as described above.
 
 JsonPath with whenIgnoringPaths example:
 ```java
+// AssertJ API
 assertThatJson("{\"fields\":[" +
         "{\"key\":1, \"name\":\"AA\"}," +
         "{\"key\":2, \"name\":\"AB\"}," +
