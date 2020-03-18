@@ -1144,6 +1144,13 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    public void ignoredJsonPathComplex() {
+        assertThatJson("{\"fields\":[{\"key\":1, \"name\":\"AA\"},{\"key\":2, \"name\":\"AB\"},{\"key\":3, \"name\":\"AC\"}]}")
+            .whenIgnoringPaths("$.fields[?(@.name=='AA')].key")
+            .isEqualTo("{\"fields\":[{\"key\":2, \"name\":\"AA\"},{\"key\":2, \"name\":\"AB\"},{\"key\":3, \"name\":\"AC\"}]}");
+    }
+
+    @Test
     void jsonPathWithIgnoredNonexistentPaths() {
         assertThatJson(json)
             .withConfiguration(c -> c.whenIgnoringPaths("$.rubbish"))
