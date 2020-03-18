@@ -17,6 +17,8 @@ package net.javacrumbs.jsonunit.test.base;
 
 import net.javacrumbs.jsonunit.assertj.JsonAssert.ConfigurableJsonAssert;
 import net.javacrumbs.jsonunit.core.Option;
+import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest.DivisionMatcher;
+import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 import org.opentest4j.MultipleFailuresError;
@@ -48,6 +50,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.entry;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class AbstractAssertJTest {
 
@@ -761,6 +764,18 @@ public abstract class AbstractAssertJTest {
 
         assertThat(listener.getDifferenceList()).hasSize(1);
         assertThat(listener.getDifferenceList().get(0).toString()).isEqualTo("DIFFERENT Expected ${json-unit.matches:positive} in test got -1 in test");
+    }
+
+    @Test
+    void parametrizedMatcherShouldFail() {
+        Matcher<?> divisionMatcher = new DivisionMatcher();
+        try {
+            assertThatJson("{\"test\":5}")
+                .withMatcher("isDivisibleBy", divisionMatcher)
+                .isEqualTo("{\"test\": \"${json-unit.matches:isDivisibleBy}3\"}");
+        } catch (AssertionError e) {
+            assertEquals("JSON documents are different:\nMatcher \"isDivisibleBy\" does not match value 5 in node \"test\". It is not divisible by <3>\n", e.getMessage());
+        }
     }
 
     @Test

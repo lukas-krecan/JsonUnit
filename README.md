@@ -464,22 +464,17 @@ like Kotlin.
 ## <a name="matchers"></a>Custom matchers
 In some special cases you might want to use your own matcher in the expected document.
 ```java
- assertJsonEquals(
-     "{\"test\": \"${json-unit.matches:positive}\"}",
-     "{\"test\":1}",
-     JsonAssert.withMatcher("positive", greaterThan(valueOf(0)))
- );
-
+ assertThatJson("{\"test\":-1}")
+             .withMatcher("positive", greaterThan(valueOf(0)))
+             .isEqualTo("{\"test\": \"${json-unit.matches:positive}\"}");
 ```
 
 In even more special cases, you might want to parametrize your matcher.
 ```java
  Matcher<?> divisionMatcher = new DivisionMatcher();
- assertJsonEquals(
-     "{test: '${json-unit.matches:isDivisibleBy}3'}",
-     "{\"test\":5}",
-     JsonAssert.withMatcher("isDivisibleBy", divisionMatcher)
- );
+ assertThatJson("{\"test\":5}")
+    .withMatcher("isDivisibleBy", divisionMatcher)
+    .isEqualTo("{\"test\": \"${json-unit.matches:isDivisibleBy}3\"}");
 
  private static class DivisionMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
      private BigDecimal param;

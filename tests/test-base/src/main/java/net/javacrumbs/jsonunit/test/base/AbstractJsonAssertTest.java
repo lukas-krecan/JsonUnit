@@ -980,7 +980,7 @@ public abstract class AbstractJsonAssertTest {
     }
 
 
-    private static class DivisionMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
+    static class DivisionMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
         private BigDecimal param;
 
         public boolean matches(Object item) {
