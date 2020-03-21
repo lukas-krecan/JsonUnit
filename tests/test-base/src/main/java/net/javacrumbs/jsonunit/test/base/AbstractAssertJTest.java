@@ -1469,6 +1469,13 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void shouldIgnoreAbsentB() {
+        assertThatJson("{\"A\":1,\"B\":null}")
+            .when(path("B"), then(TREATING_NULL_AS_ABSENT))
+            .isEqualTo("{\"A\":1}");
+    }
+
+    @Test
     void shouldNotIgnoreValuesWhenNotSpecified() {
         assertThatThrownBy(() ->
             assertThatJson("{\"a\":2,\"b\":\"string2\",\"c\":3}")
