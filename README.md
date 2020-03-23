@@ -5,6 +5,7 @@ JsonUnit is a library that simplifies JSON comparison in tests.
 
 - [APIs](#apis)
   * [AssertJ integration](#assertj)
+  * [Hamcrest matchers](#hamcrest)
   * [Spring MVC assertions](#spring)
   * [Spring REST client assertions](#spring-client)
   * [Vintage APIs](#vintage)
