@@ -164,11 +164,11 @@ this.mockMvc.perform(get("/sample").andExpect(
 Since 2.15.0 following Kotlin DSL si supported:
 
 ```kotlin
-   mockMvc.get(path).andExpect {
-        jsonContent {
-            node("root").isEqualTo(CORRECT_JSON)
-        }
+mockMvc.get(path).andExpect {
+    jsonContent {
+        node("root").isEqualTo(CORRECT_JSON)
     }
+}
 ```
 
 Inside `jsonContent` you have access to all AssertJ API capabilites as described [here](#assertj).
