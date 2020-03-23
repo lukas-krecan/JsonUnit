@@ -179,7 +179,6 @@ public final class InternalMatcher {
      * before comparison. Ignores order of sibling nodes and whitespaces.
      *
      * @param expected
-     * @return {@code this} object.
      */
     public void isNotEqualTo(@Nullable Object expected) {
         Diff diff = createDiff(expected, configuration);
@@ -193,7 +192,6 @@ public final class InternalMatcher {
      * Is too lenient, ignores types, prefer IGNORING_VALUES option instead.
      *
      * @param expected
-     * @return {@code this} object.
      */
     public void hasSameStructureAs(@Nullable Object expected) {
         Diff diff = createDiff(expected, configuration.withOptions(COMPARING_ONLY_STRUCTURE));
@@ -209,7 +207,6 @@ public final class InternalMatcher {
      * </code>
      *
      * @param newPath
-     * @return object comparing only node given by path.
      */
     @NotNull
     public InternalMatcher node(@NotNull String newPath) {
@@ -232,8 +229,6 @@ public final class InternalMatcher {
 
     /**
      * Fails if the node exists.
-     *
-     * @return
      */
     public void isAbsent() {
         if (!nodeAbsent(actual, path, configuration)) {
@@ -336,7 +331,6 @@ public final class InternalMatcher {
      * </ul>
      *
      * @param matcher
-     * @return
      */
     public void matches(@NotNull Matcher<?> matcher) {
         isPresent();
@@ -367,7 +361,6 @@ public final class InternalMatcher {
          * Fails if the array has different length.
          *
          * @param expectedLength
-         * @return
          */
         public void ofLength(int expectedLength) {
             if (array.size() != expectedLength) {
