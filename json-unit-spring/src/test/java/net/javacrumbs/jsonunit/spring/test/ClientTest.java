@@ -23,6 +23,7 @@ import org.springframework.web.client.RestTemplate;
 
 import static net.javacrumbs.jsonunit.spring.JsonUnitRequestMatchers.json;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
@@ -43,6 +44,18 @@ class ClientTest {
                           .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON_UTF8));
 
         assertThat(restTemplate.postForEntity(URI, json, String.class).getBody()).isEqualTo(jsonResponse);
+
+    }
+
+    @Test
+    void shouldFailOnMismatch() {
+        mockServer.expect(requestTo(URI))
+            .andExpect(json().isEqualTo("[]"))
+            .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
+
+        assertThatThrownBy(() -> restTemplate.postForEntity(URI, json, String.class))
+            .hasMessage("JSON documents are different:\n" +
+                "Different value found in node \"\", expected: <[]> but was: <{\"test\":1}>.\n");
 
     }
 
