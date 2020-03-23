@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit.spring.test;
+package net.javacrumbs.jsonunit.spring.test.demo;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 @Configuration
-@ComponentScan("net.javacrumbs.jsonunit.spring")
+@ComponentScan("net.javacrumbs.jsonunit.spring.test.demo")
 @EnableWebMvc
 public class SpringConfig {
 

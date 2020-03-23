@@ -13,12 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit.springkotlin.test.demo
+package net.javacrumbs.jsonunit.spring.test
 
 import net.javacrumbs.jsonunit.core.listener.Difference
 import net.javacrumbs.jsonunit.core.listener.DifferenceContext
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener
-import net.javacrumbs.jsonunit.springkotlin.response.JsonUnitResponseMatcher.jsonContent
+import net.javacrumbs.jsonunit.spring.jsonContent
+import net.javacrumbs.jsonunit.spring.test.demo.SpringConfig
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -40,7 +41,7 @@ import org.springframework.web.context.WebApplicationContext
 @ExtendWith(SpringExtension::class)
 @ContextConfiguration(classes = [SpringConfig::class])
 @WebAppConfiguration
-internal class ExampleControllerTest {
+internal class KotlinDslTest {
     @Autowired
     private lateinit var wac: WebApplicationContext
 

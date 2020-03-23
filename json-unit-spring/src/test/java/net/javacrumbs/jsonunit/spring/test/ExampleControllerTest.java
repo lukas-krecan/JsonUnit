@@ -19,6 +19,7 @@ import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.listener.Difference;
 import net.javacrumbs.jsonunit.core.listener.DifferenceContext;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
+import net.javacrumbs.jsonunit.spring.test.demo.SpringConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
