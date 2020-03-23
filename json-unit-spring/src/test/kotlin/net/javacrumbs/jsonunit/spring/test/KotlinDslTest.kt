@@ -25,7 +25,9 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito
+import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
@@ -75,7 +77,7 @@ internal class KotlinDslTest {
 
     @Test
     fun isEqualToShouldFailIfDoesNotEqual() {
-        val listener = Mockito.mock(DifferenceListener::class.java)
+        val listener = mock(DifferenceListener::class.java)
         assertThatThrownBy {
             exec().andExpect {
                 jsonContent {
@@ -88,7 +90,7 @@ internal class KotlinDslTest {
     Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
 
     """.trimIndent())
-        verify(listener).diff(ArgumentMatchers.any(Difference::class.java), ArgumentMatchers.any(DifferenceContext::class.java))
+        verify(listener).diff(any(Difference::class.java), any(DifferenceContext::class.java))
     }
 
     @Test
