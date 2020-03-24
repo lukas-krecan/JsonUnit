@@ -96,6 +96,7 @@ It's recommended to use `JsonAssertions.json()` if you want to parse expected va
 Following Kotlin API is supported (notice different import)
 
 ```kotlin
+// Kotlin
 import net.javacrumbs.jsonunit.assertj.assertThatJson
 
 assertThatJson("""{"root":{"a":1, "b": 2}}""") {
