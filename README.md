@@ -93,6 +93,7 @@ assertThatJson("{\"root\":[\"true\"]}").node("root").isArray().containsExactly(v
 It's recommended to use `JsonAssertions.json()` if you want to parse expected value as JSON and
 `JsonAssertions.value()` if you want to use the value as is.
 
+### Kotlin support
 Following Kotlin API is supported (notice different import)
 
 ```kotlin
