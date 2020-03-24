@@ -139,6 +139,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      * @return MapAssert where the object is serialized as Map
      */
     @NotNull
+    @SuppressWarnings("unchecked")
     public MapAssert<String, Object> isObject() {
         Node node = assertType(OBJECT);
         return new JsonMapAssert((Map<String, Object>) node.getValue(), path.asPrefix(), configuration)
@@ -147,8 +148,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
 
     /**
      * Asserts that given node is present and is of type number.
-     *
-     * @return
      */
     @NotNull
     public BigDecimalAssert isNumber() {
@@ -241,8 +240,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
 
     /**
      * Asserts that given node is present.
-     *
-     * @return
      */
     @NotNull
     public JsonAssert isPresent() {
@@ -252,8 +249,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
 
     /**
      * Asserts that given node is absent.
-     *
-     * @return
      */
     public void isAbsent() {
         internalMatcher.isAbsent();
@@ -261,7 +256,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
 
     /**
      * Asserts that given node is present and is not null.
-     * @return
      */
     @Override
     @NotNull

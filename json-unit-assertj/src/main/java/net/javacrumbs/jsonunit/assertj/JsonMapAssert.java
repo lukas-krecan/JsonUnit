@@ -99,6 +99,7 @@ class JsonMapAssert extends MapAssert<String, Object> {
 
     @Override
     @NotNull
+    @Deprecated
     public MapAssert<String, Object> isEqualToComparingFieldByFieldRecursively(@Nullable Object other) {
         throw unsupportedOperation();
     }

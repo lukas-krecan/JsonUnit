@@ -533,6 +533,7 @@ public class Diff {
         differences.add(new JsonDifference(context, message, arguments));
     }
 
+    @SuppressWarnings("deprecation")
     private void valueDifferenceFound(Context context, String message, Object... arguments) {
         if (!hasOption(context.getActualPath(), COMPARING_ONLY_STRUCTURE)) {
             differences.add(new JsonDifference(context, message, arguments));

@@ -32,6 +32,7 @@ class GenericNodeBuilder implements NodeBuilder {
         return INSTANCE.newNode(object);
     }
 
+    @SuppressWarnings("unchecked")
     public Node newNode(Object object) {
         if (object == null) {
             return new NullNode();

@@ -440,6 +440,7 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     void testAssertPartStructureEquals() {
         assertJsonPartStructureEquals("{\"value\":5}", "{\"test\":[{\"value\":1},{\"value\":2}]}", "test[1]");
     }
@@ -451,11 +452,13 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     void testAssertStructureEquals() {
         assertJsonStructureEquals("[{\"test\":1}, {\"test\":2}]", "[{\n\"test\": 1\n}, {\"test\": 4}]");
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     void testComplexStructureOk() {
         assertJsonStructureEquals("{\n" +
                 "   \"test\":[\n" +
@@ -497,6 +500,7 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     void testAssertStructureDiffers() {
         assertThatThrownBy(() -> assertJsonStructureEquals("[{\"test\":1}, {\"test\":2}]", "[{\n\"test\": 1\n}, {\"TEST\": 4}]"))
             .hasMessage("JSON documents are different:\n" +
@@ -504,6 +508,7 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     void testAssertStructureArrayDiffers() {
         assertThatThrownBy(() -> assertJsonStructureEquals("[1, 2]", "[1, 2, 3]"))
             .hasMessage("JSON documents are different:\nArray \"\" has different length, expected: <2> but was: <3>.\n");
@@ -744,6 +749,7 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     void structureEqualsShouldPassOnNull() {
         assertJsonStructureEquals("{\"test\": 3}", null);
     }
@@ -755,6 +761,7 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     void structureEqualsShouldPassOnDifferentType() {
         assertJsonStructureEquals("{\"test\": 3}", "{\"test\": \"3\"}");
     }

@@ -153,7 +153,8 @@ class JsonUtilsTest {
     }
 
     @Test
-    void testNodeExists() throws IOException {
+    @SuppressWarnings("deprecation")
+    void testNodeExists() {
         String json = "{\"test\":{\"value\":1}}";
         assertTrue(nodeExists(json, "test"));
         assertTrue(nodeExists(json, "test.value"));
@@ -162,7 +163,7 @@ class JsonUtilsTest {
     }
 
     @Test
-    void testNodeAbsent() throws IOException {
+    void testNodeAbsent() {
         String json = "{\"test\":{\"value\":1, \"value2\": null}}";
         assertFalse(nodeAbsent(json, Path.create("test"), false));
         assertFalse(nodeAbsent(json, Path.create("test.value"), false));

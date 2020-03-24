@@ -40,8 +40,8 @@ class ClientTest {
     @Test
     void shouldAssertClient() {
         mockServer.expect(requestTo(URI))
-                          .andExpect(json().isEqualTo(json))
-                          .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON_UTF8));
+            .andExpect(json().isEqualTo(json))
+            .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
 
         assertThat(restTemplate.postForEntity(URI, json, String.class).getBody()).isEqualTo(jsonResponse);
 
@@ -62,9 +62,9 @@ class ClientTest {
     @Test
     void shouldAssertClientComplex() {
         mockServer.expect(requestTo(URI))
-                          .andExpect(method(HttpMethod.POST))
-                          .andExpect(json().node("test").withTolerance(0.1).isEqualTo(0.99))
-                          .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON_UTF8));
+            .andExpect(method(HttpMethod.POST))
+            .andExpect(json().node("test").withTolerance(0.1).isEqualTo(0.99))
+            .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
 
         assertThat(restTemplate.postForEntity(URI, json, String.class).getBody()).isEqualTo(jsonResponse);
     }

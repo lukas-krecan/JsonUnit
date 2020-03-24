@@ -193,6 +193,7 @@ public final class InternalMatcher {
      *
      * @param expected
      */
+    @SuppressWarnings("deprecation")
     public void hasSameStructureAs(@Nullable Object expected) {
         Diff diff = createDiff(expected, configuration.withOptions(COMPARING_ONLY_STRUCTURE));
         diff.failIfDifferent();
@@ -251,8 +252,6 @@ public final class InternalMatcher {
 
     /**
      * Fails if the selected JSON is not an Array or is not present.
-     *
-     * @return
      */
     @NotNull
     public ArrayMatcher isArray() {
@@ -329,14 +328,13 @@ public final class InternalMatcher {
      * <li>Arrays are mapped to a Collection</li>
      * <li>Objects are mapped to a map so you can use json(Part)Equals or a Map matcher</li>
      * </ul>
-     *
-     * @param matcher
      */
     public void matches(@NotNull Matcher<?> matcher) {
         isPresent();
         match(actual, path, matcher);
     }
 
+    @SuppressWarnings("unchecked")
     private static void match(@NotNull Object value, @NotNull Path path, @NotNull Matcher<?> matcher) {
         Node node = getNode(value, path);
         assertThat("Node \"" + path + "\" does not match.", node.getValue(), (Matcher<? super Object>) matcher);
@@ -359,8 +357,6 @@ public final class InternalMatcher {
 
         /**
          * Fails if the array has different length.
-         *
-         * @param expectedLength
          */
         public void ofLength(int expectedLength) {
             if (array.size() != expectedLength) {

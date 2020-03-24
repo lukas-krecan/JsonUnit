@@ -87,6 +87,7 @@ class AllJsonAssertTest extends AbstractJsonAssertTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     void testAssertStructureEqualsDifferentValues() {
         assertJsonStructureEquals("{\"test\": 3}", "{\"test\": {\"inner\": 5}}");
     }
@@ -123,6 +124,7 @@ class AllJsonAssertTest extends AbstractJsonAssertTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     void testStructureEquals() {
         JsonAssert.assertJsonStructureEquals("{\"test\": 123}", "{\"test\": 412}");
     }

@@ -179,11 +179,13 @@ public abstract class AbstractJsonFluentAssertTest {
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     void testSameStructureOk() {
         assertThatJson("{\"test\":1}").hasSameStructureAs("{\"test\":21}");
     }
 
     @Test
+    @SuppressWarnings("deprecation")
     void testDifferentStructure() {
         assertThatThrownBy(() -> assertThatJson("{\"test\":1}").hasSameStructureAs("{\"test\":21, \"a\":true}"))
             .hasMessage("JSON documents are different:\n" +
