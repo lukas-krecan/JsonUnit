@@ -42,7 +42,7 @@ public class JsonTestUtils {
     }
 
     public static Object readByGson(String value) {
-        return new JsonParser().parse(value);
+        return JsonParser.parseString(value);
     }
 
     public static Object readByJsonOrg(String value) {
