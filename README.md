@@ -93,6 +93,18 @@ assertThatJson("{\"root\":[\"true\"]}").node("root").isArray().containsExactly(v
 It's recommended to use `JsonAssertions.json()` if you want to parse expected value as JSON and
 `JsonAssertions.value()` if you want to use the value as is.
 
+Following Kotlin API is supported (notice different import)
+
+```kotlin
+import net.javacrumbs.jsonunit.assertj.assertThatJson
+
+assertThatJson("""{"root":{"a":1, "b": 2}}""") {
+    isObject
+    node("root.a").isEqualTo(1)
+    node("root.b").isEqualTo(2)
+}
+```
+
 
 To use AssertJ integration, import
 
@@ -100,7 +112,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>2.15.0</version>
+    <version>2.16.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -133,7 +145,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.15.0</version>
+    <version>2.16.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -161,7 +173,7 @@ this.mockMvc.perform(get("/sample").andExpect(
 );
 ```
 
-Since 2.15.0 following Kotlin DSL si supported:
+Following Kotlin DSL si supported:
 
 ```kotlin
 mockMvc.get(path).andExpect {
@@ -178,7 +190,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.15.0</version>
+    <version>2.16.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -200,7 +212,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.15.0</version>
+    <version>2.16.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -235,7 +247,7 @@ For other API styles you have to first import JsonPath support module
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-json-path</artifactId>
-    <version>2.15.0</version>
+    <version>2.16.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -575,6 +587,9 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 2.16.0
+* Kotlin DSL for AssertJ API
+
 ## 2.15.0
 * Spring DSL Koltin support
 * JUnit upgraded to 5.6.0
