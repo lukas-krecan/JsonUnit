@@ -62,12 +62,12 @@ import static net.javacrumbs.jsonunit.core.internal.Node.NodeType;
  */
 public class Diff {
 
-    private static final Pattern ANY_NUMBER_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.any-number}");
-    private static final Pattern ANY_BOOLEAN_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.any-boolean}");
-    private static final Pattern ANY_STRING_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.any-string}");
+    private static final Pattern ANY_NUMBER_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.any-number\\}");
+    private static final Pattern ANY_BOOLEAN_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.any-boolean\\}");
+    private static final Pattern ANY_STRING_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.any-string\\}");
 
-    private static final Pattern REGEX_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.regex}(.*)");
-    private static final Pattern MATCHER_PLACEHOLDER_PATTERN = Pattern.compile("[$#]\\{json-unit.matches:(.+?)}(.*)");
+    private static final Pattern REGEX_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.regex\\}(.*)");
+    private static final Pattern MATCHER_PLACEHOLDER_PATTERN = Pattern.compile("[$#]\\{json-unit.matches:(.+?)\\}(.*)");
 
     private static final JsonUnitLogger DEFAULT_DIFF_LOGGER = createLogger("net.javacrumbs.jsonunit.difference.diff");
     private static final JsonUnitLogger DEFAULT_VALUE_LOGGER = createLogger("net.javacrumbs.jsonunit.difference.values");
