@@ -333,8 +333,7 @@ public class Diff {
                         if (diff.compareTo(configuration.getTolerance()) > 0) {
                             List<Object> arguments = new ArrayList<>(Arrays.asList(fieldPath, quoteTextValue(expectedValue), quoteTextValue(actualValue), diff.toString()));
                             String message = "Different value found in node \"%s\", " + differenceString() + ", difference is %s";
-                            if (configuration.getTolerance().compareTo(BigDecimal.ZERO) != 0)
-                            {
+                            if (configuration.getTolerance().compareTo(BigDecimal.ZERO) != 0) {
                                 arguments.add(configuration.getTolerance());
                                 message += ", tolerance is %s";
                             }
