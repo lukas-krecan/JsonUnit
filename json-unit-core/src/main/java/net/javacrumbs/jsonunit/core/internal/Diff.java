@@ -23,6 +23,7 @@ import net.javacrumbs.jsonunit.core.listener.Difference;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -330,8 +331,14 @@ public class Diff {
                     if (configuration.getTolerance() != null && !hasOption(context.getActualPath(), IGNORING_VALUES)) {
                         BigDecimal diff = expectedValue.subtract(actualValue).abs();
                         if (diff.compareTo(configuration.getTolerance()) > 0) {
-                            reportValueDifference(context, "Different value found in node \"%s\", " + differenceString() + ", difference is %s, tolerance is %s",
-                                    fieldPath, quoteTextValue(expectedValue), quoteTextValue(actualValue), diff.toString(), configuration.getTolerance());
+                            List<Object> arguments = new ArrayList<>(Arrays.asList(fieldPath, quoteTextValue(expectedValue), quoteTextValue(actualValue), diff.toString()));
+                            String message = "Different value found in node \"%s\", " + differenceString() + ", difference is %s";
+                            if (configuration.getTolerance().compareTo(BigDecimal.ZERO) != 0)
+                            {
+                                arguments.add(configuration.getTolerance());
+                                message += ", tolerance is %s";
+                            }
+                            reportValueDifference(context, message, arguments.toArray());
                         }
                     } else {
                         compareValues(context, expectedValue, actualValue);
