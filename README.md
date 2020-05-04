@@ -514,6 +514,7 @@ Numbers are by default compared in the following way:
 
 You can change this behavior by setting tolerance
 ```java
+assertThatJson("{\"test\":1.00}").node("test").withTolerance(0).isEqualTo(1);
 assertThatJson("{\"test\":1.00001}").node("test").withTolerance(0.001).isEqualTo(1);
 ```
 

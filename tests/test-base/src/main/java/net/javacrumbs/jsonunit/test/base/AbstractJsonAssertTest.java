@@ -43,6 +43,7 @@ import static net.javacrumbs.jsonunit.JsonAssert.setTolerance;
 import static net.javacrumbs.jsonunit.JsonAssert.when;
 import static net.javacrumbs.jsonunit.JsonAssert.whenIgnoringPaths;
 import static net.javacrumbs.jsonunit.JsonAssert.withMatcher;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.path;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.paths;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.rootPath;

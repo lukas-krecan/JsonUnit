@@ -23,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 import org.opentest4j.MultipleFailuresError;
 
+import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,7 @@ import static java.math.BigDecimal.valueOf;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.value;
@@ -812,6 +814,24 @@ public abstract class AbstractAssertJTest {
         assertThatJson("{\"root\":{\"test\":1, \"ignored\": 1}}")
             .whenIgnoringPaths("root.ignored")
             .isEqualTo("{\"root\":{\"test\":1, \"ignored\": 2}}");
+    }
+
+
+    private static class TestBean {
+        final BigDecimal demo;
+        TestBean(BigDecimal demo) {
+            this.demo = demo;
+        }
+        public BigDecimal getDemo() {
+            return demo;
+        }
+    }
+
+    @Test
+    void shouldEqualNumberInObject() {
+        TestBean actual = new TestBean(new BigDecimal("2.00"));
+        String expected = "{ \"demo\": 2.00 }";
+        assertThatJson(actual).withTolerance(0).isEqualTo(expected);
     }
 
     @Test
