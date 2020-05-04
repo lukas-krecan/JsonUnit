@@ -512,9 +512,15 @@ Numbers are by default compared in the following way:
 * If the type differs, the number is different. So 1 and 1.0 are different (int vs. float). This does not apply when Moshi is used since it [parses all numbers as Doubles](https://github.com/square/moshi/issues/192).
 * Floating number comparison is exact
 
-You can change this behavior by setting tolerance
+You can change this behavior by setting tolerance. If you set tolerance to `0` two numbers are considered equal if they are
+equal mathematically even though they have different type (`a.compareTo(b) == 0`)).
+
 ```java
 assertThatJson("{\"test\":1.00}").node("test").withTolerance(0).isEqualTo(1);
+```
+
+If you set tolerance to non-zero value, the values are considered equal if `abs(a-b) < tolerance`.
+```java
 assertThatJson("{\"test\":1.00001}").node("test").withTolerance(0.001).isEqualTo(1);
 ```
 
