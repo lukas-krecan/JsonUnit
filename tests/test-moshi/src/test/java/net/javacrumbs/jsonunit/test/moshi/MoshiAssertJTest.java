@@ -40,4 +40,10 @@ public class MoshiAssertJTest extends AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"a\":1.0}").node("a").isIntegralNumber())
             .isInstanceOf(UnsupportedOperationException.class);
     }
+
+    @Test
+    @Override
+    protected void shouldEqualNumberInObject() {
+        // ignored, no support of object serialization neither
+    }
 }

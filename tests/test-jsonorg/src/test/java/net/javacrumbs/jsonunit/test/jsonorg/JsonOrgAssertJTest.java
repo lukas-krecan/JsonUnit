@@ -15,8 +15,11 @@
  */
 package net.javacrumbs.jsonunit.test.jsonorg;
 
+import net.javacrumbs.jsonunit.assertj.JsonAssertions;
 import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;
 import org.junit.jupiter.api.Test;
+
+import java.math.BigDecimal;
 
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJsonOrg;
@@ -38,5 +41,11 @@ public class JsonOrgAssertJTest extends AbstractAssertJTest {
     @Override
     protected void jsonPathShouldBeAbleToUseArrays() {
         // ignored, json org does not keep the order in JSON
+    }
+
+    @Test
+    @Override
+    protected void shouldEqualNumberInObject() {
+        // ignored, no support of object serialization neither
     }
 }

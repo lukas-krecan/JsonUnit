@@ -828,7 +828,7 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
-    void shouldEqualNumberInObject() {
+    protected void shouldEqualNumberInObject() {
         TestBean actual = new TestBean(new BigDecimal("2.00"));
         String expected = "{ \"demo\": 2.00 }";
         assertThatJson(actual).withTolerance(0).isEqualTo(expected);
