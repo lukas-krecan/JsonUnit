@@ -533,6 +533,8 @@ assertThatJson("{\"test\":1.10001}").node("test")
     .matches(closeTo(valueOf(1.1), valueOf(0.001)));
 ```
 
+If you are interested why 1 and 1.0 are treated as different numbers please read this [comment](https://github.com/lukas-krecan/JsonUnit/issues/229#issuecomment-623882801).
+
 ## <a name="dots"></a>Escaping dots
 Sometimes you have dots in JSON element names and you need to address those elements. It is possible to escape dots like this
 
