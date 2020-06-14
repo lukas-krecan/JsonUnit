@@ -35,6 +35,7 @@ import org.assertj.core.api.BooleanAssert;
 import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.MapAssert;
 import org.assertj.core.api.StringAssert;
+import org.assertj.core.api.UriAssert;
 import org.assertj.core.description.Description;
 import org.assertj.core.error.MessageFormatter;
 import org.assertj.core.internal.Failures;
@@ -43,6 +44,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.math.BigDecimal;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -231,11 +233,23 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
 
     /**
      * Asserts that given node is present and is null.
+     *
      * @return
      */
     @Override
     public void isNull() {
         assertType(NULL);
+    }
+
+    /**
+     * Asserts that given node is present and is URI.
+     *
+     * @return
+     */
+    @NotNull
+    public UriAssert isUri() {
+        Node node = assertType(STRING);
+        return new UriAssert(URI.create((String) node.getValue())).as("Different value found in node \"%s\"", path);
     }
 
     /**

@@ -32,7 +32,6 @@ import static java.math.BigDecimal.valueOf;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.value;
@@ -512,6 +511,36 @@ public abstract class AbstractAssertJTest {
             .node("b")
             .isNumber()
             .isEqualByComparingTo("1");
+    }
+
+    @Test
+    void shouldAssertUri() {
+        assertThatJson("{\"a\":{\"b\":\"http://exampl.org?a=1\"}}")
+            .node("a.b")
+            .isUri().hasScheme("http").hasParameter("a", "1");
+    }
+
+    @Test
+    void shouldAssertUriFail() {
+        assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\":\"test\"}}")
+            .node("a.b")
+            .isUri().hasScheme("http")
+        ).hasMessage("[Different value found in node \"a.b\"] \n" +
+            "Expecting scheme of\n" +
+            "  <test>\n" +
+            "to be:\n" +
+            "  <\"http\">\n" +
+            "but was:\n" +
+            "  <null>"
+        );
+    }
+
+    @Test
+    void shouldAssertUriFailOnType() {
+        assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": 1}}")
+            .node("a.b")
+            .isUri()
+        ).hasMessage("Node \"a.b\" has invalid type, expected: <string> but was: <1>.");
     }
 
     @Test
