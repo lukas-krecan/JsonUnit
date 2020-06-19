@@ -280,11 +280,11 @@ public abstract class AbstractAssertJTest {
     void shouldAssertContainsJsonError() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": 1}}").node("a").isObject().contains(entry("b", valueOf(2))))
             .hasMessage("[Different value found in node \"a\"] \n" +
-                "Expecting:\n" +
+                "Expecting map:\n" +
                 " <{\"b\":1}>\n" +
                 "to contain:\n" +
                 " <[MapEntry[key=\"b\", value=2]]>\n" +
-                "but could not find:\n" +
+                "but could not find the following map entries:\n" +
                 " <[MapEntry[key=\"b\", value=2]]>\n");
     }
 
@@ -314,11 +314,11 @@ public abstract class AbstractAssertJTest {
     void shouldAssertContainsAllEntriesError() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": 1, \"c\": true}}").node("a").isObject().containsAllEntriesOf(singletonMap("c", false)))
             .hasMessage("[Different value found in node \"a\"] \n" +
-                "Expecting:\n" +
+                "Expecting map:\n" +
                 " <{\"b\":1,\"c\":true}>\n" +
                 "to contain:\n" +
                 " <[c=false]>\n" +
-                "but could not find:\n" +
+                "but could not find the following map entries:\n" +
                 " <[c=false]>\n");
     }
 
@@ -1001,11 +1001,11 @@ public abstract class AbstractAssertJTest {
     void arrayThatContainsShouldFailOnMissingNode() {
         assertThatThrownBy(() -> assertThatJson("{\"test\":[{\"id\":36},{\"id\":37},{\"id\":38}]}").node("test").isArray().contains("{\"id\":42}"))
             .hasMessage("[Different value found in node \"test\"] \n" +
-                "Expecting:\n" +
+                "Expecting JsonList:\n" +
                 " <[{\"id\":36}, {\"id\":37}, {\"id\":38}]>\n" +
                 "to contain:\n" +
                 " <[\"{\"id\":42}\"]>\n" +
-                "but could not find:\n" +
+                "but could not find the following element(s):\n" +
                 " <[\"{\"id\":42}\"]>\n" +
                 "when comparing values using JsonComparator");
     }
@@ -1383,14 +1383,14 @@ public abstract class AbstractAssertJTest {
                     "            }"
             )))
             .hasMessage("[Different value found in node \"$.store.book\"] \n" +
-                "Expecting:\n" +
+                "Expecting JsonList:\n" +
                 " <[{\"author\":\"Nigel Rees\",\"category\":\"reference\",\"price\":8.95,\"title\":\"Sayings of the Century\"},\n" +
                 "    {\"author\":\"Evelyn Waugh\",\"category\":\"fiction\",\"price\":12.99,\"title\":\"Sword of Honour\"},\n" +
                 "    {\"author\":\"Herman Melville\",\"category\":\"fiction\",\"isbn\":\"0-553-21311-3\",\"price\":8.99,\"title\":\"Moby Dick\"},\n" +
                 "    {\"author\":\"J. R. R. Tolkien\",\"category\":\"fiction\",\"isbn\":\"0-395-19395-8\",\"price\":22.99,\"title\":\"The Lord of the Rings\"}]>\n" +
                 "to contain:\n" +
                 " <[{\"category\":\"reference\",\"author\":\"Nigel Rees\",\"title\":\"Sayings of the Century\",\"price\":8.96}]>\n" +
-                "but could not find:\n" +
+                "but could not find the following element(s):\n" +
                 " <[{\"category\":\"reference\",\"author\":\"Nigel Rees\",\"title\":\"Sayings of the Century\",\"price\":8.96}]>\n" +
                 "when comparing values using JsonComparator");
     }
