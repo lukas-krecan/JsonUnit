@@ -309,12 +309,9 @@ assertThat(
 
 Array index placeholder
 ```java
-// standard assert
-assertJsonEquals(
-    "[{\"a\":1, \"b\":0},{\"a\":1, \"b\":0}]",
-    "[{\"a\":1, \"b\":2},{\"a\":1, \"b\":3}]",
-    JsonAssert.whenIgnoringPaths("[*].b")
-);
+assertThatJson("[{\"a\":1, \"b\":2},{\"a\":1, \"b\":3}]")
+    .whenIgnoringPaths("[*].b")
+    .isEqualTo("[{\"a\":1, \"b\":0},{\"a\":1, \"b\":0}]");
 ```
 Please note that if you use JsonPath, you should start the path to be ignored by `$`
 Also note that `whenIgnoringPaths` method supports full JsonPath syntax only in AssertJ API, all the other flavors support only
@@ -341,8 +338,8 @@ assertThatJson("{\"fields\":[" +
 It is also possible to use regular expressions to compare string values
 
 ```java
-assertJsonEquals("{\"test\": \"${json-unit.regex}[A-Z]+\"}",
-    "{\"test\": \"ABCD\"}");
+assertThatJson("{\"test\": \"ABCD\"}")
+    .isEqualTo("{\"test\": \"${json-unit.regex}[A-Z]+\"}");
 ```
 
 ## <a name="typeplc"></a>Type placeholders
@@ -407,29 +404,29 @@ There are multiple options how you can configure the comparison
 **TREATING_NULL_AS_ABSENT** - fields with null values are equivalent to absent fields. For example, this test passes
 
 ```java
-assertJsonEquals("{\"test\":{\"a\":1}}",
-    "{\"test\":{\"a\":1, \"b\": null, \"c\": null}}",
-    when(TREATING_NULL_AS_ABSENT));
+assertThatJson("{\"test\":{\"a\":1, \"b\": null}}")
+    .when(TREATING_NULL_AS_ABSENT)
+    .isEqualTo("{\"test\":{\"a\":1}}");
 ```
 
 **IGNORING_ARRAY_ORDER** - ignores order in arrays
 
 ```java
-assertJsonEquals("{\"test\":[1,2,3]}",
-    "{\"test\":[3,2,1]}",
-    when(IGNORING_ARRAY_ORDER));
+assertThatJson("{\"test\":[1,2,3]}")
+    .when(IGNORING_ARRAY_ORDER)
+    .isEqualTo("{\"test\":[3,2,1]}");
 ```
 
 **IGNORING_EXTRA_ARRAY_ITEMS** - ignores unexpected array items
 ```java
-assertJsonEquals("{\"test\":[1,2,3]}",
-    "{\"test\":[1,2,3,4]}",
-    when(IGNORING_EXTRA_ARRAY_ITEMS));
+assertThatJson("{\"test\":[1,2,3,4]}")
+    .when(IGNORING_EXTRA_ARRAY_ITEMS)
+    .isEqualTo("{\"test\":[1,2,3]}");
 
 
-assertJsonEquals("{\"test\":[1,2,3]}",
-    "{\"test\":[5,5,4,4,3,3,2,2,1,1]}",
-    when(IGNORING_EXTRA_ARRAY_ITEMS, IGNORING_ARRAY_ORDER));
+assertThatJson("{\"test\":[5,5,4,4,3,3,2,2,1,1]}")
+    .when(IGNORING_EXTRA_ARRAY_ITEMS, IGNORING_ARRAY_ORDER)
+    .isEqualTo("{\"test\":[1,2,3]}");
 ```
 
 **IGNORING_EXTRA_FIELDS** - ignores extra fields in the compared value
@@ -443,17 +440,17 @@ assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}")
 **IGNORE_VALUES** - ignores values and compares only types
 
 ```java
-assertJsonEquals("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}",
-    "{\"test\":{\"a\":3,\"b\":2,\"c\":1}}",
-    when(IGNORING_VALUES));
+assertThatJson("{\"a\":2,\"b\":\"string2\"}")
+    .when(paths("a", "b"), then(IGNORING_VALUES))
+    .isEqualTo("{\"a\":1,\"b\":\"string\"}");
 ```
 
 It is possible to combine options.
 
 ```java
-assertJsonEquals("{\"test\":[{\"key\":1},{\"key\":2},{\"key\":3}]}",
-    "{\"test\":[{\"key\":3},{\"key\":2, \"extraField\":2},{\"key\":1}]}",
-    when(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_FIELDS));
+assertThatJson("{\"test\":[{\"key\":3},{\"key\":2, \"extraField\":2},{\"key\":1}]}")
+    .when(IGNORING_EXTRA_FIELDS, IGNORING_ARRAY_ORDER)
+    .isEqualTo("{\"test\":[{\"key\":1},{\"key\":2},{\"key\":3}]}");
 ```
 
 In Hamcrest assertion you can set the option like this
@@ -469,18 +466,19 @@ You can define options locally (for specific paths) by using `when(path(...), th
 // AssertJ
 assertThatJson("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}").when(paths("test.c"), then(IGNORING_VALUES))
     .isEqualTo("{\"test\":{\"a\":1,\"b\":2,\"c\":4}}");
-// Vintage
-assertJsonEquals("[{\"a\": [1,2,3]}, {\"a\": [4,5,6]}]", "[{\"a\": [2,1,3]}, {\"a\": [6,4,5]}]",
-    when(path("[*].a"), then(IGNORING_ARRAY_ORDER)));
-// ignore array order everywhere but [*].a
-assertJsonEquals("[{\"a\": [1,2,3]}, {\"a\": [4,5,6]}]", "[{\"a\": [4,5,6]}, {\"a\": [1,2,3]}]",
-    when(IGNORING_ARRAY_ORDER).when(path("[*].a"), thenNot(IGNORING_ARRAY_ORDER)));
-// ignore extra fields in the object obj
-assertJsonEquals("{\"obj\":{\"a1\":1}}", "{\"obj\":{\"a1\":1,\"a2\":2}}",
-    when(path("obj"), then(IGNORING_EXTRA_FIELDS)));
+// ignore array order everywhere but [*].b
+assertThatJson("[{\"b\":[4,5,6]},{\"b\":[1,2,3]}]")
+    .when(IGNORING_ARRAY_ORDER)
+    .when(path("[*].b"), thenNot(IGNORING_ARRAY_ORDER))
+    .isEqualTo("[{\"b\":[1,2,3]},{\"b\":[4,5,6]}]");
+// ignore extra fields in the object "a"
+assertThatJson("{\"a\":{\"a1\":1,\"a2\":2},\"b\":{\"b1\":1,\"b2\":2}}")
+    .when(path("a"), then(IGNORING_EXTRA_FIELDS))
+    .isEqualTo("{\"a\":{\"a1\":1},\"b\":{\"b1\":1}}"))
 // ignore extra array items in the array
-assertJsonEquals("{\"array\":[1,2]}", "{\"array\":[1,2,3]}",
-    when(path("array"), then(IGNORING_EXTRA_ARRAY_ITEMS)));
+assertThatJson("{\"a\":[1,2,3]}")
+    .when(path("a"), then(IGNORING_EXTRA_ARRAY_ITEMS))
+    .isEqualTo("{\"a\":[1,2]}");
 // Hamcrest
 assertThat("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}",
     jsonEquals("{\"test\":{\"a\":1,\"b\":2,\"c\":4}}").when(path("test.c"), then(IGNORING_VALUES)));
@@ -489,13 +487,13 @@ assertThat("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}",
 Note that **TREATING_NULL_AS_ABSENT** and **IGNORING_VALUES** require exact paths to ignored fields:
 ```java
 // ignoring number and str
-        assertThatJson("{\"a\":2,\"b\":\"string2\"}")
-            .when(paths("a", "b"), then(IGNORING_VALUES))
-            .isEqualTo("{\"a\":1,\"b\":\"string\"}");
+assertThatJson("{\"a\":2,\"b\":\"string2\"}")
+    .when(paths("a", "b"), then(IGNORING_VALUES))
+    .isEqualTo("{\"a\":1,\"b\":\"string\"}");
 // treat null B as absent B
-        assertThatJson("{\"A\":1,\"B\":null}")
-            .when(path("B"), then(TREATING_NULL_AS_ABSENT))
-            .isEqualTo("{\"A\":1}");
+assertThatJson("{\"A\":1,\"B\":null}")
+    .when(path("B"), then(TREATING_NULL_AS_ABSENT))
+    .isEqualTo("{\"A\":1}");
 ```
 All other options require paths to objects or arrays where values or order should be ignored.
 

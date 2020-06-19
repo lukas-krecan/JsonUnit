@@ -393,6 +393,13 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void arraySimpleIgnoringOrderComparisonExample() {
+        assertThatJson("{\"test\":[1,2,3]}")
+            .when(IGNORING_ARRAY_ORDER)
+            .isEqualTo("{\"test\":[3,2,1]}");
+    }
+
+    @Test
     void arrayIgnoringOrderComparison() {
         assertThatJson("{\"a\":[{\"b\": 1}, {\"c\": 1}, {\"d\": 1}]}").node("a").isArray()
             .containsExactlyInAnyOrder(json("{\"c\": 1}"), json("{\"b\": 1}"), json("{\"d\": 1}"));
@@ -707,7 +714,8 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void shouldTreatNullAsAbsent() {
-        assertThatJson("{\"a\":1, \"b\": null}").when(Option.TREATING_NULL_AS_ABSENT).node("b").isAbsent();
+        assertThatJson("{\"a\":1, \"b\": null}")
+            .when(Option.TREATING_NULL_AS_ABSENT).node("b").isAbsent();
     }
 
     @Test
@@ -845,12 +853,21 @@ public abstract class AbstractAssertJTest {
             .isEqualTo("{\"root\":{\"test\":1, \"ignored\": 2}}");
     }
 
+    @Test
+    void pathShouldBeIgnoredForArrayExample() {
+        assertThatJson("[{\"a\":1, \"b\":2},{\"a\":1, \"b\":3}]")
+            .whenIgnoringPaths("[*].b")
+            .isEqualTo("[{\"a\":1, \"b\":0},{\"a\":1, \"b\":0}]");
+    }
+
 
     private static class TestBean {
         final BigDecimal demo;
+
         TestBean(BigDecimal demo) {
             this.demo = demo;
         }
+
         public BigDecimal getDemo() {
             return demo;
         }
@@ -1009,6 +1026,12 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void regexExample() {
+        assertThatJson("{\"test\": \"ABCD\"}")
+            .isEqualTo("{\"test\": \"${json-unit.regex}[A-Z]+\"}");
+    }
+
+    @Test
     void pathEscapingWorks() {
         final String json = "{\"C:\\\\path\\\\file.ext\": {\"Status\": \"OK\"}}";
         final String pomPath = "C:\\path\\file.ext";
@@ -1059,12 +1082,21 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void testTreatNullAsAbsent() {
-        assertThatJson("{\"test\":{\"a\":1, \"b\": null}}").when(TREATING_NULL_AS_ABSENT).isEqualTo("{\"test\":{\"a\":1}}");
+        assertThatJson("{\"test\":{\"a\":1, \"b\": null}}")
+            .when(TREATING_NULL_AS_ABSENT)
+            .isEqualTo("{\"test\":{\"a\":1}}");
     }
 
     @Test
     void shouldIgnoreExtraFields() {
         assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}").when(IGNORING_EXTRA_FIELDS).isEqualTo("{\"test\":{\"b\":2}}");
+    }
+
+    @Test
+    void shouldIgnoreExtraFieldsAndorderExample() {
+        assertThatJson("{\"test\":[{\"key\":3},{\"key\":2, \"extraField\":2},{\"key\":1}]}")
+            .when(IGNORING_EXTRA_FIELDS, IGNORING_ARRAY_ORDER)
+            .isEqualTo("{\"test\":[{\"key\":1},{\"key\":2},{\"key\":3}]}");
     }
 
     @Test
@@ -1377,6 +1409,20 @@ public abstract class AbstractAssertJTest {
             .inPath("$.store.book[*].category")
             .isArray()
             .containsExactlyInAnyOrder("fiction", "reference", "fiction", "fiction");
+    }
+
+    @Test
+    void ignoreExtraArrayItemsExample() {
+        assertThatJson("{\"test\":[1,2,3,4]}")
+            .when(IGNORING_EXTRA_ARRAY_ITEMS)
+            .isEqualTo("{\"test\":[1,2,3]}");
+    }
+
+    @Test
+    void ignoreExtraArrayItemsAndOrderExample() {
+        assertThatJson("{\"test\":[5,5,4,4,3,3,2,2,1,1]}")
+            .when(IGNORING_EXTRA_ARRAY_ITEMS, IGNORING_ARRAY_ORDER)
+            .isEqualTo("{\"test\":[1,2,3]}");
     }
 
     @Test
