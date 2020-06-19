@@ -6,7 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Everything for {@link Configuration#when(PathsParam, ApplicableForPath...)}
@@ -117,7 +119,9 @@ public class ConfigurationWhen {
         @Override
         @NotNull
         public Configuration applyForPaths(@NotNull Configuration configuration, @NotNull PathsParam pathsParam) {
-            return configuration.whenIgnoringPaths(pathsParam.paths);
+            Set<String> ignoredPaths = new HashSet<>(configuration.getPathsToBeIgnored());
+            ignoredPaths.addAll(pathsParam.paths);
+            return configuration.whenIgnoringPaths(ignoredPaths);
         }
     }
 }

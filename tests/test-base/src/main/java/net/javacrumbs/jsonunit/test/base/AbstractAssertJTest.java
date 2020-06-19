@@ -39,6 +39,7 @@ import static net.javacrumbs.jsonunit.core.ConfigurationWhen.path;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.paths;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.rootPath;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.then;
+import static net.javacrumbs.jsonunit.core.ConfigurationWhen.thenIgnore;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.thenNot;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS;
@@ -1564,6 +1565,14 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void shouldIgnoreValuesInSpecificPathWrittenSeparately() {
+        assertThatJson("{\"a\":2,\"b\":\"string2\"}")
+            .when(paths("a"), then(IGNORING_VALUES))
+            .when(paths("b"), then(IGNORING_VALUES))
+            .isEqualTo("{\"a\":1,\"b\":\"string\"}");
+    }
+
+    @Test
     void shouldIgnoreAbsentB() {
         assertThatJson("{\"A\":1,\"B\":null}")
             .when(path("B"), then(TREATING_NULL_AS_ABSENT))
@@ -1578,6 +1587,21 @@ public abstract class AbstractAssertJTest {
                 .isEqualTo("{\"a\":1,\"b\":\"string\",\"c\":2}"))
             .hasMessage("JSON documents are different:\n" +
                 "Different value found in node \"c\", expected: <2> but was: <3>.\n");
+    }
+
+    @Test
+    void shouldIgnoreMultiplePaths() {
+        assertThatJson("{\"a\":1,\"b\":2,\"c\":3}")
+            .when(paths("a", "b"), thenIgnore())
+            .isEqualTo("{\"c\":3}");
+    }
+
+    @Test
+    void shouldIgnoreMultiplePathsWrittenSeparately() {
+        assertThatJson("{\"a\":1,\"b\":2,\"c\":3}")
+            .when(paths("a"), thenIgnore())
+            .when(paths("b"), thenIgnore())
+            .isEqualTo("{\"c\":3}");
     }
 
     private static final String json = "{\n" +
