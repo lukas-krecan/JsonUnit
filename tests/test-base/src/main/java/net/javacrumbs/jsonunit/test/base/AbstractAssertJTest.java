@@ -1567,8 +1567,8 @@ public abstract class AbstractAssertJTest {
     @Test
     void shouldIgnoreValuesInSpecificPathWrittenSeparately() {
         assertThatJson("{\"a\":2,\"b\":\"string2\"}")
-            .when(paths("a"), then(IGNORING_VALUES))
-            .when(paths("b"), then(IGNORING_VALUES))
+            .when(path("a"), then(IGNORING_VALUES))
+            .when(path("b"), then(IGNORING_VALUES))
             .isEqualTo("{\"a\":1,\"b\":\"string\"}");
     }
 
@@ -1599,8 +1599,8 @@ public abstract class AbstractAssertJTest {
     @Test
     void shouldIgnoreMultiplePathsWrittenSeparately() {
         assertThatJson("{\"a\":1,\"b\":2,\"c\":3}")
-            .when(paths("a"), thenIgnore())
-            .when(paths("b"), thenIgnore())
+            .when(path("a"), thenIgnore())
+            .when(path("b"), thenIgnore())
             .isEqualTo("{\"c\":3}");
     }
 
