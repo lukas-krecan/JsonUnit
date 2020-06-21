@@ -23,7 +23,7 @@ jobs:
         java-version: ${{ matrix.java }}
     - name: print Java version
       run: java -version
-    - uses: actions/cache@v1
+    - uses: actions/cache@v2
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
