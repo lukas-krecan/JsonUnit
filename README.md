@@ -596,6 +596,9 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 2.18.1
+* Fix multiple `when` method application #234
+
 ## 2.18.0
 * Support for URI assertions
 
