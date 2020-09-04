@@ -685,7 +685,7 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
-    void testNotEqualTo() {
+    protected void testNotEqualTo() {
         assertThatThrownBy(() -> assertThatJson("{\"test\":1}").isNotEqualTo("{\"test\": \"${json-unit.any-number}\"}"))
             .hasMessage("\n" +
                 "Expecting:\n" +
@@ -1002,7 +1002,7 @@ public abstract class AbstractAssertJTest {
     void arrayThatContainsShouldFailOnMissingNode() {
         assertThatThrownBy(() -> assertThatJson("{\"test\":[{\"id\":36},{\"id\":37},{\"id\":38}]}").node("test").isArray().contains("{\"id\":42}"))
             .hasMessage("[Different value found in node \"test\"] \n" +
-                "Expecting JsonList:\n" +
+                "Expecting ArrayList:\n" +
                 " <[{\"id\":36}, {\"id\":37}, {\"id\":38}]>\n" +
                 "to contain:\n" +
                 " <[\"{\"id\":42}\"]>\n" +
@@ -1384,7 +1384,7 @@ public abstract class AbstractAssertJTest {
                     "            }"
             )))
             .hasMessage("[Different value found in node \"$.store.book\"] \n" +
-                "Expecting JsonList:\n" +
+                "Expecting ArrayList:\n" +
                 " <[{\"author\":\"Nigel Rees\",\"category\":\"reference\",\"price\":8.95,\"title\":\"Sayings of the Century\"},\n" +
                 "    {\"author\":\"Evelyn Waugh\",\"category\":\"fiction\",\"price\":12.99,\"title\":\"Sword of Honour\"},\n" +
                 "    {\"author\":\"Herman Melville\",\"category\":\"fiction\",\"isbn\":\"0-553-21311-3\",\"price\":8.99,\"title\":\"Moby Dick\"},\n" +

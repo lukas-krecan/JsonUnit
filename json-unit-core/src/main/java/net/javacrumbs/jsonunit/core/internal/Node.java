@@ -129,6 +129,11 @@ public interface Node {
         public Node getValue() {
             return value;
         }
+
+        @Override
+        public String toString() {
+            return "{\"" + key + "\": " + value + "}";
+        }
     }
 
     Node MISSING_NODE = new Node() {

@@ -31,7 +31,7 @@ public class MoshiAssertJTest extends AbstractAssertJTest {
 
     @Test
     void shouldAssertInteger() {
-        assertThatThrownBy(() ->assertThatJson("{\"a\":1}").node("a").isIntegralNumber())
+        assertThatThrownBy(() -> assertThatJson("{\"a\":1}").node("a").isIntegralNumber())
             .isInstanceOf(UnsupportedOperationException.class);
     }
 
@@ -39,6 +39,19 @@ public class MoshiAssertJTest extends AbstractAssertJTest {
     void shouldAssertIntegerFailure() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":1.0}").node("a").isIntegralNumber())
             .isInstanceOf(UnsupportedOperationException.class);
+    }
+
+    @Test
+    @Override
+    protected void testNotEqualTo() {
+        assertThatThrownBy(() -> assertThatJson("{\"test\":1}").isNotEqualTo("{\"test\": \"${json-unit.any-number}\"}"))
+            .hasMessage("\n" +
+                "Expecting:\n" +
+                " <[{\"test\": 1}]>\n" + //FIXME
+                "not to be equal to:\n" +
+                " <\"{\"test\": \"${json-unit.any-number}\"}\">\n" +
+                "when comparing values using JsonComparator");
+
     }
 
     @Test
