@@ -15,19 +15,21 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import org.opentest4j.AssertionFailedError;
-
-import java.util.Collections;
 import java.util.List;
+
+import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
 
 class ExceptionUtils {
     private static final String ROOT_MESSAGE = "JSON documents are different:\n";
+
+    private static final ExceptionFactory exceptionFactory
+        = isClassPresent("org.opentest4j.AssertionFailedError") ? new Opentest4jExceptionFactory() : new BasicExceptionFactory();
 
     static String formatDifferences(String message, Differences differences) {
         return formatDifferences(message, differences.getDifferences());
     }
 
-    private static String formatDifferences(String message, List<JsonDifference> differences) {
+    static String formatDifferences(String message, List<JsonDifference> differences) {
         StringBuilder builder = new StringBuilder();
         if (!differences.isEmpty()) {
             addHeading(message, builder);
@@ -40,13 +42,7 @@ class ExceptionUtils {
     }
 
     static AssertionError createException(String message, Differences diffs) {
-        List<JsonDifference> differences = diffs.getDifferences();
-        if (differences.size() == 1) {
-            JsonDifference difference = differences.get(0);
-            return new AssertionFailedError(formatDifferences(message, Collections.singletonList(difference)), difference.getExpected(), difference.getActual());
-        } else {
-            return new JsonAssertError(message, diffs);
-        }
+        return exceptionFactory.createException(message, diffs);
     }
 
     private static void addHeading(String message, StringBuilder builder) {

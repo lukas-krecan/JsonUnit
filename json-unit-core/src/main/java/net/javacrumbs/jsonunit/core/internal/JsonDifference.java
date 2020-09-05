@@ -15,8 +15,6 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import org.opentest4j.AssertionFailedError;
-
 class JsonDifference {
     private final String message;
     private final Object[] args;
@@ -32,10 +30,6 @@ class JsonDifference {
 
     JsonDifference(Context context, String message, Object... args) {
         this(message, args, context.getExpectedNode(), context.getActualNode());
-    }
-
-    AssertionFailedError getError() {
-        return new AssertionFailedError(getMessage(), expected.getValue(), actual.getValue());
     }
 
     public Node getExpected() {
