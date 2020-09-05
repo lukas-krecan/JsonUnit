@@ -18,9 +18,6 @@ package net.javacrumbs.jsonunit.core.internal;
 class ClassUtils {
     /**
      * Checks if given class is present.
-     *
-     * @param className
-     * @return
      */
     static boolean isClassPresent(String className) {
         try {
