@@ -703,6 +703,12 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void testLongRegexp() {
+        assertThatJson("{\"test\": \"This is some text followed by: ABCD, followed by this\"}")
+            .isEqualTo("{\"test\": \"${json-unit.regex}\\\\QThis is some text followed by: \\\\E[A-Z]+\\\\Q, followed by this\\\\E\"}");
+    }
+
+    @Test
     void testNodeAbsent() {
         assertThatThrownBy(() -> assertThatJson("{\"test1\":2, \"test2\":1}").node("test2").isAbsent())
             .hasMessage("Different value found in node \"test2\", expected: <node to be absent> but was: <1>.");
