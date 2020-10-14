@@ -47,6 +47,7 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
+import static net.javacrumbs.jsonunit.test.base.RegexBuilder.regex;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -705,7 +706,13 @@ public abstract class AbstractAssertJTest {
     @Test
     void testLongRegexp() {
         assertThatJson("{\"test\": \"This is some text followed by: ABCD, followed by this\"}")
-            .isEqualTo("{\"test\": \"${json-unit.regex}\\\\QThis is some text followed by: \\\\E[A-Z]+\\\\Q, followed by this\\\\E\"}");
+            .isEqualTo("{\"test\": \"${json-unit.regex}^\\\\QThis is some text followed by: \\\\E[A-Z]+\\\\Q, followed by this\\\\E$\"}");
+    }
+
+    @Test
+    void testLongRegexpBuilder() {
+        assertThatJson("{\"test\": \"This is some text followed by: ABCD, followed by this\"}")
+            .isEqualTo("{\"test\": " + regex().str("This is some text followed by: ").exp("[A-Z]+").str(", followed by this") + "}");
     }
 
     @Test
