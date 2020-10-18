@@ -342,6 +342,17 @@ assertThatJson("{\"test\": \"ABCD\"}")
     .isEqualTo("{\"test\": \"${json-unit.regex}[A-Z]+\"}");
 ```
 
+
+For matching just part of the string, you can use this (we have to escape twice, one for Java, once for JSON)
+```java
+assertThatJson("{\"test\": \"This is some text followed by: ABCD, followed by this\"}")
+            .isEqualTo("{\"test\": \"${json-unit.regex}^\\\\QThis is some text followed by: \\\\E[A-Z]+\\\\Q, followed by this\\\\E$\"}");
+```
+
+Since this is quite hard to write, you can implement an expression builder like
+[this](https://github.com/lukas-krecan/JsonUnit/commit/75d68ef1852ade004e93ca42d676f4b996631974#diff-642a52fede8473f98c5a7b25f34c6bd68f33160cf22733127f7f7f13f3cb2fc6R713).
+
+
 ## <a name="typeplc"></a>Type placeholders
 If you want to assert just a type, but you do not care about the exact value, you can use any-* placeholder like this
 
