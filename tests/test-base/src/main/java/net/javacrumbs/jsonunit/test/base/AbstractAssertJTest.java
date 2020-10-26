@@ -716,6 +716,14 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    public void verifyIsArrayContainsString() {
+        assertThatJson("{\"id\":\"1\", \"children\":[{\"parentId\":\"1\"}]}")
+            .inPath("children[*].parentId")
+            .isArray()
+            .containsOnly(value("1"));
+    }
+
+    @Test
     void testNodeAbsent() {
         assertThatThrownBy(() -> assertThatJson("{\"test1\":2, \"test2\":1}").node("test2").isAbsent())
             .hasMessage("Different value found in node \"test2\", expected: <node to be absent> but was: <1>.");
