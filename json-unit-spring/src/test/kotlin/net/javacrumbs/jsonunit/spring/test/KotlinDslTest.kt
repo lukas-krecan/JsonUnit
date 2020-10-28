@@ -24,9 +24,7 @@ import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
@@ -58,7 +56,7 @@ internal class KotlinDslTest {
     fun shouldPassIfEqualsWithProduces() {
         exec("/sampleProduces").andExpect {
             status {
-                isOk
+                isOk()
             }
             jsonContent {
                 isEqualTo(CORRECT_JSON)
@@ -133,7 +131,7 @@ internal class KotlinDslTest {
                 accept(MediaType.APPLICATION_JSON)
             }
             resultActionsDsl.andExpect {
-                status { isOk }
+                status { isOk() }
             }
             return resultActionsDsl
         } catch (e: Exception) {

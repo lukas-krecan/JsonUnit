@@ -203,7 +203,7 @@ mockMvc.get(path).andExpect {
 }
 ```
 
-Inside `jsonContent` you have access to all AssertJ API capabilites as described [here](#assertj).
+Inside `jsonContent` you have access to all AssertJ API capabilities as described [here](#assertj).
 
 To use import
 ```xml
