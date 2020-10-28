@@ -43,19 +43,6 @@ public class MoshiAssertJTest extends AbstractAssertJTest {
 
     @Test
     @Override
-    protected void testNotEqualTo() {
-        assertThatThrownBy(() -> assertThatJson("{\"test\":1}").isNotEqualTo("{\"test\": \"${json-unit.any-number}\"}"))
-            .hasMessage("\n" +
-                "Expecting:\n" +
-                " <[{\"test\": 1}]>\n" + //FIXME
-                "not to be equal to:\n" +
-                " <\"{\"test\": \"${json-unit.any-number}\"}\">\n" +
-                "when comparing values using JsonComparator");
-
-    }
-
-    @Test
-    @Override
     protected void shouldEqualNumberInObject() {
         // ignored, no support of object serialization neither
     }
