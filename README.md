@@ -86,7 +86,7 @@ assertThatJson(json)
     ));
 ```
 
-JsonUnit tries to be clever when parsing expected value. If the value can be parsed as valid JSON, it's
+JsonUnit tries to be clever when parsing the expected value. If the value can be parsed as valid JSON, it's
 parsed so. If it can't be parsed, it's considered to be just a string to be compared. It usually works,
 but it can lead to unexpected situations, usually with primitive values like numbers and booleans.
 
