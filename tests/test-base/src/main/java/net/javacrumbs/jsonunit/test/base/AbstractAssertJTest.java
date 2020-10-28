@@ -470,11 +470,7 @@ public abstract class AbstractAssertJTest {
     void shouldAssertBoolean() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": true}}").node("a.b").isBoolean().isFalse())
             .hasMessage("[Different value found in node \"a.b\"] \n" +
-                "Expecting:\n" +
-                " <true>\n" +
-                "to be equal to:\n" +
-                " <false>\n" +
-                "but was not.");
+                "Expecting value to be false but was true");
     }
 
 
