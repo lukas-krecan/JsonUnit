@@ -84,14 +84,32 @@ assertThatJson(json)
             "                \"price\": 8.96\n" +
             "            }"
     ));
+```
+
+JsonUnit tries to be clever when parsing expected value. If the value can be parsed as valid JSON, it's
+parsed so. If it can't be parsed, it's considered to be just a string to be compared. It usually works,
+but it can lead to unexpected situations, usually with primitive values like numbers and booleans.
+
+```java
+// This test does NOT pass. "1" is parsed as JSON containing number 1, actual value is a string.
+assertThatJson("{\"id\":\"1\", \"children\":[{\"parentId\":\"1\"}]}")
+    .inPath("children[*].parentId")
+    .isArray()
+    .containsOnly("1");
+
+// You have to wrap the expected value by `JsonAssertions.value()`
+// to prevent parsing
+assertThatJson("{\"id\":\"1\", \"children\":[{\"parentId\":\"1\"}]}")
+    .inPath("children[*].parentId")
+    .isArray()
+    .containsOnly(value("1"));
 
 // "true" is valid JSON so it gets parsed to primitive `true`
 // Have to wrap it to JsonAssertions.value() in order to make sure it's not parsed
 assertThatJson("{\"root\":[\"true\"]}").node("root").isArray().containsExactly(value("true"));
 ```
 
-It's recommended to use `JsonAssertions.json()` if you want to parse expected value as JSON and
-`JsonAssertions.value()` if you want to use the value as is.
+On the other hand, if you want to make sure that the expected value is parsed as JSON, use `JsonAssertions.json()`.
 
 ### Kotlin support
 Following Kotlin API is supported (notice different import)
