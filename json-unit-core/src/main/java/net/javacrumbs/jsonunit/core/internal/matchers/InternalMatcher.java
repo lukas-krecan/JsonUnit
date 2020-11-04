@@ -31,7 +31,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 
 import static net.javacrumbs.jsonunit.core.Option.COMPARING_ONLY_STRUCTURE;
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
@@ -58,8 +57,7 @@ public final class InternalMatcher {
     private final Configuration configuration;
 
 
-    public InternalMatcher(@NotNull Object actual, @NotNull Path path, @NotNull String description, @NotNull Configuration configuration) {
-        Objects.requireNonNull(actual, "Can not make assertions about null JSON.");
+    public InternalMatcher(@Nullable Object actual, @NotNull Path path, @NotNull String description, @NotNull Configuration configuration) {
         this.path = path;
         this.actual = actual;
         this.description = description;

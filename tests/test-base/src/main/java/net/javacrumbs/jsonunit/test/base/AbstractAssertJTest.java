@@ -97,6 +97,18 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void shouldAssertNullValue() {
+        assertThatJson(null).isNull();
+    }
+
+    @Test
+    void shouldFailCorrectlyOnNull() {
+        assertThatThrownBy(() ->
+            assertThatJson(null).isEqualTo(1)
+        ).hasMessage("JSON documents are different:\nDifferent value found in node \"\", expected: <1> but was: <null>.\n");
+    }
+
+    @Test
     void objectShouldContainValue() {
         assertThatJson("{\"a\":1, \"b\": 2}").isObject().containsValue(valueOf(2));
     }

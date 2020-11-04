@@ -21,6 +21,7 @@ import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class JsonAssertions {
 
@@ -33,7 +34,7 @@ public final class JsonAssertions {
     }
 
     @NotNull
-    public static ConfigurableJsonAssert assertThatJson(@NotNull Object actual) {
+    public static ConfigurableJsonAssert assertThatJson(@Nullable Object actual) {
         return new ConfigurableJsonAssert(actual, Configuration.empty());
     }
 
