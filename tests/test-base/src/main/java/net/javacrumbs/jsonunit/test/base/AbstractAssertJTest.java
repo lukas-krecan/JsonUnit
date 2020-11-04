@@ -102,6 +102,11 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void shouldAssertNullValueNode() {
+        assertThatJson(null).node("a").isAbsent();
+    }
+
+    @Test
     void shouldFailCorrectlyOnNull() {
         assertThatThrownBy(() ->
             assertThatJson(null).isEqualTo(1)
