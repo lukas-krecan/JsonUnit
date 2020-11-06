@@ -13,6 +13,7 @@
 
     <modules>
         <module>test-base</module>
+        <module>test-kotlin</module>
         <module>test-jackson2</module>
         <module>test-jackson2-config</module>
         <module>test-johnzon</module>
@@ -21,7 +22,6 @@
         <module>test-moshi</module>
         <module>test-json-path</module>
         <module>test-no-hamcrest</module>
-        <module>test-kotlin</module>
         <module>test-junit4</module>
     </modules>
 
