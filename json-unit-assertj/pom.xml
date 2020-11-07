@@ -1,11 +1,15 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <artifactId>json-unit-assertj</artifactId>
     <packaging>bundle</packaging>
 
-    <description>
-        JSON Assertions based on AssertJ
-    </description>
+    <description>JSON Assertions based on AssertJ</description>
+
+    <properties>
+        <osgi.exportPackage>net.javacrumbs.jsonunit.assertj</osgi.exportPackage>
+        <osgi.includeResource>META-INF=target/classes/META-INF</osgi.includeResource>
+    </properties>
 
     <parent>
         <groupId>net.javacrumbs.json-unit</groupId>
@@ -20,9 +24,9 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-          <groupId>org.assertj</groupId>
-          <artifactId>assertj-core</artifactId>
-          <version>${assertj.version}</version>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
         </dependency>
         <dependency>
             <groupId>net.javacrumbs.json-unit</groupId>
@@ -33,7 +37,18 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib</artifactId>
             <version>${kotlin.version}</version>
-            <optional>true</optional>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson2.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

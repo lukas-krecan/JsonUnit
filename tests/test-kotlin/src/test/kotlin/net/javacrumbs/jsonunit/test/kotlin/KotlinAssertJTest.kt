@@ -1,6 +1,6 @@
 package net.javacrumbs.jsonunit.test.kotlin
 
-import net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson
+import net.javacrumbs.jsonunit.assertj.assertThatJson
 import net.javacrumbs.jsonunit.assertj.whenever
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.path
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.then
