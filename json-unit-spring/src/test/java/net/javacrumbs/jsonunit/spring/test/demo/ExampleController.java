@@ -15,13 +15,18 @@
  */
 package net.javacrumbs.jsonunit.spring.test.demo;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.nio.charset.Charset;
 
 import static java.util.Collections.singletonMap;
+import static org.springframework.http.MediaType.parseMediaType;
 
 @RestController
 public class ExampleController {
@@ -31,6 +36,13 @@ public class ExampleController {
         return singletonMap("result", new Result());
     }
 
+    @GetMapping(value = "/sampleIso")
+    public ResponseEntity<Object> getIso() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(parseMediaType("application/json;charset=ISO-8859-2"));
+        byte[] jsonBytes = ("{\"result\":\"" + ISO_VALUE + "\"}").getBytes(Charset.forName("ISO-8859-2"));
+        return new ResponseEntity<>(jsonBytes, headers, HttpStatus.OK);
+    }
 
     @GetMapping(value = "/sampleProduces", produces = MediaType.APPLICATION_JSON_VALUE)
     public Object getWithProduces() {
@@ -50,6 +62,7 @@ public class ExampleController {
         public boolean getBoolean() {
             return true;
         }
+
         public Object getNull() {
             return null;
         }
@@ -58,4 +71,8 @@ public class ExampleController {
             return "€";
         }
     }
+
+    public static final String CORRECT_JSON = "{\"result\":{\"string\":\"stringValue\", \"array\":[1, 2, 3],\"decimal\":1.00001, \"boolean\": true, \"null\" : null, \"utf8\":\"€\"}}";
+
+    public static final String ISO_VALUE = "Příliš žluťoučký kůň";
 }

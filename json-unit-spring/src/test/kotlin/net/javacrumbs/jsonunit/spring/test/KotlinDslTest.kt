@@ -19,6 +19,8 @@ import net.javacrumbs.jsonunit.core.listener.Difference
 import net.javacrumbs.jsonunit.core.listener.DifferenceContext
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener
 import net.javacrumbs.jsonunit.spring.jsonContent
+import net.javacrumbs.jsonunit.spring.test.demo.ExampleController
+import net.javacrumbs.jsonunit.spring.test.demo.ExampleController.CORRECT_JSON
 import net.javacrumbs.jsonunit.spring.test.demo.SpringConfig
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
@@ -60,6 +62,15 @@ internal class KotlinDslTest {
             }
             jsonContent {
                 isEqualTo(CORRECT_JSON)
+            }
+        }
+    }
+
+    @Test
+    fun shouldPassIfEqualsWithIsoEncoding() {
+        exec("/sampleIso").andExpect {
+            jsonContent {
+                node("result").isEqualTo(ExampleController.ISO_VALUE)
             }
         }
     }
@@ -110,10 +121,10 @@ internal class KotlinDslTest {
 
     @Test
     fun isNullShouldPassOnNull() {
-            exec().andExpect {
-                jsonContent { node("result.null").isNull() }
-            }
+        exec().andExpect {
+            jsonContent { node("result.null").isNull() }
         }
+    }
 
     @Test
     fun isNullShouldFailOnNonNull() {
@@ -138,8 +149,4 @@ internal class KotlinDslTest {
             throw IllegalStateException(e)
         }
     }
-
 }
-
-const val CORRECT_JSON = "{\"result\":{\"string\":\"stringValue\", \"array\":[1, 2, 3],\"decimal\":1.00001, \"boolean\": true, \"null\" : null, \"utf8\":\"€\"}}"
-

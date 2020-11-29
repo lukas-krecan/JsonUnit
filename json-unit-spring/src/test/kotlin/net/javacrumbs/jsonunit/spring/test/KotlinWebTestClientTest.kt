@@ -19,6 +19,8 @@ import net.javacrumbs.jsonunit.core.listener.Difference
 import net.javacrumbs.jsonunit.core.listener.DifferenceContext
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener
 import net.javacrumbs.jsonunit.spring.jsonContent
+import net.javacrumbs.jsonunit.spring.test.demo.ExampleController
+import net.javacrumbs.jsonunit.spring.test.demo.ExampleController.CORRECT_JSON
 import net.javacrumbs.jsonunit.spring.test.demo.SpringConfig
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeEach
@@ -60,6 +62,15 @@ internal class KotlinWebTestClientTest {
                     node("result.string").isString().isEqualTo("stringValue")
                 }
     }
+
+    @Test
+    fun shouldPassIfEqualsWithIsoEncoding() {
+        exec("/sampleIso").expectBody()
+                .jsonContent {
+                    node("result").isEqualTo(ExampleController.ISO_VALUE)
+                }
+    }
+
 
     @Test
     fun shouldPassIfEquals() {
