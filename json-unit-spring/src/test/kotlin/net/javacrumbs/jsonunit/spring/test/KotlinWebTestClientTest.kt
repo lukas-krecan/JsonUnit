@@ -30,57 +30,52 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.MediaType
+import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.context.web.WebAppConfiguration
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.ResultActionsDsl
-import org.springframework.test.web.servlet.get
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.servlet.client.MockMvcWebTestClient
 import org.springframework.web.context.WebApplicationContext
 
 @ExtendWith(SpringExtension::class)
 @ContextConfiguration(classes = [SpringConfig::class])
 @WebAppConfiguration
-internal class KotlinDslTest {
+internal class KotlinWebTestClientTest {
     @Autowired
-    private lateinit var wac: WebApplicationContext
+    lateinit var wac: WebApplicationContext;
 
-    private lateinit var mockMvc: MockMvc
+    lateinit var client: WebTestClient
 
     @BeforeEach
-    fun setup() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build()
+    fun setUp() {
+        client = MockMvcWebTestClient.bindToApplicationContext(wac).build()
     }
 
     @Test
     fun shouldPassIfEqualsWithProduces() {
-        exec("/sampleProduces").andExpect {
-            status {
-                isOk()
-            }
-            jsonContent {
-                isEqualTo(CORRECT_JSON)
-            }
-        }
+        exec("/sampleProduces").expectBody()
+                .jsonContent {
+                    isEqualTo(CORRECT_JSON)
+                }
+                .jsonContent {
+                    node("result.string").isString().isEqualTo("stringValue")
+                }
     }
 
     @Test
     fun shouldPassIfEqualsWithIsoEncoding() {
-        exec("/sampleIso").andExpect {
-            jsonContent {
-                node("result").isEqualTo(ExampleController.ISO_VALUE)
-            }
-        }
+        exec("/sampleIso").expectBody()
+                .jsonContent {
+                    node("result").isEqualTo(ExampleController.ISO_VALUE)
+                }
     }
+
 
     @Test
     fun shouldPassIfEquals() {
-        exec().andExpect {
-            jsonContent {
-                isEqualTo(CORRECT_JSON)
-            }
+        exec().expectBody().jsonContent {
+            isEqualTo(CORRECT_JSON)
         }
     }
 
@@ -88,13 +83,10 @@ internal class KotlinDslTest {
     fun isEqualToShouldFailIfDoesNotEqual() {
         val listener = mock(DifferenceListener::class.java)
         assertThatThrownBy {
-            exec().andExpect {
-                jsonContent {
-                    withDifferenceListener(listener).isEqualTo(CORRECT_JSON.replace("stringValue", "stringValue2"))
-                }
+            exec().expectBody().jsonContent {
+                withDifferenceListener(listener).isEqualTo(CORRECT_JSON.replace("stringValue", "stringValue2"))
             }
-        }
-                .hasMessage("""
+        }.hasMessageStartingWith("""
     JSON documents are different:
     Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
 
@@ -105,12 +97,10 @@ internal class KotlinDslTest {
     @Test
     fun isEqualToInNodeFailIfDoesNotEqual() {
         assertThatThrownBy {
-            exec().andExpect {
-                jsonContent {
-                    node("result.string").isString().isEqualTo("stringValue2")
-                }
+            exec().expectBody().jsonContent {
+                node("result.string").isString().isEqualTo("stringValue2")
             }
-        }.hasMessage("[Different value found in node \"result.string\"] \n" +
+        }.hasMessageStartingWith("[Different value found in node \"result.string\"] \n" +
                 "Expecting:\n" +
                 " <\"stringValue\">\n" +
                 "to be equal to:\n" +
@@ -121,32 +111,29 @@ internal class KotlinDslTest {
 
     @Test
     fun isNullShouldPassOnNull() {
-        exec().andExpect {
-            jsonContent { node("result.null").isNull() }
-        }
+        exec().expectBody().jsonContent { node("result.null").isNull() }
     }
 
     @Test
     fun isNullShouldFailOnNonNull() {
         assertThatThrownBy {
-            exec().andExpect {
-                jsonContent { node("result.string").isNull() }
-            }
-        }.hasMessage("Node \"result.string\" has invalid type, expected: <null> but was: <\"stringValue\">.")
+            exec().expectBody().jsonContent { node("result.string").isNull() }
+
+        }.hasMessageStartingWith("Node \"result.string\" has invalid type, expected: <null> but was: <\"stringValue\">.")
 
     }
 
-    private fun exec(path: String = "/sample"): ResultActionsDsl {
+    private fun exec(path: String = "/sample"): WebTestClient.ResponseSpec {
         try {
-            val resultActionsDsl = mockMvc.get(path) {
-                accept(MediaType.APPLICATION_JSON)
-            }
-            resultActionsDsl.andExpect {
-                status { isOk() }
-            }
-            return resultActionsDsl
+            return client.get()
+                    .uri(path)
+                    .accept(APPLICATION_JSON)
+                    .exchange()
+                    .expectStatus()
+                    .isOk()
         } catch (e: Exception) {
             throw IllegalStateException(e)
         }
     }
+
 }

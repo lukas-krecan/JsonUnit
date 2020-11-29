@@ -3,7 +3,6 @@ package net.javacrumbs.jsonunit.spring
 import net.javacrumbs.jsonunit.assertj.JsonAssert
 import net.javacrumbs.jsonunit.assertj.JsonAssertions
 import org.springframework.test.web.servlet.MockMvcResultMatchersDsl
-import org.springframework.test.web.servlet.ResultMatcher
 import java.nio.charset.StandardCharsets
 
 /**
@@ -16,9 +15,9 @@ import java.nio.charset.StandardCharsets
  * }
  * ```
  */
-
 fun MockMvcResultMatchersDsl.jsonContent(matcher: JsonAssert.ConfigurableJsonAssert.() -> Unit) {
-    return match(ResultMatcher { result ->
+    match { result ->
         matcher(JsonAssertions.assertThatJson(result.response.getContentAsString(StandardCharsets.UTF_8)))
-    })
+    }
 }
+

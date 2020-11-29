@@ -35,6 +35,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static java.math.BigDecimal.valueOf;
 import static net.javacrumbs.jsonunit.spring.JsonUnitResultMatchers.json;
+import static net.javacrumbs.jsonunit.spring.test.demo.ExampleController.CORRECT_JSON;
+import static net.javacrumbs.jsonunit.spring.test.demo.ExampleController.ISO_VALUE;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
@@ -47,9 +49,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {SpringConfig.class})
 @WebAppConfiguration
-class ExampleControllerTest {
-
-    private static final String CORRECT_JSON = "{\"result\":{\"string\":\"stringValue\", \"array\":[1, 2, 3],\"decimal\":1.00001, \"boolean\": true, \"null\" : null, \"utf8\":\"€\"}}";
+class MockMvcTest {
     @Autowired
     private WebApplicationContext wac;
 
@@ -63,6 +63,11 @@ class ExampleControllerTest {
     @Test
     void shouldPassIfEqualsWithProduces() throws Exception {
         exec("/sampleProduces").andExpect(json().isEqualTo(CORRECT_JSON));
+    }
+
+    @Test
+    void shouldPassIfEqualsWithIsoEncoding() throws Exception {
+        exec("/sampleIso").andExpect(json().node("result").isEqualTo(ISO_VALUE));
     }
 
     @Test
