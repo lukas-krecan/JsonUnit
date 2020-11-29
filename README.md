@@ -7,6 +7,7 @@ JsonUnit is a library that simplifies JSON comparison in tests.
   * [AssertJ integration](#assertj)
   * [Hamcrest matchers](#hamcrest)
   * [Spring MVC assertions](#spring)
+  * [Spring WebTestClient](#spring-web-client)
   * [Spring REST client assertions](#spring-client)
   * [Vintage APIs](#vintage)
 - [Features](#features)
@@ -132,7 +133,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>2.21.0</version>
+    <version>2.22.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -165,7 +166,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.21.0</version>
+    <version>2.22.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -179,16 +180,16 @@ JsonUnit supports Spring MVC test assertions. For example
 import static net.javacrumbs.jsonunit.spring.JsonUnitResultMatchers.json;
 ...
 
-this.mockMvc.perform(get("/sample").andExpect(
+mockMvc.perform(get("/sample").andExpect(
     json().isEqualTo("{\"result\":{\"string\":\"stringValue\", \"array\":[1, 2, 3],\"decimal\":1.00001}}")
 );
-this.mockMvc.perform(get("/sample").andExpect(
+mockMvc.perform(get("/sample").andExpect(
     json().node("result.string2").isAbsent()
 );
-this.mockMvc.perform(get("/sample").andExpect(
+mockMvc.perform(get("/sample").andExpect(
     json().node("result.array").when(Option.IGNORING_ARRAY_ORDER).isEqualTo(new int[]{3, 2, 1})
 );
-this.mockMvc.perform(get("/sample").andExpect(
+mockMvc.perform(get("/sample").andExpect(
     json().node("result.array").matches(everyItem(lessThanOrEqualTo(valueOf(4))))
 );
 ```
@@ -210,12 +211,54 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.21.0</version>
+    <version>2.22.0</version>
     <scope>test</scope>
 </dependency>
 ```
 
 For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/master/json-unit-spring/src/test/java/net/javacrumbs/jsonunit/spring/ExampleControllerTest.java).
+
+## <a name="spring-web-client"></a>Spring WebTestClient
+To integrate with Spring WebTest client do
+
+```java
+import static net.javacrumbs.jsonunit.spring.WebTestClientJsonMatcher.json;
+...
+
+client.get().uri(path).exchange().expectBody().consumeWith(
+    json().isEqualTo("{\"result\":{\"string\":\"stringValue\", \"array\":[1, 2, 3],\"decimal\":1.00001}}")
+);
+client.get().uri(path).exchange().expectBody().consumeWith(
+    json().node("result.string2").isAbsent()
+);
+client.get().uri(path).exchange().expectBody().consumeWith(
+    json().node("result.array").when(Option.IGNORING_ARRAY_ORDER).isEqualTo(new int[]{3, 2, 1})
+);
+client.get().uri(path).exchange().expectBody().consumeWith(
+    json().node("result.array").matches(everyItem(lessThanOrEqualTo(valueOf(4))))
+);
+```
+
+For Kotlin, you can use our bespoke DSL
+
+```kotlin
+import net.javacrumbs.jsonunit.spring.jsonContent
+...
+client.get().uri(path).exchange().expectBody()
+    .jsonContent {
+        isEqualTo(CORRECT_JSON)
+    }
+```
+
+Import
+```xml
+<dependency>
+    <groupId>net.javacrumbs.json-unit</groupId>
+    <artifactId>json-unit-spring</artifactId>
+    <version>2.22.0</version>
+    <scope>test</scope>
+</dependency>
+```
 
 ## <a name="spring-client"></a>Spring REST client assertions
 
@@ -232,7 +275,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.21.0</version>
+    <version>2.22.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -267,7 +310,7 @@ For other API styles you have to first import JsonPath support module
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-json-path</artifactId>
-    <version>2.21.0</version>
+    <version>2.22.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -625,6 +668,9 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+# 2.22.0
+* Support for Spring WebTestClient
+
 # 2.21.0
 * Fixed Kotlin AssertJ bundle #299
 

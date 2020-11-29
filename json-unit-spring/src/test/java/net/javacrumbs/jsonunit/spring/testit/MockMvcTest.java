@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit.spring.test;
+package net.javacrumbs.jsonunit.spring.testit;
 
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.listener.Difference;
 import net.javacrumbs.jsonunit.core.listener.DifferenceContext;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
-import net.javacrumbs.jsonunit.spring.test.demo.SpringConfig;
+import net.javacrumbs.jsonunit.spring.testit.demo.SpringConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,8 +35,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static java.math.BigDecimal.valueOf;
 import static net.javacrumbs.jsonunit.spring.JsonUnitResultMatchers.json;
-import static net.javacrumbs.jsonunit.spring.test.demo.ExampleController.CORRECT_JSON;
-import static net.javacrumbs.jsonunit.spring.test.demo.ExampleController.ISO_VALUE;
+import static net.javacrumbs.jsonunit.spring.testit.demo.ExampleController.CORRECT_JSON;
+import static net.javacrumbs.jsonunit.spring.testit.demo.ExampleController.ISO_VALUE;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.everyItem;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
