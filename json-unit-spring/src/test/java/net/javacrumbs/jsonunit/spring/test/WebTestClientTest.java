@@ -33,7 +33,7 @@ import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
 import org.springframework.web.context.WebApplicationContext;
 
 import static java.math.BigDecimal.valueOf;
-import static net.javacrumbs.jsonunit.spring.JsonUnitWebTestClientMatchers.json;
+import static net.javacrumbs.jsonunit.spring.WebTestClientJsonMatcher.json;
 import static net.javacrumbs.jsonunit.spring.test.demo.ExampleController.CORRECT_JSON;
 import static net.javacrumbs.jsonunit.spring.test.demo.ExampleController.ISO_VALUE;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

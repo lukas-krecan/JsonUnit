@@ -21,13 +21,13 @@ import static net.javacrumbs.jsonunit.spring.Utils.getContentAsString;
  * .consumeWith(json().isEqualTo(CORRECT_JSON));
  * </code>
  */
-public class JsonUnitWebTestClientMatchers extends AbstractSpringMatchers<JsonUnitWebTestClientMatchers, Consumer<EntityExchangeResult<byte[]>>>  {
-    private JsonUnitWebTestClientMatchers(Path path, Configuration configuration) {
+public class WebTestClientJsonMatcher extends AbstractSpringMatchers<WebTestClientJsonMatcher, Consumer<EntityExchangeResult<byte[]>>> {
+    private WebTestClientJsonMatcher(Path path, Configuration configuration) {
         super(path, configuration);
     }
 
-    public static JsonUnitWebTestClientMatchers json() {
-        return new JsonUnitWebTestClientMatchers(Path.root(), Configuration.empty());
+    public static WebTestClientJsonMatcher json() {
+        return new WebTestClientJsonMatcher(Path.root(), Configuration.empty());
     }
 
     @Override
@@ -38,8 +38,8 @@ public class JsonUnitWebTestClientMatchers extends AbstractSpringMatchers<JsonUn
 
     @Override
     @NotNull
-    JsonUnitWebTestClientMatchers matchers(@NotNull Path path, @NotNull Configuration configuration) {
-        return new JsonUnitWebTestClientMatchers(path, configuration);
+    WebTestClientJsonMatcher matchers(@NotNull Path path, @NotNull Configuration configuration) {
+        return new WebTestClientJsonMatcher(path, configuration);
     }
 
     private static class JsonUnitWebTestClientMatcher extends AbstractSpringMatcher implements Consumer<EntityExchangeResult<byte[]>> {
