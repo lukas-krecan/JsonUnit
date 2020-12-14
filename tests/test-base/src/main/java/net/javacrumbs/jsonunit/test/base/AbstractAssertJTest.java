@@ -1354,7 +1354,7 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
-    void jsonPatNumber() {
+    void jsonPathNumber() {
         assertThatJson(json)
             .inPath("$..book.length()")
             .isArray()

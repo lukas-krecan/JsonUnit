@@ -108,6 +108,13 @@ internal class KotlinWebTestClientTest {
                 "but was not.")
     }
 
+    @Test
+    fun errorOnEmptyResponse() {
+        assertThatThrownBy {
+            exec("/empty").expectBody().jsonContent { isObject() }
+        }.hasMessageStartingWith("Node \"\" has invalid type, expected: <object> but was: <\"\">.\n")
+    }
+
 
     @Test
     fun isNullShouldPassOnNull() {

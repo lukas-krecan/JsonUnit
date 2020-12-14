@@ -49,13 +49,20 @@ public class ExampleController {
         return singletonMap("result", new Result());
     }
 
+    @GetMapping(value = "/empty")
+    public void empty() {
+    }
+
+
     private static class Result {
         public String getString() {
             return "stringValue";
         }
+
         public int[] getArray() {
             return new int[]{1, 2, 3};
         }
+
         public BigDecimal getDecimal() {
             return new BigDecimal("1.00001");
         }
