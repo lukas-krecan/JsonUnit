@@ -73,7 +73,7 @@ public class Diff {
 
     private static final JsonUnitLogger DEFAULT_DIFF_LOGGER = createLogger("net.javacrumbs.jsonunit.difference.diff");
     private static final JsonUnitLogger DEFAULT_VALUE_LOGGER = createLogger("net.javacrumbs.jsonunit.difference.values");
-    static final String DEFAULT_DIFFERENCE_STRING = "expected: <%s> but was: <%s>";
+    static final String DEFAULT_DIFFERENCE_STRING = "expected: <%s> to be equal to: <%s> but was not";
 
     private final Node expectedRoot;
     private final Node actualRoot;

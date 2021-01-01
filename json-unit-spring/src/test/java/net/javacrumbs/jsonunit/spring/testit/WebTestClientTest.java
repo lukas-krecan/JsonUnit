@@ -60,7 +60,14 @@ class WebTestClientTest {
 
     @Test
     void shouldPassIfEqualsWithProduces() {
-        exec("/sampleProduces").consumeWith(json().isEqualTo(CORRECT_JSON));
+        exec("/sampleProduces").consumeWith(json().isEqualTo("X" + CORRECT_JSON));
+
+        //       exec("/sampleProduces").consumeWith(result -> assertThat("aaaaaaaaaaaaaaa").isEqualTo("baaaaaaaaaaaaaaa"));
+    }
+
+    @Test
+    void shouldPassIfEqualsWithProducesSpring() {
+        exec("/sampleProduces").json("{\"a\":1}");
     }
 
     @Test

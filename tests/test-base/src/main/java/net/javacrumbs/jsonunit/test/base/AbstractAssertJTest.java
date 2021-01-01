@@ -1186,6 +1186,16 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void invalidActualJsonExceptionShouldBePropagated() {
+        assertThatJson("[{\"b\": 10]").isEqualTo("[{\"b\": 10}]");
+    }
+
+    @Test
+    void invalidExpectedJsonExceptionShouldBePropagated() {
+        assertThatJson("[{\"b\": 10}]").isEqualTo("[{\"b\": 10}");
+    }
+
+    @Test
     void testCompareArrays() {
         assertThatJson("[{\"b\": 10}]")
             .isArray()
