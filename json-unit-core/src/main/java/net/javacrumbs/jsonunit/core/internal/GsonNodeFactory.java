@@ -58,7 +58,7 @@ class GsonNodeFactory extends AbstractNodeFactory {
         try {
             return newNode(JsonParser.parseReader(value));
         } catch (JsonIOException | JsonSyntaxException e) {
-            throw new IllegalArgumentException(e);
+            throw newParseException(label, value, e);
         } finally {
             closeQuietly(value);
         }

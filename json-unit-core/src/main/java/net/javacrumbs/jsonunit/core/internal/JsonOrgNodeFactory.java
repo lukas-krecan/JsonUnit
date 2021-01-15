@@ -47,7 +47,7 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
         try {
             return newNode(new JSONTokener(value).nextValue());
         } catch (JSONException e) {
-            throw new IllegalArgumentException("Can not parse " + label + " value.", e);
+            throw newParseException(label, value, e);
         } finally {
             closeQuietly(value);
         }

@@ -54,7 +54,7 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
         try {
             return newNode(getMapper(lenient).readTree(value));
         } catch (IOException e) {
-            throw new IllegalArgumentException("Can not parse " + label + " value.", e);
+            throw newParseException(label, value, e);
         } finally {
             closeQuietly(value);
         }

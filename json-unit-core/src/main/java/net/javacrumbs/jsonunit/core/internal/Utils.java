@@ -15,14 +15,21 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 
 /**
  * Resource reading utility
  */
 class Utils {
-    static String readAsString(final Reader resourceReader) throws IOException {
+    static String readAsString(Reader resourceReader) throws IOException {
+        if (resourceReader instanceof JsonStringReader) {
+            return ((JsonStringReader) resourceReader).getString();
+        }
+
         StringBuilder builder = new StringBuilder();
         char[] arr = new char[8 * 1024];
         int numCharsRead;
@@ -33,12 +40,32 @@ class Utils {
         return builder.toString();
     }
 
+    static Reader toReader(String string) {
+        return new JsonStringReader(string);
+    }
+
     static void closeQuietly(final Reader resourceReader) {
         if (resourceReader != null) {
             try {
                 resourceReader.close();
             } catch (IOException ignored) {
             }
+        }
+    }
+
+    /**
+     * StringReader giving access to the enclosed String.
+     */
+    static class JsonStringReader extends StringReader {
+        private final String string;
+
+        public JsonStringReader(@NotNull String s) {
+            super(s);
+            this.string = s;
+        }
+
+        public String getString() {
+            return string;
         }
     }
 }

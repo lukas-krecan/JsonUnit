@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import static net.javacrumbs.jsonunit.core.internal.Utils.closeQuietly;
+import static net.javacrumbs.jsonunit.core.internal.Utils.toReader;
 
 /**
  * Deserializes node using Moshi
@@ -51,7 +52,7 @@ class MoshiNodeFactory extends AbstractNodeFactory {
             }
             return newNode(adapter.fromJson(source));
         } catch (IOException e) {
-            throw new IllegalArgumentException("Can not parse " + label + " value.", e);
+            throw newParseException(label, toReader(source), e);
         }
     }
 

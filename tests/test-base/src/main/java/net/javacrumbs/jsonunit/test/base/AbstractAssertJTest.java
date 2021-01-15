@@ -114,6 +114,20 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void absentOnArray() {
+        String json = "[{\"a\":1},{\"b\":1}]";
+
+        assertThatJson(json).inPath("[*].c").isArray().isEmpty();
+    }
+
+    @Test
+    void invalidExpectedValue() {
+        assertThatThrownBy(() ->
+            assertThatJson(json).isEqualTo("{\"broken\":")
+        ).hasMessage("Can not parse expected value: '{\"broken\":'");
+    }
+
+    @Test
     void objectShouldContainValue() {
         assertThatJson("{\"a\":1, \"b\": 2}").isObject().containsValue(valueOf(2));
     }

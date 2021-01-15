@@ -20,7 +20,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import java.io.StringReader;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -28,6 +27,7 @@ import java.util.Iterator;
 import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.valueOf;
 import static java.util.Arrays.asList;
+import static net.javacrumbs.jsonunit.core.internal.Utils.toReader;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -130,7 +130,7 @@ public class NodeFactoryTest {
     }
 
     private Node read(String value) {
-        return factory.readValue(new StringReader(value), "label", false);
+        return factory.readValue(toReader(value), "label", false);
     }
 
 }

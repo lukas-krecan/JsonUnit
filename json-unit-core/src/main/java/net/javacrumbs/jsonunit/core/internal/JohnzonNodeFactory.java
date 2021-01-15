@@ -73,7 +73,7 @@ public class JohnzonNodeFactory extends AbstractNodeFactory {
             try {
                 return newNode(parser.readValue());
             } catch (JsonParsingException e) {
-                throw new IllegalArgumentException(e);
+                throw newParseException(label, reader, e);
             }
         }
     }
