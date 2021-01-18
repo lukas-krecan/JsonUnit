@@ -133,7 +133,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>2.22.0</version>
+    <version>2.22.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -166,7 +166,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.22.0</version>
+    <version>2.22.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -211,7 +211,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.22.0</version>
+    <version>2.22.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -255,7 +255,7 @@ Import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.22.0</version>
+    <version>2.22.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -275,7 +275,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.22.0</version>
+    <version>2.22.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -310,7 +310,7 @@ For other API styles you have to first import JsonPath support module
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-json-path</artifactId>
-    <version>2.22.0</version>
+    <version>2.22.1</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -668,16 +668,19 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
-# 2.22.0
+## 2.22.1
+* Better exception message in case of JSON that can not be parsed
+
+## 2.22.0
 * Support for Spring WebTestClient
 
-# 2.21.0
+## 2.21.0
 * Fixed Kotlin AssertJ bundle #299
 
-# 2.20.0
+## 2.20.0
 * assertThatJson accepts null as the actual value
 
-# 2.19.0
+## 2.19.0
 * opentest4j made optional #276
 * updated all dependencies
 
