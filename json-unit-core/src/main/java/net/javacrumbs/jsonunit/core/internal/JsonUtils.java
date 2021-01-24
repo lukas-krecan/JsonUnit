@@ -20,8 +20,11 @@ import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
+
+import static java.util.Collections.emptyList;
 
 /**
  * Internal utility class to parse JSON values.
@@ -109,26 +112,20 @@ public class JsonUtils {
         return nodeAbsent(json, path, configuration.getOptions().contains(Option.TREATING_NULL_AS_ABSENT));
     }
 
-    public static Object jsonSource(final Object json, final String pathPrefix) {
-        return new JsonSource() {
-            @Override
-            public Object getJson() {
-                return json;
-            }
+    public static Object jsonSource(Object json, String pathPrefix) {
+        return jsonSource(json, pathPrefix, emptyList());
+    }
 
-            @Override
-            public String getPathPrefix() {
-                return pathPrefix;
-            }
-        };
+    public static Object jsonSource(Object json, String pathPrefix, List<String> matchingPaths) {
+        return new DefaultJsonSource(json, pathPrefix, matchingPaths);
     }
 
     public static String getPathPrefix(Object json) {
         if (json instanceof JsonSource) {
-               return ((JsonSource) json).getPathPrefix();
-           } else {
-               return "";
-           }
+            return ((JsonSource) json).getPathPrefix();
+        } else {
+            return "";
+        }
     }
 
     /**
@@ -238,4 +235,30 @@ public class JsonUtils {
         return value instanceof String ? "\"" + value + "\"" : value;
     }
 
+    private static class DefaultJsonSource implements JsonSource {
+        private final Object json;
+        private final String pathPrefix;
+        private final List<String> matchingPaths;
+
+        public DefaultJsonSource(Object json, String pathPrefix, List<String> matchingPaths) {
+            this.json = json;
+            this.pathPrefix = pathPrefix;
+            this.matchingPaths = matchingPaths;
+        }
+
+        @Override
+        public Object getJson() {
+            return json;
+        }
+
+        @Override
+        public String getPathPrefix() {
+            return pathPrefix;
+        }
+
+        @Override
+        public List<String> getMatchingPaths() {
+            return matchingPaths;
+        }
+    }
 }

@@ -15,10 +15,14 @@
  */
 package net.javacrumbs.jsonunit.jsonpath;
 
-import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.EvaluationListener;
 import com.jayway.jsonpath.PathNotFoundException;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.jayway.jsonpath.Configuration.defaultConfiguration;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.missingNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
@@ -36,9 +40,25 @@ public final class JsonPathAdapter {
     public static Object inPath(@NotNull Object json, @NotNull String path) {
         String normalizedPath = fromBracketNotation(path);
         try {
-            return jsonSource(wrapDeserializedObject(readValue(Configuration.defaultConfiguration(), json, path)), normalizedPath);
+            MatchRecordingListener recordingListener = new MatchRecordingListener();
+            Object value = readValue(defaultConfiguration().addEvaluationListeners(recordingListener), json, path);
+            return jsonSource(wrapDeserializedObject(value), normalizedPath, recordingListener.getMatchingPaths());
         } catch (PathNotFoundException e) {
             return jsonSource(missingNode(), normalizedPath);
+        }
+    }
+
+    private static class MatchRecordingListener implements EvaluationListener {
+        private final List<String> matchingPaths = new ArrayList<>();
+
+        @Override
+        public EvaluationContinuation resultFound(FoundResult foundResult) {
+            matchingPaths.add(fromBracketNotation(foundResult.path()));
+            return EvaluationContinuation.CONTINUE;
+        }
+
+        public List<String> getMatchingPaths() {
+            return matchingPaths;
         }
     }
 }

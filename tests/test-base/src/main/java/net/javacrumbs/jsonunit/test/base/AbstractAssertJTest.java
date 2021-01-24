@@ -597,6 +597,27 @@ public abstract class AbstractAssertJTest {
             .hasMessage("Node \"\" has invalid type, expected: <object> but was: <true>.");
     }
 
+
+    @Test
+    void absentInPathShouldFailOnSimpleJson() {
+        assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": 1}}").inPath("$.a.b").isAbsent())
+            .hasMessage("Different value found in node \"$.a.b\", expected: <node to be absent> but was: <1>.");
+    }
+
+    @Test
+    void absentInPathShouldFailOnArray() {
+        assertThatThrownBy(() -> assertThatJson("[{\"b\": 1}, {\"c\": 1}]").inPath("[*].c").isAbsent())
+            .hasMessage("Different value found in node \"$[1].c\", expected: <node to be absent> but was: <[1]>.");
+    }
+
+
+    @Test
+    void absentInPathShouldFailOnMultipleMatches() {
+        assertThatThrownBy(() -> assertThatJson("[{\"c\": {\"x\": 2}}, {\"b\": {\"x\": 2}}, {\"c\": {\"x\": 2}}]")
+            .inPath("$.[*].c").isAbsent())
+            .hasMessage("Different value found in nodes \"[$[0].c, $[2].c]\", expected: <node to be absent> but was: <[{\"x\":2},{\"x\":2}]>.");
+    }
+
     @Test
     void shouldAssertNumber() {
         assertThatJson("{\"a\":1}").node("a").isNumber().isEqualByComparingTo("1");
