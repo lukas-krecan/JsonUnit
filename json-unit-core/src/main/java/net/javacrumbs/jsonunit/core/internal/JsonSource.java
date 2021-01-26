@@ -15,11 +15,17 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import java.util.List;
+
 /**
  * For internal use only!!! Wraps JSON source and its description
  */
-interface JsonSource {
+public interface JsonSource {
     Object getJson();
 
     String getPathPrefix();
+
+    List<String> getMatchingPaths();
 }
+
+

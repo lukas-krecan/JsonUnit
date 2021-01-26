@@ -20,6 +20,7 @@ import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
+import net.javacrumbs.jsonunit.core.internal.JsonSource;
 import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
@@ -32,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static net.javacrumbs.jsonunit.core.Option.COMPARING_ONLY_STRUCTURE;
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
@@ -162,21 +164,32 @@ public final class InternalMatcher {
      */
     public void isStringEqualTo(@Nullable String expected) {
         isString();
-        Node node = getNode(actual, path);
+        Node node = getActualNode();
         if (!node.asText().equals(expected)) {
             failOnDifference(quoteTextValue(expected), quoteTextValue(node.asText()));
         }
     }
 
     private void failOnDifference(@Nullable Object expected, @NotNull Object actual) {
-        failWithMessage(String.format("Different value found in node \"%s\", expected: <%s> but was: <%s>.", path, expected, actual));
+        failOnDifference(expected, actual, singletonList(path.toString()));
+    }
+
+    private void failOnDifference(@Nullable Object expected, @NotNull Object actual, @NotNull List<String> paths) {
+        String path;
+        String node;
+        if (paths.size() == 1) {
+            path = paths.get(0);
+            node = "node";
+        } else {
+            path = paths.toString();
+            node = "nodes";
+        }
+        failWithMessage(String.format("Different value found in %s \"%s\", expected: <%s> but was: <%s>.", node, path, expected, actual));
     }
 
     /**
      * Fails if compared documents are equal. The expected object is converted to JSON
      * before comparison. Ignores order of sibling nodes and whitespaces.
-     *
-     * @param expected
      */
     public void isNotEqualTo(@Nullable Object expected) {
         Diff diff = createDiff(expected, configuration);
@@ -231,8 +244,22 @@ public final class InternalMatcher {
      */
     public void isAbsent() {
         if (!nodeAbsent(actual, path, configuration)) {
-            failOnDifference("node to be absent", quoteTextValue(getNode(actual, path)));
+            List<String> matchingPaths = getMatchingPaths();
+            failOnDifference("node to be absent", quoteTextValue(getActualNode()), matchingPaths);
         }
+    }
+
+    /**
+     * Extracts data from JsonPath matches
+     */
+    private List<String> getMatchingPaths() {
+        if (actual instanceof JsonSource) {
+            JsonSource jsonSource = (JsonSource) actual;
+            if (!jsonSource.getMatchingPaths().isEmpty()) {
+                return jsonSource.getMatchingPaths();
+            }
+        }
+        return singletonList(path.toString());
     }
 
     /**
@@ -260,7 +287,7 @@ public final class InternalMatcher {
     @NotNull
     public Node assertType(@NotNull Node.NodeType type) {
         isPresent(type.getDescription());
-        Node node = getNode(actual, path);
+        Node node = getActualNode();
         if (node.getNodeType() != type) {
             failOnType(node, type);
         }
@@ -292,7 +319,7 @@ public final class InternalMatcher {
 
     public void isNull() {
         isPresent();
-        Node node = getNode(actual, path);
+        Node node = getActualNode();
         if (node.getNodeType() != NULL) {
             failOnType(node, "a null");
         }
@@ -300,10 +327,14 @@ public final class InternalMatcher {
 
     public void isNotNull() {
         isPresent("not null");
-        Node node = getNode(actual, path);
+        Node node = getActualNode();
         if (node.getNodeType() == NULL) {
             failOnType(node, "not null");
         }
+    }
+
+    private Node getActualNode() {
+        return getNode(actual, path);
     }
 
     private void failOnType(@NotNull Node node, @NotNull Node.NodeType expectedType) {
