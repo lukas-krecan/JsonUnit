@@ -133,7 +133,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>2.22.1</version>
+    <version>2.23.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -166,7 +166,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.22.1</version>
+    <version>2.23.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -211,7 +211,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.22.1</version>
+    <version>2.23.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -255,7 +255,7 @@ Import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.22.1</version>
+    <version>2.23.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -275,7 +275,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.22.1</version>
+    <version>2.23.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -310,7 +310,7 @@ For other API styles you have to first import JsonPath support module
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-json-path</artifactId>
-    <version>2.22.1</version>
+    <version>2.23.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -659,8 +659,10 @@ logging. JsonUnit uses [SLF4J](http://www.slf4j.org/). The only thing you need t
 framework to log `net.javacrumbs.jsonunit.difference` on DEBUG level.
 
 ## Selecting underlying library
-JsonUnit is trying to cleverly match which JSON library to use. In case you need to change the default behavior, you can use
-json-unit.libraries system property. For example `-Djson-unit.libraries=jackson2,gson` or `System.setProperty("json-unit.libraries", "jackson2");`. Supported values are gson, json.org, moshi, jackson2
+
+JsonUnit is trying to cleverly match which JSON library to use. In case you need to change the default behavior, you can
+use json-unit.libraries system property. For example `-Djson-unit.libraries=jackson2,gson`
+or `System.setProperty("json-unit.libraries", "jackson2");`. Supported values are gson, json.org, moshi, jackson2
 
 Licence
 -------
@@ -668,13 +670,22 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+
+## 2.23.0
+
+* Better error message for multiple matches in isAbsent check
+* Various library upgrades
+
 ## 2.22.1
+
 * Better exception message in case of JSON that can not be parsed
 
 ## 2.22.0
+
 * Support for Spring WebTestClient
 
 ## 2.21.0
+
 * Fixed Kotlin AssertJ bundle #299
 
 ## 2.20.0
