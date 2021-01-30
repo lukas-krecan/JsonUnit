@@ -19,7 +19,7 @@ import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import org.assertj.core.api.ListAssert;
-import org.assertj.core.internal.Failures;
+import org.assertj.core.error.BasicErrorMessageFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,7 +55,7 @@ class JsonListAssert extends ListAssert<Object> {
         Diff diff = createDiff(other);
         if (diff.similar()) {
             JsonComparisonStrategy strategy = new JsonComparisonStrategy(configuration);
-            throw Failures.instance().failure(info, shouldNotBeEqual(actual, other, strategy));
+            throwAssertionError(new BasicErrorMessageFactory("%nExpecting:%n <%s>%nnot to be equal to:%n <%s>%n%s", actual, other, strategy));
         }
         return this;
     }
