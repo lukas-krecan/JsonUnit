@@ -145,9 +145,9 @@ public abstract class AbstractAssertJTest {
             .containsValue(json("{\"c\" :5}")))
             .hasMessage("[Different value found in node \"root\"] \n" +
                 "Expecting:\n" +
-                "  <{\"a\":1,\"b\":{\"c\":3}}>\n" +
+                "  {\"a\":1,\"b\":{\"c\":3}}\n" +
                 "to contain value:\n" +
-                "  <{\"c\":5}>");
+                "  {\"c\":5}");
     }
 
     @Test
@@ -164,9 +164,9 @@ public abstract class AbstractAssertJTest {
             .doesNotContainValue(json("{\"c\" :3}")))
             .hasMessage("[Different value found in node \"root\"] \n" +
                 "Expecting:\n" +
-                "  <{\"a\":1,\"b\":{\"c\":3}}>\n" +
+                "  {\"a\":1,\"b\":{\"c\":3}}\n" +
                 "not to contain value:\n" +
-                "  <{\"c\":3}>");
+                "  {\"c\":3}");
     }
 
     @Test
@@ -193,13 +193,13 @@ public abstract class AbstractAssertJTest {
             .containsExactly(value("450")))
             .hasMessage("[Different value found in node \"$.root\"] \n" +
                 "Expecting:\n" +
-                "  <[450]>\n" +
+                "  [450]\n" +
                 "to contain exactly (and in same order):\n" +
-                "  <[\"450\"]>\n" +
+                "  [\"450\"]\n" +
                 "but some elements were not found:\n" +
-                "  <[\"450\"]>\n" +
+                "  [\"450\"]\n" +
                 "and others were not expected:\n" +
-                "  <[450]>\n" +
+                "  [450]\n" +
                 "when comparing values using JsonComparator");
     }
 
@@ -314,11 +314,11 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": 1}}").node("a").isObject().contains(entry("b", valueOf(2))))
             .hasMessage("[Different value found in node \"a\"] \n" +
                 "Expecting map:\n" +
-                " <{\"b\":1}>\n" +
+                "  {\"b\":1}\n" +
                 "to contain:\n" +
-                " <[MapEntry[key=\"b\", value=2]]>\n" +
+                "  [MapEntry[key=\"b\", value=2]]\n" +
                 "but could not find the following map entries:\n" +
-                " <[MapEntry[key=\"b\", value=2]]>\n");
+                "  [MapEntry[key=\"b\", value=2]]\n");
     }
 
     @Test
@@ -331,11 +331,11 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": 1, \"c\": true}}").node("a").isObject().containsOnlyKeys("b", "c", "d"))
             .hasMessage("[Different value found in node \"a\"] \n" +
                 "Expecting:\n" +
-                "  <{\"b\":1,\"c\":true}>\n" +
+                "  {\"b\":1,\"c\":true}\n" +
                 "to contain only following keys:\n" +
-                "  <[\"b\", \"c\", \"d\"]>\n" +
+                "  [\"b\", \"c\", \"d\"]\n" +
                 "but could not find the following keys:\n" +
-                "  <[\"d\"]>\n");
+                "  [\"d\"]\n");
     }
 
     @Test
@@ -348,11 +348,11 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": 1, \"c\": true}}").node("a").isObject().containsAllEntriesOf(singletonMap("c", false)))
             .hasMessage("[Different value found in node \"a\"] \n" +
                 "Expecting map:\n" +
-                " <{\"b\":1,\"c\":true}>\n" +
+                "  {\"b\":1,\"c\":true}\n" +
                 "to contain:\n" +
-                " <[c=false]>\n" +
+                "  [c=false]\n" +
                 "but could not find the following map entries:\n" +
-                " <[c=false]>\n");
+                "  [c=false]\n");
     }
 
     @Test
@@ -377,9 +377,9 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": \"string\"}}").node("a").isObject().isNotEqualTo(json("{\"b\":\"${json-unit.any-string}\"}")))
             .hasMessage("[Different value found in node \"a\"] \n" +
                 "Expecting:\n" +
-                " <{\"b\":\"string\"}>\n" +
+                "  {\"b\":\"string\"}\n" +
                 "not to be equal to:\n" +
-                " <{\"b\":\"${json-unit.any-string}\"}>\n" +
+                "  {\"b\":\"${json-unit.any-string}\"}\n" +
                 "when comparing values using JsonComparator");
     }
 
@@ -395,9 +395,9 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": \"foo\"}}").node("a.b").isString().startsWith("bar"))
             .hasMessage("[Different value found in node \"a.b\"] \n" +
                 "Expecting:\n" +
-                " <\"foo\">\n" +
+                "  \"foo\"\n" +
                 "to start with:\n" +
-                " <\"bar\">\n");
+                "  \"bar\"\n");
     }
 
     @Test
@@ -405,9 +405,9 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": \"foo\"}}").node("a.b").isString().as("Sad!").startsWith("bar"))
             .hasMessage("[Sad!] \n" +
                 "Expecting:\n" +
-                " <\"foo\">\n" +
+                "  \"foo\"\n" +
                 "to start with:\n" +
-                " <\"bar\">\n");
+                "  \"bar\"\n");
     }
 
     @Test
@@ -532,11 +532,8 @@ public abstract class AbstractAssertJTest {
     void shouldAssertNotNullChaining() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": 1}}").node("a").isNotNull().node("b").isNumber().isEqualByComparingTo("2"))
             .hasMessage("[Different value found in node \"a.b\"] \n" +
-                "Expecting:\n" +
-                " <1>\n" +
-                "to be equal to:\n" +
-                " <2>\n" +
-                "but was not.");
+                "expected: 2\n" +
+                "but was : 1");
     }
 
     @Test
@@ -678,11 +675,8 @@ public abstract class AbstractAssertJTest {
     void shouldAssertNumberFailure() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":1}").node("a").isNumber().isEqualByComparingTo("2"))
             .hasMessage("[Different value found in node \"a\"] \n" +
-                "Expecting:\n" +
-                " <1>\n" +
-                "to be equal to:\n" +
-                " <2>\n" +
-                "but was not.");
+                "expected: 2\n" +
+                "but was : 1");
     }
 
     @Test
@@ -738,9 +732,9 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"test\":1}").isNotEqualTo("{\"test\": \"${json-unit.any-number}\"}"))
             .hasMessage("\n" +
                 "Expecting:\n" +
-                " <{\"test\":1}>\n" +
+                "  {\"test\":1}\n" +
                 "not to be equal to:\n" +
-                " <\"{\"test\": \"${json-unit.any-number}\"}\">\n" +
+                "  \"{\"test\": \"${json-unit.any-number}\"}\"\n" +
                 "when comparing values using JsonComparator");
 
     }
@@ -996,8 +990,8 @@ public abstract class AbstractAssertJTest {
     void arrayOfLengthShouldFailOnIncorrectSize() {
         assertThatThrownBy(() -> assertThatJson("{\"test\":[1,2,3]}").node("test").isArray().hasSize(2))
             .hasMessage("[Different value found in node \"test\"] \n" +
-                "Expected size:<2> but was:<3> in:\n" +
-                "<[1, 2, 3]>");
+                "Expected size: 2 but was: 3 in:\n" +
+                "[1, 2, 3]");
     }
 
     @Test
@@ -1072,11 +1066,11 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"test\":[{\"id\":36},{\"id\":37},{\"id\":38}]}").node("test").isArray().contains("{\"id\":42}"))
             .hasMessage("[Different value found in node \"test\"] \n" +
                 "Expecting ArrayList:\n" +
-                " <[{\"id\":36}, {\"id\":37}, {\"id\":38}]>\n" +
+                "  [{\"id\":36}, {\"id\":37}, {\"id\":38}]\n" +
                 "to contain:\n" +
-                " <[\"{\"id\":42}\"]>\n" +
+                "  [\"{\"id\":42}\"]\n" +
                 "but could not find the following element(s):\n" +
-                " <[\"{\"id\":42}\"]>\n" +
+                "  [\"{\"id\":42}\"]\n" +
                 "when comparing values using JsonComparator");
     }
 
@@ -1454,14 +1448,14 @@ public abstract class AbstractAssertJTest {
             )))
             .hasMessage("[Different value found in node \"$.store.book\"] \n" +
                 "Expecting ArrayList:\n" +
-                " <[{\"author\":\"Nigel Rees\",\"category\":\"reference\",\"price\":8.95,\"title\":\"Sayings of the Century\"},\n" +
+                "  [{\"author\":\"Nigel Rees\",\"category\":\"reference\",\"price\":8.95,\"title\":\"Sayings of the Century\"},\n" +
                 "    {\"author\":\"Evelyn Waugh\",\"category\":\"fiction\",\"price\":12.99,\"title\":\"Sword of Honour\"},\n" +
                 "    {\"author\":\"Herman Melville\",\"category\":\"fiction\",\"isbn\":\"0-553-21311-3\",\"price\":8.99,\"title\":\"Moby Dick\"},\n" +
-                "    {\"author\":\"J. R. R. Tolkien\",\"category\":\"fiction\",\"isbn\":\"0-395-19395-8\",\"price\":22.99,\"title\":\"The Lord of the Rings\"}]>\n" +
+                "    {\"author\":\"J. R. R. Tolkien\",\"category\":\"fiction\",\"isbn\":\"0-395-19395-8\",\"price\":22.99,\"title\":\"The Lord of the Rings\"}]\n" +
                 "to contain:\n" +
-                " <[{\"category\":\"reference\",\"author\":\"Nigel Rees\",\"title\":\"Sayings of the Century\",\"price\":8.96}]>\n" +
+                "  [{\"category\":\"reference\",\"author\":\"Nigel Rees\",\"title\":\"Sayings of the Century\",\"price\":8.96}]\n" +
                 "but could not find the following element(s):\n" +
-                " <[{\"category\":\"reference\",\"author\":\"Nigel Rees\",\"title\":\"Sayings of the Century\",\"price\":8.96}]>\n" +
+                "  [{\"category\":\"reference\",\"author\":\"Nigel Rees\",\"title\":\"Sayings of the Century\",\"price\":8.96}]\n" +
                 "when comparing values using JsonComparator");
     }
 

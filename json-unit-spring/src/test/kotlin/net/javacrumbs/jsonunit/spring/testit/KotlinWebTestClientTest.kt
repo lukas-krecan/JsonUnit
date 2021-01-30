@@ -100,12 +100,9 @@ internal class KotlinWebTestClientTest {
             exec().expectBody().jsonContent {
                 node("result.string").isString().isEqualTo("stringValue2")
             }
-        }.hasMessageStartingWith("[Different value found in node \"result.string\"] \n" +
-                "Expecting:\n" +
-                " <\"stringValue\">\n" +
-                "to be equal to:\n" +
-                " <\"stringValue2\">\n" +
-                "but was not.")
+        }.hasMessage("[Different value found in node \"result.string\"] \n" +
+                "expected: \"stringValue2\"\n" +
+                "but was : \"stringValue\"")
     }
 
     @Test
