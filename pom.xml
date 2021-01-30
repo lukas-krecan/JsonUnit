@@ -20,7 +20,7 @@
         <opentest4j.version>1.2.0</opentest4j.version>
         <kotlin.version>1.4.21</kotlin.version>
         <symbolic.name>${project.groupId}.${project.artifactId}</symbolic.name>
-        <osgi.importPackage>*</osgi.importPackage>
+        <osgi.importPackage>!kotlin.*,*</osgi.importPackage>
         <osgi.exportPackage />
         <osgi.includeResource />
     </properties>
