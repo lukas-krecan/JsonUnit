@@ -17,85 +17,14 @@ package net.javacrumbs.jsonunit.assertj;
 
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
-import org.assertj.core.internal.ComparisonStrategy;
 
 import java.util.Set;
 
-class JsonComparisonStrategy implements ComparisonStrategy {
+class JsonComparisonStrategy {
     private final Configuration configuration;
 
     JsonComparisonStrategy(Configuration configuration) {
         this.configuration = configuration;
-    }
-
-    @Override
-    public boolean areEqual(Object actual, Object other) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean isGreaterThan(Object actual, Object other) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean isGreaterThanOrEqualTo(Object actual, Object other) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean isLessThan(Object actual, Object other) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean isLessThanOrEqualTo(Object actual, Object other) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean iterableContains(Iterable<?> collection, Object value) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void iterableRemoves(Iterable<?> iterable, Object value) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void iterablesRemoveFirst(Iterable<?> iterable, Object value) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Iterable<?> duplicatesFrom(Iterable<?> iterable) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean arrayContains(Object array, Object value) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean stringContains(String string, String sequence) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean stringStartsWith(String string, String prefix) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean stringEndsWith(String string, String suffix) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean isStandard() {
-        throw new UnsupportedOperationException();
     }
 
     @Override

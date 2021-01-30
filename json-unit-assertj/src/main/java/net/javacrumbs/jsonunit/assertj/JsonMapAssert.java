@@ -20,7 +20,6 @@ import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import org.assertj.core.api.MapAssert;
-import org.assertj.core.internal.Failures;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,7 +31,6 @@ import static org.assertj.core.error.ShouldNotContainValue.shouldNotContainValue
 class JsonMapAssert extends MapAssert<String, Object> {
     private final Configuration configuration;
     private final Path path;
-    private final Failures failures = Failures.instance();
 
     JsonMapAssert(Map<String, Object> actual, Path path, Configuration configuration) {
         super(actual);
@@ -52,7 +50,7 @@ class JsonMapAssert extends MapAssert<String, Object> {
     public MapAssert<String, Object> containsValue(@Nullable Object expected) {
         if (expected instanceof Node) {
             if (!contains(expected)) {
-                throw failures.failure(info, shouldContainValue(actual, expected));
+                throwAssertionError(shouldContainValue(actual, expected));
             }
             return this;
         } else {
@@ -65,7 +63,7 @@ class JsonMapAssert extends MapAssert<String, Object> {
     public MapAssert<String, Object> doesNotContainValue(@Nullable Object expected) {
         if (expected instanceof Node) {
             if (contains(expected)) {
-                throw failures.failure(info, shouldNotContainValue(actual, expected));
+                throwAssertionError(shouldNotContainValue(actual, expected));
             }
             return this;
         } else {
