@@ -19,6 +19,7 @@
         <json-path.version>2.4.0</json-path.version>
         <opentest4j.version>1.2.0</opentest4j.version>
         <kotlin.version>1.4.21</kotlin.version>
+        <bnd.version>5.2.0</bnd.version>
         <symbolic.name>${project.groupId}.${project.artifactId}</symbolic.name>
         <osgi.importPackage>!kotlin.*,*</osgi.importPackage>
         <osgi.exportPackage />
@@ -63,6 +64,29 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.apache.aries.spifly</groupId>
+                <artifactId>org.apache.aries.spifly.dynamic.framework.extension</artifactId>
+                <version>1.3.2</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.johnzon</groupId>
+                <artifactId>johnzon-core</artifactId>
+                <version>1.2.10</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.geronimo.specs</groupId>
+                <artifactId>geronimo-json_1.1_spec</artifactId>
+                <version>${geronimo.jsonp.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.platform</groupId>
+                <artifactId>org.eclipse.osgi</artifactId>
+                <version>3.16.100</version>
+                <scope>test</scope>
+            </dependency>
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
                 <artifactId>junit-jupiter-engine</artifactId>
@@ -161,6 +185,37 @@
                         <source>${target.java.version}</source>
                         <target>${target.java.version}</target>
                     </configuration>
+                </plugin>
+
+                <!-- Asserts that the resulting bundle resolves adequately in OSGi in terms
+                     of it's dependencies. If this check fails it is most likely a problem
+                     with package export or import specification. -->
+                <plugin>
+                    <groupId>biz.aQute.bnd</groupId>
+                    <artifactId>bnd-resolver-maven-plugin</artifactId>
+                    <version>${bnd.version}</version>
+                    <configuration>
+                        <failOnChanges>false</failOnChanges>
+                        <includeDependencyManagement>true</includeDependencyManagement>
+                        <reportOptional>false</reportOptional>
+                        <writeOnChanges>false</writeOnChanges>
+                        <bundles>
+                            <bundle>target/${project.artifactId}-${project.version}.jar</bundle>
+                        </bundles>
+                        <scopes>
+                            <scope>compile</scope>
+                            <scope>runtime</scope>
+                            <scope>test</scope>
+                        </scopes>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>pre-integration-test</phase>
+                            <goals>
+                                <goal>resolve</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
