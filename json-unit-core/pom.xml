@@ -16,6 +16,7 @@
         <osgi.exportPackage>
             net.javacrumbs.jsonunit.core,
             net.javacrumbs.jsonunit.core.internal,
+            net.javacrumbs.jsonunit.core.internal.matchers,
             net.javacrumbs.jsonunit.core.listener
         </osgi.exportPackage>
     </properties>
