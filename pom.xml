@@ -64,6 +64,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Some of these dependencies are used by the "bnd-resolver-maven-plugin" (note
+                 the configuration "includeDependencyManagement=true") in combination with project
+                 dependencies as input to calculate a solution which consists of a (minimal)
+                 set of bundles that, given the initial requirements (which in this case are the
+                 individual modules of this project), would actually run in OSGi and be completely
+                 satisfied. By keeping these dependencies in the dependencyManagement section they
+                 are inert for all other intents and purposes or until directly referenced. -->
             <dependency>
                 <groupId>org.apache.aries.spifly</groupId>
                 <artifactId>org.apache.aries.spifly.dynamic.framework.extension</artifactId>
