@@ -680,6 +680,38 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+        // https://github.com/assertj/assertj-core/issues/2111
+    void hasFiledOrProperty() {
+        assertThatJson("{\"a\": 1}")
+            .isObject().hasFieldOrProperty("lastModified2");
+        assertThatJson("{\"a\": 1}")
+            .isObject().hasFieldOrPropertyWithValue("lastModified2", null);
+    }
+
+    @Test
+        // https://github.com/assertj/assertj-core/issues/2111
+    void containsValue() {
+        assertThatThrownBy(() -> assertThatJson("{\"a\": 1}")
+            .isObject().containsKey("lastModified2"))
+            .hasMessage("[Different value found in node \"\"] \n" +
+                "Expecting:\n" +
+                "  {\"a\":1}\n" +
+                "to contain key:\n" +
+                "  \"lastModified2\"");
+
+        assertThatThrownBy(() ->
+            assertThatJson("{\"a\": 1}")
+                .isObject().contains(entry("lastModified2", null)))
+            .hasMessage("[Different value found in node \"\"] \n" +
+                "Expecting map:\n" +
+                "  {\"a\":1}\n" +
+                "to contain:\n" +
+                "  [MapEntry[key=\"lastModified2\", value=null]]\n" +
+                "but could not find the following map entries:\n" +
+                "  [MapEntry[key=\"lastModified2\", value=null]]\n");
+    }
+
+    @Test
     void testAssertToleranceSimple() {
         assertThatJson("{\"test\":1.00001}").withTolerance(0.001).isEqualTo("{\"test\":1}");
     }
