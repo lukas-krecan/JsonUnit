@@ -109,20 +109,58 @@ class JsonMapAssert extends MapAssert<String, Object> {
 
     /**
      * Does not work. Use {@link #containsKey(Object)} instead.
+     * https://github.com/lukas-krecan/JsonUnit/issues/324
      */
     @Override
     @Deprecated
     public MapAssert<String, Object> hasFieldOrProperty(String name) {
-        throw unsupportedOperation();
+        return super.hasFieldOrProperty(name);
     }
 
     /**
      * Does not work. Use {@link #contains(Map.Entry[])} instead.
+     * https://github.com/lukas-krecan/JsonUnit/issues/324
      */
     @Override
     @Deprecated
     public MapAssert<String, Object> hasFieldOrPropertyWithValue(String name, Object value) {
-        throw unsupportedOperation();
+        return super.hasFieldOrPropertyWithValue(name, value);
+    }
+
+    /**
+     * Does not work. https://github.com/lukas-krecan/JsonUnit/issues/324
+     */
+    @Override
+    @Deprecated
+    public MapAssert<String, Object> hasAllNullFieldsOrProperties() {
+        return super.hasAllNullFieldsOrProperties();
+    }
+
+    /**
+     * Does not work. https://github.com/lukas-krecan/JsonUnit/issues/324
+     */
+    @Override
+    @Deprecated
+    public MapAssert<String, Object> hasAllNullFieldsOrPropertiesExcept(String... propertiesOrFieldsToIgnore) {
+        return super.hasAllNullFieldsOrPropertiesExcept(propertiesOrFieldsToIgnore);
+    }
+
+    /**
+     * Does not work. https://github.com/lukas-krecan/JsonUnit/issues/324
+     */
+    @Deprecated
+    @Override
+    public MapAssert<String, Object> hasNoNullFieldsOrProperties() {
+        return super.hasNoNullFieldsOrProperties();
+    }
+    
+    /**
+     * Does not work. https://github.com/lukas-krecan/JsonUnit/issues/324
+     */
+    @Override
+    @Deprecated
+    public MapAssert<String, Object> hasNoNullFieldsOrPropertiesExcept(String... propertiesOrFieldsToIgnore) {
+        return super.hasNoNullFieldsOrPropertiesExcept(propertiesOrFieldsToIgnore);
     }
 
     @NotNull
