@@ -73,24 +73,28 @@ class JsonMapAssert extends MapAssert<String, Object> {
 
     @Override
     @NotNull
+    @Deprecated
     public JsonMapAssert isEqualToIgnoringGivenFields(@Nullable Object other, @NotNull String... propertiesOrFieldsToIgnore) {
         return compare(other, configuration.whenIgnoringPaths(propertiesOrFieldsToIgnore));
     }
 
     @Override
     @NotNull
+    @Deprecated
     public MapAssert<String, Object> isEqualToComparingOnlyGivenFields(@Nullable Object other, @NotNull String... propertiesOrFieldsUsedInComparison) {
         throw unsupportedOperation();
     }
 
     @Override
     @NotNull
+    @Deprecated
     public MapAssert<String, Object> isEqualToIgnoringNullFields(@Nullable Object other) {
         throw unsupportedOperation();
     }
 
     @Override
     @NotNull
+    @Deprecated
     public MapAssert<String, Object> isEqualToComparingFieldByField(@Nullable Object other) {
         throw unsupportedOperation();
     }
@@ -99,6 +103,25 @@ class JsonMapAssert extends MapAssert<String, Object> {
     @NotNull
     @Deprecated
     public MapAssert<String, Object> isEqualToComparingFieldByFieldRecursively(@Nullable Object other) {
+        throw unsupportedOperation();
+    }
+
+
+    /**
+     * Does not work. Use {@link #containsKey(Object)} instead.
+     */
+    @Override
+    @Deprecated
+    public MapAssert<String, Object> hasFieldOrProperty(String name) {
+        throw unsupportedOperation();
+    }
+
+    /**
+     * Does not work. Use {@link #contains(Map.Entry[])} instead.
+     */
+    @Override
+    @Deprecated
+    public MapAssert<String, Object> hasFieldOrPropertyWithValue(String name, Object value) {
         throw unsupportedOperation();
     }
 

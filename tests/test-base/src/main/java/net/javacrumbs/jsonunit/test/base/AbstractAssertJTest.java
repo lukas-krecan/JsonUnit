@@ -671,25 +671,8 @@ public abstract class AbstractAssertJTest {
             .hasMessage("Node \"a\" can not be converted to number expected: <a number> but was: <\"x\">.");
     }
 
+    // https://github.com/assertj/assertj-core/issues/2111
     @Test
-    void shouldAssertNumberFailure() {
-        assertThatThrownBy(() -> assertThatJson("{\"a\":1}").node("a").isNumber().isEqualByComparingTo("2"))
-            .hasMessage("[Different value found in node \"a\"] \n" +
-                "expected: 2\n" +
-                "but was : 1");
-    }
-
-    @Test
-        // https://github.com/assertj/assertj-core/issues/2111
-    void hasFiledOrProperty() {
-        assertThatJson("{\"a\": 1}")
-            .isObject().hasFieldOrProperty("lastModified2");
-        assertThatJson("{\"a\": 1}")
-            .isObject().hasFieldOrPropertyWithValue("lastModified2", null);
-    }
-
-    @Test
-        // https://github.com/assertj/assertj-core/issues/2111
     void containsValue() {
         assertThatThrownBy(() -> assertThatJson("{\"a\": 1}")
             .isObject().containsKey("lastModified2"))
@@ -710,6 +693,15 @@ public abstract class AbstractAssertJTest {
                 "but could not find the following map entries:\n" +
                 "  [MapEntry[key=\"lastModified2\", value=null]]\n");
     }
+
+    @Test
+    void shouldAssertNumberFailure() {
+        assertThatThrownBy(() -> assertThatJson("{\"a\":1}").node("a").isNumber().isEqualByComparingTo("2"))
+            .hasMessage("[Different value found in node \"a\"] \n" +
+                "expected: 2\n" +
+                "but was : 1");
+    }
+
 
     @Test
     void testAssertToleranceSimple() {
