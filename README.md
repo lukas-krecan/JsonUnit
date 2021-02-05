@@ -469,6 +469,42 @@ In even more special cases, you might want to parametrize your matcher.
  }
 ```
 
+And you can match more than one value:
+```java
+ Matcher<?> betweenMatcher = new BetweenMatcher();
+ assertThatJson("{\"test\": 3.14}")
+        .withMatcher("isBetween", betweenMatcher)
+        .isEqualTo("{\"test\":\"${json-unit.matches:isBetween} 3.1 , 3.2\"}");
+
+ private static class BetweenMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
+    private BigDecimal lowerBound;
+    private BigDecimal upperBound;
+
+    public boolean matches(Object item) {
+        if (!(item instanceof BigDecimal)) {
+            return false;
+        }
+        BigDecimal actualValue = (BigDecimal) item;
+        return actualValue.compareTo(lowerBound) >= 0 && actualValue.compareTo(upperBound) <= 0;
+    }
+
+    public void describeTo(Description description) {
+        description.appendValue(lowerBound).appendText(" and ").appendValue(upperBound);
+    }
+
+    @Override
+    public void describeMismatch(Object item, Description description) {
+        description.appendText("is not between ").appendValue(lowerBound).appendText(" and ").appendValue(upperBound);
+    }
+
+    public void setParameter(String parameter) {
+        String[] tokens = parameter.split(",");
+        this.lowerBound = new BigDecimal(tokens[0].strip());
+        this.upperBound = new BigDecimal(tokens[1].strip());
+    }
+ }
+```
+
 ## <a name="options"></a>Options
 
 There are multiple options how you can configure the comparison
