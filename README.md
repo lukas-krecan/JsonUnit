@@ -468,6 +468,8 @@ In even more special cases, you might want to parametrize your matcher.
      }
  }
 ```
+If you need a matcher with more than one parameter, you can implement it
+like [this](https://stackoverflow.com/a/66183629/277042).
 
 ## <a name="options"></a>Options
 
