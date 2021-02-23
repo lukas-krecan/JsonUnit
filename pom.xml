@@ -19,7 +19,7 @@
         <json-path.version>2.4.0</json-path.version>
         <opentest4j.version>1.2.0</opentest4j.version>
         <kotlin.version>1.4.30</kotlin.version>
-        <bnd.version>5.2.0</bnd.version>
+        <bnd.version>5.3.0</bnd.version>
         <symbolic.name>${project.groupId}.${project.artifactId}</symbolic.name>
         <osgi.importPackage>!kotlin.*,*</osgi.importPackage>
         <osgi.exportPackage />
