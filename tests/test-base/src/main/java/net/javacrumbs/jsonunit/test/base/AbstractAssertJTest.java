@@ -655,7 +655,10 @@ public abstract class AbstractAssertJTest {
 
         assertThatThrownBy(() -> assertThatJson("{\"a\":1e-3}").node("a").isIntegralNumber())
             .hasMessage("Node \"a\" has invalid type, expected: <integer> but was: <0.001>.");
+    }
 
+    @Test
+    protected void shouldAssert1e0() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":1e0}").node("a").isIntegralNumber())
             .hasMessageStartingWith("Node \"a\" has invalid type, expected: <integer> but was:");
     }
