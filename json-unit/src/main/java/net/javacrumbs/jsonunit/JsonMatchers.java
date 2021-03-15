@@ -29,7 +29,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
-import java.util.IdentityHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
 import static net.javacrumbs.jsonunit.core.internal.Diff.createInternal;
@@ -196,7 +196,7 @@ public class JsonMatchers {
         // One matcher can be used to match multiple array items. We need to persist diff description between doMatch() and
         // describeMismatch() method calls. While Hamcrest 1 called doMatch() and describeMismatch() one after each other
         // Hamcrest 2 calls doMatch() multiple times followed by multiple calls of describeMismatch()
-        private final Map<Object, String> differences = new IdentityHashMap<>();
+        private final Map<Object, String> differences = new HashMap<>();
 
         JsonPartMatcher(String path, Object expected) {
             super(path);

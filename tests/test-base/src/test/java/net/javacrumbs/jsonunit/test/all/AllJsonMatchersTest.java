@@ -17,6 +17,8 @@ package net.javacrumbs.jsonunit.test.all;
 
 import net.javacrumbs.jsonunit.test.base.AbstractJsonMatchersTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
+import org.hamcrest.Matcher;
+import org.hamcrest.StringDescription;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -26,6 +28,8 @@ import static net.javacrumbs.jsonunit.core.util.ResourceUtils.resource;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson2;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJsonOrg;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.is;
 
 class AllJsonMatchersTest extends AbstractJsonMatchersTest {
     @Test
@@ -51,6 +55,18 @@ class AllJsonMatchersTest extends AbstractJsonMatchersTest {
     @Test
     void testEqualsUnicodeResource() throws Exception {
         assertThat("{\"face\":\"\uD83D\uDE10\"}", jsonEquals(resource("unicode.json")));
+    }
+
+    @Test
+    void testEqualsWithEqualItemButDifferentInstanceForDescribeMismatch() {
+        Matcher<Object> matcher = jsonEquals("{\"test\":1}");
+        String differentJson = "{\"test\":false}";
+        assertThat(matcher.matches("{\"test\":false}"), is(false));
+
+        String clonedJson = String.copyValueOf(differentJson.toCharArray());
+        StringDescription description = new StringDescription();
+        matcher.describeMismatch(clonedJson, description);
+        assertThat(description.toString(), containsString("Different value found in node"));
     }
 
     @Override
