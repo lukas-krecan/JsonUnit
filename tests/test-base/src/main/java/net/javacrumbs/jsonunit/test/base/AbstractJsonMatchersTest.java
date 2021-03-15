@@ -15,8 +15,10 @@
  */
 package net.javacrumbs.jsonunit.test.base;
 
+import net.javacrumbs.jsonunit.ConfigurableJsonMatcher;
 import net.javacrumbs.jsonunit.JsonAssert;
 import org.hamcrest.Matcher;
+import org.hamcrest.StringDescription;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -46,6 +48,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public abstract class AbstractJsonMatchersTest {
@@ -344,6 +347,18 @@ public abstract class AbstractJsonMatchersTest {
     void testSpecificPathNot() {
         assertThat("{\"test\":{\"a\":1,\"b\":2,\"c\":3}}",
             jsonEquals("{\"test\":{\"a\":5,\"b\":6,\"c\":3}}").when(IGNORING_VALUES).when(path("test.c"), thenNot(IGNORING_VALUES)));
+    }
+
+    @Test
+    void matcherShouldDescribeTheOnlyMatch() {
+        ConfigurableJsonMatcher<Object> matcher = jsonEquals("{\"test\": 1}");
+        String actual = "{\"test\": 2}";
+        assertFalse(matcher.matches(actual));
+        StringDescription description = new StringDescription();
+        // Use different instance
+        matcher.describeMismatch(new String(actual), description);
+        assertEquals("JSON documents are different:\n" +
+            "Different value found in node \"test\", expected <1> but was <2>.\n", description.toString());
     }
 
     private void expectException() {
