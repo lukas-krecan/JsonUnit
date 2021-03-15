@@ -196,6 +196,7 @@ public class JsonMatchers {
         // One matcher can be used to match multiple array items. We need to persist diff description between doMatch() and
         // describeMismatch() method calls. While Hamcrest 1 called doMatch() and describeMismatch() one after each other
         // Hamcrest 2 calls doMatch() multiple times followed by multiple calls of describeMismatch()
+        // using IdentityHashMap since not all compared object do have to implement hashCode and equals
         private final Map<Object, String> differences = new IdentityHashMap<>();
 
         JsonPartMatcher(String path, Object expected) {
@@ -225,7 +226,17 @@ public class JsonMatchers {
 
         @Override
         public void describeMismatch(Object item, Description description) {
-            description.appendText(differences.get(item));
+            description.appendText(getDifference(item));
+        }
+
+        private String getDifference(Object item) {
+            if (differences.size() == 1) {
+                // If there is only one difference, no need search the map.
+                // Solves the case when the item is not the same instance as the one sent to match() #338
+                return differences.values().iterator().next();
+            } else {
+                return differences.get(item);
+            }
         }
     }
 
