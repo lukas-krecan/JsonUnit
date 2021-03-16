@@ -77,6 +77,7 @@
                             <goal>compile</goal>
                         </goals>
                         <configuration>
+                            <jvmTarget>${target.java.version}</jvmTarget>
                             <sourceDirs>
                                 <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
                                 <sourceDir>${project.basedir}/src/main/java</sourceDir>
@@ -89,6 +90,7 @@
                             <goal>test-compile</goal>
                         </goals>
                         <configuration>
+                            <jvmTarget>${target.java.version}</jvmTarget>
                             <sourceDirs>
                                 <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
                                 <sourceDir>${project.basedir}/src/test/java</sourceDir>
