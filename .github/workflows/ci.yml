@@ -19,7 +19,7 @@ jobs:
           - java: '11'
             maven-opts: ''
           - java: '16'
-            maven-opts: --illegal-access=warn
+            maven-opts: --add-opens java.base/java.util=ALL-UNNAMED
     runs-on: 'ubuntu-latest'
     steps:
     - uses: actions/checkout@v2
