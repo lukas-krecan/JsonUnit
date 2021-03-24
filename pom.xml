@@ -274,6 +274,7 @@
             </properties>
         </profile>
         <profile>
+            <!-- Johnzon does not work with Java 16 -->
             <id>open-java-base</id>
             <activation>
                 <jdk>[16,)</jdk>
