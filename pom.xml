@@ -265,15 +265,6 @@
             </build>
         </profile>
         <profile>
-            <id>disable-java8-doclint</id>
-            <activation>
-                <jdk>[1.8,)</jdk>
-            </activation>
-            <properties>
-                <additionalparam>-Xdoclint:none</additionalparam>
-            </properties>
-        </profile>
-        <profile>
             <!-- Johnzon does not work with Java 16 -->
             <id>open-java-base</id>
             <activation>
