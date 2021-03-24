@@ -12,9 +12,15 @@ jobs:
   build:
     strategy:
       matrix:
-        java: [ '8', '11', '15' ]
-        os: [ 'ubuntu-latest' ]
-    runs-on: ${{ matrix.os }}
+        java: [ '8', '11', '16' ]
+        include:
+          - java: '8'
+            maven-opts: ''
+          - java: '11'
+            maven-opts: ''
+          - java: '16'
+            maven-opts: --add-opens java.base/java.util=ALL-UNNAMED
+    runs-on: 'ubuntu-latest'
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK
@@ -30,4 +36,6 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven-
     - name: Build
+      env:
+        MAVEN_OPTS: ${{ matrix.maven-opts }}
       run: mvn -B clean package --file pom.xml
