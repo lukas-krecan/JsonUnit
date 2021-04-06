@@ -25,9 +25,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK
-      uses: actions/setup-java@v1
+      uses: actions/setup-java@v2
       with:
         java-version: ${{ matrix.java }}
+        distribution: 'zulu'
     - name: print Java version
       run: java -version
     - uses: actions/cache@v2.1.4
