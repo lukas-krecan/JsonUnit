@@ -23,7 +23,6 @@ import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.mock.http.client.MockClientHttpRequest;
 import org.springframework.test.web.client.RequestMatcher;
 
-import java.io.IOException;
 import java.util.function.BiConsumer;
 
 
@@ -71,7 +70,7 @@ public class JsonUnitRequestMatchers extends AbstractSpringMatchers<JsonUnitRequ
         }
 
         @Override
-        public void match(@NotNull ClientHttpRequest request) throws IOException, AssertionError {
+        public void match(@NotNull ClientHttpRequest request) throws AssertionError {
             Object actual = ((MockClientHttpRequest) request).getBodyAsString();
             doMatch(actual);
         }

@@ -26,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
-import static org.assertj.core.error.ShouldNotBeEqual.shouldNotBeEqual;
 
 class JsonListAssert extends ListAssert<Object> {
     private final Configuration configuration;

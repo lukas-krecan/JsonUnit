@@ -19,8 +19,6 @@ import net.javacrumbs.jsonunit.test.base.AbstractJsonMatchersTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
 import static net.javacrumbs.jsonunit.core.util.ResourceUtils.resource;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson2;
@@ -29,12 +27,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 class AllJsonMatchersTest extends AbstractJsonMatchersTest {
     @Test
-    void testJsonNodeJsonOrg() throws IOException {
+    void testJsonNodeJsonOrg() {
         assertThat(readByJsonOrg("{\"test\":1}"), jsonEquals("{\"test\":1}"));
     }
 
     @Test
-    void testJsonNodeJackson2() throws IOException {
+    void testJsonNodeJackson2() {
         assertThat(readByJackson2("{\"test\":1}"), jsonEquals("{\"test\":1}"));
     }
 
@@ -44,12 +42,12 @@ class AllJsonMatchersTest extends AbstractJsonMatchersTest {
     }
 
     @Test
-    void testEqualsResource() throws Exception {
+    void testEqualsResource() {
         assertThat("{\"test\":1}", jsonEquals(resource("test.json")));
     }
 
     @Test
-    void testEqualsUnicodeResource() throws Exception {
+    void testEqualsUnicodeResource() {
         assertThat("{\"face\":\"\uD83D\uDE10\"}", jsonEquals(resource("unicode.json")));
     }
 

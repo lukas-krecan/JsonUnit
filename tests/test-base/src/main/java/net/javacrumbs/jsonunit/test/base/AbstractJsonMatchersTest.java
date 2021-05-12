@@ -23,7 +23,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
 import static java.math.BigDecimal.valueOf;
-import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodeAbsent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodePresent;
@@ -164,7 +164,7 @@ public abstract class AbstractJsonMatchersTest {
     @Test
     void hasItemShouldWork() {
         //assertThat(asList("{\"test\":1}"), hasItem(jsonEquals("{\"test\":1}"))); //does not compile
-        assertThat(asList("{\"test\":1}"), contains(jsonEquals("{\"test\":1}")));
+        assertThat(singletonList("{\"test\":1}"), contains(jsonEquals("{\"test\":1}")));
     }
 
     @Test
@@ -356,7 +356,7 @@ public abstract class AbstractJsonMatchersTest {
         assertFalse(matcher.matches(actual));
         StringDescription description = new StringDescription();
         // Use different instance
-        matcher.describeMismatch(new String(actual), description);
+        matcher.describeMismatch(actual, description);
         assertEquals("JSON documents are different:\n" +
             "Different value found in node \"test\", expected <1> but was <2>.\n", description.toString());
     }

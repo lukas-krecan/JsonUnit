@@ -15,7 +15,7 @@ import net.javacrumbs.jsonunit.core.Option
  * }
  * ```
  */
-fun assertThatJson(actual: Any, lambda: ConfigurableJsonAssert.() -> Unit = { Unit }): ConfigurableJsonAssert {
+fun assertThatJson(actual: Any, lambda: ConfigurableJsonAssert.() -> Unit = { }): ConfigurableJsonAssert {
     val jsonAssert = JsonAssertions.assertThatJson(actual)
     lambda(jsonAssert)
     return jsonAssert

@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.Set;
 
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
 
@@ -144,8 +143,7 @@ public interface Node {
 
         @Override
         public Iterator<KeyValue> fields() {
-            Set<KeyValue> emptySet = Collections.emptySet();
-            return emptySet.iterator();
+            return Collections.emptyIterator();
         }
 
         @Override
@@ -165,8 +163,7 @@ public interface Node {
 
         @Override
         public Iterator<Node> arrayElements() {
-            Set<Node> emptySet = Collections.emptySet();
-            return emptySet.iterator();
+            return Collections.emptyIterator();
         }
 
         @Override

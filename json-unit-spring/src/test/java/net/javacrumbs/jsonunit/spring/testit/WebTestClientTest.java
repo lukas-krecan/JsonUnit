@@ -69,7 +69,7 @@ class WebTestClientTest {
     }
 
     @Test
-    void shouldPassIfEquals() throws Exception {
+    void shouldPassIfEquals() {
         exec().consumeWith(json().isEqualTo(CORRECT_JSON));
     }
 
@@ -92,7 +92,7 @@ class WebTestClientTest {
     }
 
     @Test
-    void isNullShouldPassOnNull() throws Exception {
+    void isNullShouldPassOnNull() {
         exec().consumeWith(json().node("result.null").isNull());
     }
 
@@ -109,7 +109,7 @@ class WebTestClientTest {
     }
 
     @Test
-    void isNotNullShouldPassOnString() throws Exception {
+    void isNotNullShouldPassOnString() {
         exec().consumeWith(json().node("result.string").isNotNull());
     }
 
@@ -126,7 +126,7 @@ class WebTestClientTest {
     }
 
     @Test
-    void isTrueShouldPassOnTrue() throws Exception {
+    void isTrueShouldPassOnTrue() {
         exec().consumeWith(json().node("result.boolean").isTrue());
     }
 
@@ -145,7 +145,7 @@ class WebTestClientTest {
     }
 
     @Test
-    void isStringEqualToShouldPassIfEquals() throws Exception {
+    void isStringEqualToShouldPassIfEquals() {
         exec().consumeWith(json().node("result.string").isStringEqualTo("stringValue"));
     }
 
@@ -157,7 +157,7 @@ class WebTestClientTest {
 
 
     @Test
-    void isAbsentShouldPassIfNodeIsAbsent() throws Exception {
+    void isAbsentShouldPassIfNodeIsAbsent() {
         exec().consumeWith(json().node("result.string2").isAbsent());
     }
 
@@ -168,7 +168,7 @@ class WebTestClientTest {
     }
 
     @Test
-    void isPresentShouldPassIfPresent() throws Exception {
+    void isPresentShouldPassIfPresent() {
         exec().consumeWith(json().node("result.string").isPresent());
     }
 
@@ -198,27 +198,27 @@ class WebTestClientTest {
     }
 
     @Test
-    void isArrayShouldPassOnArray() throws Exception {
+    void isArrayShouldPassOnArray() {
         exec().consumeWith(json().node("result.array").isArray());
     }
 
     @Test
-    void ignoreShouldWork() throws Exception {
+    void ignoreShouldWork() {
         exec().consumeWith(json().isEqualTo("{\"result\":\"${json-unit.ignore}\"}"));
     }
 
     @Test
-    void ignoreStringShouldBeModifiable() throws Exception {
+    void ignoreStringShouldBeModifiable() {
         exec().consumeWith(json().ignoring("##IGNORE##").isEqualTo("{\"result\":\"##IGNORE##\"}"));
     }
 
     @Test
-    void shouldSetTolerance() throws Exception {
+    void shouldSetTolerance() {
         exec().consumeWith(json().node("result.decimal").withTolerance(0.001).isEqualTo(1));
     }
 
     @Test
-    void settingOptionShouldTakeEffect() throws Exception {
+    void settingOptionShouldTakeEffect() {
         exec().consumeWith(json().node("result.array").when(Option.IGNORING_ARRAY_ORDER).isEqualTo(new int[]{3, 2, 1}));
     }
 
@@ -237,7 +237,7 @@ class WebTestClientTest {
     }
 
     @Test
-    void intValueShouldMatch() throws Exception {
+    void intValueShouldMatch() {
         exec().consumeWith(json().node("result.array").matches(everyItem(lessThanOrEqualTo(valueOf(4)))));
     }
 

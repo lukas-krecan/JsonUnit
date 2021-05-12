@@ -22,8 +22,6 @@ import net.javacrumbs.jsonunit.test.base.beans.Jackson2Bean;
 import net.javacrumbs.jsonunit.test.base.beans.Jackson2IgnorePropertyBean;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
-
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonStructureEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.when;
@@ -36,50 +34,50 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class AllJsonAssertTest extends AbstractJsonAssertTest {
 
     @Test
-    void testEqualsNode() throws IOException {
+    void testEqualsNode() {
         assertJsonEquals(readByJsonOrg("{\"test\":1}"), readByJackson2("{\"test\": 1}"));
     }
 
     @Test
-    void testEqualsNodeGsonJackson() throws IOException {
+    void testEqualsNodeGsonJackson() {
         assertJsonEquals(readByGson("{\"test\":1}"), readByJackson2("{\"test\": 1}"));
     }
 
     @Test
-    void testEqualsNodeGson() throws IOException {
+    void testEqualsNodeGson() {
         assertJsonEquals(readByGson("{\"test\":1}"), readByGson("{\"test\": 1}"));
     }
 
     @Test
-    void testEqualsNodeJsonOrg() throws IOException {
+    void testEqualsNodeJsonOrg() {
         assertJsonEquals(readByJsonOrg("{\"test\":1}"), readByJsonOrg("{\"test\": 1}"));
     }
 
     @Test
-    void testEqualsNodeIgnore() throws IOException {
+    void testEqualsNodeIgnore() {
         assertJsonEquals(readByJackson2("{\"test\":\"${json-unit.ignore}\"}"), readByJackson2("{\"test\": 1}"));
     }
 
     @Test
-    void testEqualsNodeFailJackson1() throws IOException {
+    void testEqualsNodeFailJackson1() {
         assertThatThrownBy(() -> assertJsonEquals(readByJackson2("{\"test\":1}"), "{\"test\": 2}"))
             .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <1> but was: <2>.\n");
     }
 
     @Test
-    void testEqualsNodeFailGson() throws IOException {
+    void testEqualsNodeFailGson() {
         assertThatThrownBy(() -> assertJsonEquals(readByGson("{\"test\":1}"), "{\"test\": 2}"))
             .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <1> but was: <2>.\n");
     }
 
     @Test
-    void testEqualsNodeFailJsonOrg() throws IOException {
+    void testEqualsNodeFailJsonOrg() {
         assertThatThrownBy(() -> assertJsonEquals(readByJsonOrg("{\"test\":1}"), "{\"test\": 2}"))
             .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <1> but was: <2>.\n");
     }
 
     @Test
-    void testEqualsNodeFailJsonOrgArray() throws IOException {
+    void testEqualsNodeFailJsonOrgArray() {
         assertThatThrownBy(() -> assertJsonEquals(readByJsonOrg("[1, 2]"), readByJsonOrg("[1, 2, 3]")))
             .hasMessage("JSON documents are different:\n" +
                 "Array \"\" has different length, expected: <2> but was: <3>.\n" +
@@ -104,7 +102,7 @@ class AllJsonAssertTest extends AbstractJsonAssertTest {
     }
 
     @Test
-    void testEqualsNodeStringFail() throws IOException {
+    void testEqualsNodeStringFail() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":\"a\"}", readByJackson2("{\"test\": \"b\"}")))
             .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <\"a\"> but was: <\"b\">.\n");
     }

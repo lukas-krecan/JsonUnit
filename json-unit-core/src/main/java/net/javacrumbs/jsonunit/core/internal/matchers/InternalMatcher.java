@@ -402,7 +402,7 @@ public final class InternalMatcher {
                 }
             }
 
-            failWithMessage("Node \"" + path + "\" is '" + array.toString() + "', expected to contain '" + expected + "'.");
+            failWithMessage("Node \"" + path + "\" is '" + array + "', expected to contain '" + expected + "'.");
         }
 
         public void isEmpty() {

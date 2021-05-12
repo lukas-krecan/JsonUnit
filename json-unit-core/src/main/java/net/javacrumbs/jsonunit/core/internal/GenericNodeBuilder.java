@@ -15,6 +15,8 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -283,7 +285,7 @@ class GenericNodeBuilder implements NodeBuilder {
             };
         }
 
-        public Iterator<KeyValue> iterator() {
+        public @NotNull Iterator<KeyValue> iterator() {
             return fields();
         }
 

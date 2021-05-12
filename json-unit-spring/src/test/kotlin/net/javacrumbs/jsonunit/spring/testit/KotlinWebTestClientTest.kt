@@ -43,7 +43,7 @@ import org.springframework.web.context.WebApplicationContext
 @WebAppConfiguration
 internal class KotlinWebTestClientTest {
     @Autowired
-    lateinit var wac: WebApplicationContext;
+    lateinit var wac: WebApplicationContext
 
     lateinit var client: WebTestClient
 

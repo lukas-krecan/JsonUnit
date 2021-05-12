@@ -174,7 +174,7 @@ class JsonUtilsTest {
     }
 
     @Test
-    void shouldIgnoreEscapedDot() throws IOException {
+    void shouldIgnoreEscapedDot() {
         assertFalse(nodeAbsent("{\"test.1\":{\"value\":1}}", Path.create("test\\.1"), false));
     }
 

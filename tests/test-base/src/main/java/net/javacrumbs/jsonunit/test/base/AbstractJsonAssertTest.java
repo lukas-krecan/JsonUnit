@@ -23,7 +23,6 @@ import org.hamcrest.Matcher;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigDecimal;
 
@@ -43,7 +42,6 @@ import static net.javacrumbs.jsonunit.JsonAssert.setTolerance;
 import static net.javacrumbs.jsonunit.JsonAssert.when;
 import static net.javacrumbs.jsonunit.JsonAssert.whenIgnoringPaths;
 import static net.javacrumbs.jsonunit.JsonAssert.withMatcher;
-import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.path;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.paths;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.rootPath;
@@ -884,12 +882,12 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
-    void testEqualsNode() throws IOException {
+    void testEqualsNode() {
         assertJsonEquals(readValue("{\"test\":1}"), readValue("{\"test\": 1}"));
     }
 
     @Test
-    void testEqualsNodeIgnore() throws IOException {
+    void testEqualsNodeIgnore() {
         assertJsonEquals(readValue("{\"test\":\"${json-unit.ignore}\"}"), readValue("{\"test\": 1}"));
     }
 
@@ -1169,7 +1167,7 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
-    void testEqualsNodeStringFail() throws IOException {
+    void testEqualsNodeStringFail() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":\"a\"}", readValue("{\"test\": \"b\"}")))
             .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <\"a\"> but was: <\"b\">.\n");
     }
