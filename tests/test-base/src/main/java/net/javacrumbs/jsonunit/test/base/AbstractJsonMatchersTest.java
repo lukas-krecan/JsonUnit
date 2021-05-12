@@ -138,7 +138,7 @@ public abstract class AbstractJsonMatchersTest {
         doAssertThat("{\"test\":1}", jsonStringPartEquals("test", "1"));
         doAssertThat("{\"test\":1}", jsonStringEquals("{\"test\" : 1}"));
         doAssertThat("{\"test\":1}", jsonPartEquals("test", "1"));
-        doAssertThat("{\"test\":1}", jsonEquals(("{\"test\" : 1}")));
+        doAssertThat("{\"test\":1}", jsonEquals("{\"test\" : 1}"));
     }
 
     private void doAssertThat(String text, Matcher<String> matcher) {

@@ -529,8 +529,8 @@ public class Diff {
     private List<Node> asList(Iterator<Node> elements) {
         List<Node> result = new ArrayList<>();
         while (elements.hasNext()) {
-            Node Node = elements.next();
-            result.add(Node);
+            Node node = elements.next();
+            result.add(node);
         }
         return Collections.unmodifiableList(result);
     }
