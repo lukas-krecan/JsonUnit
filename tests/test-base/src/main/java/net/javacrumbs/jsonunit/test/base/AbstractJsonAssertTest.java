@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.StringReader;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 
 import static java.math.BigDecimal.ZERO;
 import static java.math.BigDecimal.valueOf;
@@ -1182,7 +1183,7 @@ public abstract class AbstractJsonAssertTest {
 
     @Test
     protected void testBinary() {
-        assertJsonEquals("{\"binary\":\"aGk=\"}", singletonMap("binary", "hi".getBytes()));
+        assertJsonEquals("{\"binary\":\"aGk=\"}", singletonMap("binary", "hi".getBytes(StandardCharsets.UTF_8)));
     }
 
     @Test

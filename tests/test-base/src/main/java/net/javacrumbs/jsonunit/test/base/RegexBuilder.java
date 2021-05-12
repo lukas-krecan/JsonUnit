@@ -19,6 +19,7 @@ public class RegexBuilder {
         return new RegexBuilder(expression + regex);
     }
 
+    @Override
     public String toString() {
         return expression + "$\"";
     }

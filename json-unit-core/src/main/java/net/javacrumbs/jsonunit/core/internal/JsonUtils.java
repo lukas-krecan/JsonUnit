@@ -19,10 +19,10 @@ package net.javacrumbs.jsonunit.core.internal;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeSet;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 
@@ -214,21 +214,12 @@ public class JsonUtils {
     }
 
     static String prettyPrint(Map<String, Object> map) {
-        StringBuilder builder = new StringBuilder();
-        builder.append("{");
-        Iterator<String> keys = new TreeSet<>(map.keySet()).iterator();
-        while (keys.hasNext()) {
-            String key = keys.next();
-            builder
-                .append('"').append(key).append('"')
+        return map.entrySet().stream()
+            .sorted(Entry.comparingByKey())
+            .map(entry -> new StringBuilder().append('"').append(entry.getKey()).append('"')
                 .append(":")
-                .append(quoteString(map.get(key)));
-            if (keys.hasNext()) {
-                builder.append(",");
-            }
-        }
-        builder.append("}");
-        return builder.toString();
+                .append(quoteString(entry.getValue()))
+            ).collect(Collectors.joining(",", "{", "}"));
     }
 
     private static Object quoteString(Object value) {

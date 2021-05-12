@@ -21,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import java.io.Reader;
 import java.math.BigDecimal;
 
+import static net.javacrumbs.jsonunit.core.internal.Utils.closeQuietly;
 import static net.javacrumbs.jsonunit.core.internal.Utils.toReader;
 
 /**
@@ -36,7 +37,11 @@ abstract class AbstractNodeFactory implements NodeFactory {
         } else if (source instanceof String && ((String) source).trim().length() > 0) {
             return readValue((String) source, label, lenient);
         } else if (source instanceof Reader) {
-            return readValue((Reader) source, label, lenient);
+            try {
+                return readValue((Reader) source, label, lenient);
+            } finally {
+                closeQuietly((Reader) source);
+            }
         } else {
             return convertValue(source);
         }
