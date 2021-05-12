@@ -997,10 +997,12 @@ public abstract class AbstractJsonAssertTest {
     static class DivisionMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
         private BigDecimal param;
 
+        @Override
         public boolean matches(Object item) {
             return ((BigDecimal)item).remainder(param).compareTo(ZERO) == 0;
         }
 
+        @Override
         public void describeTo(Description description) {
             description.appendValue(param);
         }
@@ -1010,6 +1012,7 @@ public abstract class AbstractJsonAssertTest {
             description.appendText("It is not divisible by ").appendValue(param);
         }
 
+        @Override
         public void setParameter(String parameter) {
             this.param = new BigDecimal(parameter);
         }
@@ -1018,10 +1021,12 @@ public abstract class AbstractJsonAssertTest {
     private static class TrueMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
         private String param;
 
+        @Override
         public boolean matches(Object item) {
             return true;
         }
 
+        @Override
         public void describeTo(Description description) {
             description.appendValue(param);
         }
@@ -1031,6 +1036,7 @@ public abstract class AbstractJsonAssertTest {
 
         }
 
+        @Override
         public void setParameter(String parameter) {
             this.param = parameter;
         }
@@ -1045,6 +1051,7 @@ public abstract class AbstractJsonAssertTest {
             return param.compareTo((BigDecimal) item) == 0;
         }
 
+        @Override
         public void describeTo(Description description) {
             description.appendValue(param);
         }
@@ -1054,6 +1061,7 @@ public abstract class AbstractJsonAssertTest {
 
         }
 
+        @Override
         public void setParameter(String parameter) {
             this.param = new BigDecimal(parameter);
         }

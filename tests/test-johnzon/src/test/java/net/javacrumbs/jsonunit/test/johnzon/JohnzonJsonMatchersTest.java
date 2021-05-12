@@ -19,6 +19,7 @@ import net.javacrumbs.jsonunit.test.base.AbstractJsonMatchersTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
 
 public class JohnzonJsonMatchersTest extends AbstractJsonMatchersTest {
+    @Override
     protected Object readValue(String value) {
         return JsonTestUtils.readByJohnzon(value);
     }

@@ -53,6 +53,7 @@ class GsonNodeFactory extends AbstractNodeFactory {
         return newNode(JsonNull.INSTANCE);
     }
 
+    @Override
     protected Node readValue(Reader value, String label, boolean lenient) {
         // GSON is always lenient :-(
         try {
@@ -72,6 +73,7 @@ class GsonNodeFactory extends AbstractNodeFactory {
         }
     }
 
+    @Override
     public boolean isPreferredFor(Object source) {
         return source instanceof JsonElement;
     }
@@ -83,6 +85,7 @@ class GsonNodeFactory extends AbstractNodeFactory {
             this.jsonNode = jsonNode;
         }
 
+        @Override
         public Node element(int index) {
             if (jsonNode instanceof JsonArray) {
                 try {
@@ -96,18 +99,22 @@ class GsonNodeFactory extends AbstractNodeFactory {
         }
 
 
+        @Override
         public Iterator<KeyValue> fields() {
             if (jsonNode instanceof JsonObject) {
                 final Iterator<Map.Entry<String, JsonElement>> iterator = ((JsonObject) jsonNode).entrySet().iterator();
                 return new Iterator<KeyValue>() {
+                    @Override
                     public boolean hasNext() {
                         return iterator.hasNext();
                     }
 
+                    @Override
                     public void remove() {
                         iterator.remove();
                     }
 
+                    @Override
                     public KeyValue next() {
                         Map.Entry<String, JsonElement> entry = iterator.next();
                         return new KeyValue(entry.getKey(), newNode(entry.getValue()));
@@ -117,6 +124,7 @@ class GsonNodeFactory extends AbstractNodeFactory {
             throw new IllegalStateException("Can call fields() only on an JsonObject");
         }
 
+        @Override
         public Node get(String key) {
             if (jsonNode instanceof JsonObject) {
                 return newNode(((JsonObject) jsonNode).get(key));
@@ -125,26 +133,32 @@ class GsonNodeFactory extends AbstractNodeFactory {
             }
         }
 
+        @Override
         public boolean isMissingNode() {
             return false;
         }
 
+        @Override
         public boolean isNull() {
             return jsonNode.isJsonNull();
         }
 
+        @Override
         public Iterator<Node> arrayElements() {
             if (jsonNode instanceof JsonArray) {
                 final Iterator<JsonElement> iterator = ((JsonArray) jsonNode).iterator();
                 return new Iterator<Node>() {
+                    @Override
                     public boolean hasNext() {
                         return iterator.hasNext();
                     }
 
+                    @Override
                     public void remove() {
                         iterator.remove();
                     }
 
+                    @Override
                     public Node next() {
                         JsonElement entry = iterator.next();
                         return newNode(entry);
@@ -154,17 +168,20 @@ class GsonNodeFactory extends AbstractNodeFactory {
             throw new IllegalStateException("Can call arrayElements() only on an JsonArray");
         }
 
+        @Override
         public int size() {
             if (jsonNode instanceof JsonArray) {
-               return ((JsonArray) jsonNode).size();
+                return ((JsonArray) jsonNode).size();
             }
             throw new IllegalStateException("Can call arrayElements() only on an JsonArray");
         }
 
+        @Override
         public String asText() {
             return jsonNode.getAsString();
         }
 
+        @Override
         public NodeType getNodeType() {
             if (jsonNode.isJsonObject()) {
                 return NodeType.OBJECT;
@@ -183,6 +200,7 @@ class GsonNodeFactory extends AbstractNodeFactory {
             }
         }
 
+        @Override
         public BigDecimal decimalValue() {
             return jsonNode.getAsBigDecimal();
         }
@@ -193,6 +211,7 @@ class GsonNodeFactory extends AbstractNodeFactory {
             return jsonNode.getAsBigDecimal().scale() == 0 && !string.contains("e") && !string.contains("E");
         }
 
+        @Override
         public Boolean asBoolean() {
             return jsonNode.getAsBoolean();
         }

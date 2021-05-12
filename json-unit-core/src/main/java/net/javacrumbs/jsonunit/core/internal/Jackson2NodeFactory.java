@@ -50,6 +50,7 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
         return newNode(NullNode.getInstance());
     }
 
+    @Override
     protected Node readValue(Reader value, String label, boolean lenient) {
         try {
             return newNode(getMapper(lenient).readTree(value));
@@ -83,6 +84,7 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
         }
     }
 
+    @Override
     public boolean isPreferredFor(Object source) {
         return source instanceof JsonNode;
     }
@@ -94,21 +96,26 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
             this.jsonNode = jsonNode;
         }
 
+        @Override
         public Node element(int index) {
             return newNode(jsonNode.path(index));
         }
 
+        @Override
         public Iterator<KeyValue> fields() {
             final Iterator<Map.Entry<String, JsonNode>> iterator = jsonNode.fields();
             return new Iterator<KeyValue>() {
+                @Override
                 public boolean hasNext() {
                     return iterator.hasNext();
                 }
 
+                @Override
                 public void remove() {
                     iterator.remove();
                 }
 
+                @Override
                 public KeyValue next() {
                     Map.Entry<String, JsonNode> entry = iterator.next();
                     return new KeyValue(entry.getKey(), newNode(entry.getValue()));
@@ -116,43 +123,53 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
             };
         }
 
+        @Override
         public Node get(String key) {
             return newNode(jsonNode.get(key));
         }
 
+        @Override
         public boolean isMissingNode() {
             return false;
         }
 
+        @Override
         public boolean isNull() {
             return jsonNode.isNull();
         }
 
+        @Override
         public Iterator<Node> arrayElements() {
             final Iterator<JsonNode> elements = jsonNode.elements();
             return new Iterator<Node>() {
+                @Override
                 public boolean hasNext() {
                     return elements.hasNext();
                 }
 
+                @Override
                 public Node next() {
                     return newNode(elements.next());
                 }
 
+                @Override
                 public void remove() {
                     elements.remove();
                 }
             };
         }
 
+        @Override
         public int size() {
-           return jsonNode.size();
+            return jsonNode.size();
         }
 
+        @Override
         public String asText() {
             return jsonNode.asText();
         }
 
+        @Override
         public NodeType getNodeType() {
             if (jsonNode.isObject()) {
                 return NodeType.OBJECT;
@@ -173,10 +190,12 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
             }
         }
 
+        @Override
         public BigDecimal decimalValue() {
             return jsonNode.decimalValue();
         }
 
+        @Override
         public Boolean asBoolean() {
             return jsonNode.asBoolean();
         }

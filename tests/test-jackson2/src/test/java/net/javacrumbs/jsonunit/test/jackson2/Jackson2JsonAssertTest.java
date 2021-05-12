@@ -20,6 +20,7 @@ import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
 
 public class Jackson2JsonAssertTest extends AbstractJsonAssertTest {
 
+    @Override
     protected Object readValue(String value) {
         return JsonTestUtils.readByJackson2(value);
     }

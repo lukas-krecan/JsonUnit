@@ -14,6 +14,7 @@ interface ExceptionFactory {
 }
 
 class BasicExceptionFactory implements ExceptionFactory {
+    @Override
     public AssertionError createException(String message, Differences diffs) {
         return new BasicJsonAssertError(message, diffs);
     }

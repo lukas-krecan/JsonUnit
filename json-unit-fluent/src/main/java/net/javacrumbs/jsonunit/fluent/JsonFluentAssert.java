@@ -277,6 +277,7 @@ public class JsonFluentAssert {
          * @param newPath
          * @return object comparing only node given by path.
          */
+        @Override
         public ConfigurableJsonFluentAssert node(String newPath) {
             return new ConfigurableJsonFluentAssert(internalMatcher.node(newPath));
         }

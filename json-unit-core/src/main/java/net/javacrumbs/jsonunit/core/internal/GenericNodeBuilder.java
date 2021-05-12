@@ -34,6 +34,7 @@ class GenericNodeBuilder implements NodeBuilder {
         return INSTANCE.newNode(object);
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public Node newNode(Object object) {
         if (object == null) {
@@ -64,42 +65,52 @@ class GenericNodeBuilder implements NodeBuilder {
     }
 
     static abstract class NodeSkeleton extends AbstractNode {
+        @Override
         public Node element(int index) {
             return MISSING_NODE;
         }
 
+        @Override
         public Iterator<KeyValue> fields() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Node get(String key) {
             return MISSING_NODE;
         }
 
+        @Override
         public boolean isMissingNode() {
             return false;
         }
 
+        @Override
         public boolean isNull() {
             return false;
         }
 
+        @Override
         public Iterator<Node> arrayElements() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public int size() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public String asText() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public BigDecimal decimalValue() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public Boolean asBoolean() {
             throw new UnsupportedOperationException();
         }
@@ -111,6 +122,7 @@ class GenericNodeBuilder implements NodeBuilder {
             return true;
         }
 
+        @Override
         public NodeType getNodeType() {
             return NodeType.NULL;
         }
@@ -128,6 +140,7 @@ class GenericNodeBuilder implements NodeBuilder {
             this.value = value;
         }
 
+        @Override
         public NodeType getNodeType() {
             return NodeType.NUMBER;
         }
@@ -151,6 +164,7 @@ class GenericNodeBuilder implements NodeBuilder {
             this.value = value;
         }
 
+        @Override
         public NodeType getNodeType() {
             return NodeType.STRING;
         }
@@ -173,6 +187,7 @@ class GenericNodeBuilder implements NodeBuilder {
             this.value = value;
         }
 
+        @Override
         public NodeType getNodeType() {
             return NodeType.BOOLEAN;
         }
@@ -197,6 +212,7 @@ class GenericNodeBuilder implements NodeBuilder {
             this.nodeBuilder = nodeBuilder;
         }
 
+        @Override
         public NodeType getNodeType() {
             return NodeType.ARRAY;
         }
@@ -214,14 +230,17 @@ class GenericNodeBuilder implements NodeBuilder {
         public Iterator<Node> arrayElements() {
             final Iterator<?> iterator = value.iterator();
             return new Iterator<Node>() {
+                @Override
                 public boolean hasNext() {
                     return iterator.hasNext();
                 }
 
+                @Override
                 public Node next() {
                     return newNode(iterator.next());
                 }
 
+                @Override
                 public void remove() {
                     iterator.remove();
                 }
@@ -263,21 +282,26 @@ class GenericNodeBuilder implements NodeBuilder {
             this.nodeBuilder = nodeBuilder;
         }
 
+        @Override
         public Node element(int index) {
             return nodeBuilder.newNode(null);
         }
 
+        @Override
         public Iterator<KeyValue> fields() {
             final Iterator<String> iterator = jsonObject.keySet().iterator();
             return new Iterator<KeyValue>() {
+                @Override
                 public boolean hasNext() {
                     return iterator.hasNext();
                 }
 
+                @Override
                 public void remove() {
                     iterator.remove();
                 }
 
+                @Override
                 public KeyValue next() {
                     String fieldName = iterator.next();
                     return new KeyValue(fieldName, newNode(fieldName));
@@ -285,10 +309,12 @@ class GenericNodeBuilder implements NodeBuilder {
             };
         }
 
+        @Override
         public @NotNull Iterator<KeyValue> iterator() {
             return fields();
         }
 
+        @Override
         public Node get(String key) {
             if (jsonObject.containsKey(key)) {
                 return newNode(key);
@@ -301,6 +327,7 @@ class GenericNodeBuilder implements NodeBuilder {
             return nodeBuilder.newNode(jsonObject.get(fieldName));
         }
 
+        @Override
         public NodeType getNodeType() {
             return NodeType.OBJECT;
         }

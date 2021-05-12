@@ -27,6 +27,7 @@ import static net.javacrumbs.jsonunit.core.internal.Utils.toReader;
  * Common superclass for node factories
  */
 abstract class AbstractNodeFactory implements NodeFactory {
+    @Override
     public Node convertToNode(Object source, String label, boolean lenient) {
         if (source == null) {
             return nullNode();

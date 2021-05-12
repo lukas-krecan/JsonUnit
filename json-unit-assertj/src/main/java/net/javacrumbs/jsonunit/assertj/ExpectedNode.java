@@ -32,54 +32,67 @@ class ExpectedNode implements Node {
         this.wrappedNode = wrappedNode;
     }
 
+    @Override
     public Node element(int index) {
         return wrappedNode.element(index);
     }
 
+    @Override
     public Iterator<Node.KeyValue> fields() {
         return wrappedNode.fields();
     }
 
+    @Override
     public Node get(String key) {
         return wrappedNode.get(key);
     }
 
+    @Override
     public boolean isMissingNode() {
         return wrappedNode.isMissingNode();
     }
 
+    @Override
     public boolean isNull() {
         return wrappedNode.isNull();
     }
 
+    @Override
     public Iterator<Node> arrayElements() {
         return wrappedNode.arrayElements();
     }
 
+    @Override
     public int size() {
         return wrappedNode.size();
     }
 
+    @Override
     public String asText() {
         return wrappedNode.asText();
     }
 
+    @Override
     public Node.NodeType getNodeType() {
         return wrappedNode.getNodeType();
     }
 
+    @Override
     public BigDecimal decimalValue() {
         return wrappedNode.decimalValue();
     }
 
+    @Override
     public Boolean asBoolean() {
         return wrappedNode.asBoolean();
     }
 
+    @Override
     public Object getValue() {
         return wrappedNode.getValue();
     }
 
+    @Override
     public void ___do_not_implement_this_interface_seriously() {
     }
 

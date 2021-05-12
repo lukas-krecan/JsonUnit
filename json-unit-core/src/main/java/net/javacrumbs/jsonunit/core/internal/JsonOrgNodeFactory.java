@@ -43,6 +43,7 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
         return newNode(null);
     }
 
+    @Override
     protected Node readValue(Reader value, String label, boolean lenient) {
         try {
             return newNode(new JSONTokener(value).nextValue());
@@ -75,6 +76,7 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
         }
     }
 
+    @Override
     public boolean isPreferredFor(Object source) {
         return source instanceof JSONObject || source instanceof JSONArray;
     }
@@ -86,6 +88,7 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
             this.value = value;
         }
 
+        @Override
         public NodeType getNodeType() {
             return NodeType.ARRAY;
         }
@@ -103,14 +106,17 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
         public Iterator<Node> arrayElements() {
             final Iterator<Object> iterator = value.iterator();
             return new Iterator<Node>() {
+                @Override
                 public boolean hasNext() {
                     return iterator.hasNext();
                 }
 
+                @Override
                 public Node next() {
                     return newNode(iterator.next());
                 }
 
+                @Override
                 public void remove() {
                     iterator.remove();
                 }
@@ -135,21 +141,26 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
             this.jsonObject = jsonObject;
         }
 
+        @Override
         public Node element(int index) {
             return newNode(null);
         }
 
+        @Override
         public Iterator<KeyValue> fields() {
             final Iterator<String> iterator = jsonObject.keys();
             return new Iterator<KeyValue>() {
+                @Override
                 public boolean hasNext() {
                     return iterator.hasNext();
                 }
 
+                @Override
                 public void remove() {
                     iterator.remove();
                 }
 
+                @Override
                 public KeyValue next() {
                     String fieldName = iterator.next();
                     return new KeyValue(fieldName, newNode(jsonObject.get(fieldName)));
@@ -157,6 +168,7 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
             };
         }
 
+        @Override
         public Node get(String key) {
             Object value = jsonObject.opt(key);
             if (value != null) {
@@ -166,6 +178,7 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
             }
         }
 
+        @Override
         public NodeType getNodeType() {
             return NodeType.OBJECT;
         }

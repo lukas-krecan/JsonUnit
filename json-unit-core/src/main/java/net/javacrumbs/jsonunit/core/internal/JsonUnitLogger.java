@@ -43,10 +43,12 @@ interface JsonUnitLogger {
             logger = LoggerFactory.getLogger(name);
         }
 
+        @Override
         public boolean isEnabled() {
             return logger.isDebugEnabled();
         }
 
+        @Override
         public void log(String message, Object... params) {
             logger.debug(message, params);
         }

@@ -56,6 +56,7 @@ class MoshiNodeFactory extends AbstractNodeFactory {
         }
     }
 
+    @Override
     protected Node readValue(Reader value, String label, boolean lenient) {
         try {
             return readValue(Utils.readAsString(value), label, lenient);
@@ -76,6 +77,7 @@ class MoshiNodeFactory extends AbstractNodeFactory {
     }
 
     private static class MoshiNodeBuilder extends GenericNodeBuilder {
+        @Override
         public Node newNode(Object object) {
             if (object instanceof Number) {
                 return new MoshiNumberNode((Number) object);

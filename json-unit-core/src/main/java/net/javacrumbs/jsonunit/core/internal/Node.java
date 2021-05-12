@@ -31,6 +31,7 @@ public interface Node {
 
     enum NodeType implements ValueExtractor {
         OBJECT("object") {
+            @Override
             public Object getValue(Node node) {
                 // custom conversion to map. We want be consistent and native mapping may have different rules for
                 // serializing numbers, dates etc.
@@ -38,26 +39,31 @@ public interface Node {
             }
         },
         ARRAY("array") {
+            @Override
             public Object getValue(Node node) {
                 return new JsonList(node);
             }
         },
         STRING("string") {
+            @Override
             public Object getValue(Node node) {
                 return node.asText();
             }
         },
         NUMBER("number") {
+            @Override
             public Object getValue(Node node) {
                 return node.decimalValue();
             }
         },
         BOOLEAN("boolean") {
+            @Override
             public Object getValue(Node node) {
                 return node.asBoolean();
             }
         },
         NULL("null") {
+            @Override
             public Object getValue(Node node) {
                 return null;
             }

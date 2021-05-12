@@ -139,21 +139,25 @@ public class JsonMatchers {
             super(path);
         }
 
+        @Override
         public ConfigurableJsonMatcher<T> withTolerance(BigDecimal tolerance) {
             configuration = configuration.withTolerance(tolerance);
             return this;
         }
 
+        @Override
         public ConfigurableJsonMatcher<T> withTolerance(double tolerance) {
             configuration = configuration.withTolerance(tolerance);
             return this;
         }
 
+        @Override
         public ConfigurableJsonMatcher<T> when(Option first, Option... next) {
             configuration = configuration.withOptions(first, next);
             return this;
         }
 
+        @Override
         public ConfigurableJsonMatcher<T> withOptions(Options options) {
             configuration = configuration.withOptions(options);
             return this;
@@ -168,6 +172,7 @@ public class JsonMatchers {
         /**
          * Adds a matcher to be used in ${json-unit.matches:matcherName} macro.
          */
+        @Override
         public ConfigurableJsonMatcher<T> withMatcher(String matcherName, Matcher<?> matcher) {
             configuration = configuration.withMatcher(matcherName, matcher);
             return this;
@@ -177,11 +182,13 @@ public class JsonMatchers {
          * Makes JsonUnit ignore the specified paths in the actual value. If the path matches,
          * it's completely ignored. It may be missing, null or have any value
          */
+        @Override
         public ConfigurableJsonMatcher<T> whenIgnoringPaths(String... paths) {
             configuration = configuration.whenIgnoringPaths(paths);
             return this;
         }
 
+        @Override
         public ConfigurableJsonMatcher<T> withDifferenceListener(DifferenceListener differenceListener) {
             configuration = configuration.withDifferenceListener(differenceListener);
             return this;
@@ -204,6 +211,7 @@ public class JsonMatchers {
             this.expected = expected;
         }
 
+        @Override
         boolean doMatch(Object item) {
             Diff diff = createInternal(expected, item, FULL_JSON,  Path.create(path, ""), configuration, HAMCREST_DIFFERENCE_STRING);
             if (!diff.similar()) {
@@ -212,6 +220,7 @@ public class JsonMatchers {
             return diff.similar();
         }
 
+        @Override
         public void describeTo(Description description) {
             if (EMPTY_PATH.equals(path)) {
                 description.appendText(safeToString());
@@ -246,10 +255,12 @@ public class JsonMatchers {
             super(path);
         }
 
+        @Override
         boolean doMatch(Object item) {
             return nodeAbsent(item, path, configuration);
         }
 
+        @Override
         public void describeTo(Description description) {
             description.appendText("Node \"" + getPath() + "\" is absent.");
         }
@@ -265,10 +276,12 @@ public class JsonMatchers {
             super(path);
         }
 
+        @Override
         boolean doMatch(Object item) {
             return !nodeAbsent(item, getPath(), configuration);
         }
 
+        @Override
         public void describeTo(Description description) {
             description.appendText("Node \"" + getPath() + "\" is present.");
         }
@@ -287,6 +300,7 @@ public class JsonMatchers {
             this.matcher = matcher;
         }
 
+        @Override
         boolean doMatch(Object item) {
             Node node = getNode(item, path);
             if (!node.isMissingNode()) {
@@ -297,6 +311,7 @@ public class JsonMatchers {
             }
         }
 
+        @Override
         public void describeTo(Description description) {
             description.appendText("node \"" + getPath() + "\" ");
             matcher.describeTo(description);

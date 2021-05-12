@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class JohnzonJsonAssertTest extends AbstractJsonAssertTest {
+    @Override
     protected Object readValue(String value) {
         return JsonTestUtils.readByJohnzon(value);
     }

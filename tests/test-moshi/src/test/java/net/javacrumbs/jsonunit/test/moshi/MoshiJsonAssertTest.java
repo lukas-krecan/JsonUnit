@@ -22,6 +22,7 @@ import org.junit.jupiter.api.Test;
 
 public class MoshiJsonAssertTest extends AbstractJsonAssertTest {
 
+    @Override
     protected Object readValue(String value) {
         return JsonTestUtils.readByMoshi(value);
     }

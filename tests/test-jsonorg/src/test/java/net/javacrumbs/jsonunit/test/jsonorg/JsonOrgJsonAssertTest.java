@@ -25,15 +25,18 @@ import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJsonOrg;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class JsonOrgJsonAssertTest extends AbstractJsonAssertTest {
+    @Override
     protected Object readValue(String value) {
         return JsonTestUtils.readByJsonOrg(value);
     }
 
+    @Override
     @Test
     public void shouldParseExpectedValueLeniently() {
         // JSONObject lenient parsing works differently
     }
 
+    @Override
     @Test
     public void shouldFailIfQuotationMarksMissingOnActualKeys() {
         // it's lenient by default

@@ -19,9 +19,11 @@ package net.javacrumbs.jsonunit.core.internal;
  * Common Node code
  */
 abstract class AbstractNode implements Node {
+    @Override
     public Object getValue() {
         return getNodeType().getValue(this);
     }
 
+    @Override
     public void ___do_not_implement_this_interface_seriously() {}
 }
