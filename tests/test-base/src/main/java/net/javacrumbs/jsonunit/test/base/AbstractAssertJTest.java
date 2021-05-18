@@ -114,6 +114,24 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void containsEntryShouldWork() {
+        String entryValue = "{\n" +
+            "  \"approvable\" : true," +
+            "  \"rejectable\" : false" +
+            "}";
+
+        String input = "[{\"allowedActions\":" + entryValue + "}]";
+
+        assertThatJson(input,
+            body -> body.isArray().hasSize(1),
+            body -> body.inPath("[0]").isObject().containsEntry("allowedActions", json(entryValue)),
+            body -> body.inPath("[0]").isObject().containsEntry("allowedActions", entryValue),
+            //body -> body.inPath("[0]").isObject().contains(entry("allowedActions", entryValue)),
+            body -> body.inPath("[0].allowedActions").isObject().isEqualTo(json(entryValue))
+        );
+    }
+
+    @Test
     void absentOnArray() {
         String json = "[{\"a\":1},{\"b\":1}]";
 

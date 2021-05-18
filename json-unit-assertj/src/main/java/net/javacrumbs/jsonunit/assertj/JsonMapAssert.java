@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static org.assertj.core.error.ShouldContainValue.shouldContainValue;
 import static org.assertj.core.error.ShouldNotContainValue.shouldNotContainValue;
 
@@ -106,6 +107,14 @@ class JsonMapAssert extends MapAssert<String, Object> {
         throw unsupportedOperation();
     }
 
+    @Override
+    public MapAssert<String, Object> containsEntry(String key, Object value) {
+        if (value instanceof Node) {
+            return super.containsEntry(key, ((Node) value).getValue());
+        } else {
+            return super.containsEntry(key, convertToJson(value, "expected", true).getValue());
+        }
+    }
 
     /**
      * Does not work. Use {@link #containsKey(Object)} instead.
@@ -153,7 +162,7 @@ class JsonMapAssert extends MapAssert<String, Object> {
     public MapAssert<String, Object> hasNoNullFieldsOrProperties() {
         return super.hasNoNullFieldsOrProperties();
     }
-    
+
     /**
      * Does not work. https://github.com/lukas-krecan/JsonUnit/issues/324
      */
