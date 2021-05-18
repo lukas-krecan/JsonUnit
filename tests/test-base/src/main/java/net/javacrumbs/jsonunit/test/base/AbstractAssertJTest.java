@@ -125,8 +125,13 @@ public abstract class AbstractAssertJTest {
         assertThatJson(input,
             body -> body.isArray().hasSize(1),
             body -> body.inPath("[0]").isObject().containsEntry("allowedActions", json(entryValue)),
-            body -> body.inPath("[0]").isObject().containsEntry("allowedActions", entryValue),
-            //body -> body.inPath("[0]").isObject().contains(entry("allowedActions", entryValue)),
+            body -> body.inPath("[0]").isObject().contains(entry("allowedActions", json(entryValue))),
+            body -> body.inPath("[0]").isObject().containsAllEntriesOf(singletonMap("allowedActions", json(entryValue))),
+            body -> body.inPath("[0]").isObject().containsAnyOf(entry("allowedActions", json(entryValue)), entry("test", 1)),
+            body -> body.inPath("[0]").isObject().containsExactlyEntriesOf(singletonMap("allowedActions", json(entryValue))),
+            body -> body.inPath("[0]").isObject().containsExactly(entry("allowedActions", json(entryValue))),
+            body -> body.inPath("[0]").isObject().containsExactlyInAnyOrderEntriesOf(singletonMap("allowedActions", json(entryValue))),
+            body -> body.inPath("[0]").isObject().containsOnly(entry("allowedActions", json(entryValue))),
             body -> body.inPath("[0].allowedActions").isObject().isEqualTo(json(entryValue))
         );
     }
