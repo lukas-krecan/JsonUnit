@@ -143,11 +143,21 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
         return super.contains(wrap(entries));
     }
 
+    @Override
+    public JsonMapAssert containsValues(Object... values) {
+        return super.containsValues(wrapValues(values));
+    }
+
+    private Object[] wrapValues(Object[] values) {
+        return stream(values).map(this::wrapValue).toArray();
+    }
+
     @NotNull
     @SuppressWarnings("unchecked")
     private Map.Entry<? extends String, ?>[] wrap(Map.Entry<? extends String, ?>[] entries) {
         return stream(entries).map(this::wrapEntry).toArray(Map.Entry[]::new);
     }
+
 
     @SuppressWarnings("unchecked")
     private Map.Entry<? extends String, ?>[] toEntries(Map<? extends String, ?> map) {
@@ -160,6 +170,15 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
         } else {
             // if it's not a node, we do not touch it
             return entry;
+        }
+    }
+
+    private Object wrapValue(Object value) {
+        if (value instanceof Node) {
+            return ((Node) value).getValue();
+        } else {
+            // if it's not a node, we do not touch it
+            return value;
         }
     }
 
