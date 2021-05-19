@@ -139,6 +139,24 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void containsValuesShouldPass() {
+        String json = "{\"a\": 1, \"b\": 2}";
+        assertThatJson(json).isObject().containsValues(valueOf(1), valueOf(2), json("\"${json-unit.any-number}\""));
+    }
+
+    @Test
+    void containsValuesShouldFail() {
+        String json = "{\"a\": 1, \"b\": 2}";
+        assertThatThrownBy(() ->
+            assertThatJson(json).isObject().containsValues(valueOf(1), valueOf(2), json("\"${json-unit.any-string}\""))
+        ).hasMessage("[Different value found in node \"\"] \n" +
+            "Expecting:\n" +
+            "  {\"a\":1,\"b\":2}\n" +
+            "to contain value:\n" +
+            "  \"${json-unit.any-string}\"");
+    }
+
+    @Test
     void absentOnArray() {
         String json = "[{\"a\":1},{\"b\":1}]";
 
