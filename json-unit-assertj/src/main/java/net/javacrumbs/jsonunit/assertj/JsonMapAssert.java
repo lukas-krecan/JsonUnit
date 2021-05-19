@@ -23,10 +23,15 @@ import org.assertj.core.api.AbstractMapAssert;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import static java.util.Arrays.stream;
+import static java.util.Objects.deepEquals;
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.entry;
+import static org.assertj.core.error.ShouldContain.shouldContain;
 import static org.assertj.core.error.ShouldContainValue.shouldContainValue;
 import static org.assertj.core.error.ShouldNotContainValue.shouldNotContainValue;
 import static org.assertj.core.util.Arrays.array;
@@ -116,7 +121,7 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
 
     @SafeVarargs
     @Override
-    public final JsonMapAssert containsAnyOf(Map.Entry<? extends String, ?>... entries) {
+    public final JsonMapAssert containsAnyOf(Entry<? extends String, ?>... entries) {
         return super.containsAnyOf(wrap(entries));
     }
 
@@ -127,20 +132,38 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
 
     @SafeVarargs
     @Override
-    public final JsonMapAssert containsExactly(Map.Entry<? extends String, ?>... entries) {
+    public final JsonMapAssert containsExactly(Entry<? extends String, ?>... entries) {
         return super.containsExactly(wrap(entries));
     }
 
     @SafeVarargs
     @Override
-    public final JsonMapAssert containsOnly(Map.Entry<? extends String, ?>... entries) {
+    public final JsonMapAssert containsOnly(Entry<? extends String, ?>... entries) {
         return super.containsOnly(wrap(entries));
     }
 
     @Override
     @SafeVarargs
-    public final JsonMapAssert contains(Map.Entry<? extends String, ?>... entries) {
-        return super.contains(wrap(entries));
+    public final JsonMapAssert contains(Entry<? extends String, ?>... expected) {
+        List<Entry<? extends String, ?>> notFound = stream(expected).filter(entry -> !doesContainEntry(entry)).collect(toList());
+        if (!notFound.isEmpty()) {
+            throwAssertionError(shouldContain(actual, expected, notFound));
+        }
+        return this;
+    }
+
+    private boolean doesContainEntry(Entry<? extends String, ?> entry) {
+        String key = entry.getKey();
+        if (!actual.containsKey(key)) {
+            return false;
+        }
+        Object actualValue = actual.get(key);
+        if (entry.getValue() instanceof Node) {
+            Node value = (Node) entry.getValue();
+            return isSimilar(actualValue, value);
+        } else {
+            return deepEquals(actualValue, entry.getValue());
+        }
     }
 
     @Override
@@ -151,17 +174,17 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
 
     @NotNull
     @SuppressWarnings("unchecked")
-    private Map.Entry<? extends String, ?>[] wrap(Map.Entry<? extends String, ?>[] entries) {
-        return stream(entries).map(this::wrapEntry).toArray(Map.Entry[]::new);
+    private Entry<? extends String, ?>[] wrap(Entry<? extends String, ?>[] entries) {
+        return stream(entries).map(this::wrapEntry).toArray(Entry[]::new);
     }
 
 
     @SuppressWarnings("unchecked")
-    private Map.Entry<? extends String, ?>[] toEntries(Map<? extends String, ?> map) {
-        return map.entrySet().toArray(new Map.Entry[0]);
+    private Entry<? extends String, ?>[] toEntries(Map<? extends String, ?> map) {
+        return map.entrySet().toArray(new Entry[0]);
     }
 
-    private Map.Entry<? extends String, ?> wrapEntry(Map.Entry<? extends String, ?> entry) {
+    private Entry<? extends String, ?> wrapEntry(Entry<? extends String, ?> entry) {
         if (entry.getValue() instanceof Node) {
             return entry(entry.getKey(), ((Node) entry.getValue()).getValue());
         } else {
@@ -181,7 +204,7 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
     }
 
     /**
-     * Does not work. Use {@link #contains(Map.Entry[])} instead.
+     * Does not work. Use {@link #contains(Entry[])} instead.
      * https://github.com/lukas-krecan/JsonUnit/issues/324
      */
     @Override
@@ -240,6 +263,10 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
     }
 
     private boolean contains(Object expected) {
-        return actual.entrySet().stream().anyMatch(kv -> Diff.create(expected, kv.getValue(), "fullJson", path.asPrefix(), configuration).similar());
+        return actual.entrySet().stream().anyMatch(entry -> isSimilar(entry.getValue(), expected));
+    }
+
+    private boolean isSimilar(Object actual, Object expected) {
+        return Diff.create(expected, actual, "fullJson", path.asPrefix(), configuration).similar();
     }
 }

@@ -139,6 +139,32 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void containsEntryShouldWorkWithMatcher() {
+        String json = "{\"a\": 1, \"b\": 2}";
+        assertThatJson(json).isObject().containsEntry("a", json("\"${json-unit.any-number}\""));
+        assertThatJson(json).isObject().contains(entry("a", json("\"${json-unit.any-number}\"")));
+    }
+
+    @Test
+    void containsEntryShouldFailWithMatcher() {
+        String json = "{\"a\": 1, \"b\": 2}";
+
+        assertThatThrownBy(() ->
+            assertThatJson(json).isObject().contains(
+                entry("a", json("\"${json-unit.any-string}\"")),
+                entry("b", json("\"${json-unit.any-number}\""))
+            )
+        ).hasMessage("[Different value found in node \"\"] \n" +
+            "Expecting map:\n" +
+            "  {\"a\":1,\"b\":2}\n" +
+            "to contain:\n" +
+            "  [MapEntry[key=\"a\", value=\"${json-unit.any-string}\"],\n" +
+            "    MapEntry[key=\"b\", value=\"${json-unit.any-number}\"]]\n" +
+            "but could not find the following map entries:\n" +
+            "  [MapEntry[key=\"a\", value=\"${json-unit.any-string}\"]]\n");
+    }
+
+    @Test
     void containsValuesShouldPass() {
         String json = "{\"a\": 1, \"b\": 2}";
         assertThatJson(json).isObject().containsValues(valueOf(1), valueOf(2), json("\"${json-unit.any-number}\""));
