@@ -26,12 +26,15 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
 import static java.util.Objects.deepEquals;
 import static java.util.stream.Collectors.toList;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
 import static org.assertj.core.api.Assertions.entry;
 import static org.assertj.core.error.ShouldContain.shouldContain;
+import static org.assertj.core.error.ShouldContainAnyOf.shouldContainAnyOf;
 import static org.assertj.core.error.ShouldContainValue.shouldContainValue;
 import static org.assertj.core.error.ShouldNotContainValue.shouldNotContainValue;
 import static org.assertj.core.util.Arrays.array;
@@ -122,7 +125,11 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
     @SafeVarargs
     @Override
     public final JsonMapAssert containsAnyOf(Entry<? extends String, ?>... entries) {
-        return super.containsAnyOf(wrap(entries));
+        boolean anyMatch = stream(entries).anyMatch(this::doesContainEntry);
+        if (!anyMatch) {
+            throwAssertionError(shouldContainAnyOf(actual, entries));
+        }
+        return this;
     }
 
     @Override
@@ -130,22 +137,41 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
         return contains(toEntries(other));
     }
 
+    /**
+     * This method does not support JsonUnit features. Prefer {@link #containsOnly(Entry[])}
+     */
     @SafeVarargs
     @Override
+    @Deprecated
     public final JsonMapAssert containsExactly(Entry<? extends String, ?>... entries) {
-        return super.containsExactly(wrap(entries));
+        return super.containsExactly(entries);
+    }
+
+    /**
+     * This method does not support JsonUnit features. Prefer {@link #containsOnly(Entry[])}
+     */
+    @Override
+    @Deprecated
+    public JsonMapAssert containsExactlyEntriesOf(Map<? extends String, ?> map) {
+        return super.containsExactlyEntriesOf(map);
     }
 
     @SafeVarargs
     @Override
-    public final JsonMapAssert containsOnly(Entry<? extends String, ?>... entries) {
-        return super.containsOnly(wrap(entries));
+    public final JsonMapAssert containsOnly(Entry<? extends String, ?>... expected) {
+        Map<? extends String, ?> expectedAsMap = stream(expected).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+        return isEqualTo(wrapDeserializedObject(expectedAsMap));
+    }
+
+    @NotNull
+    private List<Entry<? extends String, ?>> entriesNotFoundInMap(Entry<? extends String, ?>[] expected) {
+        return stream(expected).filter(entry -> !doesContainEntry(entry)).collect(toList());
     }
 
     @Override
     @SafeVarargs
     public final JsonMapAssert contains(Entry<? extends String, ?>... expected) {
-        List<Entry<? extends String, ?>> notFound = stream(expected).filter(entry -> !doesContainEntry(entry)).collect(toList());
+        List<Entry<? extends String, ?>> notFound = entriesNotFoundInMap(expected);
         if (!notFound.isEmpty()) {
             throwAssertionError(shouldContain(actual, expected, notFound));
         }
@@ -172,25 +198,9 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
         return this;
     }
 
-    @NotNull
-    @SuppressWarnings("unchecked")
-    private Entry<? extends String, ?>[] wrap(Entry<? extends String, ?>[] entries) {
-        return stream(entries).map(this::wrapEntry).toArray(Entry[]::new);
-    }
-
-
     @SuppressWarnings("unchecked")
     private Entry<? extends String, ?>[] toEntries(Map<? extends String, ?> map) {
         return map.entrySet().toArray(new Entry[0]);
-    }
-
-    private Entry<? extends String, ?> wrapEntry(Entry<? extends String, ?> entry) {
-        if (entry.getValue() instanceof Node) {
-            return entry(entry.getKey(), ((Node) entry.getValue()).getValue());
-        } else {
-            // if it's not a node, we do not touch it
-            return entry;
-        }
     }
 
     /**
