@@ -114,6 +114,109 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void containsEntryShouldWork() {
+        String entryValue = "{\n" +
+            "  \"approvable\" : true," +
+            "  \"rejectable\" : false" +
+            "}";
+
+        String input = "[{\"allowedActions\":" + entryValue + "}]";
+
+        assertThatJson(input,
+            body -> body.isArray().hasSize(1),
+            body -> body.inPath("[0]").isObject().containsEntry("allowedActions", json(entryValue)),
+            body -> body.inPath("[0]").isObject().contains(entry("allowedActions", json(entryValue))),
+            body -> body.inPath("[0]").isObject().containsAllEntriesOf(singletonMap("allowedActions", json(entryValue))),
+            body -> body.inPath("[0]").isObject().containsAnyOf(entry("allowedActions", json(entryValue)), entry("test", 1)),
+            body -> body.inPath("[0]").isObject().containsExactlyInAnyOrderEntriesOf(singletonMap("allowedActions", json(entryValue))),
+            body -> body.inPath("[0]").isObject().containsOnly(entry("allowedActions", json(entryValue))),
+            body -> body.inPath("[0]").isObject().containsValues(json(entryValue)),
+            body -> body.inPath("[0]").isObject().containsValue(json(entryValue)),
+            body -> body.inPath("[0].allowedActions").isObject().isEqualTo(json(entryValue))
+        );
+    }
+
+    @Test
+    void containsEntryShouldWorkWithMatcher() {
+        String json = "{\"a\": 1, \"b\": 2}";
+        assertThatJson(json).isObject().containsEntry("a", json("\"${json-unit.any-number}\""));
+        assertThatJson(json).isObject().contains(entry("a", json("\"${json-unit.any-number}\"")));
+    }
+
+    @Test
+    void containsOnlyShouldWorkWithMatcher() {
+        String json = "{\"a\": 1, \"b\": 2}";
+        assertThatJson(json).isObject().containsOnly(
+            entry("a", json("\"${json-unit.any-number}\"")),
+            entry("b", json("\"${json-unit.any-number}\""))
+        );
+    }
+
+    @Test
+    void containsEntryShouldFailWithMatcher() {
+        String json = "{\"a\": 1, \"b\": 2}";
+
+        assertThatThrownBy(() ->
+            assertThatJson(json).isObject().contains(
+                entry("a", json("\"${json-unit.any-string}\"")),
+                entry("b", json("\"${json-unit.any-number}\""))
+            )
+        ).hasMessage("[Different value found in node \"\"] \n" +
+            "Expecting map:\n" +
+            "  {\"a\":1,\"b\":2}\n" +
+            "to contain:\n" +
+            "  [MapEntry[key=\"a\", value=\"${json-unit.any-string}\"],\n" +
+            "    MapEntry[key=\"b\", value=\"${json-unit.any-number}\"]]\n" +
+            "but could not find the following map entries:\n" +
+            "  [MapEntry[key=\"a\", value=\"${json-unit.any-string}\"]]\n");
+    }
+
+    @Test
+    void containsAnyOfShouldWorkWithMatcher() {
+        String json = "{\"a\": 1, \"b\": 2}";
+        assertThatJson(json).isObject().containsAnyOf(
+            entry("a", json("\"${json-unit.any-string}\"")),
+            entry("a", json("\"${json-unit.any-number}\""))
+        );
+    }
+
+    @Test
+    void containsAnyOfShouldFailWithMatcher() {
+        String json = "{\"a\": 1, \"b\": 2}";
+
+        assertThatThrownBy(() ->
+            assertThatJson(json).isObject().containsAnyOf(
+                entry("a", json("\"${json-unit.any-string}\"")),
+                entry("b", json("\"${json-unit.any-string}\""))
+            )
+        ).hasMessage("[Different value found in node \"\"] \n" +
+            "Expecting:\n" +
+            "  {\"a\":1,\"b\":2}\n" +
+            "to contain at least one of the following elements:\n" +
+            "  [MapEntry[key=\"a\", value=\"${json-unit.any-string}\"],\n" +
+            "    MapEntry[key=\"b\", value=\"${json-unit.any-string}\"]]\n" +
+            "but none were found ");
+    }
+
+    @Test
+    void containsValuesShouldPass() {
+        String json = "{\"a\": 1, \"b\": 2}";
+        assertThatJson(json).isObject().containsValues(valueOf(1), valueOf(2), json("\"${json-unit.any-number}\""));
+    }
+
+    @Test
+    void containsValuesShouldFail() {
+        String json = "{\"a\": 1, \"b\": 2}";
+        assertThatThrownBy(() ->
+            assertThatJson(json).isObject().containsValues(valueOf(1), valueOf(2), json("\"${json-unit.any-string}\""))
+        ).hasMessage("[Different value found in node \"\"] \n" +
+            "Expecting:\n" +
+            "  {\"a\":1,\"b\":2}\n" +
+            "to contain value:\n" +
+            "  \"${json-unit.any-string}\"");
+    }
+
+    @Test
     void absentOnArray() {
         String json = "[{\"a\":1},{\"b\":1}]";
 
