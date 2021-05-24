@@ -675,8 +675,8 @@ Release notes
 
 ## 2.26.0
 
-* Fixed containsEntries in AssertJ object assert. This required to change return type of `isObject()` method which may
-  be an incompatible change for test which store the result in a variable as the new type is different.
+* Fixed `containsEntries` in AssertJ object assert. This required to change the return type of `isObject()` method which
+  may be an incompatible change for tests which store the result in a variable.
 
 ## 2.25.0
 
