@@ -124,7 +124,7 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
 
     @SafeVarargs
     @Override
-    public final JsonMapAssert containsAnyOf(Entry<? extends String, ?>... entries) {
+    protected final JsonMapAssert containsAnyOfForProxy(Entry<? extends String, ?>... entries) {
         boolean anyMatch = stream(entries).anyMatch(this::doesContainEntry);
         if (!anyMatch) {
             throwAssertionError(shouldContainAnyOf(actual, entries));
@@ -143,8 +143,8 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
     @SafeVarargs
     @Override
     @Deprecated
-    public final JsonMapAssert containsExactly(Entry<? extends String, ?>... entries) {
-        return super.containsExactly(entries);
+    public final JsonMapAssert containsExactlyForProxy(Entry<? extends String, ?>... entries) {
+        return super.containsExactlyForProxy(entries);
     }
 
     /**
@@ -158,7 +158,7 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
 
     @SafeVarargs
     @Override
-    public final JsonMapAssert containsOnly(Entry<? extends String, ?>... expected) {
+    protected final JsonMapAssert containsOnlyForProxy(Entry<? extends String, ?>... expected) {
         Map<? extends String, ?> expectedAsMap = stream(expected).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
         return isEqualTo(wrapDeserializedObject(expectedAsMap));
     }
@@ -170,7 +170,7 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
 
     @Override
     @SafeVarargs
-    public final JsonMapAssert contains(Entry<? extends String, ?>... expected) {
+    protected final JsonMapAssert containsForProxy(Entry<? extends String, ?>... expected) {
         List<Entry<? extends String, ?>> notFound = entriesNotFoundInMap(expected);
         if (!notFound.isEmpty()) {
             throwAssertionError(shouldContain(actual, expected, notFound));
@@ -193,7 +193,7 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
     }
 
     @Override
-    public JsonMapAssert containsValues(Object... values) {
+    protected JsonMapAssert containsValuesForProxy(Object... values) {
         stream(values).forEach(this::containsValue);
         return this;
     }
