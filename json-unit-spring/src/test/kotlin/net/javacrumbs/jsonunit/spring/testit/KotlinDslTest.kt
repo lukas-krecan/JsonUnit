@@ -112,7 +112,7 @@ internal class KotlinDslTest {
             }
         }.hasMessage("[Different value found in node \"result.string\"] \n" +
                 "expected: \"stringValue2\"\n" +
-                "but was : \"stringValue\"")
+                " but was: \"stringValue\"")
     }
 
 
