@@ -40,4 +40,4 @@ jobs:
     - name: Build
       env:
         MAVEN_OPTS: ${{ matrix.maven-opts }}
-      run: mvn -B clean package --file pom.xml
+      run: mvn -B clean package biz.aQute.bnd:bnd-resolver-maven-plugin:resolve --file pom.xml
