@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 
 /**
  * Comparison configuration. Immutable.
@@ -42,7 +44,7 @@ public class Configuration {
 
     private static final String DEFAULT_IGNORE_PLACEHOLDER = "${json-unit.ignore}";
     private static final String ALTERNATIVE_IGNORE_PLACEHOLDER = "#{json-unit.ignore}";
-    private static final Configuration EMPTY_CONFIGURATION = new Configuration(null, Options.empty(), DEFAULT_IGNORE_PLACEHOLDER, Matchers.empty(), Collections.emptySet(), DUMMY_LISTENER, Collections.emptyList());
+    private static final Configuration EMPTY_CONFIGURATION = new Configuration(null, Options.empty(), DEFAULT_IGNORE_PLACEHOLDER, Matchers.empty(), emptySet(), DUMMY_LISTENER, emptyList(), emptyList());
     private final BigDecimal tolerance;
     private final Options options;
     private final String ignorePlaceholder;
@@ -50,13 +52,14 @@ public class Configuration {
     private final List<PathOption> pathOptions;
     private final Set<String> pathsToBeIgnored;
     private final DifferenceListener differenceListener;
+    private final List<GenericMatcher> genericMatchers;
 
     @Deprecated
     public Configuration(BigDecimal tolerance, Options options, String ignorePlaceholder) {
-        this(tolerance, options, ignorePlaceholder, Matchers.empty(), Collections.emptySet(), DUMMY_LISTENER, Collections.emptyList());
+        this(tolerance, options, ignorePlaceholder, Matchers.empty(), emptySet(), DUMMY_LISTENER, emptyList(), emptyList());
     }
 
-    private Configuration(@Nullable BigDecimal tolerance, Options options, String ignorePlaceholder, Matchers matchers, Set<String> pathsToBeIgnored, DifferenceListener differenceListener, List<PathOption> pathOptions) {
+    private Configuration(@Nullable BigDecimal tolerance, Options options, String ignorePlaceholder, Matchers matchers, Set<String> pathsToBeIgnored, DifferenceListener differenceListener, List<PathOption> pathOptions, List<GenericMatcher> genericMatchers) {
         this.tolerance = tolerance;
         this.options = options;
         this.ignorePlaceholder = ignorePlaceholder;
@@ -64,6 +67,7 @@ public class Configuration {
         this.pathsToBeIgnored = pathsToBeIgnored;
         this.pathOptions = pathOptions;
         this.differenceListener = differenceListener;
+        this.genericMatchers = genericMatchers;
     }
 
     /**
@@ -82,7 +86,7 @@ public class Configuration {
      */
     @NotNull
     public Configuration withTolerance(@Nullable BigDecimal tolerance) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions);
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions, genericMatchers);
     }
 
     /**
@@ -117,7 +121,7 @@ public class Configuration {
      */
     @NotNull
     public Configuration withOptions(@NotNull Option first, @NotNull Option... next) {
-        return new Configuration(tolerance, options.with(first, next), ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions);
+        return new Configuration(tolerance, options.with(first, next), ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions, genericMatchers);
     }
 
     /**
@@ -128,7 +132,7 @@ public class Configuration {
      */
     @NotNull
     public Configuration withOptions(@NotNull Options options) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions);
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions, genericMatchers);
     }
 
     /**
@@ -157,20 +161,17 @@ public class Configuration {
 
     @NotNull
     public Configuration withPathOptions(@NotNull List<PathOption> pathOptions) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, Collections.unmodifiableList(new ArrayList<>(pathOptions)));
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, Collections.unmodifiableList(new ArrayList<>(pathOptions)), genericMatchers);
     }
 
     @NotNull
     public Configuration whenIgnoringPaths(@NotNull Collection<String> pathsToBeIgnored) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, Collections.unmodifiableSet(new HashSet<>(pathsToBeIgnored)), differenceListener, pathOptions);
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers, Collections.unmodifiableSet(new HashSet<>(pathsToBeIgnored)), differenceListener, pathOptions, genericMatchers);
     }
 
     /**
      * Makes JsonUnit ignore the specified paths in the actual value. If the path matches,
      * it's completely ignored. It may be missing, null or have any value
-     *
-     * @param pathsToBeIgnored
-     * @return
      *
      * @see ConfigurationWhen#thenIgnore
      */
@@ -181,25 +182,28 @@ public class Configuration {
 
     /**
      * Sets ignore placeholder.
-     *
-     * @param ignorePlaceholder
-     * @return
      */
     @NotNull
     public Configuration withIgnorePlaceholder(@NotNull String ignorePlaceholder) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions);
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions, genericMatchers);
     }
 
     /**
      * Adds a matcher to be used in ${json-unit.matches:matcherName} macro.
-     *
-     * @param matcherName
-     * @param matcher
-     * @return
      */
     @NotNull
     public Configuration withMatcher(@NotNull String matcherName, @NotNull Matcher<?> matcher) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers.with(matcherName, matcher), pathsToBeIgnored, differenceListener, pathOptions);
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers.with(matcherName, matcher), pathsToBeIgnored, differenceListener, pathOptions, genericMatchers);
+    }
+
+    /**
+     * Adds a matcher to be used.
+     */
+    @NotNull
+    public Configuration withMatcher(@NotNull GenericMatcher genericMatcher) {
+        List<GenericMatcher> newGenericMatchers = new ArrayList<>(genericMatchers);
+        newGenericMatchers.add(genericMatcher);
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions, newGenericMatchers);
     }
 
     /**
@@ -207,7 +211,7 @@ public class Configuration {
      */
     @NotNull
     public Configuration withDifferenceListener(@NotNull DifferenceListener differenceListener) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions);
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions, genericMatchers);
     }
 
     @NotNull
@@ -248,6 +252,11 @@ public class Configuration {
     @NotNull
     public DifferenceListener getDifferenceListener() {
         return differenceListener;
+    }
+
+    @NotNull
+    public List<GenericMatcher> getGenericMatchers() {
+        return genericMatchers;
     }
 
     public boolean shouldIgnore(String expectedValue) {

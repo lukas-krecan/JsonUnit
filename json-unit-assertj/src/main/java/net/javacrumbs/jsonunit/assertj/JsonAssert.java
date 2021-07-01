@@ -18,6 +18,7 @@ package net.javacrumbs.jsonunit.assertj;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
+import net.javacrumbs.jsonunit.core.GenericMatcher;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
@@ -378,14 +379,18 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
 
         /**
          * Adds a matcher to be used in ${json-unit.matches:matcherName} macro.
-         *
-         * @param matcherName
-         * @param matcher
-         * @return
          */
         @NotNull
         public ConfigurableJsonAssert withMatcher(@NotNull String matcherName, @NotNull Matcher<?> matcher) {
             return withConfiguration(c -> c.withMatcher(matcherName, matcher));
+        }
+
+        /**
+         * Adds a generic matcher.
+         */
+        @NotNull
+        public ConfigurableJsonAssert withMatcher(@NotNull GenericMatcher genericMatcher) {
+            return withConfiguration(c -> c.withMatcher(genericMatcher));
         }
 
 

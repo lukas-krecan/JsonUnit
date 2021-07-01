@@ -16,6 +16,8 @@
 package net.javacrumbs.jsonunit.core.internal;
 
 import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.GenericMatcher;
+import net.javacrumbs.jsonunit.core.GenericMatcher.Mismatch;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.ArrayComparison.ComparisonResult;
 import net.javacrumbs.jsonunit.core.internal.ArrayComparison.NodeWithIndex;
@@ -30,6 +32,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -374,6 +377,14 @@ public class Diff {
                 new HamcrestHandler(configuration, this::reportValueDifference, this::structureDifferenceFound)
                     .matchHamcrestMatcher(context, actualNode, patternMatcher, matcherName);
                 return true;
+            }
+
+            for (GenericMatcher matcher : configuration.getGenericMatchers()) {
+                Optional<Mismatch> mismatch = matcher.matches(expectedNode.asText(), actualNode.getValue(), context.getActualPath().getFullPath());
+                if (mismatch.isPresent()) {
+                    reportValueDifference(context, mismatch.get().getDifference());
+                    return true;
+                }
             }
         }
         return false;

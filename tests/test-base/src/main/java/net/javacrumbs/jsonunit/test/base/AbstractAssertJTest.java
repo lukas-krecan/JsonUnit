@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit.test.base;
 
 import net.javacrumbs.jsonunit.assertj.JsonAssert.ConfigurableJsonAssert;
+import net.javacrumbs.jsonunit.core.GenericMatcher;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest.DivisionMatcher;
 import org.hamcrest.Matcher;
@@ -27,7 +28,10 @@ import java.math.BigDecimal;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Pattern;
 
+import static java.math.BigDecimal.ZERO;
 import static java.math.BigDecimal.valueOf;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -53,7 +57,6 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.entry;
 import static org.hamcrest.Matchers.greaterThan;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public abstract class AbstractAssertJTest {
 
@@ -1002,12 +1005,36 @@ public abstract class AbstractAssertJTest {
     @Test
     void parametrizedMatcherShouldFail() {
         Matcher<?> divisionMatcher = new DivisionMatcher();
-        try {
+        assertThatThrownBy(() ->
             assertThatJson("{\"test\":5}")
                 .withMatcher("isDivisibleBy", divisionMatcher)
-                .isEqualTo("{\"test\": \"${json-unit.matches:isDivisibleBy}3\"}");
-        } catch (AssertionError e) {
-            assertEquals("JSON documents are different:\nMatcher \"isDivisibleBy\" does not match value 5 in node \"test\". It is not divisible by <3>\n", e.getMessage());
+                .isEqualTo("{\"test\": \"${json-unit.matches:isDivisibleBy}3\"}")
+        ).hasMessage("JSON documents are different:\nMatcher \"isDivisibleBy\" does not match value 5 in node \"test\". It is not divisible by <3>\n");
+    }
+
+    @Test
+    void parametrizedGenericMatcherShouldFail() {
+        GenericMatcher divisionMatcher = new GenericDivisionMatcher();
+        assertThatThrownBy(() ->
+            assertThatJson("{\"test\":5}")
+                .withMatcher(divisionMatcher)
+                .isEqualTo("{\"test\": \"${isDivisibleBy:3}\"}")
+        ).hasMessage("JSON documents are different:\n5 is not divisible by 3 in path \"test\"\n");
+    }
+
+    static class GenericDivisionMatcher implements GenericMatcher {
+        private static final Pattern pattern = Pattern.compile("\\$\\{isDivisibleBy:(\\d+)}");
+
+        @Override
+        public Optional<Mismatch> matches(String expected, Object actual, String actualPath) {
+            java.util.regex.Matcher matcher = pattern.matcher(expected);
+            if (matcher.matches()) {
+                BigDecimal divisor = new BigDecimal(matcher.group(1));
+                if (((BigDecimal) actual).remainder(divisor).compareTo(ZERO) != 0) {
+                    return Optional.of(new Mismatch(actual + " is not divisible by " + divisor + " in path \"" + actualPath + "\""));
+                }
+            }
+            return Optional.empty();
         }
     }
 
