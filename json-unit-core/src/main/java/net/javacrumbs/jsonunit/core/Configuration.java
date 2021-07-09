@@ -39,9 +39,7 @@ import static java.util.Arrays.asList;
  */
 public class Configuration {
     private static final DifferenceListener DUMMY_LISTENER = (difference, context) -> {};
-
     private static final String DEFAULT_IGNORE_PLACEHOLDER = "${json-unit.ignore}";
-    private static final String ALTERNATIVE_IGNORE_PLACEHOLDER = "#{json-unit.ignore}";
     private static final Configuration EMPTY_CONFIGURATION = new Configuration(null, Options.empty(), DEFAULT_IGNORE_PLACEHOLDER, Matchers.empty(), Collections.emptySet(), DUMMY_LISTENER, Collections.emptyList());
     private final BigDecimal tolerance;
     private final Options options;
@@ -248,15 +246,5 @@ public class Configuration {
     @NotNull
     public DifferenceListener getDifferenceListener() {
         return differenceListener;
-    }
-
-    public boolean shouldIgnore(String expectedValue) {
-        if (DEFAULT_IGNORE_PLACEHOLDER.equals(ignorePlaceholder)) {
-            // special handling of default state. We want to support both # and $ before {json-unit.ignore} but do not want to
-            // override user specified value if any
-            return DEFAULT_IGNORE_PLACEHOLDER.equals(expectedValue) || ALTERNATIVE_IGNORE_PLACEHOLDER.equals(expectedValue);
-        } else {
-            return ignorePlaceholder.equals(expectedValue);
-        }
     }
 }

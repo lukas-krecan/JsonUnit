@@ -19,6 +19,7 @@ import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.ArrayComparison.ComparisonResult;
 import net.javacrumbs.jsonunit.core.internal.ArrayComparison.NodeWithIndex;
+import net.javacrumbs.jsonunit.core.internal.GenericMatcher.Result.StopProcessing;
 import net.javacrumbs.jsonunit.core.listener.Difference;
 
 import java.math.BigDecimal;
@@ -48,6 +49,7 @@ import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
 import static net.javacrumbs.jsonunit.core.internal.DifferenceContextImpl.differenceContext;
 import static net.javacrumbs.jsonunit.core.internal.ExceptionUtils.createException;
 import static net.javacrumbs.jsonunit.core.internal.ExceptionUtils.formatDifferences;
+import static net.javacrumbs.jsonunit.core.internal.IgnoreElementGenericMatcher.shouldIgnoreElement;
 import static net.javacrumbs.jsonunit.core.internal.JsonUnitLogger.NULL_LOGGER;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
@@ -87,6 +89,7 @@ public class Diff {
     private final JsonUnitLogger diffLogger;
     private final JsonUnitLogger valuesLogger;
     private final String differenceString;
+    private final List<GenericMatcher> genericMatchers;
 
     Diff(Node expected, Node actual, Path startPath, Configuration configuration, JsonUnitLogger diffLogger, JsonUnitLogger valuesLogger, String differenceString) {
         this.expectedRoot = expected;
@@ -97,8 +100,12 @@ public class Diff {
         this.valuesLogger = valuesLogger;
         this.pathsToBeIgnored = PathMatcher.create(configuration.getPathsToBeIgnored());
         this.specificPathOptions = configuration.getPathOptions().stream()
-                .flatMap(PathOptionMatcher::createMatchersFromPathOption).collect(Collectors.groupingBy(PathOptionMatcher::getOption));
+            .flatMap(PathOptionMatcher::createMatchersFromPathOption).collect(Collectors.groupingBy(PathOptionMatcher::getOption));
         this.differenceString = differenceString;
+        this.genericMatchers = Arrays.asList(
+            new IgnoreValueGenericMatcher(configuration.getIgnorePlaceholder()),
+            new IgnoreElementGenericMatcher()
+        );
     }
 
     public static Diff create(Object expected, Object actual, String actualName, String path, Configuration configuration) {
@@ -284,13 +291,11 @@ public class Diff {
 
         Path fieldPath = context.getActualPath();
 
-        //ignoring value
-        if (expectedNodeType == NodeType.STRING && configuration.shouldIgnore(expectedNode.asText())) {
-            return;
-        }
-
-        if (shouldIgnoreElement(expectedNode)) {
-            return;
+        for (GenericMatcher matcher : genericMatchers) {
+            GenericMatcher.Result result = matcher.matches(context);
+            if (result instanceof StopProcessing) {
+                return;
+            }
         }
 
         // Any number
@@ -353,10 +358,6 @@ public class Diff {
                     throw new IllegalStateException("Unexpected node type " + expectedNodeType);
             }
         }
-    }
-
-    private boolean shouldIgnoreElement(Node expectedNode) {
-        return expectedNode.getNodeType() == NodeType.STRING && "${json-unit.ignore-element}".equals(expectedNode.asText());
     }
 
     private boolean shouldIgnorePath(Path fieldPath) {
