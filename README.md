@@ -216,7 +216,7 @@ To use import
 </dependency>
 ```
 
-For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/master/json-unit-spring/src/test/java/net/javacrumbs/jsonunit/spring/ExampleControllerTest.java).
+For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/master/json-unit-spring/src/test/java/net/javacrumbs/jsonunit/spring/testit/MockMvcTest.java).
 
 ## <a name="spring-web-client"></a>Spring WebTestClient
 To integrate with Spring WebTest client do
@@ -260,6 +260,9 @@ Import
 </dependency>
 ```
 
+For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/master/json-unit-spring/src/test/java/net/javacrumbs/jsonunit/spring/testit/WebTestClientTest.java).
+
+
 ## <a name="spring-client"></a>Spring REST client assertions
 
 ```java
@@ -279,6 +282,8 @@ To use import
     <scope>test</scope>
 </dependency>
 ```
+
+For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/master/json-unit-spring/src/test/java/net/javacrumbs/jsonunit/spring/testit/ClientTest.java).
 
 ## <a name="vintage"></a>Vintage APIs
 There are two API types that are still supported but not recommnded to use for new tests - Fluent assertions and Standard assert.
