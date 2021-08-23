@@ -209,14 +209,15 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
     private static class DefaultObjectMapperProvider implements Jackson2ObjectMapperProvider {
         static final Jackson2ObjectMapperProvider INSTANCE = new DefaultObjectMapperProvider();
 
-        private static final ObjectMapper mapper = new ObjectMapper();
-        private static final ObjectMapper lenientMapper = new ObjectMapper();
+        private static final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
+        private static final ObjectMapper lenientMapper = new ObjectMapper().findAndRegisterModules();
 
         static {
             lenientMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
             lenientMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
             lenientMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
         }
+
         @Override
         public ObjectMapper getObjectMapper(boolean lenient) {
             return lenient ? lenientMapper : mapper;
