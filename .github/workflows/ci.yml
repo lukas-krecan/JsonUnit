@@ -12,14 +12,14 @@ jobs:
   build:
     strategy:
       matrix:
-        java: [ '8', '11', '16' ]
+        java: [ '8', '11', '17' ]
         # Kotlin needs access to java.util
         include:
           - java: '8'
             maven-opts: ''
           - java: '11'
             maven-opts: ''
-          - java: '16'
+          - java: '17'
             maven-opts: --add-opens java.base/java.util=ALL-UNNAMED
     runs-on: 'ubuntu-latest'
     steps:
