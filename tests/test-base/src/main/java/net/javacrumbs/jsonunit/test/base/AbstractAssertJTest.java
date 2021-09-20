@@ -165,10 +165,9 @@ public abstract class AbstractAssertJTest {
             "Expecting map:\n" +
             "  {\"a\":1,\"b\":2}\n" +
             "to contain:\n" +
-            "  [MapEntry[key=\"a\", value=\"${json-unit.any-string}\"],\n" +
-            "    MapEntry[key=\"b\", value=\"${json-unit.any-number}\"]]\n" +
+            "  [\"a\"=\"${json-unit.any-string}\", \"b\"=\"${json-unit.any-number}\"]\n" +
             "but could not find the following map entries:\n" +
-            "  [MapEntry[key=\"a\", value=\"${json-unit.any-string}\"]]\n");
+            "  [\"a\"=\"${json-unit.any-string}\"]\n");
     }
 
     @Test
@@ -193,9 +192,8 @@ public abstract class AbstractAssertJTest {
             "Expecting actual:\n" +
             "  {\"a\":1,\"b\":2}\n" +
             "to contain at least one of the following elements:\n" +
-            "  [MapEntry[key=\"a\", value=\"${json-unit.any-string}\"],\n" +
-            "    MapEntry[key=\"b\", value=\"${json-unit.any-string}\"]]\n" +
-            "but none were found ");
+            "  [\"a\"=\"${json-unit.any-string}\", \"b\"=\"${json-unit.any-string}\"]\n" +
+            "but none were found");
     }
 
     @Test
@@ -419,9 +417,9 @@ public abstract class AbstractAssertJTest {
                 "Expecting map:\n" +
                 "  {\"b\":1}\n" +
                 "to contain:\n" +
-                "  [MapEntry[key=\"b\", value=2]]\n" +
+                "  [\"b\"=2]\n" +
                 "but could not find the following map entries:\n" +
-                "  [MapEntry[key=\"b\", value=2]]\n");
+                "  [\"b\"=2]\n");
     }
 
     @Test
@@ -453,9 +451,9 @@ public abstract class AbstractAssertJTest {
                 "Expecting map:\n" +
                 "  {\"b\":1,\"c\":true}\n" +
                 "to contain:\n" +
-                "  [c=false]\n" +
+                "  [\"c\"=false]\n" +
                 "but could not find the following map entries:\n" +
-                "  [c=false]\n");
+                "  [\"c\"=false]\n");
     }
 
     @Test
@@ -795,9 +793,9 @@ public abstract class AbstractAssertJTest {
                 "Expecting map:\n" +
                 "  {\"a\":1}\n" +
                 "to contain:\n" +
-                "  [MapEntry[key=\"lastModified2\", value=null]]\n" +
+                "  [\"lastModified2\"=null]\n" +
                 "but could not find the following map entries:\n" +
-                "  [MapEntry[key=\"lastModified2\", value=null]]\n");
+                "  [\"lastModified2\"=null]\n");
     }
 
     @Test
@@ -1287,7 +1285,7 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
-    void shouldIgnoreExtraFieldsAndorderExample() {
+    void shouldIgnoreExtraFieldsAndOrderExample() {
         assertThatJson("{\"test\":[{\"key\":3},{\"key\":2, \"extraField\":2},{\"key\":1}]}")
             .when(IGNORING_EXTRA_FIELDS, IGNORING_ARRAY_ORDER)
             .isEqualTo("{\"test\":[{\"key\":1},{\"key\":2},{\"key\":3}]}");
@@ -1303,7 +1301,7 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
-    void andSucess() {
+    void andSuccess() {
         assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}").and(
             a -> a.node("test").isObject(),
             a -> a.node("test.b").isEqualTo(2)
@@ -1320,7 +1318,7 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
-    void andNestedSucess() {
+    void andNestedSuccess() {
         assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}").node("test").and(
             a -> a.node("a").isEqualTo(1),
             a -> a.node("b").isEqualTo(2)
