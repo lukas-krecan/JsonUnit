@@ -29,14 +29,9 @@ jobs:
       with:
         java-version: ${{ matrix.java }}
         distribution: 'zulu'
+        cache: 'maven'
     - name: print Java version
       run: java -version
-    - uses: actions/cache@v2.1.6
-      with:
-        path: ~/.m2/repository
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-maven-
     - name: Build
       env:
         MAVEN_OPTS: ${{ matrix.maven-opts }}
