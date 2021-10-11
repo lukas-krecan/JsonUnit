@@ -628,7 +628,7 @@ assertThatJson("{\"a\":\"1\", \"b\":2}").isEqualTo("{b:2, a:'1'}");
 ```
 
 ## <a name="object-mapper-cust"></a>Jackson Object Mapper customization
-If you need to customize Jacson 2 Object Mapper, you can do using [SPI](https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html).
+If you need to customize Jackson 2 Object Mapper, you can do using [SPI](https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html).
 Implement `net.javacrumbs.jsonunit.providers.Jackson2ObjectMapperProvider`.
 
 ```java
