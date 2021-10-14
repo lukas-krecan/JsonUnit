@@ -53,6 +53,10 @@ assertThatJson("{\"a\":1}").isObject().containsEntry("a", BigDecimal.valueOf(1))
 assertThatJson("{\"a\":1, \"b\": {\"c\" :3}}")
     .isObject().containsValue(json("{\"c\" :\"${json-unit.any-number}\"}"));
 
+// AssertJ string assertion
+assertThatJson("{\"a\": \"value\"")
+    .node("a").isString().isEqualTo("value");
+
 // AssertJ array assertion
 assertThatJson("{\"a\":[{\"b\": 1}, {\"c\": 1}, {\"d\": 1}]}")
     .node("a").isArray().contains(json("{\"c\": 1}"));
