@@ -1514,8 +1514,8 @@ public abstract class AbstractAssertJTest {
     void jsonPathNumber() {
         assertThatJson(json)
             .inPath("$..book.length()")
-            .isArray()
-            .containsExactly(valueOf(4));
+            .isNumber()
+            .isEqualTo(valueOf(4));
     }
 
     @Test
