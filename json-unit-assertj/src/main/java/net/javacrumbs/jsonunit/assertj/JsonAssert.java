@@ -32,7 +32,6 @@ import org.assertj.core.api.AbstractStringAssert;
 import org.assertj.core.api.BigDecimalAssert;
 import org.assertj.core.api.BigIntegerAssert;
 import org.assertj.core.api.BooleanAssert;
-import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.StringAssert;
 import org.assertj.core.api.UriAssert;
 import org.assertj.core.description.Description;
@@ -181,7 +180,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      * @return
      */
     @NotNull
-    public ListAssert<Object> isArray() {
+    public JsonListAssert isArray() {
         Node node = assertType(ARRAY);
         return new JsonListAssert((List<?>)node.getValue(), path.asPrefix(), configuration)
             .as("Different value found in node \"%s\"", path);

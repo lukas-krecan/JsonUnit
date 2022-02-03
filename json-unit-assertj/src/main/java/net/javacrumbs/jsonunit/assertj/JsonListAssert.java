@@ -18,7 +18,7 @@ package net.javacrumbs.jsonunit.assertj;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Path;
-import org.assertj.core.api.ListAssert;
+import org.assertj.core.api.FactoryBasedNavigableListAssert;
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,12 +27,12 @@ import java.util.List;
 
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
 
-class JsonListAssert extends ListAssert<Object> {
+public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAssert, List<?>, Object, JsonObjectAssert> {
     private final Configuration configuration;
     private final Path path;
 
     JsonListAssert(List<?> actual, Path path, Configuration configuration) {
-        super(actual);
+        super(actual, JsonListAssert.class, t -> new JsonObjectAssert(t, path, configuration));
         this.path = path;
         this.configuration = configuration;
         usingComparator(new JsonComparator(configuration, path, true));
