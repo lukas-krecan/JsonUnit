@@ -1618,6 +1618,19 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void testArrayBug() {
+        assertThatJson("[\n" +
+            "      {\"value\": \"1\", \"title\": \"Entity\", \"info\": \"Entity info\"},\n" +
+            "      {\"value\": \"2\", \"title\": \"Column\", \"info\": \"Column info\"},\n" +
+            "      {\"value\": \"3\", \"title\": \"Table\", \"info\": \"Table info\"},\n" +
+            "      {\"value\": \"4\", \"title\": \"Schema\", \"info\": \"Schema info\"}\n" +
+            "    ]")
+            .inPath("$[?(@.value =='1')]")
+            .isArray().last()
+            .isEqualTo(json("{\"value\": \"1\", \"title\": \"Entity\", \"info\": \"Entity info\"}"));
+    }
+
+    @Test
     void testInnerString() {
         String json = "{\"myNode\":{\"inner\":\"foo\"}}";
         assertThatJson(json).inPath("$.myNode.inner").isString().isEqualTo("foo");
