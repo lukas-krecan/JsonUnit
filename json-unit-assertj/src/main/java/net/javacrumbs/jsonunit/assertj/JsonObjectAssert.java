@@ -18,11 +18,11 @@ package net.javacrumbs.jsonunit.assertj;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Path;
-import org.assertj.core.api.AbstractObjectAssert;
+import org.assertj.core.api.AbstractAssert;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class JsonObjectAssert extends AbstractObjectAssert<JsonObjectAssert, Object> {
+public class JsonObjectAssert extends AbstractAssert<JsonObjectAssert, Object> {
     private final Configuration configuration;
     private final Path path;
 
@@ -37,96 +37,6 @@ public class JsonObjectAssert extends AbstractObjectAssert<JsonObjectAssert, Obj
     @NotNull
     public JsonObjectAssert isEqualTo(@Nullable Object expected) {
         return compare(expected, configuration);
-    }
-
-    @Override
-    @NotNull
-    @Deprecated
-    public JsonObjectAssert isEqualToIgnoringGivenFields(@Nullable Object other, @NotNull String... propertiesOrFieldsToIgnore) {
-        return compare(other, configuration.whenIgnoringPaths(propertiesOrFieldsToIgnore));
-    }
-
-    @Override
-    @NotNull
-    @Deprecated
-    public JsonObjectAssert isEqualToComparingOnlyGivenFields(@Nullable Object other, @NotNull String... propertiesOrFieldsUsedInComparison) {
-        throw unsupportedOperation();
-    }
-
-    @Override
-    @NotNull
-    @Deprecated
-    public JsonObjectAssert isEqualToIgnoringNullFields(@Nullable Object other) {
-        throw unsupportedOperation();
-    }
-
-    @Override
-    @NotNull
-    @Deprecated
-    public JsonObjectAssert isEqualToComparingFieldByField(@Nullable Object other) {
-        throw unsupportedOperation();
-    }
-
-    @Override
-    @NotNull
-    @Deprecated
-    public JsonObjectAssert isEqualToComparingFieldByFieldRecursively(@Nullable Object other) {
-        throw unsupportedOperation();
-    }
-    /**
-     * Does not work.
-     * https://github.com/lukas-krecan/JsonUnit/issues/324
-     */
-    @Override
-    @Deprecated
-    public JsonObjectAssert hasFieldOrProperty(String name) {
-        return super.hasFieldOrProperty(name);
-    }
-
-    /**
-     * Does not work.
-     * https://github.com/lukas-krecan/JsonUnit/issues/324
-     */
-    @Override
-    @Deprecated
-    public JsonObjectAssert hasFieldOrPropertyWithValue(String name, Object value) {
-        return super.hasFieldOrPropertyWithValue(name, value);
-    }
-
-    /**
-     * Does not work. https://github.com/lukas-krecan/JsonUnit/issues/324
-     */
-    @Override
-    @Deprecated
-    public JsonObjectAssert hasAllNullFieldsOrProperties() {
-        return super.hasAllNullFieldsOrProperties();
-    }
-
-    /**
-     * Does not work. https://github.com/lukas-krecan/JsonUnit/issues/324
-     */
-    @Override
-    @Deprecated
-    public JsonObjectAssert hasAllNullFieldsOrPropertiesExcept(String... propertiesOrFieldsToIgnore) {
-        return super.hasAllNullFieldsOrPropertiesExcept(propertiesOrFieldsToIgnore);
-    }
-
-    /**
-     * Does not work. https://github.com/lukas-krecan/JsonUnit/issues/324
-     */
-    @Deprecated
-    @Override
-    public JsonObjectAssert hasNoNullFieldsOrProperties() {
-        return super.hasNoNullFieldsOrProperties();
-    }
-
-    /**
-     * Does not work. https://github.com/lukas-krecan/JsonUnit/issues/324
-     */
-    @Override
-    @Deprecated
-    public JsonObjectAssert hasNoNullFieldsOrPropertiesExcept(String... propertiesOrFieldsToIgnore) {
-        return super.hasNoNullFieldsOrPropertiesExcept(propertiesOrFieldsToIgnore);
     }
 
     @NotNull
