@@ -27,12 +27,12 @@ import java.util.List;
 
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
 
-public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAssert, List<?>, Object, JsonObjectAssert> {
+public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAssert, List<?>, Object, JsonAssert> {
     private final Configuration configuration;
     private final Path path;
 
     JsonListAssert(List<?> actual, Path path, Configuration configuration) {
-        super(actual, JsonListAssert.class, t -> new JsonObjectAssert(t, path, configuration));
+        super(actual, JsonListAssert.class, t -> new JsonAssert(path, configuration, t));
         this.path = path;
         this.configuration = configuration;
         usingComparator(new JsonComparator(configuration, path, true));
