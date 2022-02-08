@@ -44,4 +44,10 @@ abstract class AbstractAssertJKotlinTest {
             inPath("test2").isEqualTo(1)
         }
     }
+
+    @Test
+    fun assertSame() {
+        val s = """{ "a": 0.0 }"""
+        assertThatJson(s).isEqualTo(s)
+    }
 }

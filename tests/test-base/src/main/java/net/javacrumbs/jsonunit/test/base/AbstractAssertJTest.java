@@ -1646,6 +1646,12 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void assertSame() {
+        String s = "{ \"a\": 0.0 }";
+        assertThatJson(s).isEqualTo(s);
+    }
+
+    @Test
     void testInnerString() {
         String json = "{\"myNode\":{\"inner\":\"foo\"}}";
         assertThatJson(json).inPath("$.myNode.inner").isString().isEqualTo("foo");

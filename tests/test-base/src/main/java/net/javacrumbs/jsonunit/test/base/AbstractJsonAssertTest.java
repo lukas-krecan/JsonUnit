@@ -1371,9 +1371,11 @@ public abstract class AbstractJsonAssertTest {
                 "Different value found in node \"c\", expected: <2> but was: <3>.\n");
     }
 
+    @Test
+    void assertSame() {
+        String s = "{ \"a\": 0.0 }";
+        assertJsonEquals(s, s);
+    }
+
     protected abstract Object readValue(String value);
-
-
-
-
 }
