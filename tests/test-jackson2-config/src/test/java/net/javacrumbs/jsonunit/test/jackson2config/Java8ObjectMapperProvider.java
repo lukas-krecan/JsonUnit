@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit.test.jackson2config;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -30,11 +31,13 @@ public class Java8ObjectMapperProvider implements Jackson2ObjectMapperProvider {
     public Java8ObjectMapperProvider() {
         mapper = new ObjectMapper().registerModule(new JavaTimeModule());
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        mapper.configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true);
 
         lenientMapper = new ObjectMapper().registerModule(new JavaTimeModule());
         lenientMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
         lenientMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
         lenientMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+        lenientMapper.configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true);
     }
 
     @Override

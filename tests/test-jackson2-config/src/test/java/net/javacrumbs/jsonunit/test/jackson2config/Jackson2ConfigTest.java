@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 
+import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 
 class Jackson2ConfigTest {
@@ -31,6 +32,12 @@ class Jackson2ConfigTest {
     @Test
     void testSerializeTime2() {
         assertThatJson(new Bean()).isEqualTo(new Bean());
+    }
+
+    @Test
+    void assertSame() {
+        String s = "{ \"a\": 0.0 }";
+        assertJsonEquals(s, s);
     }
 
     public static class Bean {
