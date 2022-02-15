@@ -26,6 +26,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
+import static org.assertj.core.util.Lists.newArrayList;
 
 public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAssert, List<?>, Object, JsonAssert> {
     private final Configuration configuration;
@@ -57,6 +58,11 @@ public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAsse
             throwAssertionError(new BasicErrorMessageFactory("%nExpecting:%n <%s>%nnot to be equal to:%n <%s>%n%s", actual, other, strategy));
         }
         return this;
+    }
+
+    @Override
+    protected JsonListAssert newAbstractIterableAssert(Iterable<?> iterable) {
+        return new JsonListAssert(newArrayList(iterable), path, configuration);
     }
 
     @NotNull

@@ -1652,6 +1652,17 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void testArrayElements() {
+        String json = "[ [ \"a\", \"b\", \"c\", \"d\","
+            + " \"e\", \"f\", \"g\", \"h\", \"i\" ] ]";
+
+        assertThatJson(json).inPath("$.[0]")
+            .isArray()
+            .elements(3 /* d */, 4 /* e */, 5 /* f */ , 6 /* g */, 7 /* h */, 8 /* i */ )
+            .containsExactly("d", "e", "f", "g", "h", "i");
+    }
+
+    @Test
     void testInnerString() {
         String json = "{\"myNode\":{\"inner\":\"foo\"}}";
         assertThatJson(json).inPath("$.myNode.inner").isString().isEqualTo("foo");
