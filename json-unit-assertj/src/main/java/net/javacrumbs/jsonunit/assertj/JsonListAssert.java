@@ -18,7 +18,9 @@ package net.javacrumbs.jsonunit.assertj;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Path;
+import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.FactoryBasedNavigableListAssert;
+import org.assertj.core.api.InstanceOfAssertFactory;
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -63,6 +65,48 @@ public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAsse
     @Override
     protected JsonListAssert newAbstractIterableAssert(Iterable<?> iterable) {
         return new JsonListAssert(newArrayList(iterable), path, configuration);
+    }
+
+    /**
+     * @deprecated  InstanceOfAssertFactory is not supported with JsonUnit
+     */
+    @Override
+    @Deprecated
+    public <ASSERT extends AbstractAssert<?, ?>> ASSERT element(int index, InstanceOfAssertFactory<?, ASSERT> assertFactory) {
+        return super.element(index, assertFactory);
+    }
+
+    /**
+     * @deprecated  InstanceOfAssertFactory is not supported with JsonUnit
+     */
+    @Override
+    @Deprecated
+    public <ASSERT extends AbstractAssert<?, ?>> ASSERT singleElement(InstanceOfAssertFactory<?, ASSERT> assertFactory) {
+        return super.singleElement(assertFactory);
+    }
+
+    @Override
+    public <ASSERT extends AbstractAssert<?, ?>> ASSERT asInstanceOf(InstanceOfAssertFactory<?, ASSERT> instanceOfAssertFactory) {
+        throw failure("Please use isString(), isNumber(), isBoolean(), isNull(), isUri(), isArray() or isObject().%n"
+            + "This method will most likely not provide the result you expect it to.");
+    }
+
+    /**
+     * @deprecated  InstanceOfAssertFactory is not supported with JsonUnit
+     */
+    @Override
+    @Deprecated
+    public <ASSERT extends AbstractAssert<?, ?>> ASSERT first(InstanceOfAssertFactory<?, ASSERT> assertFactory) {
+        return super.first(assertFactory);
+    }
+
+    /**
+     * @deprecated  InstanceOfAssertFactory is not supported with JsonUnit
+     */
+    @Override
+    @Deprecated
+    public <ASSERT extends AbstractAssert<?, ?>> ASSERT last(InstanceOfAssertFactory<?, ASSERT> assertFactory) {
+        return super.last(assertFactory);
     }
 
     @NotNull
