@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit.core.internal;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.NullNode;
@@ -213,6 +214,8 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
         private static final ObjectMapper lenientMapper = new ObjectMapper().findAndRegisterModules();
 
         static {
+            mapper.configure(DeserializationFeature.FAIL_ON_TRAILING_TOKENS, true);
+
             lenientMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
             lenientMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
             lenientMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
