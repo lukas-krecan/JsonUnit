@@ -64,12 +64,6 @@ import static net.javacrumbs.jsonunit.core.internal.Node.NodeType;
  * @author Lukas Krecan
  */
 public class Diff {
-
-    // DO NOT remove redundant character escapes, they are needed for Android https://github.com/lukas-krecan/JsonUnit/pull/227
-    private static final Pattern ANY_NUMBER_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.any-number\\}");
-    private static final Pattern ANY_BOOLEAN_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.any-boolean\\}");
-    private static final Pattern ANY_STRING_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.any-string\\}");
-
     private static final Pattern REGEX_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.regex\\}(.*)");
     private static final Pattern MATCHER_PLACEHOLDER_PATTERN = Pattern.compile("[$#]\\{json-unit.matches:(.+?)\\}(.*)");
 
@@ -296,21 +290,6 @@ public class Diff {
             if (result instanceof StopProcessing) {
                 return;
             }
-        }
-
-        // Any number
-        if (checkAny(NodeType.NUMBER, ANY_NUMBER_PLACEHOLDER, "a number", context)) {
-            return;
-        }
-
-        // Any boolean
-        if (checkAny(NodeType.BOOLEAN, ANY_BOOLEAN_PLACEHOLDER, "a boolean", context)) {
-            return;
-        }
-
-        // Any string
-        if (checkAny(NodeType.STRING, ANY_STRING_PLACEHOLDER, "a string", context)) {
-            return;
         }
 
         if (checkMatcher(context)) {
