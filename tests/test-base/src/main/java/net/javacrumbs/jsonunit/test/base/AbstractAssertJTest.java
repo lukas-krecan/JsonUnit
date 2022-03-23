@@ -765,6 +765,11 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    protected void shouldFailOnTrainingToken() {
+        assertThatThrownBy(() -> assertThatJson("{\"test\":{}} SOME GARBAGE").isEqualTo("{\"test\": {}}"));
+    }
+
+    @Test
     void shouldAssertStringNumber() {
         assertThatJson("{\"a\":\"1\"}").node("a").asNumber().isEqualByComparingTo("1");
     }
