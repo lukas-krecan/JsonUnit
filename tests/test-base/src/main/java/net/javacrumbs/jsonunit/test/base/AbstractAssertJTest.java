@@ -52,6 +52,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.entry;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -767,6 +768,17 @@ public abstract class AbstractAssertJTest {
     @Test
     protected void shouldFailOnTrainingToken() {
         assertThatThrownBy(() -> assertThatJson("{\"test\":{}} SOME GARBAGE").isEqualTo("{\"test\": {}}"));
+    }
+
+    @Test
+    void arrayExtracting() {
+        assertThatJson("[\n" +
+            "      {\"id\": 1, \"name\":\"Aaron\"},\n" +
+            "      {\"id\": 2, \"name\":\"Paul\"}\n" +
+            "    ]")
+            .isArray()
+            .extracting("id", "name")
+            .contains(tuple(valueOf(1), "Aaron"), tuple(valueOf(2), "Paul"));
     }
 
     @Test
