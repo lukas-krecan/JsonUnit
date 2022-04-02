@@ -771,15 +771,56 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
-    void arrayExtracting() {
+    void arrayExtractingShouldPass() {
         assertThatJson("[\n" +
-            "      {\"id\": 1, \"name\":\"Aaron\"},\n" +
-            "      {\"id\": 2, \"name\":\"Paul\"}\n" +
+            "      {\"id\": 1, \"name\":{\"first\":\"Aaron\"}},\n" +
+            "      {\"id\": 2, \"name\":{\"first\":\"Paul\"}}\n" +
             "    ]")
             .isArray()
             .extracting("id", "name")
-            .contains(tuple(valueOf(1), "Aaron"), tuple(valueOf(2), "Paul"));
+            .contains(tuple(valueOf(1), "{\"first\":\"Aaron\"}"), tuple(valueOf(2), "{\"first\":\"Paul\"}"));
     }
+
+    @Test
+    void arrayExtractingShouldFail() {
+        assertThatThrownBy(() ->
+            assertThatJson("[\n" +
+                "      {\"id\": 1, \"name\":{\"first\":\"Aaron\"}},\n" +
+                "      {\"id\": 2, \"name\":{\"first\":\"John\"}}\n" +
+                "    ]")
+                .isArray()
+                .extracting("id", "name")
+                .contains(tuple(valueOf(1), "{\"first\":\"Aaron\"}"), tuple(valueOf(2), "{\"first\":\"Paul\"}"))
+        ).hasMessage("[Different value found in node \"\"] \n" +
+            "Expecting ArrayList:\n" +
+            "  [(1, {\"first\":\"Aaron\"}), (2, {\"first\":\"John\"})]\n" +
+            "to contain:\n" +
+            "  [(1, \"{\"first\":\"Aaron\"}\"), (2, \"{\"first\":\"Paul\"}\")]\n" +
+            "but could not find the following element(s):\n" +
+            "  [(2, \"{\"first\":\"Paul\"}\")]\n" +
+            "when comparing values using JsonComparator");
+    }
+
+    @Test
+    void arrayExtractingShouldFailOnDifferentLengthTuple() {
+        assertThatThrownBy(() ->
+        assertThatJson("[\n" +
+            "      {\"id\": 1, \"name\":{\"first\":\"Aaron\"}},\n" +
+            "      {\"id\": 2, \"name\":{\"first\":\"John\"}}\n" +
+            "    ]")
+            .isArray()
+            .extracting("id", "name")
+            .contains(tuple(valueOf(1), "{\"first\":\"Aaron\"}", 3), tuple(valueOf(2), "{\"first\":\"John\"}"))
+        ).hasMessage("[Different value found in node \"\"] \n" +
+            "Expecting ArrayList:\n" +
+            "  [(1, {\"first\":\"Aaron\"}), (2, {\"first\":\"John\"})]\n" +
+            "to contain:\n" +
+            "  [(1, \"{\"first\":\"Aaron\"}\", 3), (2, \"{\"first\":\"John\"}\")]\n" +
+            "but could not find the following element(s):\n" +
+            "  [(1, \"{\"first\":\"Aaron\"}\", 3)]\n" +
+            "when comparing values using JsonComparator");
+    }
+
 
     @Test
     void shouldAssertStringNumber() {

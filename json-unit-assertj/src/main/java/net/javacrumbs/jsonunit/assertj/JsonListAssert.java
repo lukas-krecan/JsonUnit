@@ -19,13 +19,9 @@ import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.api.AbstractListAssert;
 import org.assertj.core.api.FactoryBasedNavigableListAssert;
 import org.assertj.core.api.InstanceOfAssertFactory;
-import org.assertj.core.api.ListAssert;
-import org.assertj.core.api.ObjectAssert;
 import org.assertj.core.error.BasicErrorMessageFactory;
-import org.assertj.core.groups.Tuple;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -116,17 +112,5 @@ public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAsse
     @NotNull
     private Diff createDiff(Object other) {
         return Diff.create(other, wrapDeserializedObject(actual), "fullJson", path, configuration);
-    }
-
-    @Override
-    public AbstractListAssert<?, List<? extends Tuple>, Tuple, ObjectAssert<Tuple>> extracting(String... propertiesOrFields) {
-        return toPureAssertJ().extracting(propertiesOrFields);
-    }
-
-    /**
-     * Drops all Json related comparators and switches to pure AssertJ assert.
-     */
-    private ListAssert<Object> toPureAssertJ() {
-        return new ListAssert<>(actual);
     }
 }
