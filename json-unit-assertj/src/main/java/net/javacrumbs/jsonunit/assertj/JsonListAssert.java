@@ -35,7 +35,7 @@ public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAsse
     private final Path path;
 
     JsonListAssert(List<?> actual, Path path, Configuration configuration) {
-        super(actual, JsonListAssert.class, t -> new JsonAssert(path, configuration, t));
+        super(actual, JsonListAssert.class, t -> new JsonAssert(path, configuration, t, true));
         this.path = path;
         this.configuration = configuration;
         usingComparator(new JsonComparator(configuration, path, true));

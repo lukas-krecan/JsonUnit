@@ -64,12 +64,16 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     final Configuration configuration;
     private final InternalMatcher internalMatcher;
 
-    JsonAssert(Path path, Configuration configuration, Object actual) {
-        super(JsonUtils.convertToJson(actual, "actual"), JsonAssert.class);
+    JsonAssert(Path path, Configuration configuration, Object actual, boolean alreadyParsed) {
+        super(alreadyParsed ? JsonUtils.wrapDeserializedObject(actual) : JsonUtils.convertToJson(actual, "actual"), JsonAssert.class);
         this.path = path;
         this.configuration = configuration;
-        this.internalMatcher = new InternalMatcher(actual, path.asPrefix(), "", configuration);
+        this.internalMatcher = new InternalMatcher(alreadyParsed ? JsonUtils.wrapDeserializedObject(actual) : actual, path.asPrefix(), "", configuration);
         usingComparator(new JsonComparator(configuration, path, false));
+    }
+
+    JsonAssert(Path path, Configuration configuration, Object actual) {
+        this(path, configuration, actual, false);
     }
 
     JsonAssert(Object actual, Configuration configuration) {

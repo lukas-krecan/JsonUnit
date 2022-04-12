@@ -821,6 +821,23 @@ public abstract class AbstractAssertJTest {
             "when comparing values using JsonComparator");
     }
 
+    @Test
+    void shouldNotParseTwice() {
+        String result = "{\"bundles\":[\"http://localhost:33621/rms/framework/bundle/0\"]}";
+        assertThatJson(result).and(
+            j -> j.isObject(),
+            j -> j.node("bundles").isArray().element(0).asString().contains("http://", "/framework/bundle/0")
+        );
+    }
+
+    @Test
+    void elementWithTypeAssertShouldWork() {
+        String result = "{\"bundles\":[\"http://localhost:33621/rms/framework/bundle/0\"]}";
+        // FIXME: Better path in the message
+        assertThatThrownBy(() -> assertThatJson(result).node("bundles").isArray().element(0).isNumber())
+            .hasMessage("Node \"bundles\" has invalid type, expected: <number> but was: <\"http://localhost:33621/rms/framework/bundle/0\">.");
+    }
+
 
     @Test
     void shouldAssertStringNumber() {
