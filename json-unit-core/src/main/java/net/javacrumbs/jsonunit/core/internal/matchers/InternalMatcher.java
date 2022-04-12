@@ -57,13 +57,18 @@ public final class InternalMatcher {
     private final Object actual;
     private final String description;
     private final Configuration configuration;
+    private String nodeDescription;
 
-
-    public InternalMatcher(@Nullable Object actual, @NotNull Path path, @NotNull String description, @NotNull Configuration configuration) {
+    public InternalMatcher(@Nullable Object actual, @NotNull Path path, @NotNull String description, @NotNull Configuration configuration, @NotNull String nodeDescription) {
         this.path = path;
         this.actual = actual;
         this.description = description;
         this.configuration = configuration;
+        this.nodeDescription = nodeDescription;
+    }
+
+    public InternalMatcher(@Nullable Object actual, @NotNull Path path, @NotNull String description, @NotNull Configuration configuration) {
+        this(actual, path, description, configuration, "Node \"" + path + "\"");
     }
 
     private InternalMatcher(@NotNull Object actual, @NotNull String pathPrefix) {
@@ -346,7 +351,7 @@ public final class InternalMatcher {
     }
 
     private void failOnType(@NotNull String expectedType, @Nullable Object actualType) {
-        failWithMessage("Node \"" + path + "\" has invalid type, expected: <" + expectedType + "> but was: <" + actualType + ">.");
+        failWithMessage(nodeDescription + " has invalid type, expected: <" + expectedType + "> but was: <" + actualType + ">.");
     }
 
     /**
@@ -364,9 +369,9 @@ public final class InternalMatcher {
     }
 
     @SuppressWarnings("unchecked")
-    private static void match(@NotNull Object value, @NotNull Path path, @NotNull Matcher<?> matcher) {
+    private void match(@NotNull Object value, @NotNull Path path, @NotNull Matcher<?> matcher) {
         Node node = getNode(value, path);
-        assertThat("Node \"" + path + "\" does not match.", node.getValue(), (Matcher<? super Object>) matcher);
+        assertThat(nodeDescription + " does not match.", node.getValue(), (Matcher<? super Object>) matcher);
     }
 
 
@@ -389,7 +394,7 @@ public final class InternalMatcher {
          */
         public void ofLength(int expectedLength) {
             if (array.size() != expectedLength) {
-                failWithMessage("Node \"" + path + "\" has invalid length, expected: <" + expectedLength + "> but was: <" + array.size() + ">.");
+                failWithMessage(nodeDescription + " has invalid length, expected: <" + expectedLength + "> but was: <" + array.size() + ">.");
             }
         }
 
@@ -402,18 +407,18 @@ public final class InternalMatcher {
                 }
             }
 
-            failWithMessage("Node \"" + path + "\" is '" + array + "', expected to contain '" + expected + "'.");
+            failWithMessage(nodeDescription + " is '" + array + "', expected to contain '" + expected + "'.");
         }
 
         public void isEmpty() {
             if (!array.isEmpty()) {
-                failWithMessage("Node \"" + path + "\" is not an empty array.");
+                failWithMessage(nodeDescription + " is not an empty array.");
             }
         }
 
         public void isNotEmpty() {
             if (array.isEmpty()) {
-                failWithMessage("Node \"" + path + "\" is an empty array.");
+                failWithMessage(nodeDescription + " is an empty array.");
             }
         }
 

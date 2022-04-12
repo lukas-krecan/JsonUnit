@@ -57,18 +57,19 @@ import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NUMBER;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
 import static net.javacrumbs.jsonunit.jsonpath.InternalJsonPathUtils.resolveJsonPaths;
+import static org.assertj.core.description.Description.mostRelevantDescription;
 import static org.assertj.core.util.Strings.isNullOrEmpty;
 
 public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     final Path path;
     final Configuration configuration;
-    private final InternalMatcher internalMatcher;
+    private final Object actualForMatcher;
 
     JsonAssert(Path path, Configuration configuration, Object actual, boolean alreadyParsed) {
         super(alreadyParsed ? JsonUtils.wrapDeserializedObject(actual) : JsonUtils.convertToJson(actual, "actual"), JsonAssert.class);
         this.path = path;
         this.configuration = configuration;
-        this.internalMatcher = new InternalMatcher(alreadyParsed ? JsonUtils.wrapDeserializedObject(actual) : actual, path.asPrefix(), "", configuration);
+        this.actualForMatcher = alreadyParsed ? JsonUtils.wrapDeserializedObject(actual) : actual;
         usingComparator(new JsonComparator(configuration, path, false));
     }
 
@@ -148,7 +149,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      * Asserts that the value is an integer. 1 is an integer 1.0, 1.1, 1e3, 1e0, 1e-3 is not.
      */
     public BigIntegerAssert isIntegralNumber() {
-        Node node = internalMatcher.assertIntegralNumber();
+        Node node = internalMatcher().assertIntegralNumber();
         return new BigIntegerAssert(node.decimalValue().toBigIntegerExact())
             .as("Different value found in node \"%s\"", path);
     }
@@ -158,7 +159,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      */
     @NotNull
     public BigDecimalAssert asNumber() {
-        internalMatcher.isPresent(NUMBER.getDescription());
+        internalMatcher().isPresent(NUMBER.getDescription());
         Node node = getNode(actual, "");
         if (node.getNodeType() == NUMBER) {
             return createBigDecimalAssert(node.decimalValue());
@@ -169,13 +170,24 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
                 failWithMessage("Node \"" + path + "\" can not be converted to number expected: <a number> but was: <" + quoteTextValue(node.getValue()) + ">.");
             }
         } else {
-            internalMatcher.failOnType(node, "number or string");
+            internalMatcher().failOnType(node, "number or string");
         }
         return null;
     }
 
     private BigDecimalAssert createBigDecimalAssert(BigDecimal value) {
         return new BigDecimalAssert(value).as("Different value found in node \"%s\"", path);
+    }
+
+    private InternalMatcher internalMatcher() {
+        String description = mostRelevantDescription(info.description(), "Node \"" + path + "\"");
+        return new InternalMatcher(
+            actualForMatcher,
+            path.asPrefix(),
+            "",
+            configuration,
+            description
+        );
     }
 
     /**
@@ -187,7 +199,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     public JsonListAssert isArray() {
         Node node = assertType(ARRAY);
         return new JsonListAssert((List<?>)node.getValue(), path.asPrefix(), configuration)
-            .as("Different value found in node \"%s\"", path);
+            .as( "Node \"%s\"", path);
     }
 
     /**
@@ -244,7 +256,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      */
     @NotNull
     public JsonAssert isPresent() {
-        internalMatcher.isPresent();
+        internalMatcher().isPresent();
         return this;
     }
 
@@ -252,7 +264,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      * Asserts that given node is absent.
      */
     public void isAbsent() {
-        internalMatcher.isAbsent();
+        internalMatcher().isAbsent();
     }
 
     /**
@@ -261,12 +273,12 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     @Override
     @NotNull
     public JsonAssert isNotNull() {
-        internalMatcher.isNotNull();
+        internalMatcher().isNotNull();
         return this;
     }
 
     private Node assertType(Node.NodeType type) {
-        return internalMatcher.assertType(type);
+        return internalMatcher().assertType(type);
     }
 
     /**

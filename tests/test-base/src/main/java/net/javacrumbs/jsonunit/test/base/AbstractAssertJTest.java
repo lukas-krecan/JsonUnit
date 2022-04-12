@@ -293,7 +293,7 @@ public abstract class AbstractAssertJTest {
             .inPath("$.root")
             .isArray()
             .containsExactly(value("450")))
-            .hasMessage("[Different value found in node \"$.root\"] \n" +
+            .hasMessage("[Node \"$.root\"] \n" +
                 "Expecting actual:\n" +
                 "  [450]\n" +
                 "to contain exactly (and in same order):\n" +
@@ -591,7 +591,7 @@ public abstract class AbstractAssertJTest {
     void arraySimpleIgnoringOrderNotEqualComparisonError() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":[{\"b\": 1}, {\"c\": 1}, {\"d\": 1}]}").when(Option.IGNORING_ARRAY_ORDER).node("a").isArray()
             .isNotEqualTo(json("[{\"c\": 1}, {\"b\": 1} ,{\"d\": 1}]")))
-            .hasMessage("[Different value found in node \"a\"] \n" +
+            .hasMessage("[Node \"a\"] \n" +
                 "Expecting:\n" +
                 " <[{\"b\":1}, {\"c\":1}, {\"d\":1}]>\n" +
                 "not to be equal to:\n" +
@@ -791,7 +791,7 @@ public abstract class AbstractAssertJTest {
                 .isArray()
                 .extracting("id", "name")
                 .contains(tuple(valueOf(1), "{\"first\":\"Aaron\"}"), tuple(valueOf(2), "{\"first\":\"Paul\"}"))
-        ).hasMessage("[Different value found in node \"\"] \n" +
+        ).hasMessage("[Node \"\"] \n" +
             "Expecting ArrayList:\n" +
             "  [(1, {\"first\":\"Aaron\"}), (2, {\"first\":\"John\"})]\n" +
             "to contain:\n" +
@@ -811,7 +811,7 @@ public abstract class AbstractAssertJTest {
             .isArray()
             .extracting("id", "name")
             .contains(tuple(valueOf(1), "{\"first\":\"Aaron\"}", 3), tuple(valueOf(2), "{\"first\":\"John\"}"))
-        ).hasMessage("[Different value found in node \"\"] \n" +
+        ).hasMessage("[Node \"\"] \n" +
             "Expecting ArrayList:\n" +
             "  [(1, {\"first\":\"Aaron\"}), (2, {\"first\":\"John\"})]\n" +
             "to contain:\n" +
@@ -835,7 +835,7 @@ public abstract class AbstractAssertJTest {
         String result = "{\"bundles\":[\"http://localhost:33621/rms/framework/bundle/0\"]}";
         // FIXME: Better path in the message
         assertThatThrownBy(() -> assertThatJson(result).node("bundles").isArray().element(0).isNumber())
-            .hasMessage("Node \"bundles\" has invalid type, expected: <number> but was: <\"http://localhost:33621/rms/framework/bundle/0\">.");
+            .hasMessage("Node \"bundles\" element at index 0 has invalid type, expected: <number> but was: <\"http://localhost:33621/rms/framework/bundle/0\">.");
     }
 
 
@@ -1192,7 +1192,7 @@ public abstract class AbstractAssertJTest {
     @Test
     void arrayOfLengthShouldFailOnIncorrectSize() {
         assertThatThrownBy(() -> assertThatJson("{\"test\":[1,2,3]}").node("test").isArray().hasSize(2))
-            .hasMessage("[Different value found in node \"test\"] \n" +
+            .hasMessage("[Node \"test\"] \n" +
                 "Expected size: 2 but was: 3 in:\n" +
                 "[1, 2, 3]");
     }
@@ -1267,7 +1267,7 @@ public abstract class AbstractAssertJTest {
     @Test
     void arrayThatContainsShouldFailOnMissingNode() {
         assertThatThrownBy(() -> assertThatJson("{\"test\":[{\"id\":36},{\"id\":37},{\"id\":38}]}").node("test").isArray().contains("{\"id\":42}"))
-            .hasMessage("[Different value found in node \"test\"] \n" +
+            .hasMessage("[Node \"test\"] \n" +
                 "Expecting JsonList:\n" +
                 "  [{\"id\":36}, {\"id\":37}, {\"id\":38}]\n" +
                 "to contain:\n" +
@@ -1649,7 +1649,7 @@ public abstract class AbstractAssertJTest {
                     "                \"price\": 8.96\n" +
                     "            }"
             )))
-            .hasMessage("[Different value found in node \"$.store.book\"] \n" +
+            .hasMessage("[Node \"$.store.book\"] \n" +
                 "Expecting JsonList:\n" +
                 "  [{\"author\":\"Nigel Rees\",\"category\":\"reference\",\"price\":8.95,\"title\":\"Sayings of the Century\"},\n" +
                 "    {\"author\":\"Evelyn Waugh\",\"category\":\"fiction\",\"price\":12.99,\"title\":\"Sword of Honour\"},\n" +
