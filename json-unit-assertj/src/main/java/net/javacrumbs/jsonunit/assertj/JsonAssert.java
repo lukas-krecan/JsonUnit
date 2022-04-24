@@ -46,6 +46,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
@@ -112,6 +115,8 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     @Override
     @NotNull
     public JsonAssert isEqualTo(@Nullable Object expected) {
+        //convert date placeholder
+        expected = dateReplace(expected);
         Diff diff = Diff.create(expected, actual, "fullJson", path.asPrefix(), configuration);
 
         String overridingErrorMessage = info.overridingErrorMessage();
@@ -121,6 +126,98 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
             diff.failIfDifferent(MessageFormatter.instance().format(info.description(), info.representation(), ""));
         }
         return this;
+    }
+    
+    /**
+     * convert date placeholder
+     * detect keywords like DAYS, HOURS, format, and replace substring
+     * @param expected original json object
+     * @return converted json object
+     */
+    public Object dateReplace(Object expected){
+        String expectedJson = (String)expected;
+        String dateReplace = "${json-unit.current-date.";
+        int replaceIndex = expectedJson.indexOf(dateReplace);
+
+        //check if date placeholder exists
+        if (replaceIndex >= 0){
+            Date date = new Date();
+            SimpleDateFormat df;
+            String replaceSub;
+            String time;
+            //placeholder end index
+            int replaceEndIndex = expectedJson.substring(replaceIndex).indexOf("}") + 1 + replaceIndex;
+            //substring of placeholder
+            replaceSub = expectedJson.substring(replaceIndex, replaceEndIndex);
+
+            if (replaceSub.contains("DAYS#") || replaceSub.contains("HOURS#")){
+                //end index of modified number
+                int contentEndIndex = replaceSub.indexOf(".", 25);
+
+                if (replaceSub.contains("+") || replaceSub.contains("-")){
+                    int modifiedNum;
+                    //no user-defined date format
+
+                    if (contentEndIndex == -1){
+                        //end index of modified number
+                        contentEndIndex = replaceSub.indexOf("}");
+                        //transform substring of modified number into integer
+                        modifiedNum = Integer.valueOf(replaceSub.substring(replaceSub.indexOf("#")+2), contentEndIndex);
+                        //default date format
+                        df= new SimpleDateFormat("yyyy-MM-dd: HH");
+                    }
+                    //user-defined date format
+                    else{
+                        //transform substring of modified number into integer
+                        modifiedNum = Integer.valueOf(replaceSub.substring(replaceSub.indexOf("#")+2, contentEndIndex));
+                        int formatIndex = replaceSub.indexOf("format:") + 7;
+                        String format = replaceSub.substring(formatIndex, replaceSub.length()-1);
+                        df= new SimpleDateFormat(format);
+                    }
+
+                    //set timezone to GMT
+                    df.setTimeZone(TimeZone.getTimeZone("GMT"));
+                    int numSymbolIndex = replaceSub.indexOf("#");
+                    if (replaceSub.contains("HOURS#")){
+                        if (replaceSub.contains("+")){
+                            time = df.format(new Date(date.getTime() + modifiedNum*60*60*1000));
+                        }
+                        else if(replaceSub.substring(numSymbolIndex+1, numSymbolIndex+2).equals("-")){
+                            time = df.format(new Date(date.getTime() - modifiedNum*60*60*1000));
+                        }
+                        else{
+                            return expectedJson;
+                        }
+                    }
+                    else{
+                        if (replaceSub.contains("+")){
+                            time = df.format(new Date(date.getTime() + modifiedNum*24*60*60*1000));
+                        }
+                        else if(replaceSub.substring(numSymbolIndex+1, numSymbolIndex+2).equals("-")){
+                            time = df.format(new Date(date.getTime() - modifiedNum*24*60*60*1000));
+                        }
+                        else{
+                            return expectedJson;
+                        }
+                    }
+                    //to avoid special character, replace substring manually
+                    String beforeReplace = expectedJson.substring(0, replaceIndex);
+                    String afterReplace = expectedJson.substring(replaceEndIndex);
+                    expectedJson = beforeReplace + time + afterReplace;
+                }
+            }
+            else if (replaceSub.contains("format")){
+                int formatIndex = replaceSub.indexOf("format:") + 7;
+                String format = replaceSub.substring(formatIndex, replaceSub.length()-1);
+                df= new SimpleDateFormat(format);
+                df.setTimeZone(TimeZone.getTimeZone("GMT"));
+                time = df.format(new Date(date.getTime()));
+                String beforeReplace = expectedJson.substring(0, replaceIndex);
+                String afterReplace = expectedJson.substring(replaceEndIndex);
+                expectedJson = beforeReplace + time + afterReplace;
+            }
+        }
+        return expectedJson;
     }
 
     /**
