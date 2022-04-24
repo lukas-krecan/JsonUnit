@@ -410,6 +410,36 @@ public abstract class AbstractAssertJTest {
     void shouldAssertContainsEntry() {
         assertThatJson("{\"a\":{\"b\": 1}}").node("a").isObject().contains(entry("b", valueOf(1)));
     }
+    
+    //date issue
+    @Test
+    void shouldReplaceDate() {
+        assertThatJson("{\"root\":{\"test\":1, \"date\": \"2022-04-24: 15\"}}").isEqualTo("{\"root\":{\"test\":1, \"date\": \"${json-unit.current-date.format:yyyy-MM-dd: HH}\"}}");
+    }
+
+    //date issue
+    @Test
+    void shouldReplaceDaysAdded() {
+        assertThatJson("{\"root\":{\"test\":1, \"date\": \"2022-04-25\"}}").isEqualTo("{\"root\":{\"test\":1, \"date\": \"${json-unit.current-date.DAYS#+1.format:yyyy-MM-dd}\"}}");
+    }
+
+    //date issue
+    @Test
+    void shouldReplaceDaysDeducted() {
+        assertThatJson("{\"root\":{\"test\":1, \"date\": \"2022-04-22\"}}").isEqualTo("{\"root\":{\"test\":1, \"date\": \"${json-unit.current-date.DAYS#-2.format:yyyy-MM-dd}\"}}");
+    }
+
+    //date issue
+    @Test
+    void shouldReplaceHoursAdded() {
+        assertThatJson("{\"root\":{\"test\":1, \"date\": \"2022-04-24: 16\"}}").isEqualTo("{\"root\":{\"test\":1, \"date\": \"${json-unit.current-date.HOURS#+1.format:yyyy-MM-dd: HH}\"}}");
+    }
+
+    //date issue
+    @Test
+    void shouldReplaceHoursDeducted() {
+        assertThatJson("{\"root\":{\"test\":1, \"date\": \"2022-04-24: 11\"}}").isEqualTo("{\"root\":{\"test\":1, \"date\": \"${json-unit.current-date.HOURS#-4.format:yyyy-MM-dd: HH}\"}}");
+    }
 
     @Test
     void shouldAssertContainsJsonError() {
