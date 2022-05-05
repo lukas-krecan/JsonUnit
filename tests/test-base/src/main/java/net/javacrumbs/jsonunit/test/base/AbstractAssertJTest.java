@@ -1153,6 +1153,15 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void assertTolerance() {
+        assertThatJson("{\"a\":1, \"b\":2.0}")
+            .withTolerance(0)
+            .isObject()
+            .containsEntry("a", json(1))
+            .containsEntry("b", json(2));
+    }
+
+    @Test
     void testEqualsToList() {
         assertThatJson("{\"test\":[1,2,3]}").node("test").isEqualTo(asList(1, 2, 3));
     }
