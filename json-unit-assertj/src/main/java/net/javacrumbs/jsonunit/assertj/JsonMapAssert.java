@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 import static java.util.Arrays.stream;
 import static java.util.Objects.deepEquals;
 import static java.util.stream.Collectors.toList;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
 import static org.assertj.core.api.Assertions.entry;
 import static org.assertj.core.error.ShouldContain.shouldContain;
@@ -184,11 +185,15 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
             return false;
         }
         Object actualValue = actual.get(key);
-        if (entry.getValue() instanceof Node) {
-            Node value = (Node) entry.getValue();
+        Object expectedValue = entry.getValue();
+        if (expectedValue instanceof Number) {
+            expectedValue = json(expectedValue);
+        }
+        if (expectedValue instanceof Node) {
+            Node value = (Node) expectedValue;
             return isSimilar(actualValue, value);
         } else {
-            return deepEquals(actualValue, entry.getValue());
+            return deepEquals(actualValue, expectedValue);
         }
     }
 

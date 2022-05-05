@@ -1153,12 +1153,28 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
-    void assertTolerance() {
+    void assertContainsEntryNumber() {
         assertThatJson("{\"a\":1, \"b\":2.0}")
             .withTolerance(0)
             .isObject()
-            .containsEntry("a", json(1))
-            .containsEntry("b", json(2));
+            .containsEntry("a", 1)
+            .containsEntry("b", 2);
+    }
+
+    @Test
+    void assertContainsEntryNumberFailure() {
+        assertThatThrownBy(() ->
+        assertThatJson("{\"a\":1, \"b\":2.0}")
+            .isObject()
+            .containsEntry("a", 1)
+            .containsEntry("b", 2)
+        ).hasMessage("[Different value found in node \"\"] \n" +
+            "Expecting map:\n" +
+            "  {\"a\":1,\"b\":2.0}\n" +
+            "to contain:\n" +
+            "  [\"b\"=2]\n" +
+            "but could not find the following map entries:\n" +
+            "  [\"b\"=2]\n");
     }
 
     @Test
