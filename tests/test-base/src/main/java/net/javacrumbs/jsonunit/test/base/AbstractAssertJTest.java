@@ -1162,7 +1162,7 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
-    void assertContainsEntryNumberFailure() {
+    protected void assertContainsEntryNumberFailure() {
         assertThatThrownBy(() ->
         assertThatJson("{\"a\":1, \"b\":2.0}")
             .isObject()
