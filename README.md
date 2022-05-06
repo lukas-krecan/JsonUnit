@@ -681,11 +681,11 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
-## 2.35.0
+## 2.35.0 (2022-05-06)
 * Special handling of numeric values in containsEntry #512
 * Dependency updates
 
-## 2.34.0
+## 2.34.0 (2022-04-12)
 * Prevent re-parsing of a value #502
 * Dependency updates
 
