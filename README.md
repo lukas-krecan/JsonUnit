@@ -198,7 +198,7 @@ mockMvc.perform(get("/sample").andExpect(
 );
 ```
 
-Following Kotlin DSL si supported:
+Following Kotlin DSL is supported:
 
 ```kotlin
 mockMvc.get(path).andExpect {
