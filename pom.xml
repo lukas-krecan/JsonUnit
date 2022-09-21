@@ -15,7 +15,7 @@
         <slf4j.version>1.7.36</slf4j.version>
         <assertj.version>3.23.1</assertj.version>
         <target.java.version>1.8</target.java.version>
-        <junit-jupiter.version>5.9.0</junit-jupiter.version>
+        <junit-jupiter.version>5.9.1</junit-jupiter.version>
         <json-path.version>2.4.0</json-path.version>
         <opentest4j.version>1.2.0</opentest4j.version>
         <kotlin.version>1.7.10</kotlin.version>
