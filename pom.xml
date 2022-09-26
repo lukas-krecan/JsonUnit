@@ -11,7 +11,7 @@
         <hamcrest.version>2.2</hamcrest.version>
         <johnzon.version>1.2.19</johnzon.version>
         <geronimo.jsonp.version>1.5</geronimo.jsonp.version>
-        <jsonorg.version>20220320</jsonorg.version>
+        <jsonorg.version>20220924</jsonorg.version>
         <slf4j.version>1.7.36</slf4j.version>
         <assertj.version>3.23.1</assertj.version>
         <target.java.version>1.8</target.java.version>
