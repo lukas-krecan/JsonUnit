@@ -32,6 +32,7 @@ import static java.util.Arrays.stream;
 import static java.util.Objects.deepEquals;
 import static java.util.stream.Collectors.toList;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
 import static org.assertj.core.api.Assertions.entry;
 import static org.assertj.core.error.ShouldContain.shouldContain;
@@ -55,6 +56,14 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
     @NotNull
     public JsonMapAssert isEqualTo(@Nullable Object expected) {
         return compare(expected, configuration);
+    }
+
+    /**
+     * Moves comparison to given node. Second call navigates from the last position in the JSON.
+     */
+    @NotNull
+    public JsonAssert node(@NotNull String node) {
+        return new JsonAssert(path.to(node), configuration, getNode(actual, node));
     }
 
     @Override

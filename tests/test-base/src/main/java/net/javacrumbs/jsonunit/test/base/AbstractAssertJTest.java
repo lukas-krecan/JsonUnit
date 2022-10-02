@@ -737,6 +737,18 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void shouldAllowNodeInJsonMapAssert() {
+        assertThatThrownBy(() ->
+            assertThatJson("{\"data\":{\"id\": \"1234\", \"relationships\": false}}")
+            .inPath("$.data")
+            .isObject()
+            .containsEntry("id", "1234")
+            .node("relationships")
+            .isObject()
+        ).hasMessage("Node \"$.data.relationships\" has invalid type, expected: <object> but was: <false>.");
+    }
+
+    @Test
     void shouldAssertIntegerFailure() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":1.0}").node("a").isIntegralNumber())
             .hasMessage("Node \"a\" has invalid type, expected: <integer> but was: <1.0>.");
