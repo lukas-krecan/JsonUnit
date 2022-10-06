@@ -683,7 +683,7 @@ Release notes
 =============
 ## 2.36.0 (2022-10-05)
 * Support for `node` method in JsonMapAssert #560
-* Fixed number parsing in Jackson, so it works as [intended](https://github.com/lukas-krecan/JsonUnit#numbers) (see #564 for details)
+* Fixed number parsing in Jackson, so it works as [intended](https://github.com/lukas-krecan/JsonUnit#numbers) (see https://github.com/lukas-krecan/JsonUnit/issues/564 for details)
 * Dependency updates
 
 ## 2.35.0 (2022-05-06)
