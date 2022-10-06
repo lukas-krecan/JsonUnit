@@ -67,6 +67,12 @@ public abstract class AbstractJsonFluentAssertTest {
     }
 
     @Test
+    void shouldCompareDecimals() {
+        assertThatJson("{\"a\": 1.0, \"b\": 1.00}")
+            .node("b").isEqualTo("1.00");
+    }
+
+    @Test
     void testAssertTolerance() {
         assertThatJson("{\"test\":1.00001}").node("test").withTolerance(0.001).isEqualTo(1);
     }
