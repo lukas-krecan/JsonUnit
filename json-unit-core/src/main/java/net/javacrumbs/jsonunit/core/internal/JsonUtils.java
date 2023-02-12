@@ -97,14 +97,6 @@ public class JsonUtils {
          return path.getNode(convertToJson(root, "actual"));
      }
 
-    /**
-     * Returns true if the node exists.
-     */
-    @Deprecated
-    public static boolean nodeExists(Object json, String path) {
-        return !getNode(json, path).isMissingNode();
-    }
-
     public static boolean nodeAbsent(Object json, String path, Configuration configuration) {
         return nodeAbsent(json, Path.create(path), configuration);
     }

@@ -34,7 +34,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
-import static net.javacrumbs.jsonunit.core.Option.COMPARING_ONLY_STRUCTURE;
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
@@ -201,18 +200,6 @@ public final class InternalMatcher {
         if (diff.similar()) {
             failWithMessage("JSON is equal.");
         }
-    }
-
-    /**
-     * Compares JSON structure. Ignores values, only compares shape of the document and key names.
-     * Is too lenient, ignores types, prefer IGNORING_VALUES option instead.
-     *
-     * @param expected
-     */
-    @SuppressWarnings("deprecation")
-    public void hasSameStructureAs(@Nullable Object expected) {
-        Diff diff = createDiff(expected, configuration.withOptions(COMPARING_ONLY_STRUCTURE));
-        diff.failIfDifferent();
     }
 
     /**

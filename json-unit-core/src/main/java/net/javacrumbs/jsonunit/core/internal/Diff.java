@@ -38,7 +38,6 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptySet;
-import static net.javacrumbs.jsonunit.core.Option.COMPARING_ONLY_STRUCTURE;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
@@ -540,11 +539,8 @@ public class Diff {
         differences.add(new JsonDifference(context, message, arguments));
     }
 
-    @SuppressWarnings("deprecation")
     private void valueDifferenceFound(Context context, String message, Object... arguments) {
-        if (!hasOption(context.getActualPath(), COMPARING_ONLY_STRUCTURE)) {
-            differences.add(new JsonDifference(context, message, arguments));
-        }
+        differences.add(new JsonDifference(context, message, arguments));
     }
 
     private void reportValueDifference(Context context, String message, Object... arguments) {

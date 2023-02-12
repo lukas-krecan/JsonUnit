@@ -25,7 +25,6 @@ import static java.util.Collections.singletonMap;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeExists;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.valueToNode;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.ARRAY;
@@ -150,16 +149,6 @@ class JsonUtilsTest {
     void testGetStartNodeNonexisting() throws IOException {
         Node startNode = getNode(mapper.readTree("{\"test\":{\"value\":1}}"), "test.bogus");
         assertEquals(true, startNode.isMissingNode());
-    }
-
-    @Test
-    @SuppressWarnings("deprecation")
-    void testNodeExists() {
-        String json = "{\"test\":{\"value\":1}}";
-        assertTrue(nodeExists(json, "test"));
-        assertTrue(nodeExists(json, "test.value"));
-        assertFalse(nodeExists(json, "test.nonsense"));
-        assertFalse(nodeExists(json, "root"));
     }
 
     @Test

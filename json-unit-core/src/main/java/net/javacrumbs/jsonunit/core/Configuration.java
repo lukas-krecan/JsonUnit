@@ -52,13 +52,7 @@ public class Configuration {
     private final List<PathOption> pathOptions;
     private final Set<String> pathsToBeIgnored;
     private final DifferenceListener differenceListener;
-
     private final NumberComparator numberComparator;
-
-    @Deprecated
-    public Configuration(BigDecimal tolerance, Options options, String ignorePlaceholder) {
-        this(tolerance, options, ignorePlaceholder, Matchers.empty(), Collections.emptySet(), DUMMY_LISTENER, Collections.emptyList(), DEFAULT_NUMBER_COMPARATOR);
-    }
 
     private Configuration(@Nullable BigDecimal tolerance, Options options, String ignorePlaceholder, Matchers matchers, Set<String> pathsToBeIgnored, DifferenceListener differenceListener, List<PathOption> pathOptions, NumberComparator numberComparator) {
         this.tolerance = tolerance;

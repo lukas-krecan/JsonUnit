@@ -46,15 +46,6 @@ public enum Option {
     IGNORING_EXTRA_ARRAY_ITEMS,
 
     /**
-     * Compares only structures. Completely ignores both values and types.
-     * Is too lenient, ignores types, prefer {@link Option#IGNORING_VALUES} instead.
-     *
-     * @deprecated Use IGNORING_VALUES option instead
-     */
-    @Deprecated
-    COMPARING_ONLY_STRUCTURE,
-
-    /**
      * Ignores values but fails if value types are different.
      * When using within {@link ConfigurationWhen#then(Option, Option...)}, path to the node with ignored value should be passed.
      */
