@@ -17,9 +17,12 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
+import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
 import net.javacrumbs.jsonunit.core.listener.Difference;
 import net.javacrumbs.jsonunit.core.listener.DifferenceContext;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -32,6 +35,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DifferenceTest {
     private final RecordingDifferenceListener listener = new RecordingDifferenceListener();
@@ -216,6 +220,13 @@ public class DifferenceTest {
         assertThat(listener.getExpectedSource(), equalTo(singletonMap("test", "1")));
     }
 
+    @Test
+    void shouldMatchWithLineSeparatorCustomMatcher() {
+        Configuration cfg = commonConfig().withMatcher("equalTo",  new EqualsMatcher());
+        Diff diff = Diff.create("{\"key\": \"${json-unit.matches:equalTo}separated \\n line\"}", "{\"key\": \"separated \\n line\"}", "", "", cfg);
+        assertTrue(diff.similar());
+        assertThat(listener.getDifferenceList(), hasSize(0));
+    }
 
     private Configuration commonConfig() {
         return Configuration.empty().withDifferenceListener(listener);
@@ -243,6 +254,25 @@ public class DifferenceTest {
 
         Object getExpectedSource() {
             return expectedSource;
+        }
+    }
+
+    private static class EqualsMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
+        private String parameter;
+
+        @Override
+        public void setParameter(String parameter) {
+            this.parameter = parameter;
+        }
+
+        @Override
+        public boolean matches(Object o) {
+            return o.toString().equals(parameter);
+        }
+
+        @Override
+        public void describeTo(Description description) {
+            description.appendText("the same ").appendText(parameter);
         }
     }
 }
