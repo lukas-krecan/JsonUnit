@@ -16,14 +16,14 @@
         <assertj.version>3.24.2</assertj.version>
         <target.java.version>1.8</target.java.version>
         <junit-jupiter.version>5.9.1</junit-jupiter.version>
-        <json-path.version>2.7.0</json-path.version>
+        <json-path.version>2.8.0</json-path.version>
         <opentest4j.version>1.2.0</opentest4j.version>
         <kotlin.version>1.8.0</kotlin.version>
         <bnd.version>6.3.1</bnd.version>
         <symbolic.name>${project.groupId}.${project.artifactId}</symbolic.name>
         <osgi.importPackage>!kotlin.*,*</osgi.importPackage>
-        <osgi.exportPackage />
-        <osgi.includeResource />
+        <osgi.exportPackage/>
+        <osgi.includeResource/>
     </properties>
     <packaging>pom</packaging>
 
@@ -175,7 +175,7 @@
                         <Bundle-Description>${project.description}</Bundle-Description>
                         <Import-Package>${osgi.importPackage}</Import-Package>
                         <Export-Package>${osgi.exportPackage}</Export-Package>
-                        <Bundle-RequiredExecutionEnvironment />
+                        <Bundle-RequiredExecutionEnvironment/>
                         <Include-Resource>${osgi.includeResource}</Include-Resource>
                         <_removeheaders>Bnd-LastModified</_removeheaders>
                     </instructions>
