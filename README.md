@@ -413,7 +413,7 @@ assertThatJson("{\"test\": \"ABCD\"}")
 ```
 
 
-For matching just part of the string, you can use this (we have to escape twice, one for Java, once for JSON)
+For matching just part of the string, you can use this (we have to escape twice, once for Java, once for JSON)
 ```java
 assertThatJson("{\"test\": \"This is some text followed by: ABCD, followed by this\"}")
             .isEqualTo("{\"test\": \"${json-unit.regex}^\\\\QThis is some text followed by: \\\\E[A-Z]+\\\\Q, followed by this\\\\E$\"}");
