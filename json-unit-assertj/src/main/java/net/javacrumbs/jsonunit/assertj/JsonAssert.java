@@ -319,13 +319,22 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
             return withConfiguration(c -> c.when(object, actions));
         }
 
+
         /**
          * Sets comparison options.
-         *
-         * @param options
-         * @return
          */
         @NotNull
+        public ConfigurableJsonAssert withOptions(@NotNull Option first, @NotNull Option... next) {
+            return withConfiguration(c -> c.withOptions(first, next));
+        }
+
+
+        /**
+         * Sets comparison options.
+         * @deprecated use {@link #withOptions(Option, Option...)} instead
+         */
+        @NotNull
+        @Deprecated
         public ConfigurableJsonAssert withOptions(@NotNull Options options) {
             return withConfiguration(c -> c.withOptions(options));
         }

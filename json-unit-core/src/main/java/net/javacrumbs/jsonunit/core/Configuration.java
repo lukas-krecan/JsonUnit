@@ -122,11 +122,10 @@ public class Configuration {
 
     /**
      * Sets comparison options.
-     *
-     * @param options
-     * @return
+     * @deprecated Use @link {@link #withOptions(Option, Option...)} instead.
      */
     @NotNull
+    @Deprecated
     public Configuration withOptions(@NotNull Options options) {
         return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions);
     }
