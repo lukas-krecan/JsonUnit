@@ -31,6 +31,7 @@ public class Options {
         this.options = options;
     }
 
+    @Deprecated
     public Options(Option first, Option... rest) {
         this(EnumSet.of(first, rest));
     }
