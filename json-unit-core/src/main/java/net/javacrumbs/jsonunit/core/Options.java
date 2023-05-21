@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit.core.internal;
-
-import net.javacrumbs.jsonunit.core.Option;
+package net.javacrumbs.jsonunit.core;
 
 import java.util.Collection;
 import java.util.EnumSet;
@@ -24,16 +22,12 @@ import java.util.Set;
 /**
  * Options enum set wrapper
  */
-public class Options {
+class Options {
     private static final Options EMPTY_OPTIONS = new Options(EnumSet.noneOf(Option.class));
     private final EnumSet<Option> options;
 
     private Options(EnumSet<Option> options) {
         this.options = options;
-    }
-
-    public Options(Option first, Option... rest) {
-        this(EnumSet.of(first, rest));
     }
 
     public static Options empty() {
@@ -54,13 +48,6 @@ public class Options {
         EnumSet<Option> optionsWith = EnumSet.copyOf(options);
         optionsWith.addAll(options);
         return new Options(optionsWith);
-    }
-
-
-    public Options without(Option option) {
-        EnumSet<Option> optionsWithout = EnumSet.copyOf(options);
-        optionsWithout.remove(option);
-        return new Options(optionsWithout);
     }
 
     public Set<Option> values() {

@@ -18,7 +18,6 @@ package net.javacrumbs.jsonunit.core;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
 import net.javacrumbs.jsonunit.core.internal.DefaultNumberComparator;
-import net.javacrumbs.jsonunit.core.internal.Options;
 import net.javacrumbs.jsonunit.core.internal.PathOption;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
@@ -235,8 +234,8 @@ public class Configuration {
     }
 
     @NotNull
-    public Options getOptions() {
-        return options;
+    public Set<Option> getOptions() {
+        return options.values();
     }
 
     @NotNull

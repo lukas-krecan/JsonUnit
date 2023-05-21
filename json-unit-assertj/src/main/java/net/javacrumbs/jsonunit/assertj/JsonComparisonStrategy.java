@@ -29,7 +29,7 @@ class JsonComparisonStrategy {
 
     @Override
     public String toString() {
-        Set<Option> options = configuration.getOptions().values();
+        Set<Option> options = configuration.getOptions();
         return "when comparing as JSON" + (!options.isEmpty() ? " with " + options : "");
     }
 }
