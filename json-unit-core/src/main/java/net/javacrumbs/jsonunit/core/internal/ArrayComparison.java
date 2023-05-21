@@ -35,29 +35,13 @@ class ArrayComparison {
         return new ComparisonResult(comparisonMatrix.compare(), expectedElements, actualElements);
     }
 
-    static class NodeWithIndex {
-        private final Node node;
-
-        private final int index;
-
-        NodeWithIndex(Node node, int index) {
-            this.node = node;
-            this.index = index;
-        }
-
-        public Node getNode() {
-            return node;
-        }
-
-        public int getIndex() {
-            return index;
-        }
+    record NodeWithIndex(Node node, int index) {
 
         @Override
-        public String toString() {
-            return node.toString();
+            public String toString() {
+                return node.toString();
+            }
         }
-    }
 
     static class ComparisonResult {
         private final List<NodeWithIndex> extraValues;

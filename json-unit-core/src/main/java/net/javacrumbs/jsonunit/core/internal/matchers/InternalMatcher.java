@@ -245,8 +245,7 @@ public final class InternalMatcher {
      * Extracts data from JsonPath matches
      */
     private List<String> getMatchingPaths() {
-        if (actual instanceof JsonSource) {
-            JsonSource jsonSource = (JsonSource) actual;
+        if (actual instanceof JsonSource jsonSource) {
             if (!jsonSource.getMatchingPaths().isEmpty()) {
                 return jsonSource.getMatchingPaths();
             }
