@@ -18,7 +18,7 @@
         <junit-jupiter.version>5.9.1</junit-jupiter.version>
         <json-path.version>2.8.0</json-path.version>
         <opentest4j.version>1.2.0</opentest4j.version>
-        <kotlin.version>1.8.0</kotlin.version>
+        <kotlin.version>1.8.20</kotlin.version>
         <bnd.version>6.3.1</bnd.version>
         <symbolic.name>${project.groupId}.${project.artifactId}</symbolic.name>
         <osgi.importPackage>!kotlin.*,*</osgi.importPackage>
