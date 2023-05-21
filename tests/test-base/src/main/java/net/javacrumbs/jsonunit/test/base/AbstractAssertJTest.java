@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit.test.base;
 
 import net.javacrumbs.jsonunit.assertj.JsonAssert.ConfigurableJsonAssert;
+import net.javacrumbs.jsonunit.core.NumberComparator;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest.DivisionMatcher;
 import org.hamcrest.Matcher;
@@ -770,6 +771,25 @@ public abstract class AbstractAssertJTest {
 
         assertThatThrownBy(() -> assertThatJson("{\"a\":1e-3}").node("a").isIntegralNumber())
             .hasMessage("Node \"a\" has invalid type, expected: <integer> but was: <0.001>.");
+    }
+
+    @Test
+    protected void shouldUseCustomNumberComparator() {
+        NumberComparator numberComparator = (expected, actual, tolerance) -> {
+            if (expected.scale() == 0 && actual.scale() > 0) {
+                // Expected is int actual is float
+                return false;
+            } else {
+                return expected.compareTo(actual) == 0;
+            }
+        };
+        assertThatJson("{\"a\":1.0}")
+            .withConfiguration(c -> c.withNumberComparator(numberComparator))
+            .isEqualTo("{\"a\":1.00}");
+
+        assertThatThrownBy(() -> assertThatJson("{\"a\":1.0}")
+            .withConfiguration(c -> c.withNumberComparator(numberComparator))
+            .isEqualTo("{\"a\":1}")).hasMessage("JSON documents are different:\nDifferent value found in node \"a\", expected: <1> but was: <1.0>.\n");
     }
 
     @Test

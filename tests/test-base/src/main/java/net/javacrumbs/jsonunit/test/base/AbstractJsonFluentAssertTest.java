@@ -133,7 +133,7 @@ public abstract class AbstractJsonFluentAssertTest {
     @Test
     void testAssertZeroToleranceFailure() {
         assertThatThrownBy(() -> assertThatJson("{\"test\":1.1}").node("test").withTolerance(0.0).isEqualTo(1))
-            .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <1> but was: <1.1>, difference is 0.1\n");
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <1> but was: <1.1>.\n");
     }
 
     @Test
