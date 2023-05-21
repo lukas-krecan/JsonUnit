@@ -181,7 +181,7 @@ public abstract class AbstractJsonAssertTest {
         setTolerance(0);
         assertThatThrownBy(() -> assertJsonEquals("1", "\n1.1\n"))
             .hasMessage("JSON documents are different:\n" +
-                "Different value found in node \"\", expected: <1> but was: <1.1>, difference is 0.1\n");
+                "Different value found in node \"\", expected: <1> but was: <1.1>.\n");
     }
 
     @Test

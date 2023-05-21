@@ -328,19 +328,19 @@ public class Diff {
                 case NUMBER:
                     BigDecimal actualValue = actualNode.decimalValue();
                     BigDecimal expectedValue = expectedNode.decimalValue();
-                    if (configuration.getTolerance() != null && !hasOption(context.getActualPath(), IGNORING_VALUES)) {
-                        BigDecimal diff = expectedValue.subtract(actualValue).abs();
-                        if (diff.compareTo(configuration.getTolerance()) > 0) {
-                            List<Object> arguments = new ArrayList<>(Arrays.asList(fieldPath, quoteTextValue(expectedValue), quoteTextValue(actualValue), diff.toString()));
-                            String message = "Different value found in node \"%s\", " + differenceString() + ", difference is %s";
-                            if (configuration.getTolerance().compareTo(BigDecimal.ZERO) != 0) {
-                                arguments.add(configuration.getTolerance());
-                                message += ", tolerance is %s";
+                    if (!hasOption(context.getActualPath(), IGNORING_VALUES)) {
+                        BigDecimal tolerance = configuration.getTolerance();
+                        if (!configuration.getNumberComparator().compare(expectedValue, actualValue, tolerance)) {
+                            BigDecimal diff = expectedValue.subtract(actualValue).abs();
+                            List<Object> arguments = Arrays.asList(fieldPath, quoteTextValue(expectedValue), quoteTextValue(actualValue));
+                            String message = "Different value found in node \"%s\", " + differenceString();
+                            if (tolerance != null && tolerance.compareTo(BigDecimal.ZERO) != 0) {
+                                message +=  ", difference is " + diff + ", tolerance is " + tolerance;
+                            } else {
+                                message += ".";
                             }
                             reportValueDifference(context, message, arguments.toArray());
                         }
-                    } else {
-                        compareValues(context, expectedValue, actualValue);
                     }
                     break;
                 case BOOLEAN:
