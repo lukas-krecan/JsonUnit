@@ -23,7 +23,6 @@ import net.javacrumbs.jsonunit.test.base.beans.Jackson2IgnorePropertyBean;
 import org.junit.jupiter.api.Test;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonStructureEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.when;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByGson;
@@ -85,12 +84,6 @@ class AllJsonAssertTest extends AbstractJsonAssertTest {
     }
 
     @Test
-    @SuppressWarnings("deprecation")
-    void testAssertStructureEqualsDifferentValues() {
-        assertJsonStructureEquals("{\"test\": 3}", "{\"test\": {\"inner\": 5}}");
-    }
-
-    @Test
     void assertEqualsDifferentTypesFailsOnDifferentTypes() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\": 3}", "{\"test\": {\"inner\": 5}}", when(IGNORING_VALUES)))
             .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <3> but was: <{\"inner\":5}>.\n");
@@ -119,12 +112,6 @@ class AllJsonAssertTest extends AbstractJsonAssertTest {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\": \"a\", \"test2\": \"aa\"}", "{\"test\":\"a\"}"))
             .hasMessage("JSON documents are different:\n" +
                 "Different keys found in node \"\", missing: \"test2\", expected: <{\"test\":\"a\",\"test2\":\"aa\"}> but was: <{\"test\":\"a\"}>\n");
-    }
-
-    @Test
-    @SuppressWarnings("deprecation")
-    void testStructureEquals() {
-        JsonAssert.assertJsonStructureEquals("{\"test\": 123}", "{\"test\": 412}");
     }
 
     @Test

@@ -19,11 +19,11 @@ import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
 import net.javacrumbs.jsonunit.core.Option;
-import net.javacrumbs.jsonunit.core.internal.Options;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 
 /**
  * JsonMatcher interface.
@@ -51,7 +51,7 @@ public interface ConfigurableJsonMatcher<T> extends Matcher<T> {
     /**
      * Sets options.
      */
-    ConfigurableJsonMatcher<T> withOptions(Options options);
+    ConfigurableJsonMatcher<T> withOptions(Collection<Option> options);
 
     /**
      * Adds a matcher to be used in ${json-unit.matches:matcherName} macro.

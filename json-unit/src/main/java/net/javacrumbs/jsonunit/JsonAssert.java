@@ -20,7 +20,6 @@ import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
-import net.javacrumbs.jsonunit.core.internal.Options;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
 
@@ -194,14 +193,14 @@ public class JsonAssert {
      * @see net.javacrumbs.jsonunit.core.Option
      */
     public static void setOptions(Option firstOption, Option... rest) {
-        configuration = configuration.withOptions(Options.empty().with(firstOption, rest));
+        configuration = configuration.withOptions(firstOption, rest);
     }
 
     /**
      * Cleans all options.
      */
     public static void resetOptions() {
-        configuration = configuration.withOptions(Options.empty());
+        configuration = configuration.resetOptions();
     }
 
     static Configuration getConfiguration() {

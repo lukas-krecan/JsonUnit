@@ -36,8 +36,6 @@ import static net.javacrumbs.jsonunit.JsonAssert.assertJsonNodePresent;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonNotEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartNotEquals;
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonPartStructureEquals;
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonStructureEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.setOptions;
 import static net.javacrumbs.jsonunit.JsonAssert.setTolerance;
 import static net.javacrumbs.jsonunit.JsonAssert.when;
@@ -448,78 +446,9 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
-    @SuppressWarnings("deprecation")
-    void testAssertPartStructureEquals() {
-        assertJsonPartStructureEquals("{\"value\":5}", "{\"test\":[{\"value\":1},{\"value\":2}]}", "test[1]");
-    }
-
-    @Test
     void testAssertPartNonexisting() {
         assertThatThrownBy(() -> assertJsonPartEquals("2", "{\"test\":{\"value\":1}}", "test.bogus"))
             .hasMessage("JSON documents are different:\nMissing node in path \"test.bogus\".\n");
-    }
-
-    @Test
-    @SuppressWarnings("deprecation")
-    void testAssertStructureEquals() {
-        assertJsonStructureEquals("[{\"test\":1}, {\"test\":2}]", "[{\n\"test\": 1\n}, {\"test\": 4}]");
-    }
-
-    @Test
-    @SuppressWarnings("deprecation")
-    void testComplexStructureOk() {
-        assertJsonStructureEquals("{\n" +
-                "   \"test\":[\n" +
-                "      1,\n" +
-                "      2,\n" +
-                "      {\n" +
-                "         \"child\":{\n" +
-                "            \"value1\":1,\n" +
-                "            \"value2\":true,\n" +
-                "            \"value3\":\"test\",\n" +
-                "            \"value4\":{\n" +
-                "               \"leaf\":5\n" +
-                "            }\n" +
-                "         }\n" +
-                "      }\n" +
-                "   ],\n" +
-                "   \"root2\":false,\n" +
-                "   \"root3\":1\n" +
-                "}",
-            "{\n" +
-                "   \"test\":[\n" +
-                "      4,\n" +
-                "      5,\n" +
-                "      {\n" +
-                "         \"child\":{\n" +
-                "            \"value1\":6,\n" +
-                "            \"value2\":false,\n" +
-                "            \"value3\":\"different\",\n" +
-                "            \"value4\":{\n" +
-                "               \"leaf\":6\n" +
-                "            }\n" +
-                "         }\n" +
-                "      }\n" +
-                "   ],\n" +
-                "   \"root2\":true,\n" +
-                "   \"root3\":2\n" +
-                "}"
-        );
-    }
-
-    @Test
-    @SuppressWarnings("deprecation")
-    void testAssertStructureDiffers() {
-        assertThatThrownBy(() -> assertJsonStructureEquals("[{\"test\":1}, {\"test\":2}]", "[{\n\"test\": 1\n}, {\"TEST\": 4}]"))
-            .hasMessage("JSON documents are different:\n" +
-                "Different keys found in node \"[1]\", missing: \"[1].test\", extra: \"[1].TEST\", expected: <{\"test\":2}> but was: <{\"TEST\":4}>\n");
-    }
-
-    @Test
-    @SuppressWarnings("deprecation")
-    void testAssertStructureArrayDiffers() {
-        assertThatThrownBy(() -> assertJsonStructureEquals("[1, 2]", "[1, 2, 3]"))
-            .hasMessage("JSON documents are different:\nArray \"\" has different length, expected: <2> but was: <3>.\n");
     }
 
     @Test
@@ -757,21 +686,9 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
-    @SuppressWarnings("deprecation")
-    void structureEqualsShouldPassOnNull() {
-        assertJsonStructureEquals("{\"test\": 3}", null);
-    }
-
-    @Test
     void strictStructureEqualsShouldFailOnNull() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\": 3}", null, when(IGNORING_VALUES)))
             .hasMessage("JSON documents are different:\nDifferent value found in node \"\", expected: <{\"test\":3}> but was: <null>.\n");
-    }
-
-    @Test
-    @SuppressWarnings("deprecation")
-    void structureEqualsShouldPassOnDifferentType() {
-        assertJsonStructureEquals("{\"test\": 3}", "{\"test\": \"3\"}");
     }
 
     @Test

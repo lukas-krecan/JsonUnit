@@ -17,6 +17,7 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import net.javacrumbs.jsonunit.core.Option;
 
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -46,6 +47,12 @@ public class Options {
     public Options with(Option option, Option... otherOptions) {
         EnumSet<Option> optionsWith = EnumSet.copyOf(options);
         optionsWith.addAll(EnumSet.of(option, otherOptions));
+        return new Options(optionsWith);
+    }
+
+    public Options with(Collection<Option> options) {
+        EnumSet<Option> optionsWith = EnumSet.copyOf(options);
+        optionsWith.addAll(options);
         return new Options(optionsWith);
     }
 

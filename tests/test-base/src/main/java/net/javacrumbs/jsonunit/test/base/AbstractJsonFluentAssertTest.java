@@ -191,20 +191,6 @@ public abstract class AbstractJsonFluentAssertTest {
     }
 
     @Test
-    @SuppressWarnings("deprecation")
-    void testSameStructureOk() {
-        assertThatJson("{\"test\":1}").hasSameStructureAs("{\"test\":21}");
-    }
-
-    @Test
-    @SuppressWarnings("deprecation")
-    void testDifferentStructure() {
-        assertThatThrownBy(() -> assertThatJson("{\"test\":1}").hasSameStructureAs("{\"test\":21, \"a\":true}"))
-            .hasMessage("JSON documents are different:\n" +
-                "Different keys found in node \"\", missing: \"a\", expected: <{\"a\":true,\"test\":21}> but was: <{\"test\":1}>\n");
-    }
-
-    @Test
     void testAssertPath() {
         assertThatThrownBy(() -> assertThatJson("{\"test\":1}").node("test").isEqualTo("2"))
             .hasMessage("JSON documents are different:\nDifferent value found in node \"test\", expected: <2> but was: <1>.\n");

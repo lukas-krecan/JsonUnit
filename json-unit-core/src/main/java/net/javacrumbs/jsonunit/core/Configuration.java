@@ -120,14 +120,16 @@ public class Configuration {
     }
 
     /**
-     * Sets comparison options.
-     *
-     * @param options
-     * @return
+     * Adds comparison options.
      */
     @NotNull
-    public Configuration withOptions(@NotNull Options options) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions, numberComparator);
+    public Configuration withOptions(@NotNull Collection<Option> optionsToAdd) {
+        return new Configuration(tolerance, options.with(optionsToAdd), ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions, numberComparator);
+    }
+
+    @NotNull
+    public Configuration resetOptions() {
+        return new Configuration(tolerance, Options.empty(), ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions, numberComparator);
     }
 
     /**
