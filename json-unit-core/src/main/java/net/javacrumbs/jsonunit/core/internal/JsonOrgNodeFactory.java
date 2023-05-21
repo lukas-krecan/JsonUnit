@@ -105,7 +105,7 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
         @Override
         public Iterator<Node> arrayElements() {
             final Iterator<Object> iterator = value.iterator();
-            return new Iterator<Node>() {
+            return new Iterator<>() {
                 @Override
                 public boolean hasNext() {
                     return iterator.hasNext();
@@ -149,7 +149,7 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
         @Override
         public Iterator<KeyValue> fields() {
             final Iterator<String> iterator = jsonObject.keys();
-            return new Iterator<KeyValue>() {
+            return new Iterator<>() {
                 @Override
                 public boolean hasNext() {
                     return iterator.hasNext();

@@ -112,7 +112,7 @@ public class JohnzonNodeFactory extends AbstractNodeFactory {
         public Iterator<KeyValue> fields() {
             if (jsonNode instanceof JsonObject) {
                 final Iterator<Map.Entry<String, JsonValue>> iterator = ((JsonObject) jsonNode).entrySet().iterator();
-                return new Iterator<KeyValue>() {
+                return new Iterator<>() {
                     @Override
                     public boolean hasNext() {
                         return iterator.hasNext();
@@ -161,7 +161,7 @@ public class JohnzonNodeFactory extends AbstractNodeFactory {
         public Iterator<Node> arrayElements() {
             if (jsonNode instanceof JsonArray) {
                 final Iterator<JsonValue> iterator = ((JsonArray) jsonNode).iterator();
-                return new Iterator<Node>() {
+                return new Iterator<>() {
                     @Override
                     public boolean hasNext() {
                         return iterator.hasNext();
@@ -191,24 +191,14 @@ public class JohnzonNodeFactory extends AbstractNodeFactory {
 
         @Override
         public NodeType getNodeType() {
-            switch (jsonNode.getValueType()) {
-                case OBJECT:
-                    return NodeType.OBJECT;
-                case ARRAY:
-                    return NodeType.ARRAY;
-                case STRING:
-                    return NodeType.STRING;
-                case NUMBER:
-                    return NodeType.NUMBER;
-                case TRUE:
-                    return NodeType.BOOLEAN;
-                case FALSE:
-                    return NodeType.BOOLEAN;
-                case NULL:
-                    return NodeType.NULL;
-                default:
-                    throw new IllegalStateException("Unexpected node type " + jsonNode);
-            }
+            return switch (jsonNode.getValueType()) {
+                case OBJECT -> NodeType.OBJECT;
+                case ARRAY -> NodeType.ARRAY;
+                case STRING -> NodeType.STRING;
+                case NUMBER -> NodeType.NUMBER;
+                case TRUE, FALSE -> NodeType.BOOLEAN;
+                case NULL -> NodeType.NULL;
+            };
         }
 
         @Override

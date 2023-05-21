@@ -75,23 +75,12 @@ class Converter {
         for (String factoryName : property.toLowerCase().split(",")) {
             factoryName = factoryName.trim();
             switch (factoryName) {
-                case "moshi":
-                    factories.add(new MoshiNodeFactory());
-                    break;
-                case "json.org":
-                    factories.add(new JsonOrgNodeFactory());
-                    break;
-                case "jackson2":
-                    factories.add(new Jackson2NodeFactory());
-                    break;
-                case "gson":
-                    factories.add(new GsonNodeFactory());
-                    break;
-                case "johnzon":
-                    factories.add(new JohnzonNodeFactory());
-                    break;
-                default:
-                    throw new IllegalArgumentException("'" + factoryName + "' library name not recognized.");
+                case "moshi" -> factories.add(new MoshiNodeFactory());
+                case "json.org" -> factories.add(new JsonOrgNodeFactory());
+                case "jackson2" -> factories.add(new Jackson2NodeFactory());
+                case "gson" -> factories.add(new GsonNodeFactory());
+                case "johnzon" -> factories.add(new JohnzonNodeFactory());
+                default -> throw new IllegalArgumentException("'" + factoryName + "' library name not recognized.");
             }
         }
         return factories;

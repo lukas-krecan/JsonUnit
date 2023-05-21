@@ -77,8 +77,10 @@ class WebTestClientTest {
     void isEqualToShouldFailIfDoesNotEqual() {
         DifferenceListener listener = mock(DifferenceListener.class);
         assertThatThrownBy(() -> exec().consumeWith(json().withDifferenceListener(listener).isEqualTo(CORRECT_JSON.replace("stringValue", "stringValue2"))))
-            .hasMessageStartingWith("JSON documents are different:\n" +
-                "Different value found in node \"result.string\", expected: <\"stringValue2\"> but was: <\"stringValue\">.\n");
+            .hasMessageStartingWith("""
+                JSON documents are different:
+                Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
+                """);
 
         verify(listener).diff(any(Difference.class), any(DifferenceContext.class));
     }
@@ -86,8 +88,10 @@ class WebTestClientTest {
     @Test
     void isEqualToInNodeFailIfDoesNotEqual() {
         assertThatThrownBy(() -> exec().consumeWith(json().node("result.string").isEqualTo("stringValue2")))
-            .hasMessageStartingWith("JSON documents are different:\n" +
-                "Different value found in node \"result.string\", expected: <\"stringValue2\"> but was: <\"stringValue\">.\n");
+            .hasMessageStartingWith("""
+                JSON documents are different:
+                Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
+                """);
 
     }
 
@@ -133,15 +137,19 @@ class WebTestClientTest {
     @Test
     void isFalseShouldFailOnTrue() {
         assertThatThrownBy(() -> exec().consumeWith(json().node("result.boolean").isFalse()))
-            .hasMessageStartingWith("JSON documents are different:\n" +
-                "Different value found in node \"result.boolean\", expected: <false> but was: <true>.\n");
+            .hasMessageStartingWith("""
+                JSON documents are different:
+                Different value found in node "result.boolean", expected: <false> but was: <true>.
+                """);
     }
 
     @Test
     void isTrueShouldFailOnString() {
         assertThatThrownBy(() -> exec().consumeWith(json().node("result.string").isTrue()))
-            .hasMessageStartingWith("JSON documents are different:\n" +
-                "Different value found in node \"result.string\", expected: <true> but was: <\"stringValue\">.\n");
+            .hasMessageStartingWith("""
+                JSON documents are different:
+                Different value found in node "result.string", expected: <true> but was: <"stringValue">.
+                """);
     }
 
     @Test
@@ -232,8 +240,10 @@ class WebTestClientTest {
     void isEqualToShouldFailIfNodeDoesNotEqual() {
         assertThatThrownBy(() -> exec()
             .consumeWith(json().node("result.string").isEqualTo("stringValue2")))
-            .hasMessageStartingWith("JSON documents are different:\n" +
-                "Different value found in node \"result.string\", expected: <\"stringValue2\"> but was: <\"stringValue\">.\n");
+            .hasMessageStartingWith("""
+                JSON documents are different:
+                Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
+                """);
     }
 
     @Test
@@ -244,9 +254,10 @@ class WebTestClientTest {
     @Test
     void intValueShouldFailIfDoesNotMatch() {
         assertThatThrownBy(() -> exec().consumeWith(json().node("result.array").matches(everyItem(lessThanOrEqualTo(valueOf(2))))))
-            .hasMessageStartingWith("Node \"result.array\" does not match.\n" +
-                "Expected: every item is a value less than or equal to <2>\n" +
-                "     but: an item <3> was greater than <2>");
+            .hasMessageStartingWith("""
+                Node "result.array" does not match.
+                Expected: every item is a value less than or equal to <2>
+                     but: an item <3> was greater than <2>""");
     }
 
     private WebTestClient.BodyContentSpec exec() {

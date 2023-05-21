@@ -56,7 +56,7 @@ public final class InternalMatcher {
     private final Object actual;
     private final String description;
     private final Configuration configuration;
-    private String nodeDescription;
+    private final String nodeDescription;
 
     public InternalMatcher(@Nullable Object actual, @NotNull Path path, @NotNull String description, @NotNull Configuration configuration, @NotNull String nodeDescription) {
         this.path = path;

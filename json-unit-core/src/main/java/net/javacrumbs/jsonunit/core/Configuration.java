@@ -28,7 +28,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -157,12 +156,12 @@ public class Configuration {
 
     @NotNull
     public Configuration withPathOptions(@NotNull List<PathOption> pathOptions) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, Collections.unmodifiableList(new ArrayList<>(pathOptions)), numberComparator);
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, List.copyOf(pathOptions), numberComparator);
     }
 
     @NotNull
     public Configuration whenIgnoringPaths(@NotNull Collection<String> pathsToBeIgnored) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, Collections.unmodifiableSet(new HashSet<>(pathsToBeIgnored)), differenceListener, pathOptions, numberComparator);
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers, Set.copyOf(pathsToBeIgnored), differenceListener, pathOptions, numberComparator);
     }
 
     /**

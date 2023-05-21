@@ -97,6 +97,6 @@ class ConverterTest {
     void testDecimalValueAndIsIntegralNumber() {
         Converter converter = new Converter(Arrays.asList(new Jackson2NodeFactory(), new GsonNodeFactory()));
         Node node = converter.convertToNode(BooleanNode.TRUE, "", false);
-        assertTrue(((Jackson2NodeFactory.Jackson2Node) (node)).isIntegralNumber());
+        assertTrue(node.isIntegralNumber());
     }
 }

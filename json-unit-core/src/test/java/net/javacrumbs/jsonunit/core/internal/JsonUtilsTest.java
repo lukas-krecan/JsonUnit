@@ -148,7 +148,7 @@ class JsonUtilsTest {
     @Test
     void testGetStartNodeNonexisting() throws IOException {
         Node startNode = getNode(mapper.readTree("{\"test\":{\"value\":1}}"), "test.bogus");
-        assertEquals(true, startNode.isMissingNode());
+        assertTrue(startNode.isMissingNode());
     }
 
     @Test

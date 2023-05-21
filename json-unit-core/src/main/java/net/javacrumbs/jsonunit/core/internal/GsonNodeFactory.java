@@ -103,7 +103,7 @@ class GsonNodeFactory extends AbstractNodeFactory {
         public Iterator<KeyValue> fields() {
             if (jsonNode instanceof JsonObject) {
                 final Iterator<Map.Entry<String, JsonElement>> iterator = ((JsonObject) jsonNode).entrySet().iterator();
-                return new Iterator<KeyValue>() {
+                return new Iterator<>() {
                     @Override
                     public boolean hasNext() {
                         return iterator.hasNext();
@@ -147,7 +147,7 @@ class GsonNodeFactory extends AbstractNodeFactory {
         public Iterator<Node> arrayElements() {
             if (jsonNode instanceof JsonArray) {
                 final Iterator<JsonElement> iterator = ((JsonArray) jsonNode).iterator();
-                return new Iterator<Node>() {
+                return new Iterator<>() {
                     @Override
                     public boolean hasNext() {
                         return iterator.hasNext();
