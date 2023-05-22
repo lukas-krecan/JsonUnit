@@ -137,7 +137,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>2.37.0</version>
+    <version>2.38.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -170,7 +170,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.37.0</version>
+    <version>2.38.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -215,7 +215,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.37.0</version>
+    <version>2.38.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -259,7 +259,7 @@ Import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.37.0</version>
+    <version>2.38.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -282,7 +282,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.37.0</version>
+    <version>2.38.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -319,7 +319,7 @@ For other API styles you have to first import JsonPath support module
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-json-path</artifactId>
-    <version>2.37.0</version>
+    <version>2.38.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -616,6 +616,14 @@ assertThatJson("{\"test\":1.10001}").node("test")
 
 If you are interested why 1 and 1.0 are treated as different numbers please read this [comment](https://github.com/lukas-krecan/JsonUnit/issues/229#issuecomment-623882801).
 
+If you want to have special handling of numerical valuse, you can inject your own number comparator.
+
+```java
+assertThatJson("{\"a\":1.0}")
+    .withConfiguration(c -> c.withNumberComparator(numberComparator))
+    .isEqualTo("{\"a\":1.00}");
+```
+
 ## <a name="dots"></a>Escaping dots
 Sometimes you have dots in JSON element names and you need to address those elements. It is possible to escape dots like this
 
@@ -681,6 +689,10 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 2.8.0 (2023-05-22)
+* Support for NumberComparator
+* Dependency updates
+
 ## 2.37.0 (2023-03-23)
 * Make custom matcher regexp DOTALL (#617)
 * Dependency updates
