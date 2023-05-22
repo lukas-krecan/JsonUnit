@@ -79,24 +79,28 @@ public abstract class AbstractJsonMatchersTest {
     @Test
     void jsonPartMatchesShouldReturnNiceException() {
         assertThatThrownBy(() -> assertThat("{\"test\":1}", jsonPartMatches("test", is(valueOf(2)))))
-            .hasMessage("\nExpected: node \"test\" is <2>\n" +
-                "     but: was <1>");
+            .hasMessage("""
+
+                Expected: node "test" is <2>
+                     but: was <1>""");
     }
 
     @Test
     void jsonPartMatchesShouldFailOnMissing() {
         assertThatThrownBy(() -> assertThat("{\"test\":1}", jsonPartMatches("test2", is(valueOf(2)))))
-            .hasMessage("\n" +
-                "Expected: node \"test2\" is <2>\n" +
-                "     but: Node \"test2\" is missing.");
+            .hasMessage("""
+
+                Expected: node "test2" is <2>
+                     but: Node "test2" is missing.""");
     }
 
     @Test
     void shouldAddPathPrefixToPath() {
         assertThatThrownBy(() -> assertThat(jsonSource("{\"test\":1}", "$"), jsonPartMatches("test", is(valueOf(2)))))
-            .hasMessage("\n" +
-                "Expected: node \"$.test\" is <2>\n" +
-                "     but: was <1>");
+            .hasMessage("""
+
+                Expected: node "$.test" is <2>
+                     but: was <1>""");
     }
 
     @Test
@@ -107,17 +111,21 @@ public abstract class AbstractJsonMatchersTest {
     @Test
     void jsonPartMatchesShouldReturnNiceExceptionForArray() {
         assertThatThrownBy(() -> assertThat("{\"test\":[1, 2, 3]}", jsonPartMatches("test", hasItems(valueOf(1), valueOf(2), valueOf(4)))))
-            .hasMessage("\nExpected: node \"test\" (a collection containing <1> and a collection containing <2> and a collection containing <4>)\n" +
-                "     but: was <[1, 2, 3]>");
+            .hasMessage("""
+
+                Expected: node "test" (a collection containing <1> and a collection containing <2> and a collection containing <4>)
+                     but: was <[1, 2, 3]>""");
     }
 
     @Test
     void ifMatcherDoesNotMatchReportDifference() {
         assertThatThrownBy(() -> assertThat("{\"test\":-1}", jsonEquals("{\"test\": \"${json-unit.matches:positive}\"}").withMatcher("positive", greaterThan(valueOf(0)))))
-            .hasMessage("\n" +
-                "Expected: {\"test\": \"${json-unit.matches:positive}\"}\n" +
-                "     but: JSON documents are different:\n" +
-                "Matcher \"positive\" does not match value -1 in node \"test\". <-1> was less than <0>\n");
+            .hasMessage("""
+
+                Expected: {"test": "${json-unit.matches:positive}"}
+                     but: JSON documents are different:
+                Matcher "positive" does not match value -1 in node "test". <-1> was less than <0>
+                """);
     }
 
     @Test
@@ -128,9 +136,12 @@ public abstract class AbstractJsonMatchersTest {
     @Test
     void shouldNotFailOnEmptyInput() {
         assertThatThrownBy(() -> assertThat("", jsonEquals("{\"test\":1}")))
-            .hasMessage("\nExpected: {\"test\":1}\n" +
-                "     but: JSON documents are different:\n" +
-                "Different value found in node \"\", expected <{\"test\":1}> but was <\"\">.\n");
+            .hasMessage("""
+
+                Expected: {"test":1}
+                     but: JSON documents are different:
+                Different value found in node "", expected <{"test":1}> but was <"">.
+                """);
     }
 
     @Test
@@ -170,10 +181,12 @@ public abstract class AbstractJsonMatchersTest {
     @Test
     void testAssertDifferentTypeInt() {
         assertThatThrownBy(() -> assertThat("{\"test\":\"1\"}", jsonPartEquals("test", 1)))
-            .hasMessage("\n" +
-                "Expected: 1 in \"test\"\n" +
-                "     but: JSON documents are different:\n" +
-                "Different value found in node \"test\", expected <1> but was <\"1\">.\n");
+            .hasMessage("""
+
+                Expected: 1 in "test"
+                     but: JSON documents are different:
+                Different value found in node "test", expected <1> but was <"1">.
+                """);
     }
 
     @Test
@@ -192,26 +205,39 @@ public abstract class AbstractJsonMatchersTest {
     @Test
     void testDifferentValue() {
         assertThatThrownBy(() -> assertThat("{\"test\":1}", jsonEquals("{\n\"test\": 2\n}")))
-            .hasMessage("\nExpected: {\n\"test\": 2\n}\n" +
-                "     but: JSON documents are different:\n" +
-                "Different value found in node \"test\", expected <2> but was <1>.\n");
+            .hasMessage("""
+
+                Expected: {
+                "test": 2
+                }
+                     but: JSON documents are different:
+                Different value found in node "test", expected <2> but was <1>.
+                """);
     }
 
     @Test
     void testDifferentStructure() {
         assertThatThrownBy(() -> assertThat("{\"test\":1}", jsonEquals("{\n\"test2\": 2\n}")))
-            .hasMessage("\nExpected: {\n\"test2\": 2\n}\n" +
-                "     but: JSON documents are different:\n" +
-                "Different keys found in node \"\", missing: \"test2\", extra: \"test\", expected <{\"test2\":2}> but was <{\"test\":1}>\n");
+            .hasMessage("""
+
+                Expected: {
+                "test2": 2
+                }
+                     but: JSON documents are different:
+                Different keys found in node "", missing: "test2", extra: "test", expected <{"test2":2}> but was <{"test":1}>
+                """);
     }
 
     @Test
     void testDifferentPartValue() {
         RecordingDifferenceListener listener = new RecordingDifferenceListener();
         assertThatThrownBy(() -> assertThat("{\"test\":1}", jsonPartEquals("test", "2").withDifferenceListener(listener)))
-            .hasMessage("\nExpected: 2 in \"test\"\n" +
-                "     but: JSON documents are different:\n" +
-                "Different value found in node \"test\", expected <2> but was <1>.\n");
+            .hasMessage("""
+
+                Expected: 2 in "test"
+                     but: JSON documents are different:
+                Different value found in node "test", expected <2> but was <1>.
+                """);
 
         assertEquals(1, listener.getDifferenceList().size());
         assertEquals("DIFFERENT Expected 2 in test got 1 in test", listener.getDifferenceList().get(0).toString());
@@ -220,17 +246,19 @@ public abstract class AbstractJsonMatchersTest {
     @Test
     void testAbsent() {
         assertThatThrownBy(() -> assertThat("{\"test\":1}", jsonNodeAbsent("test")))
-            .hasMessage("\n" +
-                "Expected: Node \"test\" is absent.\n" +
-                "     but: Node \"test\" is \"1\".");
+            .hasMessage("""
+
+                Expected: Node "test" is absent.
+                     but: Node "test" is "1".""");
     }
 
     @Test
     void testAbsentShouldAddPathToThePrefix() {
         assertThatThrownBy(() -> assertThat(jsonSource("{\"test\":1}", "$"), jsonNodeAbsent("test")))
-            .hasMessage("\n" +
-                "Expected: Node \"$.test\" is absent.\n" +
-                "     but: Node \"$.test\" is \"1\".");
+            .hasMessage("""
+
+                Expected: Node "$.test" is absent.
+                     but: Node "$.test" is "1".""");
     }
 
     @Test
@@ -241,26 +269,29 @@ public abstract class AbstractJsonMatchersTest {
     @Test
     void testPresent() {
         assertThatThrownBy(() -> assertThat("{\"test\":1}", jsonNodePresent("test.a")))
-            .hasMessage("\n" +
-                "Expected: Node \"test.a\" is present.\n" +
-                "     but: Node \"test.a\" is missing.");
+            .hasMessage("""
+
+                Expected: Node "test.a" is present.
+                     but: Node "test.a" is missing.""");
     }
 
 
     @Test
     void testPresentShouldAddPathToThePrefix() {
         assertThatThrownBy(() -> assertThat(jsonSource("{\"test\":1}", "$"), jsonNodePresent("test.a")))
-            .hasMessage("\n" +
-                "Expected: Node \"$.test.a\" is present.\n" +
-                "     but: Node \"$.test.a\" is missing.");
+            .hasMessage("""
+
+                Expected: Node "$.test.a" is present.
+                     but: Node "$.test.a" is missing.""");
     }
 
     @Test
     void testPresentIfNullAndTreatingNullAsAbsent() {
         assertThatThrownBy(() -> assertThat("{\"test\":null}", jsonNodePresent("test").when(TREATING_NULL_AS_ABSENT)))
-            .hasMessage("\n" +
-                "Expected: Node \"test\" is present.\n" +
-                "     but: Node \"test\" is missing.");
+            .hasMessage("""
+
+                Expected: Node "test" is present.
+                     but: Node "test" is missing.""");
     }
 
     @Test
@@ -271,10 +302,12 @@ public abstract class AbstractJsonMatchersTest {
     @Test
     void testNullAndAbsent() {
         assertThatThrownBy(() -> assertThat("{\"test\":{\"a\":1, \"b\": null}}", jsonEquals("{\"test\":{\"a\":1}}")))
-            .hasMessage("\n" +
-                "Expected: {\"test\":{\"a\":1}}\n" +
-                "     but: JSON documents are different:\n" +
-                "Different keys found in node \"test\", extra: \"test.b\", expected <{\"a\":1}> but was <{\"a\":1,\"b\":null}>\n");
+            .hasMessage("""
+
+                Expected: {"test":{"a":1}}
+                     but: JSON documents are different:
+                Different keys found in node "test", extra: "test.b", expected <{"a":1}> but was <{"a":1,"b":null}>
+                """);
     }
 
     @Test
@@ -299,9 +332,11 @@ public abstract class AbstractJsonMatchersTest {
             assertThat("{\"test\":2}", jsonEquals(resource("test.json")));
             expectException();
         } catch (AssertionError e) {
-            assertThat(e.getMessage(), containsString("\n" +
-                                "     but: JSON documents are different:\n" +
-                                "Different value found in node \"test\", expected <1> but was <2>.\n"));
+            assertThat(e.getMessage(), containsString("""
+
+                     but: JSON documents are different:
+                Different value found in node "test", expected <1> but was <2>.
+                """));
         }
     }
 
@@ -357,8 +392,10 @@ public abstract class AbstractJsonMatchersTest {
         StringDescription description = new StringDescription();
         // Use different instance
         matcher.describeMismatch(actual, description);
-        assertEquals("JSON documents are different:\n" +
-            "Different value found in node \"test\", expected <1> but was <2>.\n", description.toString());
+        assertEquals("""
+            JSON documents are different:
+            Different value found in node "test", expected <1> but was <2>.
+            """, description.toString());
     }
 
     private void expectException() {

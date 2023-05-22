@@ -18,7 +18,6 @@ package net.javacrumbs.jsonunit.core;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
 import net.javacrumbs.jsonunit.core.internal.DefaultNumberComparator;
-import net.javacrumbs.jsonunit.core.internal.Options;
 import net.javacrumbs.jsonunit.core.internal.PathOption;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
@@ -29,7 +28,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -52,13 +50,7 @@ public class Configuration {
     private final List<PathOption> pathOptions;
     private final Set<String> pathsToBeIgnored;
     private final DifferenceListener differenceListener;
-
     private final NumberComparator numberComparator;
-
-    @Deprecated
-    public Configuration(BigDecimal tolerance, Options options, String ignorePlaceholder) {
-        this(tolerance, options, ignorePlaceholder, Matchers.empty(), Collections.emptySet(), DUMMY_LISTENER, Collections.emptyList(), DEFAULT_NUMBER_COMPARATOR);
-    }
 
     private Configuration(@Nullable BigDecimal tolerance, Options options, String ignorePlaceholder, Matchers matchers, Set<String> pathsToBeIgnored, DifferenceListener differenceListener, List<PathOption> pathOptions, NumberComparator numberComparator) {
         this.tolerance = tolerance;
@@ -126,14 +118,16 @@ public class Configuration {
     }
 
     /**
-     * Sets comparison options.
-     *
-     * @param options
-     * @return
+     * Adds comparison options.
      */
     @NotNull
-    public Configuration withOptions(@NotNull Options options) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions, numberComparator);
+    public Configuration withOptions(@NotNull Collection<Option> optionsToAdd) {
+        return new Configuration(tolerance, options.with(optionsToAdd), ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions, numberComparator);
+    }
+
+    @NotNull
+    public Configuration resetOptions() {
+        return new Configuration(tolerance, Options.empty(), ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions, numberComparator);
     }
 
     /**
@@ -162,12 +156,12 @@ public class Configuration {
 
     @NotNull
     public Configuration withPathOptions(@NotNull List<PathOption> pathOptions) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, Collections.unmodifiableList(new ArrayList<>(pathOptions)), numberComparator);
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, List.copyOf(pathOptions), numberComparator);
     }
 
     @NotNull
     public Configuration whenIgnoringPaths(@NotNull Collection<String> pathsToBeIgnored) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, Collections.unmodifiableSet(new HashSet<>(pathsToBeIgnored)), differenceListener, pathOptions, numberComparator);
+        return new Configuration(tolerance, options, ignorePlaceholder, matchers, Set.copyOf(pathsToBeIgnored), differenceListener, pathOptions, numberComparator);
     }
 
     /**
@@ -239,8 +233,8 @@ public class Configuration {
     }
 
     @NotNull
-    public Options getOptions() {
-        return options;
+    public Set<Option> getOptions() {
+        return options.values();
     }
 
     @NotNull

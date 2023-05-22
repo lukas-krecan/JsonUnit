@@ -21,12 +21,10 @@ import java.util.List;
 import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
 
 /**
- * Converts object to Node using {@link net.javacrumbs.jsonunit.core.internal.NodeFactory}.
+ * Converts object to Node using {@link NodeFactory}.
  */
-class Converter {
+record Converter(List<NodeFactory> factories) {
     static final String LIBRARIES_PROPERTY_NAME = "json-unit.libraries";
-
-    private final List<NodeFactory> factories;
 
     private static final boolean jackson2Present =
         isClassPresent("com.fasterxml.jackson.databind.ObjectMapper") &&
@@ -44,11 +42,10 @@ class Converter {
     private static final boolean johnzonPresent =
         isClassPresent("org.apache.johnzon.mapper.Mapper");
 
-    Converter(List<NodeFactory> factories) {
+    Converter {
         if (factories.isEmpty()) {
             throw new IllegalStateException("List of factories can not be empty");
         }
-        this.factories = factories;
     }
 
     /**
@@ -75,23 +72,12 @@ class Converter {
         for (String factoryName : property.toLowerCase().split(",")) {
             factoryName = factoryName.trim();
             switch (factoryName) {
-                case "moshi":
-                    factories.add(new MoshiNodeFactory());
-                    break;
-                case "json.org":
-                    factories.add(new JsonOrgNodeFactory());
-                    break;
-                case "jackson2":
-                    factories.add(new Jackson2NodeFactory());
-                    break;
-                case "gson":
-                    factories.add(new GsonNodeFactory());
-                    break;
-                case "johnzon":
-                    factories.add(new JohnzonNodeFactory());
-                    break;
-                default:
-                    throw new IllegalArgumentException("'" + factoryName + "' library name not recognized.");
+                case "moshi" -> factories.add(new MoshiNodeFactory());
+                case "json.org" -> factories.add(new JsonOrgNodeFactory());
+                case "jackson2" -> factories.add(new Jackson2NodeFactory());
+                case "gson" -> factories.add(new GsonNodeFactory());
+                case "johnzon" -> factories.add(new JohnzonNodeFactory());
+                default -> throw new IllegalArgumentException("'" + factoryName + "' library name not recognized.");
             }
         }
         return factories;
@@ -143,9 +129,5 @@ class Converter {
 
     private boolean isLastFactory(int i) {
         return factories.size() - 1 == i;
-    }
-
-    List<NodeFactory> getFactories() {
-        return factories;
     }
 }

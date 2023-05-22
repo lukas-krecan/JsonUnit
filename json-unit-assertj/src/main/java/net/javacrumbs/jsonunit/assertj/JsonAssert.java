@@ -22,7 +22,6 @@ import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 import net.javacrumbs.jsonunit.core.internal.Node;
-import net.javacrumbs.jsonunit.core.internal.Options;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
@@ -43,6 +42,7 @@ import org.jetbrains.annotations.Nullable;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -320,19 +320,23 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
         }
 
         /**
-         * Sets comparison options.
-         *
-         * @param options
-         * @return
+         * Adds comparison options.
          */
         @NotNull
-        public ConfigurableJsonAssert withOptions(@NotNull Options options) {
-            return withConfiguration(c -> c.withOptions(options));
+        public ConfigurableJsonAssert withOptions(@NotNull Option first, @NotNull Option... next) {
+            return withConfiguration(c -> c.withOptions(first, next));
+        }
+
+        /**
+         * Adds comparison options.
+         */
+        @NotNull
+        public ConfigurableJsonAssert withOptions(@NotNull Collection<Option> optionsToAdd) {
+            return withConfiguration(c -> c.withOptions(optionsToAdd));
         }
 
         /**
          * Allows to configure like this
-         *
          * <code>
          *     assertThatJson(...)
          *             .withConfiguration(c -&gt; c.withMatcher("positive", greaterThan(valueOf(0)))

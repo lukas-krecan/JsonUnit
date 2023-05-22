@@ -58,7 +58,7 @@ class ConverterTest {
     void shouldUseOnlyFactorySpecifiedBySystemProperty() {
         System.setProperty(LIBRARIES_PROPERTY_NAME,"gson");
         Converter converter = Converter.createDefaultConverter();
-        assertThat(converter.getFactories()).extracting("class").containsExactly(GsonNodeFactory.class);
+        assertThat(converter.factories()).extracting("class").containsExactly(GsonNodeFactory.class);
         System.setProperty(LIBRARIES_PROPERTY_NAME, "");
     }
 
@@ -66,7 +66,7 @@ class ConverterTest {
     void shouldChangeOrderSpecifiedBySystemProperty() {
         System.setProperty(LIBRARIES_PROPERTY_NAME,"jackson2, gson ,json.org");
         Converter converter = Converter.createDefaultConverter();
-        assertThat(converter.getFactories()).extracting("class").containsExactly(Jackson2NodeFactory.class, GsonNodeFactory.class, JsonOrgNodeFactory.class);
+        assertThat(converter.factories()).extracting("class").containsExactly(Jackson2NodeFactory.class, GsonNodeFactory.class, JsonOrgNodeFactory.class);
         System.setProperty(LIBRARIES_PROPERTY_NAME, "");
     }
 
@@ -97,6 +97,6 @@ class ConverterTest {
     void testDecimalValueAndIsIntegralNumber() {
         Converter converter = new Converter(Arrays.asList(new Jackson2NodeFactory(), new GsonNodeFactory()));
         Node node = converter.convertToNode(BooleanNode.TRUE, "", false);
-        assertTrue(((Jackson2NodeFactory.Jackson2Node) (node)).isIntegralNumber());
+        assertTrue(node.isIntegralNumber());
     }
 }

@@ -229,7 +229,7 @@ class GenericNodeBuilder implements NodeBuilder {
         @Override
         public Iterator<Node> arrayElements() {
             final Iterator<?> iterator = value.iterator();
-            return new Iterator<Node>() {
+            return new Iterator<>() {
                 @Override
                 public boolean hasNext() {
                     return iterator.hasNext();
@@ -290,7 +290,7 @@ class GenericNodeBuilder implements NodeBuilder {
         @Override
         public Iterator<KeyValue> fields() {
             final Iterator<String> iterator = jsonObject.keySet().iterator();
-            return new Iterator<KeyValue>() {
+            return new Iterator<>() {
                 @Override
                 public boolean hasNext() {
                     return iterator.hasNext();

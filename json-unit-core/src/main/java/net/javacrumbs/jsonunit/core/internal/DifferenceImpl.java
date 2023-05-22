@@ -28,23 +28,23 @@ class DifferenceImpl implements Difference {
 
     @Override
     public String getActualPath() {
-        return context.getActualPath() != null ? context.getActualPath().getFullPath() : null;
+        return context.actualPath() != null ? context.actualPath().getFullPath() : null;
     }
 
     @Override
     public String getExpectedPath() {
-        return context.getExpectedPath() != null ? context.getExpectedPath().getFullPath() : null;
+        return context.expectedPath() != null ? context.expectedPath().getFullPath() : null;
     }
 
     @Override
     public Object getActual() {
-        Node actualNode = context.getActualNode();
+        Node actualNode = context.actualNode();
         return actualNode != null && !actualNode.isMissingNode() ? actualNode.getValue() : null;
     }
 
     @Override
     public Object getExpected() {
-        Node expectedNode = context.getExpectedNode();
+        Node expectedNode = context.expectedNode();
         return expectedNode != null && !expectedNode.isMissingNode() ? expectedNode.getValue() : null;
     }
 

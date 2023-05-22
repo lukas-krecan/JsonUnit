@@ -45,9 +45,11 @@ public class JsonOrgJsonAssertTest extends AbstractJsonAssertTest {
     @Test
     public void testEqualsNodeFailJsonOrgArray() {
         assertThatThrownBy(() -> assertJsonEquals(readByJsonOrg("[1, 2]"), readByJsonOrg("[1, 2, 3]")))
-            .hasMessage("JSON documents are different:\n" +
-                "Array \"\" has different length, expected: <2> but was: <3>.\n" +
-                "Array \"\" has different content. Extra values: [3], expected: <[1,2]> but was: <[1,2,3]>\n");
+            .hasMessage("""
+                JSON documents are different:
+                Array "" has different length, expected: <2> but was: <3>.
+                Array "" has different content. Extra values: [3], expected: <[1,2]> but was: <[1,2,3]>
+                """);
     }
 
     @Test

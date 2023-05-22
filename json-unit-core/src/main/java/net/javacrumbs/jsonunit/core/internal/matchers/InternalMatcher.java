@@ -34,7 +34,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import static java.util.Collections.singletonList;
-import static net.javacrumbs.jsonunit.core.Option.COMPARING_ONLY_STRUCTURE;
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
@@ -57,7 +56,7 @@ public final class InternalMatcher {
     private final Object actual;
     private final String description;
     private final Configuration configuration;
-    private String nodeDescription;
+    private final String nodeDescription;
 
     public InternalMatcher(@Nullable Object actual, @NotNull Path path, @NotNull String description, @NotNull Configuration configuration, @NotNull String nodeDescription) {
         this.path = path;
@@ -204,18 +203,6 @@ public final class InternalMatcher {
     }
 
     /**
-     * Compares JSON structure. Ignores values, only compares shape of the document and key names.
-     * Is too lenient, ignores types, prefer IGNORING_VALUES option instead.
-     *
-     * @param expected
-     */
-    @SuppressWarnings("deprecation")
-    public void hasSameStructureAs(@Nullable Object expected) {
-        Diff diff = createDiff(expected, configuration.withOptions(COMPARING_ONLY_STRUCTURE));
-        diff.failIfDifferent();
-    }
-
-    /**
      * Creates an assert object that only compares given node.
      * The path is denoted by JSON path, for example.
      *
@@ -258,8 +245,7 @@ public final class InternalMatcher {
      * Extracts data from JsonPath matches
      */
     private List<String> getMatchingPaths() {
-        if (actual instanceof JsonSource) {
-            JsonSource jsonSource = (JsonSource) actual;
+        if (actual instanceof JsonSource jsonSource) {
             if (!jsonSource.getMatchingPaths().isEmpty()) {
                 return jsonSource.getMatchingPaths();
             }

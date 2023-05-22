@@ -21,7 +21,6 @@ import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Node;
-import net.javacrumbs.jsonunit.core.internal.Options;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.BaseMatcher;
@@ -29,6 +28,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
@@ -158,7 +158,7 @@ public class JsonMatchers {
         }
 
         @Override
-        public ConfigurableJsonMatcher<T> withOptions(Options options) {
+        public ConfigurableJsonMatcher<T> withOptions(Collection<Option> options) {
             configuration = configuration.withOptions(options);
             return this;
         }

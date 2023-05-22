@@ -198,8 +198,7 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
         if (expectedValue instanceof Number) {
             expectedValue = json(expectedValue);
         }
-        if (expectedValue instanceof Node) {
-            Node value = (Node) expectedValue;
+        if (expectedValue instanceof Node value) {
             return isSimilar(actualValue, value);
         } else {
             return deepEquals(actualValue, expectedValue);

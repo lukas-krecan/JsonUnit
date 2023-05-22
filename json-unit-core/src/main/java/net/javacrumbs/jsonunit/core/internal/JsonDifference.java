@@ -29,7 +29,7 @@ class JsonDifference {
     }
 
     JsonDifference(Context context, String message, Object... args) {
-        this(message, args, context.getExpectedNode(), context.getActualNode());
+        this(message, args, context.expectedNode(), context.actualNode());
     }
 
     public Node getExpected() {

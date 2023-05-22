@@ -23,7 +23,6 @@ import net.javacrumbs.jsonunit.test.base.beans.Jackson2IgnorePropertyBean;
 import org.junit.jupiter.api.Test;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
-import static net.javacrumbs.jsonunit.JsonAssert.assertJsonStructureEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.when;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByGson;
@@ -79,15 +78,11 @@ class AllJsonAssertTest extends AbstractJsonAssertTest {
     @Test
     void testEqualsNodeFailJsonOrgArray() {
         assertThatThrownBy(() -> assertJsonEquals(readByJsonOrg("[1, 2]"), readByJsonOrg("[1, 2, 3]")))
-            .hasMessage("JSON documents are different:\n" +
-                "Array \"\" has different length, expected: <2> but was: <3>.\n" +
-                "Array \"\" has different content. Extra values: [3], expected: <[1,2]> but was: <[1,2,3]>\n");
-    }
-
-    @Test
-    @SuppressWarnings("deprecation")
-    void testAssertStructureEqualsDifferentValues() {
-        assertJsonStructureEquals("{\"test\": 3}", "{\"test\": {\"inner\": 5}}");
+            .hasMessage("""
+                JSON documents are different:
+                Array "" has different length, expected: <2> but was: <3>.
+                Array "" has different content. Extra values: [3], expected: <[1,2]> but was: <[1,2,3]>
+                """);
     }
 
     @Test
@@ -110,21 +105,19 @@ class AllJsonAssertTest extends AbstractJsonAssertTest {
     @Test
     void testEqualsExtraNodeStringFail() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":\"a\"}", "{\"test\": \"a\", \"test2\": \"aa\"}"))
-            .hasMessage("JSON documents are different:\n" +
-                "Different keys found in node \"\", extra: \"test2\", expected: <{\"test\":\"a\"}> but was: <{\"test\":\"a\",\"test2\":\"aa\"}>\n");
+            .hasMessage("""
+                JSON documents are different:
+                Different keys found in node "", extra: "test2", expected: <{"test":"a"}> but was: <{"test":"a","test2":"aa"}>
+                """);
     }
 
     @Test
     void testEqualsMissedNodeStringFail() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\": \"a\", \"test2\": \"aa\"}", "{\"test\":\"a\"}"))
-            .hasMessage("JSON documents are different:\n" +
-                "Different keys found in node \"\", missing: \"test2\", expected: <{\"test\":\"a\",\"test2\":\"aa\"}> but was: <{\"test\":\"a\"}>\n");
-    }
-
-    @Test
-    @SuppressWarnings("deprecation")
-    void testStructureEquals() {
-        JsonAssert.assertJsonStructureEquals("{\"test\": 123}", "{\"test\": 412}");
+            .hasMessage("""
+                JSON documents are different:
+                Different keys found in node "", missing: "test2", expected: <{"test":"a","test2":"aa"}> but was: <{"test":"a"}>
+                """);
     }
 
     @Test

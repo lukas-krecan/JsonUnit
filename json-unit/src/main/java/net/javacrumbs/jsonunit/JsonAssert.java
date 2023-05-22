@@ -20,14 +20,11 @@ import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
-import net.javacrumbs.jsonunit.core.internal.Options;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
 
 import java.math.BigDecimal;
 
-import static net.javacrumbs.jsonunit.core.Option.COMPARING_ONLY_STRUCTURE;
-import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
 
@@ -121,29 +118,6 @@ public class JsonAssert {
         }
     }
 
-    /**
-     * Compares structures of two JSON documents. Is too lenient, ignores types, prefer IGNORING_VALUES option instead.
-     * Throws {@link AssertionError} if they are different.
-     *
-     * @deprecated Use IGNORING_VALUES option instead
-     */
-    @Deprecated
-    public static void assertJsonStructureEquals(Object expected, Object actual) {
-        Diff diff = create(expected, actual, ACTUAL, ROOT, configuration.withOptions(COMPARING_ONLY_STRUCTURE));
-        diff.failIfDifferent();
-    }
-
-    /**
-     * Compares structure of part of the JSON. Path has this format "root.array[0].value".
-     * Is too lenient, ignores types, prefer IGNORING_VALUES option instead.
-     *
-     * @deprecated Use IGNORING_VALUES option instead
-     */
-    @Deprecated
-    public static void assertJsonPartStructureEquals(Object expected, Object fullJson, String path) {
-        Diff diff = create(expected, fullJson, FULL_JSON, path, configuration.withOptions(COMPARING_ONLY_STRUCTURE));
-        diff.failIfDifferent();
-    }
 
     /**
      * Fails if node in given path exists.
@@ -202,29 +176,6 @@ public class JsonAssert {
     }
 
     /**
-     * When set to true, treats null nodes in actual value as absent. In other words
-     * if you expect {"test":{"a":1}} this {"test":{"a":1, "b": null}} will pass the test.
-     *
-     * @deprecated use setOptions(Option.TREATING_NULL_AS_ABSENT)
-     */
-    @Deprecated
-    public static void setTreatNullAsAbsent(boolean treatNullAsAbsent) {
-        if (treatNullAsAbsent) {
-            configuration = configuration.withOptions(TREATING_NULL_AS_ABSENT);
-        } else {
-            configuration = configuration.withOptions(configuration.getOptions().without(TREATING_NULL_AS_ABSENT));
-        }
-    }
-
-    /**
-     * @deprecated use getOptions().contains(Option.TREATING_NULL_AS_ABSENT)
-     */
-    @Deprecated
-    public static boolean getTreatNullAsAbsent() {
-        return configuration.getOptions().contains(TREATING_NULL_AS_ABSENT);
-    }
-
-    /**
      * Sets listener to customize diff format
      */
     public static void setDifferenceListener(DifferenceListener listener) {
@@ -242,14 +193,14 @@ public class JsonAssert {
      * @see net.javacrumbs.jsonunit.core.Option
      */
     public static void setOptions(Option firstOption, Option... rest) {
-        configuration = configuration.withOptions(Options.empty().with(firstOption, rest));
+        configuration = configuration.withOptions(firstOption, rest);
     }
 
     /**
      * Cleans all options.
      */
     public static void resetOptions() {
-        configuration = configuration.withOptions(Options.empty());
+        configuration = configuration.resetOptions();
     }
 
     static Configuration getConfiguration() {

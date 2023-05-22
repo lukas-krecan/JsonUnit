@@ -34,7 +34,7 @@ class HamcrestHandler {
             if (!matcher.matches(value)) {
                 Description description = new StringDescription();
                 matcher.describeMismatch(value, description);
-                valueDifferenceReporter.differenceFound(context, "Matcher \"%s\" does not match value %s in node \"%s\". %s", matcherName, quoteTextValue(actualNode), context.getActualPath(), description);
+                valueDifferenceReporter.differenceFound(context, "Matcher \"%s\" does not match value %s in node \"%s\". %s", matcherName, quoteTextValue(actualNode), context.actualPath(), description);
             }
         } else {
             structureDifferenceReporter.differenceFound(context, "Matcher \"%s\" not found.", matcherName);

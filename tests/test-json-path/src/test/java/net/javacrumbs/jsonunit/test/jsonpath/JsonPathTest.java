@@ -42,22 +42,28 @@ class JsonPathTest {
     void shouldBeAbleToUseSimpleValuesFailure() {
         assertThatThrownBy(() -> assertThatJson(inPath(json, "$.store.book[*].author"))
             .isEqualTo("['Nigel Rees', 'Evelyn Waugh', 'Herman Melville', 'Arthur C. Clark']"))
-            .hasMessage("JSON documents are different:\n" +
-                "Different value found in node \"$.store.book[*].author[3]\", expected: <\"Arthur C. Clark\"> but was: <\"J. R. R. Tolkien\">.\n");
+            .hasMessage("""
+                JSON documents are different:
+                Different value found in node "$.store.book[*].author[3]", expected: <"Arthur C. Clark"> but was: <"J. R. R. Tolkien">.
+                """);
     }
 
     @Test
     void shouldBeAbleToUseObjects() {
         assertThatThrownBy(() -> assertThatJson(inPath(json, "$.store.book[0]"))
             .isEqualTo(
-                "            {\n" +
-                    "                \"category\": \"reference\",\n" +
-                    "                \"author\": \"Nigel Rees\",\n" +
-                    "                \"title\": \"Sayings of the Century\",\n" +
-                    "                \"price\": 8.96\n" +
-                    "            }"))
-            .hasMessage("JSON documents are different:\n" +
-                "Different value found in node \"$.store.book[0].price\", expected: <8.96> but was: <8.95>.\n");
+                """
+                                {
+                                    "category": "reference",
+                                    "author": "Nigel Rees",
+                                    "title": "Sayings of the Century",
+                                    "price": 8.96
+                                }\
+                    """))
+            .hasMessage("""
+                JSON documents are different:
+                Different value found in node "$.store.book[0].price", expected: <8.96> but was: <8.95>.
+                """);
     }
 
     @Test
@@ -65,50 +71,53 @@ class JsonPathTest {
         assertThatJson(inPath(json, "$.store.book[0]"))
             .whenIgnoringPaths("$.store.book[*].price")
             .isEqualTo(
-                "            {\n" +
-                "                \"category\": \"reference\",\n" +
-                "                \"author\": \"Nigel Rees\",\n" +
-                "                \"title\": \"Sayings of the Century\",\n" +
-                "                \"price\": 8.96\n" +
-                "            }");
+                """
+                                {
+                                    "category": "reference",
+                                    "author": "Nigel Rees",
+                                    "title": "Sayings of the Century",
+                                    "price": 8.96
+                                }\
+                    """);
     }
 
 
-    private static final String json = "{\n" +
-        "    \"store\": {\n" +
-        "        \"book\": [\n" +
-        "            {\n" +
-        "                \"category\": \"reference\",\n" +
-        "                \"author\": \"Nigel Rees\",\n" +
-        "                \"title\": \"Sayings of the Century\",\n" +
-        "                \"price\": 8.95\n" +
-        "            },\n" +
-        "            {\n" +
-        "                \"category\": \"fiction\",\n" +
-        "                \"author\": \"Evelyn Waugh\",\n" +
-        "                \"title\": \"Sword of Honour\",\n" +
-        "                \"price\": 12.99\n" +
-        "            },\n" +
-        "            {\n" +
-        "                \"category\": \"fiction\",\n" +
-        "                \"author\": \"Herman Melville\",\n" +
-        "                \"title\": \"Moby Dick\",\n" +
-        "                \"isbn\": \"0-553-21311-3\",\n" +
-        "                \"price\": 8.99\n" +
-        "            },\n" +
-        "            {\n" +
-        "                \"category\": \"fiction\",\n" +
-        "                \"author\": \"J. R. R. Tolkien\",\n" +
-        "                \"title\": \"The Lord of the Rings\",\n" +
-        "                \"isbn\": \"0-395-19395-8\",\n" +
-        "                \"price\": 22.99\n" +
-        "            }\n" +
-        "        ],\n" +
-        "        \"bicycle\": {\n" +
-        "            \"color\": \"red\",\n" +
-        "            \"price\": 19.95\n" +
-        "        }\n" +
-        "    },\n" +
-        "    \"expensive\": 10\n" +
-        "}";
+    private static final String json = """
+        {
+            "store": {
+                "book": [
+                    {
+                        "category": "reference",
+                        "author": "Nigel Rees",
+                        "title": "Sayings of the Century",
+                        "price": 8.95
+                    },
+                    {
+                        "category": "fiction",
+                        "author": "Evelyn Waugh",
+                        "title": "Sword of Honour",
+                        "price": 12.99
+                    },
+                    {
+                        "category": "fiction",
+                        "author": "Herman Melville",
+                        "title": "Moby Dick",
+                        "isbn": "0-553-21311-3",
+                        "price": 8.99
+                    },
+                    {
+                        "category": "fiction",
+                        "author": "J. R. R. Tolkien",
+                        "title": "The Lord of the Rings",
+                        "isbn": "0-395-19395-8",
+                        "price": 22.99
+                    }
+                ],
+                "bicycle": {
+                    "color": "red",
+                    "price": 19.95
+                }
+            },
+            "expensive": 10
+        }""";
 }

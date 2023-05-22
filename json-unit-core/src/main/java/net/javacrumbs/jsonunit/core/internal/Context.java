@@ -19,37 +19,7 @@ import net.javacrumbs.jsonunit.core.Configuration;
 
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
 
-class Context {
-
-    private final Node expectedNode;
-    private final Node actualNode;
-    private final Path expectedPath;
-    private final Path actualPath;
-    private final Configuration configuration;
-
-    Context(Node expectedNode, Node actualNode, Path expectedPath, Path actualPath, Configuration configuration) {
-        this.expectedNode = expectedNode;
-        this.actualNode = actualNode;
-        this.expectedPath = expectedPath;
-        this.actualPath = actualPath;
-        this.configuration = configuration;
-    }
-
-    Node getExpectedNode() {
-        return expectedNode;
-    }
-
-    Node getActualNode() {
-        return actualNode;
-    }
-
-    Path getExpectedPath() {
-        return expectedPath;
-    }
-
-    Path getActualPath() {
-        return actualPath;
-    }
+record Context(Node expectedNode, Node actualNode, Path expectedPath, Path actualPath, Configuration configuration) {
 
     Context inField(String key) {
         return new Context(expectedNode.get(key), actualNode.get(key), expectedPath.toField(key), actualPath.toField(key), configuration);
@@ -69,9 +39,5 @@ class Context {
 
     Context length(Object expectedLength) {
         return new Context(wrapDeserializedObject(expectedLength), wrapDeserializedObject(actualNode.size()), expectedPath.length(), actualPath.length(), configuration);
-    }
-
-    public Configuration getConfiguration() {
-        return configuration;
     }
 }
