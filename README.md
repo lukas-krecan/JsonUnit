@@ -689,7 +689,7 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
-## 2.8.0 (2023-05-22)
+## 2.38.0 (2023-05-22)
 * Support for NumberComparator
 * Dependency updates
 
