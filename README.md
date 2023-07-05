@@ -32,7 +32,7 @@ There are several different APIs you can use. They all have more or less the sam
 slightly different.
 
 ## <a name="assertj"></a>AssertJ integration
-This is brand new API which combines power of JsonUnit and AssertJ. If you are not sure, which API to use, pick this one.
+The recommended API is AssertJ integration which combines the power of JsonUnit and AssertJ.
 
 ```java
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
@@ -96,7 +96,7 @@ parsed so. If it can't be parsed, it's considered to be just a string to be comp
 but it can lead to unexpected situations, usually with primitive values like numbers and booleans.
 
 ```java
-// This test does NOT pass. "1" is parsed as JSON containing number 1, actual value is a string.
+// This test does NOT pass. "1" is parsed as JSON containing number 1, the actual value is a string.
 assertThatJson("{\"id\":\"1\", \"children\":[{\"parentId\":\"1\"}]}")
     .inPath("children[*].parentId")
     .isArray()
@@ -137,7 +137,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>2.38.0</version>
+    <version>3.0.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -170,7 +170,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>2.38.0</version>
+    <version>3.0.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -215,7 +215,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.38.0</version>
+    <version>3.0.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -259,7 +259,7 @@ Import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.38.0</version>
+    <version>3.0.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -282,16 +282,12 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>2.38.0</version>
+    <version>3.0.0</version>
     <scope>test</scope>
 </dependency>
 ```
 
 For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/master/json-unit-spring/src/test/java/net/javacrumbs/jsonunit/spring/testit/ClientTest.java).
-
-## <a name="vintage"></a>Vintage APIs
-There are two API types that are still supported but not recommnded to use for new tests - Fluent assertions and Standard assert.
-They are documented [here](VINTAGE.md)
 
 # Features
 JsonUnit support all this features regardless of API you use.
@@ -314,12 +310,12 @@ assertThatJson(json)
     ));
 ```
 
-For other API styles you have to first import JsonPath support module
+For the other API styles you have to first import JsonPath support module
 ```xml
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-json-path</artifactId>
-    <version>2.38.0</version>
+    <version>3.0.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -591,10 +587,10 @@ assertThatJson("{\"root\":{\"test\":[1,2,3]}}")
 Numbers are by default compared in the following way:
 
 * If the type differs, the number is different. So 1 and 1.0 are different (int vs. float). This does not apply when Moshi is used since it [parses all numbers as Doubles](https://github.com/square/moshi/issues/192).
-* Floating number comparison is exact
+* Floating number comparison is exact, down to the scale - 1.0 and 1.00 are considered to be different.
 
 You can change this behavior by setting tolerance. If you set tolerance to `0` two numbers are considered equal if they are
-equal mathematically even though they have different type (`a.compareTo(b) == 0`)).
+equal mathematically even though they have different type or precision (`a.compareTo(b) == 0`)).
 
 ```java
 assertThatJson("{\"test\":1.00}").node("test").withTolerance(0).isEqualTo(1);
@@ -616,7 +612,7 @@ assertThatJson("{\"test\":1.10001}").node("test")
 
 If you are interested why 1 and 1.0 are treated as different numbers please read this [comment](https://github.com/lukas-krecan/JsonUnit/issues/229#issuecomment-623882801).
 
-If you want to have special handling of numerical valuse, you can inject your own number comparator.
+If you want to have special handling of numerical values, you can inject your own number comparator.
 
 ```java
 assertThatJson("{\"a\":1.0}")
@@ -625,14 +621,14 @@ assertThatJson("{\"a\":1.0}")
 ```
 
 ## <a name="dots"></a>Escaping dots
-Sometimes you have dots in JSON element names and you need to address those elements. It is possible to escape dots like this
+Sometimes you have dots in JSON element names, and you need to address those elements. It is possible to escape dots like this
 
 ```java
 assertThatJson("{\"name.with.dot\": \"value\"}").node("name\\.with\\.dot").isStringEqualTo("value");
 ```
 
 ## <a name="lenient"></a>Lenient parsing of expected value
-Writing JSON string in Java is huge pain. JsonUnit parses expected values leniently so you do not have to quote keys
+Writing JSON string in Java is huge pain. JsonUnit parses expected values leniently, so you do not have to quote keys,
 and you can use single quotes instead of double quotes. Please note that the actual value being compared is parsed in strict mode.
 
 ```java
@@ -680,7 +676,7 @@ framework to log `net.javacrumbs.jsonunit.difference` on DEBUG level.
 ## Selecting underlying library
 
 JsonUnit is trying to cleverly match which JSON library to use. In case you need to change the default behavior, you can
-use json-unit.libraries system property. For example `-Djson-unit.libraries=jackson2,gson`
+use `json-unit.libraries` system property. For example `-Djson-unit.libraries=jackson2,gson`
 or `System.setProperty("json-unit.libraries", "jackson2");`. Supported values are gson, json.org, moshi, jackson2
 
 Licence
@@ -689,6 +685,13 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 3.0.0 (2023-07-05)
+* Requires Java 17
+* Requires Spring 5.2 (when used with Spring)
+* `Options` class hidden
+* Deprecated methods and classes removed
+* Dependency upgrades
+
 ## 2.38.0 (2023-05-22)
 * Support for NumberComparator
 * Dependency updates
