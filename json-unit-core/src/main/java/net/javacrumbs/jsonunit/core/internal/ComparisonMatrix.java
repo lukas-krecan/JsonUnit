@@ -107,7 +107,7 @@ class ComparisonMatrix {
     }
 
     /**
-     * Algorithm above is not effective when we are comparing arrays with lot of matching values like [1,1,1,1,1,1] vs [8,1,1,1,1,1].
+     * Algorithm above is not effective when we are comparing arrays with a lot of matching values like [1,1,1,1,1,1] vs [8,1,1,1,1,1].
      * We can make it faster if we collapse simple matching values.
      */
     private void doSimpleMatching() {

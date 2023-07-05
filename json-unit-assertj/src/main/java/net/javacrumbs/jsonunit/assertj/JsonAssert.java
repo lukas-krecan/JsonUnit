@@ -172,6 +172,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
         } else {
             internalMatcher().failOnType(node, "number or string");
         }
+        //noinspection DataFlowIssue
         return null;
     }
 

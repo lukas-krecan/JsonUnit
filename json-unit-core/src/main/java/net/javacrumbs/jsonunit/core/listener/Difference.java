@@ -27,7 +27,7 @@ public interface Difference {
     String getActualPath();
 
     /**
-     * Path to the expected element (may be different than actual path if IGNORE_ARRAY_ORDER is used)
+     * Path to the expected element (may be different from actual path if IGNORE_ARRAY_ORDER is used)
      */
     String getExpectedPath();
 

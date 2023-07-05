@@ -74,9 +74,7 @@ public class JsonUnitResultMatchers extends AbstractSpringMatchers<JsonUnitResul
 
         @NotNull
         private String getContentAsString(@NotNull MockHttpServletResponse response) throws UnsupportedEncodingException {
-            // copy from MockHttpServletResponse.getContentAsString(Charset) in order to keep compatibility with older Spring versions
-            String charset = response.isCharset() && response.getCharacterEncoding() != null ? response.getCharacterEncoding() : StandardCharsets.UTF_8.name();
-            return new String(response.getContentAsByteArray(), charset);
+            return response.getContentAsString(StandardCharsets.UTF_8);
         }
     }
 }
