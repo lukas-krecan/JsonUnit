@@ -12,11 +12,7 @@ jobs:
   build:
     strategy:
       matrix:
-        java: ['17' ]
-        # Kotlin needs access to java.util
-        include:
-          - java: '17'
-            maven-opts: --add-opens java.base/java.util=ALL-UNNAMED
+        java: ['17', '20' ]
     runs-on: 'ubuntu-latest'
     steps:
     - uses: actions/checkout@v4
@@ -30,5 +26,5 @@ jobs:
       run: java -version
     - name: Build
       env:
-        MAVEN_OPTS: ${{ matrix.maven-opts }}
+        MAVEN_OPTS: --add-opens java.base/java.util=ALL-UNNAMED
       run: mvn -B clean package biz.aQute.bnd:bnd-resolver-maven-plugin:resolve --file pom.xml
