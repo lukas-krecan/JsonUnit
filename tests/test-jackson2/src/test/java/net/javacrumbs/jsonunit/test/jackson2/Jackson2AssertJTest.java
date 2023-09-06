@@ -18,12 +18,19 @@ package net.javacrumbs.jsonunit.test.jackson2;
 import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson2;
 
 public class Jackson2AssertJTest extends AbstractAssertJTest {
 
+    @Test
+    void shouldAssertDuration() {
+        assertThatJson(Duration.ofSeconds(10)).isEqualTo("10.000000000");
+        assertThatJson(Duration.ofSeconds(10)).isNumber().isEqualByComparingTo("10");
+    }
 
     @Test
     void arrayContainsWithObjects() {
