@@ -596,7 +596,7 @@ equal mathematically even though they have different type or precision (`a.compa
 assertThatJson("{\"test\":1.00}").node("test").withTolerance(0).isEqualTo(1);
 ```
 
-If you set tolerance to non-zero value, the values are considered equal if `abs(a-b) < tolerance`.
+If you set tolerance to non-zero value, the values are considered equal if `abs(a-b) <= tolerance`.
 ```java
 assertThatJson("{\"test\":1.00001}").node("test").withTolerance(0.001).isEqualTo(1);
 ```
