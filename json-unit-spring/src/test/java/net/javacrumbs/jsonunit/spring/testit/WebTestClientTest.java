@@ -38,6 +38,7 @@ import static net.javacrumbs.jsonunit.spring.testit.demo.ExampleController.CORRE
 import static net.javacrumbs.jsonunit.spring.testit.demo.ExampleController.ISO_VALUE;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.lessThan;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -94,6 +95,15 @@ class WebTestClientTest {
                 """);
 
     }
+    @Test
+    void useMatcher() {
+        assertThatThrownBy(() -> exec().consumeWith(json()
+            .withMatcher("negative", lessThan(valueOf(0)))
+            .node("result.decimal").isEqualTo("${json-unit.matches:negative}")))
+            .hasMessage("JSON documents are different:\nMatcher \"negative\" does not match value 1.00001 in node \"result.decimal\". <1.00001> was greater than <0>\n");
+
+    }
+
 
     @Test
     void isNullShouldPassOnNull() {

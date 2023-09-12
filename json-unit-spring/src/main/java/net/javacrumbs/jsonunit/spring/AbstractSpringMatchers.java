@@ -85,6 +85,14 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
     }
 
     /**
+     * Adds a matcher to be used in ${json-unit.matches:matcherName} macro.
+     */
+    @NotNull
+    public ME withMatcher(@NotNull String matcherName, @NotNull Matcher<?> matcher) {
+        return matchers(path, configuration.withMatcher(matcherName, matcher));
+    }
+
+    /**
      * Sets the tolerance for floating number comparison. If set to null, requires exact match of the values.
      * For example, if set to 0.01, ignores all differences lower than 0.01, so 1 and 0.9999 are considered equal.
      */
