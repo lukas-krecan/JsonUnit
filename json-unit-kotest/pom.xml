@@ -32,7 +32,7 @@
 
         <dependency>
             <groupId>io.kotest</groupId>
-            <artifactId>kotest-assertions-api-jvm</artifactId>
+            <artifactId>kotest-assertions-shared-jvm</artifactId>
             <version>${kotest.version}</version>
         </dependency>
 
