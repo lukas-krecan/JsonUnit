@@ -956,7 +956,7 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void shouldAssertNumberFailure() {
-        assertThatThrownBy(() -> assertThatJson("{\"a\":true}").node("a").isNumber().isEqualByComparingTo("2"))
+        assertThatThrownBy(() -> assertThatJson("{\"a\":1}").node("a").isNumber().isEqualByComparingTo("2"))
             .hasMessage("""
                 [Different value found in node "a"]\s
                 expected: 2
