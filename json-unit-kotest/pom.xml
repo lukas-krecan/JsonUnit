@@ -72,7 +72,7 @@
                     <archive>
                         <manifestEntries>
                             <Automatic-Module-Name>
-                                net.javacrumbs.jsonunit.spring
+                                net.javacrumbs.jsonunit.kotest
                             </Automatic-Module-Name>
                         </manifestEntries>
                     </archive>
