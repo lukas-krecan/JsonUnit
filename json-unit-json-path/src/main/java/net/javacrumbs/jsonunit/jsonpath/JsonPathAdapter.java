@@ -33,7 +33,7 @@ import static net.javacrumbs.jsonunit.jsonpath.InternalJsonPathUtils.readValue;
 /**
  * Adapts json-path to json-unit.
  */
-public final class  JsonPathAdapter {
+public final class JsonPathAdapter {
     private JsonPathAdapter() {
 
     }
