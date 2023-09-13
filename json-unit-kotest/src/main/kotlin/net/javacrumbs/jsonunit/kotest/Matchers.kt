@@ -30,6 +30,8 @@ fun beJsonNumber(): Matcher<Any> = beType(NodeType.NUMBER)
 
 fun beJsonString(): Matcher<Any> = beType(NodeType.STRING)
 
+fun beJsonBoolean(): Matcher<Any> = beType(NodeType.BOOLEAN)
+
 // todo: test
 fun bePresent(): Matcher<Any> = Matcher { actual ->
     val node = getNode(actual)
@@ -55,6 +57,16 @@ fun Any.shouldBeJsonNumber(): BigDecimal {
     this should beJsonNumber()
     return getNode(this).decimalValue()
 }
+
+fun Any.shouldBeJsonString(): String {
+    this should beJsonString()
+    return getNode(this).asText()
+}
+fun Any.shouldBeJsonBoolean(): Boolean {
+    this should beJsonBoolean()
+    return getNode(this).asBoolean()
+}
+
 
 
 infix fun Any.inPath(path: String): Any = JsonPathAdapter.inPath(this, path)
