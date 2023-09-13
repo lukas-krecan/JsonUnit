@@ -50,6 +50,7 @@
         <module>json-unit-fluent</module>
         <module>json-unit-assertj</module>
         <module>json-unit-spring</module>
+        <module>json-unit-kotest</module>
         <module>tests</module>
     </modules>
 
