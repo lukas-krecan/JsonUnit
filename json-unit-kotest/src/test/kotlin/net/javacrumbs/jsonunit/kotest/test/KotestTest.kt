@@ -4,11 +4,12 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.throwable.shouldHaveMessage
 import net.javacrumbs.jsonunit.core.Configuration
+import net.javacrumbs.jsonunit.kotest.beJsonNumber
+import net.javacrumbs.jsonunit.kotest.beJsonString
 import net.javacrumbs.jsonunit.kotest.equalJson
 import net.javacrumbs.jsonunit.kotest.inPath
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import io.kotest.assertions.json.shouldEqualJson as shouldEqualJson0
 
 class KotestTest {
     @Test
@@ -45,5 +46,24 @@ Different value found in node "test", expected: <2> but was: <1>.""")
             """{"test":1}""" inPath ("$.test") should equalJson("""2""")
         }.shouldHaveMessage("""JSON documents are different:
 Different value found in node "$.test", expected: <2> but was: <1>.""")
+    }
+
+    @Test
+    fun `Should assert number`() {
+        """{"test":1}""" inPath ("test") should beJsonNumber()
+    }
+
+    @Test
+    fun `Should assert number fail`() {
+        assertThrows<AssertionError> {
+            """{"test": true}""" inPath ("test") should beJsonNumber()
+        }.shouldHaveMessage("""Node "test" has invalid type, expected: <number> but was: <true>.""")
+    }
+
+    @Test
+    fun `Should assert number fail missing`() {
+        assertThrows<AssertionError> {
+            """{"test": true}""" inPath ("missing") should beJsonNumber()
+        }.shouldHaveMessage("""Node "missing" is missing.""")
     }
 }
