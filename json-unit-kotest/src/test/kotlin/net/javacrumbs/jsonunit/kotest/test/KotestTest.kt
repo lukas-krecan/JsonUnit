@@ -1,12 +1,14 @@
-package net.javacrumbs.jsonunit.kotest
+package net.javacrumbs.jsonunit.kotest.test
 
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.throwable.shouldHaveMessage
 import net.javacrumbs.jsonunit.core.Configuration
-import io.kotest.assertions.json.shouldEqualJson as shouldEqualJson0
+import net.javacrumbs.jsonunit.kotest.equalJson
+import net.javacrumbs.jsonunit.kotest.inPath
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import io.kotest.assertions.json.shouldEqualJson as shouldEqualJson0
 
 class KotestTest {
     @Test
@@ -32,5 +34,21 @@ Different value found in node "test", expected: <2> but was: <1>.""")
     @Test
     fun `Should assert JSON configuration`() {
         """{"test":1.01}""" should equalJson("""{"test":1}""", Configuration.empty().withTolerance(0.1))
+    }
+
+    @Test
+    fun `Should assert path`() {
+        assertThrows<AssertionError> {
+            """{"test":1}""" inPath ("test") should equalJson("""2""")
+        }.shouldHaveMessage("""JSON documents are different:
+Different value found in node "test", expected: <2> but was: <1>.""")
+    }
+
+    @Test
+    fun `Should assert JSON path`() {
+        assertThrows<AssertionError> {
+            """{"test":1}""" inPath ("$.test") should equalJson("""2""")
+        }.shouldHaveMessage("""JSON documents are different:
+Different value found in node "$.test", expected: <2> but was: <1>.""")
     }
 }
