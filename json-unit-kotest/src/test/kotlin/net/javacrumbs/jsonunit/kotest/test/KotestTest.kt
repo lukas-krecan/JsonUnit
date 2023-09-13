@@ -1,5 +1,6 @@
 package net.javacrumbs.jsonunit.kotest.test
 
+import io.kotest.matchers.collections.shouldNotContainDuplicates
 import io.kotest.matchers.comparables.shouldBeEqualComparingTo
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.should
@@ -12,6 +13,7 @@ import net.javacrumbs.jsonunit.kotest.beJsonNumber
 import net.javacrumbs.jsonunit.kotest.beJsonString
 import net.javacrumbs.jsonunit.kotest.equalJson
 import net.javacrumbs.jsonunit.kotest.inPath
+import net.javacrumbs.jsonunit.kotest.shouldBeJsonArray
 import net.javacrumbs.jsonunit.kotest.shouldBeJsonBoolean
 import net.javacrumbs.jsonunit.kotest.shouldBeJsonNumber
 import net.javacrumbs.jsonunit.kotest.shouldBeJsonString
@@ -110,4 +112,12 @@ Different value found in node "$.test", expected: <2> but was: <1>.""")
             """{"test": true}""" inPath ("missing") should beJsonNumber()
         }.shouldHaveMessage("""Node "missing" is missing.""")
     }
+
+    @Test
+    fun `Should assert array chained`() {
+        assertThrows<AssertionError> {
+            """{"test": [1, 2, 3, 1]}""".inPath ("test").shouldBeJsonArray().shouldNotContainDuplicates()
+        }.shouldHaveMessage("""Collection should not contain duplicates""")
+    }
+
 }

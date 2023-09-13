@@ -30,6 +30,8 @@ fun beJsonNumber(): Matcher<Any> = beType(NodeType.NUMBER)
 
 fun beJsonNull(): Matcher<Any> = beType(NodeType.NULL)
 
+fun beJsonArray(): Matcher<Any> = beType(NodeType.ARRAY)
+
 fun beJsonString(): Matcher<Any> = beType(NodeType.STRING)
 
 fun beJsonBoolean(): Matcher<Any> = beType(NodeType.BOOLEAN)
@@ -64,9 +66,15 @@ fun Any.shouldBeJsonString(): String {
     this should beJsonString()
     return getNode(this).asText()
 }
+
 fun Any.shouldBeJsonBoolean(): Boolean {
     this should beJsonBoolean()
     return getNode(this).asBoolean()
+}
+
+fun Any.shouldBeJsonArray(): List<*> {
+    this should beJsonArray()
+    return getNode(this).value as List<*>
 }
 
 
