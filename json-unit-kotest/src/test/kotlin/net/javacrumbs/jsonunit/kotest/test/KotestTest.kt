@@ -1,5 +1,7 @@
 package net.javacrumbs.jsonunit.kotest.test
 
+import io.kotest.inspectors.forAll
+import io.kotest.inspectors.forAtLeast
 import io.kotest.matchers.collections.shouldNotContainDuplicates
 import io.kotest.matchers.comparables.shouldBeEqualComparingTo
 import io.kotest.matchers.equals.shouldBeEqual
@@ -119,5 +121,22 @@ Different value found in node "$.test", expected: <2> but was: <1>.""")
             """{"test": [1, 2, 3, 1]}""".inPath ("test").shouldBeJsonArray().shouldNotContainDuplicates()
         }.shouldHaveMessage("""Collection should not contain duplicates""")
     }
+    @Test
+    fun `Should assert array chained forAll`() {
+        assertThrows<AssertionError> {
+            """{"test": [{"a": 1}, {"a": 2}, {"a": 3}, {"a": true}]}""".inPath ("test").shouldBeJsonArray().forAll {
+                it inPath "a" should beJsonNumber()
+            }
+        }.shouldHaveMessage("""3 elements passed but expected 4
+
+The following elements passed:
+  [0] {"a":1}
+  [1] {"a":2}
+  [2] {"a":3}
+
+The following elements failed:
+  [3] [("a", true)] => Node "a" has invalid type, expected: <number> but was: <true>.""")
+    }
+
 
 }

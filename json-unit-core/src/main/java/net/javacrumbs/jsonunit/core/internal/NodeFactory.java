@@ -15,6 +15,8 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import org.jetbrains.annotations.Nullable;
+
 interface NodeFactory {
     /**
      * Returns true if this factory is preferred for given source.
@@ -32,7 +34,7 @@ interface NodeFactory {
      * @param lenient
      * @return
      */
-    Node convertToNode(Object source, String label, boolean lenient);
+    Node convertToNode(@Nullable Object source, String label, boolean lenient);
 
     /**
      * Converts value to Json node. It can be Map, String, null, or primitive. Should not be parsed, just converted.

@@ -19,6 +19,7 @@ package net.javacrumbs.jsonunit.core.internal;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.List;
@@ -42,19 +43,14 @@ public class JsonUtils {
      * @param label  label to be logged in case of error.
      * @return
      */
-    public static Node convertToJson(Object source, String label) {
+    public static Node convertToJson(@Nullable Object source, String label) {
         return convertToJson(source, label, false);
     }
 
     /**
      * Converts object to JSON.
-     *
-     * @param source
-     * @param label  label to be logged in case of error.
-     * @param lenient lenient parser used for expected values. Allows unquoted keys.
-     * @return
      */
-    public static Node convertToJson(Object source, String label, boolean lenient) {
+    public static Node convertToJson(@Nullable Object source, String label, boolean lenient) {
         if (source instanceof JsonSource) {
             return converter.convertToNode(((JsonSource) source).getJson(), label, lenient);
         } else {

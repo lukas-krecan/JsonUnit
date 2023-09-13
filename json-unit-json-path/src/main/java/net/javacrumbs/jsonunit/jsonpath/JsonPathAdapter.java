@@ -18,6 +18,7 @@ package net.javacrumbs.jsonunit.jsonpath;
 import com.jayway.jsonpath.EvaluationListener;
 import com.jayway.jsonpath.PathNotFoundException;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +39,7 @@ public final class  JsonPathAdapter {
     }
 
     @NotNull
-    public static Object inPath(@NotNull Object json, @NotNull String path) {
+    public static Object inPath(@Nullable Object json, @NotNull String path) {
         String normalizedPath = fromBracketNotation(path);
         try {
             MatchRecordingListener recordingListener = new MatchRecordingListener();

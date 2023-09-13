@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit.core.internal;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +110,7 @@ record Converter(List<NodeFactory> factories) {
         return factories;
     }
     @NotNull
-    Node convertToNode(Object source, String label, boolean lenient) {
+    Node convertToNode(@Nullable Object source, String label, boolean lenient) {
         for (int i = 0; i < factories.size(); i++) {
             NodeFactory factory = factories.get(i);
             if (isLastFactory(i) || factory.isPreferredFor(source)) {
