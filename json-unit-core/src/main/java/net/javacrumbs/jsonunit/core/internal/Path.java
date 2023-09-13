@@ -129,7 +129,7 @@ public final class Path {
     }
 
     private boolean isRoot() {
-        return path.length() == 0;
+        return path.isEmpty();
     }
 
     private static Node doStep(String step, Node startNode) {
@@ -139,7 +139,7 @@ public final class Path {
         if (!matcher.matches()) {
             startNode = startNode.get(step);
         } else {
-            if (matcher.group(1).length() != 0) {
+            if (!matcher.group(1).isEmpty()) {
                 startNode = startNode.get(matcher.group(1));
             }
 

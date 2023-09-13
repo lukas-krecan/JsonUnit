@@ -37,6 +37,7 @@ public final class  JsonPathAdapter {
 
     }
 
+    @NotNull
     public static Object inPath(@NotNull Object json, @NotNull String path) {
         String normalizedPath = fromBracketNotation(path);
         try {

@@ -38,12 +38,11 @@ fun bePresent(): Matcher<Any> = Matcher { actual ->
 }
 
 private fun beType(expectedType: NodeType): Matcher<Any> = bePresent() and Matcher { actual ->
-    // todo: revisit path, configuration,
     val node = JsonUtils.getNode(actual, "")
     MatcherResult(
             node.nodeType == expectedType,
             { "Node \"${getPathPrefix(actual)}\" has invalid type, expected: <${expectedType.description}> but was: <$node>." },
-            { TODO() }
+            { "Node \"${getPathPrefix(actual)}\" has invalid type, expected to not be ${expectedType.description} but was: <$node>." }
     )
 }
 

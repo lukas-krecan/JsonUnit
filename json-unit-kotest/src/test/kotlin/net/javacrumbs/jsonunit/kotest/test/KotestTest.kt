@@ -41,6 +41,14 @@ Different value found in node "test", expected: <2> but was: <1>.""")
     }
 
     @Test
+    fun `Should assert nested`() {
+        assertThrows<AssertionError> {
+            """{"test": {"nested": 1}}""" inPath "test" inPath "nested" should equalJson("""2""")
+        }.shouldHaveMessage("""JSON documents are different:
+Different value found in node "nested", expected: <2> but was: <1>.""")
+    }
+
+    @Test
     fun `Should assert JSON path`() {
         assertThrows<AssertionError> {
             """{"test":1}""" inPath ("$.test") should equalJson("""2""")
@@ -58,6 +66,13 @@ Different value found in node "$.test", expected: <2> but was: <1>.""")
         assertThrows<AssertionError> {
             """{"test": true}""" inPath ("test") should beJsonNumber()
         }.shouldHaveMessage("""Node "test" has invalid type, expected: <number> but was: <true>.""")
+    }
+
+    @Test
+    fun `Should assert not number fail`() {
+        assertThrows<AssertionError> {
+            """{"test": 1}""" inPath ("test") shouldNot beJsonNumber()
+        }.shouldHaveMessage("""Node "test" has invalid type, expected to not be number but was: <1>.""")
     }
 
     @Test
