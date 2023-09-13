@@ -12,11 +12,6 @@ import io.kotest.assertions.json.shouldEqualJson as shouldEqualJson0
 
 class KotestTest {
     @Test
-    fun `Should assert JSON original`() {
-        """{"test":1}""" shouldEqualJson0 """{"test":1}"""
-    }
-
-    @Test
     fun `Should assert JSON`() {
         assertThrows<AssertionError> {
             """{"test":1}""" should equalJson("""{"test":2}""")
