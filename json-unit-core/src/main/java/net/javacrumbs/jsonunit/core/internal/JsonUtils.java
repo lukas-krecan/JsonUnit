@@ -18,6 +18,7 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 import java.util.List;
@@ -64,9 +65,8 @@ public class JsonUtils {
 
     /**
      * Converts value to Json node. It can be Map, String, null, or primitive. Should not be parsed, just converted.
-     * @param source
-     * @return
      */
+    @NotNull
     public static Node valueToNode(Object source) {
         if (source instanceof Node) {
             return (Node) source;
@@ -77,22 +77,16 @@ public class JsonUtils {
 
     /**
      * Returns node with given path.
-     *
-     * @param root
-     * @param path
-     * @return
      */
+    @NotNull
     public static Node getNode(Object root, String path) {
         return getNode(root, Path.create(path));
     }
 
     /**
       * Returns node with given path.
-      *
-      * @param root
-      * @param path
-      * @return
       */
+     @NotNull
      public static Node getNode(Object root, Path path) {
          return path.getNode(convertToJson(root, "actual"));
      }
@@ -105,14 +99,17 @@ public class JsonUtils {
         return nodeAbsent(json, path, configuration.getOptions().contains(Option.TREATING_NULL_AS_ABSENT));
     }
 
+    @NotNull
     public static Object jsonSource(Object json, String pathPrefix) {
         return jsonSource(json, pathPrefix, emptyList());
     }
 
+    @NotNull
     public static Object jsonSource(Object json, String pathPrefix, List<String> matchingPaths) {
         return new DefaultJsonSource(json, pathPrefix, matchingPaths);
     }
 
+    @NotNull
     public static String getPathPrefix(Object json) {
         if (json instanceof JsonSource) {
             return ((JsonSource) json).getPathPrefix();
