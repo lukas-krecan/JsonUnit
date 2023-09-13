@@ -7,6 +7,7 @@ import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldBeLowerCase
 import io.kotest.matchers.throwable.shouldHaveMessage
 import net.javacrumbs.jsonunit.core.Configuration
+import net.javacrumbs.jsonunit.kotest.beJsonNull
 import net.javacrumbs.jsonunit.kotest.beJsonNumber
 import net.javacrumbs.jsonunit.kotest.beJsonString
 import net.javacrumbs.jsonunit.kotest.equalJson
@@ -67,6 +68,11 @@ Different value found in node "$.test", expected: <2> but was: <1>.""")
     @Test
     fun `Should assert number`() {
         """{"test":1}""" inPath ("test") should beJsonNumber()
+    }
+
+    @Test
+    fun `Should assert null`() {
+        """{"test":null}""" inPath ("test") should beJsonNull()
     }
 
     @Test

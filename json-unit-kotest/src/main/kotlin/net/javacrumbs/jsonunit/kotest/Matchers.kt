@@ -28,6 +28,8 @@ fun equalJson(
 
 fun beJsonNumber(): Matcher<Any> = beType(NodeType.NUMBER)
 
+fun beJsonNull(): Matcher<Any> = beType(NodeType.NULL)
+
 fun beJsonString(): Matcher<Any> = beType(NodeType.STRING)
 
 fun beJsonBoolean(): Matcher<Any> = beType(NodeType.BOOLEAN)
