@@ -5,6 +5,7 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.and
 import io.kotest.matchers.should
 import net.javacrumbs.jsonunit.core.Configuration
+import net.javacrumbs.jsonunit.core.Configuration.empty as default
 import net.javacrumbs.jsonunit.core.internal.Diff
 import net.javacrumbs.jsonunit.core.internal.JsonUtils
 import net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix
@@ -16,7 +17,7 @@ import java.math.BigDecimal
 
 fun equalJson(
         expected: Any?,
-        configuration: Configuration = Configuration.empty()
+        configuration: Configuration = default()
 ): Matcher<Any?> = Matcher { actual ->
     val diff =  Diff.create(expected, actual, "actual", Path.create("", getPathPrefix(actual)), configuration)
     MatcherResult(

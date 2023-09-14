@@ -248,5 +248,10 @@ public class JsonUtils {
         public List<String> getMatchingPaths() {
             return matchingPaths;
         }
+
+        @Override
+        public String toString() {
+            return "JSON in path \"" + pathPrefix +"\"";
+        }
     }
 }
