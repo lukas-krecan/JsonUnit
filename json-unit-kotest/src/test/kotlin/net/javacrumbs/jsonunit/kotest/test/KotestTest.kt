@@ -18,6 +18,7 @@ import net.javacrumbs.jsonunit.kotest.beJsonBoolean
 import net.javacrumbs.jsonunit.kotest.beJsonNull
 import net.javacrumbs.jsonunit.kotest.beJsonNumber
 import net.javacrumbs.jsonunit.kotest.beJsonString
+import net.javacrumbs.jsonunit.kotest.configuration
 import net.javacrumbs.jsonunit.kotest.equalJson
 import net.javacrumbs.jsonunit.kotest.inPath
 import net.javacrumbs.jsonunit.kotest.shouldBeJsonArray
@@ -48,7 +49,7 @@ Different value found in node "test", expected: <2> but was: <1>.""")
 
     @Test
     fun `Should assert JSON configuration`() {
-        """{"test":1.01}""" should equalJson("""{"test":1}""", Configuration.empty().withTolerance(0.1))
+        """{"test":1.01}""" should equalJson("""{"test":1}""", configuration { withTolerance(0.1) })
     }
 
     @Test

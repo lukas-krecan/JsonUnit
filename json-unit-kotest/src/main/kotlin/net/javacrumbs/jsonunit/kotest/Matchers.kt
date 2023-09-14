@@ -86,7 +86,9 @@ fun Any?.shouldBeJsonObject(): Map<String, *> {
 }
 
 
-
+fun configuration(configurer:  Configuration.() -> Configuration): Configuration {
+    return configurer(default())
+}
 
 infix fun Any?.inPath(path: String): Any = JsonPathAdapter.inPath(this, path)
 
