@@ -8,7 +8,7 @@
 	<parent>
 		<groupId>net.javacrumbs.json-unit</groupId>
 		<artifactId>json-unit-parent</artifactId>
-		<version>3.2.1-SNAPSHOT</version>
+		<version>3.2.1</version>
 	</parent>
 
 	<properties>
