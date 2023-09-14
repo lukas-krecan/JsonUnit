@@ -27,15 +27,17 @@ fun equalJson(
     )
 }
 
-fun beJsonNumber(): Matcher<Any?> = beType(NodeType.NUMBER)
-
-fun beJsonNull(): Matcher<Any?> = beType(NodeType.NULL)
+fun beJsonObject(): Matcher<Any?> = beType(NodeType.OBJECT)
 
 fun beJsonArray(): Matcher<Any?> = beType(NodeType.ARRAY)
 
 fun beJsonString(): Matcher<Any?> = beType(NodeType.STRING)
 
+fun beJsonNumber(): Matcher<Any?> = beType(NodeType.NUMBER)
+
 fun beJsonBoolean(): Matcher<Any?> = beType(NodeType.BOOLEAN)
+
+fun beJsonNull(): Matcher<Any?> = beType(NodeType.NULL)
 
 // todo: test
 fun bePresent(): Matcher<Any?> = Matcher { actual ->
@@ -77,6 +79,12 @@ fun Any?.shouldBeJsonArray(): List<*> {
     this should beJsonArray()
     return getNode(this).value as List<*>
 }
+fun Any?.shouldBeJsonObject(): Map<String, *> {
+    this should beJsonObject()
+    @Suppress("UNCHECKED_CAST")
+    return getNode(this).value as Map<String, *>
+}
+
 
 
 

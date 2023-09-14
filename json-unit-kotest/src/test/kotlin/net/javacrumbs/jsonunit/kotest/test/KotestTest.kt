@@ -6,11 +6,14 @@ import io.kotest.inspectors.forAtLeast
 import io.kotest.matchers.collections.shouldNotContainDuplicates
 import io.kotest.matchers.comparables.shouldBeEqualComparingTo
 import io.kotest.matchers.equals.shouldBeEqual
+import io.kotest.matchers.maps.shouldContainKeys
+import io.kotest.matchers.maps.shouldMatchAll
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldBeLowerCase
 import io.kotest.matchers.throwable.shouldHaveMessage
 import net.javacrumbs.jsonunit.core.Configuration
+import net.javacrumbs.jsonunit.kotest.beJsonBoolean
 import net.javacrumbs.jsonunit.kotest.beJsonNull
 import net.javacrumbs.jsonunit.kotest.beJsonNumber
 import net.javacrumbs.jsonunit.kotest.beJsonString
@@ -19,6 +22,7 @@ import net.javacrumbs.jsonunit.kotest.inPath
 import net.javacrumbs.jsonunit.kotest.shouldBeJsonArray
 import net.javacrumbs.jsonunit.kotest.shouldBeJsonBoolean
 import net.javacrumbs.jsonunit.kotest.shouldBeJsonNumber
+import net.javacrumbs.jsonunit.kotest.shouldBeJsonObject
 import net.javacrumbs.jsonunit.kotest.shouldBeJsonString
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -122,13 +126,14 @@ Different value found in node "$.test", expected: <2> but was: <1>.""")
     @Test
     fun `Should assert array chained`() {
         assertThrows<AssertionError> {
-            """{"test": [1, 2, 3, 1]}""".inPath ("test").shouldBeJsonArray().shouldNotContainDuplicates()
+            """{"test": [1, 2, 3, 1]}""".inPath("test").shouldBeJsonArray().shouldNotContainDuplicates()
         }.shouldHaveMessage("""Collection should not contain duplicates""")
     }
+
     @Test
     fun `Should assert array chained forAll`() {
         assertThrows<AssertionError> {
-            """{"test": [{"a": 1}, {"a": 2}, {"a": 3}, {"a": true}]}""".inPath ("test").shouldBeJsonArray().forAll {
+            """{"test": [{"a": 1}, {"a": 2}, {"a": 3}, {"a": true}]}""".inPath("test").shouldBeJsonArray().forAll {
                 it inPath "a" should beJsonNumber()
             }
         }.shouldHaveMessage("""3 elements passed but expected 4
@@ -140,6 +145,26 @@ The following elements passed:
 
 The following elements failed:
   [3] [("a", true)] => Node "a" has invalid type, expected: <number> but was: <true>.""")
+    }
+
+    @Test
+    fun `Should assert as JSON Object`() {
+        """{"a":1, "b": true}""".shouldBeJsonObject().shouldMatchAll(
+                "a" to { it should beJsonNumber() },
+                "b" to { it should beJsonBoolean() }
+        )
+    }
+
+    @Test
+    fun `Should assert as JSON Object failure`() {
+        assertThrows<AssertionError> {
+            """{"a":1, "b": true}""".shouldBeJsonObject().shouldMatchAll(
+                    "a" to { it should beJsonNumber() },
+                    "b" to { it should equalJson(false) }
+            )
+        }.shouldHaveMessage("Expected map to match all assertions. Missing keys were=[], Mismatched values were=[(b, JSON documents are different:\n" +
+                "Different value found in node \"\", expected: <false> but was: <true>.\n" +
+                ")], Unexpected keys were [].")
     }
 
 
