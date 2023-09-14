@@ -43,7 +43,11 @@ fun configuration(configurer:  Configuration.() -> Configuration): Configuration
 }
 
 /**
- * Takes given JSON and moves assertion to given path.
+ * Takes given JSON and moves assertion to given path. For example:
+ *
+ * ```kotlin
+ *  """{"test":1}""" inPath ("test") should beJsonNumber()
+ * ```
  */
 infix fun Any?.inPath(path: String): Any = JsonPathAdapter.inPath(this, path)
 
@@ -77,7 +81,6 @@ fun beJsonBoolean(): Matcher<Any?> = beType(NodeType.BOOLEAN)
  */
 fun beJsonNull(): Matcher<Any?> = beType(NodeType.NULL)
 
-// todo: test
 fun bePresent(): Matcher<Any?> = Matcher { actual ->
     val node = getNode(actual)
     MatcherResult(
