@@ -34,7 +34,7 @@ abstract class AbstractNodeFactory implements NodeFactory {
             return nullNode();
         } else if (source instanceof Node) {
             return (Node) source;
-        } else if (source instanceof String && ((String) source).trim().length() > 0) {
+        } else if (source instanceof String && !((String) source).trim().isEmpty()) {
             return readValue((String) source, label, lenient);
         } else if (source instanceof Reader) {
             try {

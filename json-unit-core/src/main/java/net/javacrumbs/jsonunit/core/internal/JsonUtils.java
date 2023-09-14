@@ -18,6 +18,8 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.List;
@@ -41,19 +43,14 @@ public class JsonUtils {
      * @param label  label to be logged in case of error.
      * @return
      */
-    public static Node convertToJson(Object source, String label) {
+    public static Node convertToJson(@Nullable Object source, String label) {
         return convertToJson(source, label, false);
     }
 
     /**
      * Converts object to JSON.
-     *
-     * @param source
-     * @param label  label to be logged in case of error.
-     * @param lenient lenient parser used for expected values. Allows unquoted keys.
-     * @return
      */
-    public static Node convertToJson(Object source, String label, boolean lenient) {
+    public static Node convertToJson(@Nullable Object source, String label, boolean lenient) {
         if (source instanceof JsonSource) {
             return converter.convertToNode(((JsonSource) source).getJson(), label, lenient);
         } else {
@@ -64,9 +61,8 @@ public class JsonUtils {
 
     /**
      * Converts value to Json node. It can be Map, String, null, or primitive. Should not be parsed, just converted.
-     * @param source
-     * @return
      */
+    @NotNull
     public static Node valueToNode(Object source) {
         if (source instanceof Node) {
             return (Node) source;
@@ -77,22 +73,16 @@ public class JsonUtils {
 
     /**
      * Returns node with given path.
-     *
-     * @param root
-     * @param path
-     * @return
      */
+    @NotNull
     public static Node getNode(Object root, String path) {
         return getNode(root, Path.create(path));
     }
 
     /**
       * Returns node with given path.
-      *
-      * @param root
-      * @param path
-      * @return
       */
+     @NotNull
      public static Node getNode(Object root, Path path) {
          return path.getNode(convertToJson(root, "actual"));
      }
@@ -105,14 +95,17 @@ public class JsonUtils {
         return nodeAbsent(json, path, configuration.getOptions().contains(Option.TREATING_NULL_AS_ABSENT));
     }
 
+    @NotNull
     public static Object jsonSource(Object json, String pathPrefix) {
         return jsonSource(json, pathPrefix, emptyList());
     }
 
+    @NotNull
     public static Object jsonSource(Object json, String pathPrefix, List<String> matchingPaths) {
         return new DefaultJsonSource(json, pathPrefix, matchingPaths);
     }
 
+    @NotNull
     public static String getPathPrefix(Object json) {
         if (json instanceof JsonSource) {
             return ((JsonSource) json).getPathPrefix();
@@ -254,6 +247,11 @@ public class JsonUtils {
         @Override
         public List<String> getMatchingPaths() {
             return matchingPaths;
+        }
+
+        @Override
+        public String toString() {
+            return "JSON in path \"" + pathPrefix +"\"";
         }
     }
 }

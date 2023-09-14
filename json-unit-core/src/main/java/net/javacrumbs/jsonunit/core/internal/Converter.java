@@ -15,6 +15,9 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,7 +58,7 @@ record Converter(List<NodeFactory> factories) {
         List<NodeFactory> factories;
         String property = System.getProperty(LIBRARIES_PROPERTY_NAME);
 
-        if (property != null && property.trim().length() > 0) {
+        if (property != null && !property.trim().isEmpty()) {
             factories = createFactoriesSpecifiedInProperty(property);
         } else {
             factories = createDefaultFactories();
@@ -106,8 +109,8 @@ record Converter(List<NodeFactory> factories) {
         }
         return factories;
     }
-
-    Node convertToNode(Object source, String label, boolean lenient) {
+    @NotNull
+    Node convertToNode(@Nullable Object source, String label, boolean lenient) {
         for (int i = 0; i < factories.size(); i++) {
             NodeFactory factory = factories.get(i);
             if (isLastFactory(i) || factory.isPreferredFor(source)) {
@@ -117,6 +120,7 @@ record Converter(List<NodeFactory> factories) {
         throw new IllegalStateException("Should not happen");
     }
 
+    @NotNull
     Node valueToNode(Object source) {
         for (int i = 0; i < factories.size(); i++) {
             NodeFactory factory = factories.get(i);
