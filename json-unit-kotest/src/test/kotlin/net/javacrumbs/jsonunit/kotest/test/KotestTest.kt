@@ -1,18 +1,18 @@
 package net.javacrumbs.jsonunit.kotest.test
 
 import io.kotest.assertions.asClue
+import io.kotest.assertions.assertSoftly
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldNotContainDuplicates
 import io.kotest.matchers.comparables.shouldBeEqualComparingTo
 import io.kotest.matchers.equals.shouldBeEqual
-import io.kotest.matchers.maps.shouldContainAll
 import io.kotest.matchers.maps.shouldMatchAll
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldBeLowerCase
+import io.kotest.matchers.throwable.haveMessage
 import io.kotest.matchers.throwable.shouldHaveMessage
-import net.javacrumbs.jsonunit.core.Option
 import net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER
 import net.javacrumbs.jsonunit.kotest.beJsonBoolean
 import net.javacrumbs.jsonunit.kotest.beJsonNull
@@ -28,6 +28,7 @@ import net.javacrumbs.jsonunit.kotest.shouldBeJsonString
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.math.BigDecimal.valueOf
+import kotlin.text.RegexOption.DOT_MATCHES_ALL
 
 class KotestTest {
     @Test
@@ -186,10 +187,12 @@ The following elements failed:
     }
 
     @Test
-    fun `Should assert as JSON Object not working`() {
+    fun `Should assert softly`() {
         assertThrows<AssertionError> {
-            // This should not throw but does due to different types of values Int vs JsonNode.
-            """{"a":1, "b": true}""".shouldBeJsonObject().shouldContainAll(mapOf("a" to 1, "b" to true))
-        }
+            assertSoftly {
+                """{"a":"a", "b": true}""" inPath "a" should equalJson("b")
+                """{"a":"a", "b": true}""".inPath("a").shouldBeJsonBoolean()
+            }
+        }.should(haveMessage(Regex("The following 2 assertions failed:.*", DOT_MATCHES_ALL)))
     }
 }
