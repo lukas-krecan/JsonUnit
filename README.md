@@ -735,7 +735,7 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
-## 3.2.1 (2023-09-14)
+## 3.2.2 (2023-09-14)
 * Fix Kotest module dependencies
 
 ## 3.2.1 (2023-09-14)
