@@ -162,6 +162,18 @@ The following elements failed:
     }
 
     @Test
+    fun `Should assert as JSON Object equality`() {
+        """{"a":1, "b": true, "c": null, "d": "string"}""".shouldBeJsonObject().shouldBeEqual(
+                mapOf(
+                        "a" to valueOf(1),
+                        "b" to true,
+                        "c" to null,
+                        "d" to "string"
+                )
+        )
+    }
+
+    @Test
     fun `Should assert as JSON Object failure`() {
         assertThrows<AssertionError> {
             """{"a":1, "b": true}""".shouldBeJsonObject().shouldMatchAll(
