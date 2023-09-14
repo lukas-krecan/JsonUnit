@@ -2,6 +2,7 @@ package net.javacrumbs.jsonunit.kotest.test
 
 import io.kotest.assertions.asClue
 import io.kotest.inspectors.forAll
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldNotContainDuplicates
 import io.kotest.matchers.comparables.shouldBeEqualComparingTo
 import io.kotest.matchers.equals.shouldBeEqual
@@ -148,8 +149,8 @@ The following elements failed:
 
     @Test
     fun `Should assert array with JSON path`() {
-        """{"test": [{"a": 1}, {"a": 2}, {"a": 3}, {"a": 4}]}""".inPath("$.test[*].a")
-                .shouldBeJsonArray().should(equalJson(listOf(1,2,3,4)))
+        """{"test": [{"a": "a"}, {"a": true}, {"a": null}, {"a": 4}]}""".inPath("$.test[*].a")
+                .shouldBeJsonArray().shouldContainExactly("a", true, null, valueOf(4))
     }
 
     @Test
