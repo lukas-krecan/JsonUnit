@@ -55,7 +55,7 @@ Different value found in node "test", expected: <2> but was: <1>.""")
     @Test
     fun `Should assert path`() {
         assertThrows<AssertionError> {
-            """{"test":1}""" inPath "test" should equalJson("""2""")
+            """{"test":1}""" inPath "test" should equalJson("2")
         }.shouldHaveMessage("""JSON documents are different:
 Different value found in node "test", expected: <2> but was: <1>.""")
     }
@@ -64,7 +64,7 @@ Different value found in node "test", expected: <2> but was: <1>.""")
     fun `Should assert nested`() {
         assertThrows<AssertionError> {
             """{"test": {"nested": 1}}""".inPath("test").asClue {
-                it inPath "nested" should equalJson("""2""")
+                it inPath "nested" should equalJson("2")
             }
         }.shouldHaveMessage("""JSON in path "test"
 JSON documents are different:
