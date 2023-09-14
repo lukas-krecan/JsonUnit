@@ -20,7 +20,7 @@
     <dependencies>
         <dependency>
             <groupId>net.javacrumbs.json-unit</groupId>
-            <artifactId>json-unit-assertj</artifactId>
+            <artifactId>json-unit-core</artifactId>
             <version>${project.version}</version>
         </dependency>
 
