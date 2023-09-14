@@ -2,22 +2,20 @@ package net.javacrumbs.jsonunit.kotest.test
 
 import io.kotest.assertions.asClue
 import io.kotest.inspectors.forAll
-import io.kotest.inspectors.forAtLeast
 import io.kotest.matchers.collections.shouldNotContainDuplicates
 import io.kotest.matchers.comparables.shouldBeEqualComparingTo
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.maps.shouldContainAll
-import io.kotest.matchers.maps.shouldContainKeys
 import io.kotest.matchers.maps.shouldMatchAll
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldBeLowerCase
 import io.kotest.matchers.throwable.shouldHaveMessage
-import net.javacrumbs.jsonunit.core.Configuration
+import net.javacrumbs.jsonunit.core.Option
+import net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER
 import net.javacrumbs.jsonunit.kotest.beJsonBoolean
 import net.javacrumbs.jsonunit.kotest.beJsonNull
 import net.javacrumbs.jsonunit.kotest.beJsonNumber
-import net.javacrumbs.jsonunit.kotest.beJsonString
 import net.javacrumbs.jsonunit.kotest.configuration
 import net.javacrumbs.jsonunit.kotest.equalJson
 import net.javacrumbs.jsonunit.kotest.inPath
@@ -28,7 +26,6 @@ import net.javacrumbs.jsonunit.kotest.shouldBeJsonObject
 import net.javacrumbs.jsonunit.kotest.shouldBeJsonString
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import java.math.BigDecimal
 import java.math.BigDecimal.valueOf
 
 class KotestTest {
@@ -49,7 +46,7 @@ Different value found in node "test", expected: <2> but was: <1>.""")
 
     @Test
     fun `Should assert JSON configuration`() {
-        """{"test":1.01}""" should equalJson("""{"test":1}""", configuration { withTolerance(0.1) })
+        """{"test":1.01}""" should equalJson("""{"test":1}""", configuration { withTolerance(0.1).withOptions(IGNORING_ARRAY_ORDER) })
     }
 
     @Test
@@ -147,6 +144,12 @@ The following elements passed:
 
 The following elements failed:
   [3] [("a", true)] => Node "a" has invalid type, expected: <number> but was: <true>.""")
+    }
+
+    @Test
+    fun `Should assert array with JSON path`() {
+        """{"test": [{"a": 1}, {"a": 2}, {"a": 3}, {"a": 4}]}""".inPath("$.test[*].a")
+                .shouldBeJsonArray().should(equalJson(listOf(1,2,3,4)))
     }
 
     @Test

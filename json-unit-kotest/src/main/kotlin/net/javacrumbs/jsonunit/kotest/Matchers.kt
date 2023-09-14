@@ -15,6 +15,14 @@ import net.javacrumbs.jsonunit.core.internal.Path
 import net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter
 import java.math.BigDecimal
 
+/**
+ *  Returns a [Matcher] that verifies that two JSON objects are equal.
+ *  Can be customized by providing configuration like this:
+ *
+ *  ```kotlin
+ *  """{"test":1.01}""" should equalJson("""{"test":1}""", configuration { withTolerance(0.1).withOptions(IGNORING_ARRAY_ORDER) })
+ *  ```
+ */
 fun equalJson(
         expected: Any?,
         configuration: Configuration = default()
@@ -27,16 +35,46 @@ fun equalJson(
     )
 }
 
+/**
+ * Helper method to create [Configuration] object.
+ */
+fun configuration(configurer:  Configuration.() -> Configuration): Configuration {
+    return configurer(default())
+}
+
+/**
+ * Takes given JSON and moves assertion to given path.
+ */
+infix fun Any?.inPath(path: String): Any = JsonPathAdapter.inPath(this, path)
+
+/**
+ * Returns matcher that asserts that given JSON node is a JSON object.
+ */
 fun beJsonObject(): Matcher<Any?> = beType(NodeType.OBJECT)
 
+/**
+ * Returns matcher that asserts that given JSON node is a JSON array.
+ */
 fun beJsonArray(): Matcher<Any?> = beType(NodeType.ARRAY)
 
+/**
+ * Returns matcher that asserts that given JSON node is a string.
+ */
 fun beJsonString(): Matcher<Any?> = beType(NodeType.STRING)
 
+/**
+ * Returns matcher that asserts that given JSON node is a number.
+ */
 fun beJsonNumber(): Matcher<Any?> = beType(NodeType.NUMBER)
 
+/**
+ * Returns matcher that asserts that given JSON node is a boolean.
+ */
 fun beJsonBoolean(): Matcher<Any?> = beType(NodeType.BOOLEAN)
 
+/**
+ * Returns matcher that asserts that given JSON node is null.
+ */
 fun beJsonNull(): Matcher<Any?> = beType(NodeType.NULL)
 
 // todo: test
@@ -84,11 +122,4 @@ fun Any?.shouldBeJsonObject(): Map<String, *> {
     @Suppress("UNCHECKED_CAST")
     return getNode(this).value as Map<String, *>
 }
-
-
-fun configuration(configurer:  Configuration.() -> Configuration): Configuration {
-    return configurer(default())
-}
-
-infix fun Any?.inPath(path: String): Any = JsonPathAdapter.inPath(this, path)
 
