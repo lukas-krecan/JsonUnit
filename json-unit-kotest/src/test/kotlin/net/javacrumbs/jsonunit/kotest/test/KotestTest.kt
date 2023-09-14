@@ -6,6 +6,7 @@ import io.kotest.inspectors.forAtLeast
 import io.kotest.matchers.collections.shouldNotContainDuplicates
 import io.kotest.matchers.comparables.shouldBeEqualComparingTo
 import io.kotest.matchers.equals.shouldBeEqual
+import io.kotest.matchers.maps.shouldContainAll
 import io.kotest.matchers.maps.shouldContainKeys
 import io.kotest.matchers.maps.shouldMatchAll
 import io.kotest.matchers.should
@@ -167,5 +168,11 @@ The following elements failed:
                 ")], Unexpected keys were [].")
     }
 
-
+    @Test
+    fun `Should assert as JSON Object not working`() {
+        assertThrows<AssertionError> {
+            // This should not throw but does due to different types of values Int vs JsonNode.
+            """{"a":1, "b": true}""".shouldBeJsonObject().shouldContainAll(mapOf("a" to 1, "b" to true))
+        }
+    }
 }
