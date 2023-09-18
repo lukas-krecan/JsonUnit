@@ -123,7 +123,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.5.0</version>
+                <version>3.6.0</version>
                 <configuration>
                     <doclint>none</doclint>
                     <failOnError>false</failOnError>
