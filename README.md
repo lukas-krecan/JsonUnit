@@ -742,6 +742,9 @@ Release notes
 * Support for Kotest
 * Dependency upgrades
 
+## 3.2.0
+* Skipped for technical reasons
+
 ## 3.1.0 (2023-09-12)
 * Support for custom matchers in Spring assertions
 * Dependency upgrades
