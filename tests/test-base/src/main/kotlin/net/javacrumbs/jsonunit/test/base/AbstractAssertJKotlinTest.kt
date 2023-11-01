@@ -1,6 +1,5 @@
 package net.javacrumbs.jsonunit.test.base
 
-
 import net.javacrumbs.jsonunit.assertj.assertThatJson
 import net.javacrumbs.jsonunit.assertj.whenever
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.path
@@ -26,15 +25,17 @@ abstract class AbstractAssertJKotlinTest {
     @Test
     fun `When should have synonym`() {
         assertThatJson("{\"a\":[{\"b\": 1}, {\"c\": 1}, {\"d\": 1}]}")
-                .whenever(Option.IGNORING_ARRAY_ORDER, Option.TREATING_NULL_AS_ABSENT).node("a").isArray
-                .isEqualTo("[{\"c\": 1}, {\"b\": 1} ,{\"d\": 1}]")
+            .whenever(Option.IGNORING_ARRAY_ORDER, Option.TREATING_NULL_AS_ABSENT)
+            .node("a")
+            .isArray
+            .isEqualTo("[{\"c\": 1}, {\"b\": 1} ,{\"d\": 1}]")
     }
 
     @Test
     fun `Specific when should have synonym`() {
         assertThatJson("{\"obj\":{\"a\": [1, 2], \"b\": [3, 4]}}")
-                .whenever(path("obj.a"), then(Option.IGNORING_ARRAY_ORDER))
-                .isEqualTo("{\"obj\":{\"a\": [2, 1], \"b\": [3, 4]}}")
+            .whenever(path("obj.a"), then(Option.IGNORING_ARRAY_ORDER))
+            .isEqualTo("{\"obj\":{\"a\": [2, 1], \"b\": [3, 4]}}")
     }
 
     @Test

@@ -8,5 +8,4 @@ class OriginalKotestTest {
     fun `Should assert JSON original`() {
         """{"test":1}""" shouldEqualJson """{"test":1}"""
     }
-
 }

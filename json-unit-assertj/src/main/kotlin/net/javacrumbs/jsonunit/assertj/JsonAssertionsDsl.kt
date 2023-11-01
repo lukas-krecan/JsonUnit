@@ -15,18 +15,15 @@ import net.javacrumbs.jsonunit.core.Option
  * }
  * ```
  */
-fun assertThatJson(actual: Any, lambda: ConfigurableJsonAssert.() -> Unit = { }): ConfigurableJsonAssert {
+fun assertThatJson(actual: Any, lambda: ConfigurableJsonAssert.() -> Unit = {}): ConfigurableJsonAssert {
     val jsonAssert = JsonAssertions.assertThatJson(actual)
     lambda(jsonAssert)
     return jsonAssert
 }
 
-/**
- * Synonym to [ConfigurableJsonAssert.when]
- */
+/** Synonym to [ConfigurableJsonAssert.when] */
 fun ConfigurableJsonAssert.whenever(first: Option, vararg other: Option) = this.`when`(first, *other)
 
-/**
- * Synonym to [ConfigurableJsonAssert.when]
- */
-fun ConfigurableJsonAssert.whenever(pathParam: PathsParam, vararg actions: ApplicableForPath) = this.`when`(pathParam, *actions)
+/** Synonym to [ConfigurableJsonAssert.when] */
+fun ConfigurableJsonAssert.whenever(pathParam: PathsParam, vararg actions: ApplicableForPath) =
+    this.`when`(pathParam, *actions)

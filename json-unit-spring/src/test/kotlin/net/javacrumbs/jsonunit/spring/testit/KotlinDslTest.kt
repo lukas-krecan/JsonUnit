@@ -1,17 +1,14 @@
 /**
  * Copyright 2009-2019 the original author or authors.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 package net.javacrumbs.jsonunit.spring.testit
 
@@ -44,8 +41,7 @@ import org.springframework.web.context.WebApplicationContext
 @ContextConfiguration(classes = [SpringConfig::class])
 @WebAppConfiguration
 internal class KotlinDslTest {
-    @Autowired
-    private lateinit var wac: WebApplicationContext
+    @Autowired private lateinit var wac: WebApplicationContext
 
     private lateinit var mockMvc: MockMvc
 
@@ -57,90 +53,69 @@ internal class KotlinDslTest {
     @Test
     fun shouldPassIfEqualsWithProduces() {
         exec("/sampleProduces").andExpect {
-            status {
-                isOk()
-            }
-            jsonContent {
-                isEqualTo(CORRECT_JSON)
-            }
+            status { isOk() }
+            jsonContent { isEqualTo(CORRECT_JSON) }
         }
     }
 
     @Test
     fun shouldPassIfEqualsWithIsoEncoding() {
-        exec("/sampleIso").andExpect {
-            jsonContent {
-                node("result").isEqualTo(ExampleController.ISO_VALUE)
-            }
-        }
+        exec("/sampleIso").andExpect { jsonContent { node("result").isEqualTo(ExampleController.ISO_VALUE) } }
     }
 
     @Test
     fun shouldPassIfEquals() {
-        exec().andExpect {
-            jsonContent {
-                isEqualTo(CORRECT_JSON)
-            }
-        }
+        exec().andExpect { jsonContent { isEqualTo(CORRECT_JSON) } }
     }
 
     @Test
     fun isEqualToShouldFailIfDoesNotEqual() {
         val listener = mock(DifferenceListener::class.java)
         assertThatThrownBy {
-            exec().andExpect {
-                jsonContent {
-                    withDifferenceListener(listener).isEqualTo(CORRECT_JSON.replace("stringValue", "stringValue2"))
+                exec().andExpect {
+                    jsonContent {
+                        withDifferenceListener(listener).isEqualTo(CORRECT_JSON.replace("stringValue", "stringValue2"))
+                    }
                 }
             }
-        }
-                .hasMessage("""
+            .hasMessage(
+                """
     JSON documents are different:
     Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
 
-    """.trimIndent())
+    """
+                    .trimIndent()
+            )
         verify(listener).diff(any(Difference::class.java), any(DifferenceContext::class.java))
     }
 
     @Test
     fun isEqualToInNodeFailIfDoesNotEqual() {
         assertThatThrownBy {
-            exec().andExpect {
-                jsonContent {
-                    node("result.string").isString().isEqualTo("stringValue2")
-                }
+                exec().andExpect { jsonContent { node("result.string").isString().isEqualTo("stringValue2") } }
             }
-        }.hasMessage("[Different value found in node \"result.string\"] \n" +
-                "expected: \"stringValue2\"\n" +
-                " but was: \"stringValue\"")
+            .hasMessage(
+                "[Different value found in node \"result.string\"] \n" +
+                    "expected: \"stringValue2\"\n" +
+                    " but was: \"stringValue\""
+            )
     }
-
 
     @Test
     fun isNullShouldPassOnNull() {
-        exec().andExpect {
-            jsonContent { node("result.null").isNull() }
-        }
+        exec().andExpect { jsonContent { node("result.null").isNull() } }
     }
 
     @Test
     fun isNullShouldFailOnNonNull() {
-        assertThatThrownBy {
-            exec().andExpect {
-                jsonContent { node("result.string").isNull() }
-            }
-        }.hasMessage("Node \"result.string\" has invalid type, expected: <null> but was: <\"stringValue\">.")
-
+        assertThatThrownBy { exec().andExpect { jsonContent { node("result.string").isNull() } } }
+            .hasMessage("Node \"result.string\" has invalid type, expected: <null> but was: <\"stringValue\">.")
     }
 
     private fun exec(path: String = "/sample"): ResultActionsDsl {
         try {
-            val resultActionsDsl = mockMvc.get(path) {
-                accept(MediaType.APPLICATION_JSON)
-            }
-            resultActionsDsl.andExpect {
-                status { isOk() }
-            }
+            val resultActionsDsl = mockMvc.get(path) { accept(MediaType.APPLICATION_JSON) }
+            resultActionsDsl.andExpect { status { isOk() } }
             return resultActionsDsl
         } catch (e: Exception) {
             throw IllegalStateException(e)

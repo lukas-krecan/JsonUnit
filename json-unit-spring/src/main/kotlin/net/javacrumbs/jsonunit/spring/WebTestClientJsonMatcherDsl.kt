@@ -13,8 +13,8 @@ import org.springframework.test.web.reactive.server.WebTestClient
  * .jsonContent { isEqualTo(CORRECT_JSON) }
  * ```
  */
-fun WebTestClient.BodyContentSpec.jsonContent(matcher: JsonAssert.ConfigurableJsonAssert.() -> Unit): WebTestClient.BodyContentSpec =
-        consumeWith { result ->
-            matcher(JsonAssertions.assertThatJson(getContentAsString(result)))
-        }
-
+fun WebTestClient.BodyContentSpec.jsonContent(
+    matcher: JsonAssert.ConfigurableJsonAssert.() -> Unit
+): WebTestClient.BodyContentSpec = consumeWith { result ->
+    matcher(JsonAssertions.assertThatJson(getContentAsString(result)))
+}
