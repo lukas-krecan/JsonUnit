@@ -1,14 +1,12 @@
 package net.javacrumbs.jsonunit.core.internal;
 
+import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
+
+import java.util.regex.Matcher;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
-
-import java.util.regex.Matcher;
-
-import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
-
 
 /**
  * Hamcrest dependent classes moved here so we can theoretically work without it.
@@ -18,7 +16,10 @@ class HamcrestHandler {
     private final DifferenceReporter valueDifferenceReporter;
     private final DifferenceReporter structureDifferenceReporter;
 
-    HamcrestHandler(Configuration configuration, DifferenceReporter valueDifferenceReporter, DifferenceReporter structureDifferenceReporter) {
+    HamcrestHandler(
+            Configuration configuration,
+            DifferenceReporter valueDifferenceReporter,
+            DifferenceReporter structureDifferenceReporter) {
         this.configuration = configuration;
         this.valueDifferenceReporter = valueDifferenceReporter;
         this.structureDifferenceReporter = structureDifferenceReporter;
@@ -34,7 +35,13 @@ class HamcrestHandler {
             if (!matcher.matches(value)) {
                 Description description = new StringDescription();
                 matcher.describeMismatch(value, description);
-                valueDifferenceReporter.differenceFound(context, "Matcher \"%s\" does not match value %s in node \"%s\". %s", matcherName, quoteTextValue(actualNode), context.actualPath(), description);
+                valueDifferenceReporter.differenceFound(
+                        context,
+                        "Matcher \"%s\" does not match value %s in node \"%s\". %s",
+                        matcherName,
+                        quoteTextValue(actualNode),
+                        context.actualPath(),
+                        description);
             }
         } else {
             structureDifferenceReporter.differenceFound(context, "Matcher \"%s\" not found.", matcherName);

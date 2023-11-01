@@ -15,11 +15,11 @@
  */
 package net.javacrumbs.jsonunit.test.jsonorg;
 
-import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;
-import org.junit.jupiter.api.Test;
-
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJsonOrg;
+
+import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;
+import org.junit.jupiter.api.Test;
 
 public class JsonOrgAssertJTest extends AbstractAssertJTest {
 

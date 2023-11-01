@@ -50,7 +50,8 @@ class DifferenceImpl implements Difference {
 
     @Override
     public String toString() {
-        return getType() + " Expected " + getExpected() + " in " + getExpectedPath() + " got " + getActual() + " in " + getActualPath();
+        return getType() + " Expected " + getExpected() + " in " + getExpectedPath() + " got " + getActual() + " in "
+                + getActualPath();
     }
 
     private static class MissingDifference extends DifferenceImpl {

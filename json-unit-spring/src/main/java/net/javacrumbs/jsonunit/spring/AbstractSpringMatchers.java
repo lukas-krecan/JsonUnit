@@ -15,6 +15,8 @@
  */
 package net.javacrumbs.jsonunit.spring;
 
+import java.math.BigDecimal;
+import java.util.function.BiConsumer;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Path;
@@ -23,10 +25,6 @@ import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.math.BigDecimal;
-import java.util.function.BiConsumer;
-
 
 /**
  * Common superclass for request and response matcher
@@ -41,7 +39,6 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
         this.path = path;
         this.configuration = configuration;
     }
-
 
     @NotNull
     abstract MATCHER matcher(@NotNull BiConsumer<Object, InternalMatcher> matcher);
@@ -64,7 +61,6 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
     public ME node(String newPath) {
         return matchers(path.copy(newPath), configuration);
     }
-
 
     /**
      * Sets the placeholder that can be used to ignore values.
@@ -143,7 +139,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      * is not equal to expected value.
      */
     @NotNull
-    public MATCHER isStringEqualTo(@Nullable  final String expected) {
+    public MATCHER isStringEqualTo(@Nullable final String expected) {
         return matcher((actual, ctx) -> ctx.isStringEqualTo(expected));
     }
 
@@ -244,5 +240,4 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
     public MATCHER isFalse() {
         return isEqualTo(false);
     }
-
 }

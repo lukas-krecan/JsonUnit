@@ -35,8 +35,8 @@ public final class Path {
     }
 
     public static Path root() {
-          return create("", "");
-      }
+        return create("", "");
+    }
 
     public static Path create(String path) {
         return create(path, "");
@@ -63,7 +63,7 @@ public final class Path {
             return path;
         } else if (path.startsWith("[")) {
             return pathPrefix + path;
-        } else if (!path.isEmpty()){
+        } else if (!path.isEmpty()) {
             return pathPrefix + "." + path;
         } else {
             return pathPrefix;
@@ -96,7 +96,7 @@ public final class Path {
     }
 
     public Path to(String name) {
-        if (name.startsWith("[")){
+        if (name.startsWith("[")) {
             return copy(path + name);
         } else {
             return toField(name);

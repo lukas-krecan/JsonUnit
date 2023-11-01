@@ -15,6 +15,10 @@
  */
 package net.javacrumbs.jsonunit;
 
+import static net.javacrumbs.jsonunit.core.internal.Diff.create;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
+
+import java.math.BigDecimal;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
@@ -22,11 +26,6 @@ import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
-
-import java.math.BigDecimal;
-
-import static net.javacrumbs.jsonunit.core.internal.Diff.create;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
 
 /**
  * Assertions for comparing JSON. The comparison ignores white-spaces and order of nodes.
@@ -49,7 +48,7 @@ public class JsonAssert {
     private static Configuration configuration = Configuration.empty();
 
     private JsonAssert() {
-        //nothing
+        // nothing
     }
 
     /**
@@ -76,7 +75,8 @@ public class JsonAssert {
     /**
      * Compares part of the JSON. Path has this format "root.array[0].value".
      */
-    public static void assertJsonPartEquals(Object expected, Object fullJson, String path, Configuration configuration) {
+    public static void assertJsonPartEquals(
+            Object expected, Object fullJson, String path, Configuration configuration) {
         Diff diff = create(expected, fullJson, FULL_JSON, path, configuration);
         diff.failIfDifferent();
     }
@@ -107,7 +107,8 @@ public class JsonAssert {
      * Compares part of the JSON and fails if they are equal.
      * Path has this format "root.array[0].value".
      */
-    public static void assertJsonPartNotEquals(Object expected, Object fullJson, String path, Configuration configuration) {
+    public static void assertJsonPartNotEquals(
+            Object expected, Object fullJson, String path, Configuration configuration) {
         Diff diff = create(expected, fullJson, FULL_JSON, path, configuration);
         if (diff.similar()) {
             if (ROOT.equals(path)) {
@@ -117,7 +118,6 @@ public class JsonAssert {
             }
         }
     }
-
 
     /**
      * Fails if node in given path exists.

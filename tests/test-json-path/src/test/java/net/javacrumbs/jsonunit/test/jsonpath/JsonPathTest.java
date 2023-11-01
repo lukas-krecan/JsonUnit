@@ -15,34 +15,33 @@
  */
 package net.javacrumbs.jsonunit.test.jsonpath;
 
-import net.javacrumbs.jsonunit.core.Option;
-import org.junit.jupiter.api.Test;
-
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter.inPath;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import net.javacrumbs.jsonunit.core.Option;
+import org.junit.jupiter.api.Test;
 
 class JsonPathTest {
     @Test
     void shouldBeAbleToUseSimpleValues() {
         assertThatJson(inPath(json, "$.store.book[*].author"))
-            .isEqualTo("['Nigel Rees', 'Evelyn Waugh', 'Herman Melville', 'J. R. R. Tolkien']");
-
+                .isEqualTo("['Nigel Rees', 'Evelyn Waugh', 'Herman Melville', 'J. R. R. Tolkien']");
     }
 
     @Test
     void shouldBeAbleToUseSimpleValuesAndIgnoreArrayOrder() {
         assertThatJson(inPath(json, "$.store.book[*].author"))
-            .when(Option.IGNORING_ARRAY_ORDER)
-            .isEqualTo("['J. R. R. Tolkien', 'Nigel Rees', 'Evelyn Waugh', 'Herman Melville']");
-
+                .when(Option.IGNORING_ARRAY_ORDER)
+                .isEqualTo("['J. R. R. Tolkien', 'Nigel Rees', 'Evelyn Waugh', 'Herman Melville']");
     }
 
     @Test
     void shouldBeAbleToUseSimpleValuesFailure() {
         assertThatThrownBy(() -> assertThatJson(inPath(json, "$.store.book[*].author"))
-            .isEqualTo("['Nigel Rees', 'Evelyn Waugh', 'Herman Melville', 'Arthur C. Clark']"))
-            .hasMessage("""
+                        .isEqualTo("['Nigel Rees', 'Evelyn Waugh', 'Herman Melville', 'Arthur C. Clark']"))
+                .hasMessage(
+                        """
                 JSON documents are different:
                 Different value found in node "$.store.book[*].author[3]", expected: <"Arthur C. Clark"> but was: <"J. R. R. Tolkien">.
                 """);
@@ -50,9 +49,10 @@ class JsonPathTest {
 
     @Test
     void shouldBeAbleToUseObjects() {
-        assertThatThrownBy(() -> assertThatJson(inPath(json, "$.store.book[0]"))
-            .isEqualTo(
-                """
+        assertThatThrownBy(
+                        () -> assertThatJson(inPath(json, "$.store.book[0]"))
+                                .isEqualTo(
+                                        """
                                 {
                                     "category": "reference",
                                     "author": "Nigel Rees",
@@ -60,7 +60,8 @@ class JsonPathTest {
                                     "price": 8.96
                                 }\
                     """))
-            .hasMessage("""
+                .hasMessage(
+                        """
                 JSON documents are different:
                 Different value found in node "$.store.book[0].price", expected: <8.96> but was: <8.95>.
                 """);
@@ -69,9 +70,9 @@ class JsonPathTest {
     @Test
     void shouldIgnorePath() {
         assertThatJson(inPath(json, "$.store.book[0]"))
-            .whenIgnoringPaths("$.store.book[*].price")
-            .isEqualTo(
-                """
+                .whenIgnoringPaths("$.store.book[*].price")
+                .isEqualTo(
+                        """
                                 {
                                     "category": "reference",
                                     "author": "Nigel Rees",
@@ -81,8 +82,8 @@ class JsonPathTest {
                     """);
     }
 
-
-    private static final String json = """
+    private static final String json =
+            """
         {
             "store": {
                 "book": [

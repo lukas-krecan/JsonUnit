@@ -24,8 +24,7 @@ import java.util.List;
 class Differences {
     private final List<JsonDifference> differences = new ArrayList<>();
 
-    Differences() {
-    }
+    Differences() {}
 
     void add(JsonDifference jsonDifference) {
         differences.add(jsonDifference);

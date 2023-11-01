@@ -15,16 +15,15 @@
  */
 package net.javacrumbs.jsonunit.assertj;
 
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
+
+import java.util.Comparator;
+import java.util.List;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import org.assertj.core.groups.Tuple;
-
-import java.util.Comparator;
-import java.util.List;
-
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
 
 class JsonComparator implements Comparator<Object> {
     private final Configuration configuration;
@@ -44,10 +43,11 @@ class JsonComparator implements Comparator<Object> {
         }
 
         // this comparator is not transitive, `expected` is usually a Node and `actual` is usually a Map, or primitive
-        if (
-            (actualParsed && !(actual instanceof Node) && (expected instanceof Node) && !(expected instanceof ExpectedNode)) ||
-            (actual instanceof ExpectedNode)
-        ) {
+        if ((actualParsed
+                        && !(actual instanceof Node)
+                        && (expected instanceof Node)
+                        && !(expected instanceof ExpectedNode))
+                || (actual instanceof ExpectedNode)) {
             Object tmp = actual;
             actual = expected;
             expected = tmp;

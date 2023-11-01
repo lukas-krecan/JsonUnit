@@ -29,7 +29,6 @@ public interface DifferenceContext {
      */
     Object getActualSource();
 
-
     /**
      * Expected source serialized as Map&lt;String, Object&gt; for objects, BigDecimal for numbers, ...
      */

@@ -15,12 +15,6 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import com.fasterxml.jackson.databind.node.BooleanNode;
-import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-import java.util.Collections;
-
 import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
 import static net.javacrumbs.jsonunit.core.internal.Converter.LIBRARIES_PROPERTY_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,6 +23,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+
+import com.fasterxml.jackson.databind.node.BooleanNode;
+import java.util.Arrays;
+import java.util.Collections;
+import org.junit.jupiter.api.Test;
 
 class ConverterTest {
 
@@ -53,10 +52,9 @@ class ConverterTest {
         assertEquals(Jackson2NodeFactory.Jackson2Node.class, node.getClass());
     }
 
-
     @Test
     void shouldUseOnlyFactorySpecifiedBySystemProperty() {
-        System.setProperty(LIBRARIES_PROPERTY_NAME,"gson");
+        System.setProperty(LIBRARIES_PROPERTY_NAME, "gson");
         Converter converter = Converter.createDefaultConverter();
         assertThat(converter.factories()).extracting("class").containsExactly(GsonNodeFactory.class);
         System.setProperty(LIBRARIES_PROPERTY_NAME, "");
@@ -64,15 +62,17 @@ class ConverterTest {
 
     @Test
     void shouldChangeOrderSpecifiedBySystemProperty() {
-        System.setProperty(LIBRARIES_PROPERTY_NAME,"jackson2, gson ,json.org");
+        System.setProperty(LIBRARIES_PROPERTY_NAME, "jackson2, gson ,json.org");
         Converter converter = Converter.createDefaultConverter();
-        assertThat(converter.factories()).extracting("class").containsExactly(Jackson2NodeFactory.class, GsonNodeFactory.class, JsonOrgNodeFactory.class);
+        assertThat(converter.factories())
+                .extracting("class")
+                .containsExactly(Jackson2NodeFactory.class, GsonNodeFactory.class, JsonOrgNodeFactory.class);
         System.setProperty(LIBRARIES_PROPERTY_NAME, "");
     }
 
     @Test
     void shouldFailOnUnknownFactory() {
-        System.setProperty(LIBRARIES_PROPERTY_NAME,"unknown");
+        System.setProperty(LIBRARIES_PROPERTY_NAME, "unknown");
         try {
             Converter.createDefaultConverter();
             fail("Exception expected");

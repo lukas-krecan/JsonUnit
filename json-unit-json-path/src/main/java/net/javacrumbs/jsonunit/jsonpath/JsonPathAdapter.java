@@ -15,14 +15,6 @@
  */
 package net.javacrumbs.jsonunit.jsonpath;
 
-import com.jayway.jsonpath.EvaluationListener;
-import com.jayway.jsonpath.PathNotFoundException;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import static com.jayway.jsonpath.Configuration.defaultConfiguration;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.missingNode;
@@ -30,13 +22,18 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedOb
 import static net.javacrumbs.jsonunit.jsonpath.InternalJsonPathUtils.fromBracketNotation;
 import static net.javacrumbs.jsonunit.jsonpath.InternalJsonPathUtils.readValue;
 
+import com.jayway.jsonpath.EvaluationListener;
+import com.jayway.jsonpath.PathNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 /**
  * Adapts json-path to json-unit.
  */
 public final class JsonPathAdapter {
-    private JsonPathAdapter() {
-
-    }
+    private JsonPathAdapter() {}
 
     @NotNull
     public static Object inPath(@Nullable Object json, @NotNull String path) {

@@ -15,12 +15,11 @@
  */
 package net.javacrumbs.jsonunit.test.jackson2config;
 
-import org.junit.jupiter.api.Test;
-
-import java.time.Instant;
-
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
+
+import java.time.Instant;
+import org.junit.jupiter.api.Test;
 
 class Jackson2ConfigTest {
 

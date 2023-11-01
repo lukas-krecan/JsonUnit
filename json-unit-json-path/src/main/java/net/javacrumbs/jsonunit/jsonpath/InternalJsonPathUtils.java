@@ -15,67 +15,63 @@
  */
 package net.javacrumbs.jsonunit.jsonpath;
 
+import static com.jayway.jsonpath.JsonPath.using;
+import static java.util.stream.Collectors.toList;
 
 import com.jayway.jsonpath.Option;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 import net.javacrumbs.jsonunit.core.internal.PathOption;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Stream;
-
-import static com.jayway.jsonpath.JsonPath.using;
-import static java.util.stream.Collectors.toList;
-
 public class InternalJsonPathUtils {
-    private InternalJsonPathUtils() {
-
-    }
+    private InternalJsonPathUtils() {}
 
     @NotNull
     public static Configuration resolveJsonPaths(@NotNull Object json, @NotNull Configuration configuration) {
         Collection<String> pathsToBeIgnored = resolveJsonPaths(json, configuration.getPathsToBeIgnored());
-        List<PathOption> pathOptions = configuration.getPathOptions()
-            .stream().map(po -> {
-                List<String> newPoPaths = resolveJsonPaths(json, po.getPaths());
-                return po.withPaths(newPoPaths);
-            }).collect(toList());
+        List<PathOption> pathOptions = configuration.getPathOptions().stream()
+                .map(po -> {
+                    List<String> newPoPaths = resolveJsonPaths(json, po.getPaths());
+                    return po.withPaths(newPoPaths);
+                })
+                .collect(toList());
 
-        return configuration
-            .whenIgnoringPaths(pathsToBeIgnored)
-            .withPathOptions(pathOptions);
+        return configuration.whenIgnoringPaths(pathsToBeIgnored).withPathOptions(pathOptions);
     }
 
     @NotNull
     private static List<String> resolveJsonPaths(@NotNull Object json, @NotNull Collection<String> paths) {
         com.jayway.jsonpath.Configuration conf = com.jayway.jsonpath.Configuration.builder()
-            .options(Option.AS_PATH_LIST, Option.SUPPRESS_EXCEPTIONS)
-            .build();
+                .options(Option.AS_PATH_LIST, Option.SUPPRESS_EXCEPTIONS)
+                .build();
 
-        return paths.stream().flatMap(path -> {
-            if (path.startsWith("$")) {
-                List<String> resolvedPaths = readValue(conf, json, path);
-                return resolvedPaths.stream().map(InternalJsonPathUtils::fromBracketNotation);
-            } else {
-                return Stream.of(path);
-            }
-        }).collect(toList());
+        return paths.stream()
+                .flatMap(path -> {
+                    if (path.startsWith("$")) {
+                        List<String> resolvedPaths = readValue(conf, json, path);
+                        return resolvedPaths.stream().map(InternalJsonPathUtils::fromBracketNotation);
+                    } else {
+                        return Stream.of(path);
+                    }
+                })
+                .collect(toList());
     }
 
     static <T> T readValue(com.jayway.jsonpath.Configuration conf, Object json, String path) {
         if (json instanceof String) {
             return using(conf).parse((String) json).read(path);
         } else {
-            return using(conf).parse(JsonUtils.convertToJson(json, "actual").getValue()).read(path);
+            return using(conf)
+                    .parse(JsonUtils.convertToJson(json, "actual").getValue())
+                    .read(path);
         }
     }
 
     static String fromBracketNotation(String path) {
-        return path
-            .replace("['", ".")
-            .replace("']", "");
+        return path.replace("['", ".").replace("']", "");
     }
-
 }

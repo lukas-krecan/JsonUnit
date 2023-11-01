@@ -15,16 +15,15 @@
  */
 package net.javacrumbs.jsonunit.test.johnzon;
 
-import net.javacrumbs.jsonunit.test.base.AbstractJsonFluentAssertTest;
-import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonValue;
-
-import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
+import net.javacrumbs.jsonunit.test.base.AbstractJsonFluentAssertTest;
+import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class JohnzonJsonFluentAssertTest extends AbstractJsonFluentAssertTest {
     @Override
@@ -34,15 +33,13 @@ public class JohnzonJsonFluentAssertTest extends AbstractJsonFluentAssertTest {
 
     @Test
     void shouldNotChangeObject() {
-        JsonObject json = Json.createObjectBuilder()
-            .add("test", JsonValue.NULL)
-            .build();
+        JsonObject json = Json.createObjectBuilder().add("test", JsonValue.NULL).build();
         assertThatJson(json).isEqualTo("{\"test\":null}");
     }
 
     @Override
     @Disabled
     protected void shouldAllowUnquotedKeysAndCommentInExpectedValue() {
-        //not supported
+        // not supported
     }
 }

@@ -15,6 +15,14 @@
  */
 package net.javacrumbs.jsonunit.core;
 
+import static java.util.Arrays.asList;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
 import net.javacrumbs.jsonunit.core.internal.DefaultNumberComparator;
@@ -23,15 +31,6 @@ import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
-import static java.util.Arrays.asList;
 
 /**
  * Comparison configuration. Immutable.
@@ -42,7 +41,15 @@ public class Configuration {
     private static final String DEFAULT_IGNORE_PLACEHOLDER = "${json-unit.ignore}";
     private static final String ALTERNATIVE_IGNORE_PLACEHOLDER = "#{json-unit.ignore}";
     private static final DefaultNumberComparator DEFAULT_NUMBER_COMPARATOR = new DefaultNumberComparator();
-    private static final Configuration EMPTY_CONFIGURATION = new Configuration(null, Options.empty(), DEFAULT_IGNORE_PLACEHOLDER, Matchers.empty(), Collections.emptySet(), DUMMY_LISTENER, Collections.emptyList(), DEFAULT_NUMBER_COMPARATOR);
+    private static final Configuration EMPTY_CONFIGURATION = new Configuration(
+            null,
+            Options.empty(),
+            DEFAULT_IGNORE_PLACEHOLDER,
+            Matchers.empty(),
+            Collections.emptySet(),
+            DUMMY_LISTENER,
+            Collections.emptyList(),
+            DEFAULT_NUMBER_COMPARATOR);
     private final BigDecimal tolerance;
     private final Options options;
     private final String ignorePlaceholder;
@@ -52,7 +59,15 @@ public class Configuration {
     private final DifferenceListener differenceListener;
     private final NumberComparator numberComparator;
 
-    private Configuration(@Nullable BigDecimal tolerance, Options options, String ignorePlaceholder, Matchers matchers, Set<String> pathsToBeIgnored, DifferenceListener differenceListener, List<PathOption> pathOptions, NumberComparator numberComparator) {
+    private Configuration(
+            @Nullable BigDecimal tolerance,
+            Options options,
+            String ignorePlaceholder,
+            Matchers matchers,
+            Set<String> pathsToBeIgnored,
+            DifferenceListener differenceListener,
+            List<PathOption> pathOptions,
+            NumberComparator numberComparator) {
         this.tolerance = tolerance;
         this.options = options;
         this.ignorePlaceholder = ignorePlaceholder;
@@ -79,7 +94,15 @@ public class Configuration {
      */
     @NotNull
     public Configuration withTolerance(@Nullable BigDecimal tolerance) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions, numberComparator);
+        return new Configuration(
+                tolerance,
+                options,
+                ignorePlaceholder,
+                matchers,
+                pathsToBeIgnored,
+                differenceListener,
+                pathOptions,
+                numberComparator);
     }
 
     /**
@@ -114,7 +137,15 @@ public class Configuration {
      */
     @NotNull
     public Configuration withOptions(@NotNull Option first, @NotNull Option... next) {
-        return new Configuration(tolerance, options.with(first, next), ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions, numberComparator);
+        return new Configuration(
+                tolerance,
+                options.with(first, next),
+                ignorePlaceholder,
+                matchers,
+                pathsToBeIgnored,
+                differenceListener,
+                pathOptions,
+                numberComparator);
     }
 
     /**
@@ -122,12 +153,28 @@ public class Configuration {
      */
     @NotNull
     public Configuration withOptions(@NotNull Collection<Option> optionsToAdd) {
-        return new Configuration(tolerance, options.with(optionsToAdd), ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions, numberComparator);
+        return new Configuration(
+                tolerance,
+                options.with(optionsToAdd),
+                ignorePlaceholder,
+                matchers,
+                pathsToBeIgnored,
+                differenceListener,
+                pathOptions,
+                numberComparator);
     }
 
     @NotNull
     public Configuration resetOptions() {
-        return new Configuration(tolerance, Options.empty(), ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions, numberComparator);
+        return new Configuration(
+                tolerance,
+                Options.empty(),
+                ignorePlaceholder,
+                matchers,
+                pathsToBeIgnored,
+                differenceListener,
+                pathOptions,
+                numberComparator);
     }
 
     /**
@@ -156,12 +203,28 @@ public class Configuration {
 
     @NotNull
     public Configuration withPathOptions(@NotNull List<PathOption> pathOptions) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, List.copyOf(pathOptions), numberComparator);
+        return new Configuration(
+                tolerance,
+                options,
+                ignorePlaceholder,
+                matchers,
+                pathsToBeIgnored,
+                differenceListener,
+                List.copyOf(pathOptions),
+                numberComparator);
     }
 
     @NotNull
     public Configuration whenIgnoringPaths(@NotNull Collection<String> pathsToBeIgnored) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, Set.copyOf(pathsToBeIgnored), differenceListener, pathOptions, numberComparator);
+        return new Configuration(
+                tolerance,
+                options,
+                ignorePlaceholder,
+                matchers,
+                Set.copyOf(pathsToBeIgnored),
+                differenceListener,
+                pathOptions,
+                numberComparator);
     }
 
     /**
@@ -186,7 +249,15 @@ public class Configuration {
      */
     @NotNull
     public Configuration withIgnorePlaceholder(@NotNull String ignorePlaceholder) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions, numberComparator);
+        return new Configuration(
+                tolerance,
+                options,
+                ignorePlaceholder,
+                matchers,
+                pathsToBeIgnored,
+                differenceListener,
+                pathOptions,
+                numberComparator);
     }
 
     /**
@@ -198,7 +269,15 @@ public class Configuration {
      */
     @NotNull
     public Configuration withMatcher(@NotNull String matcherName, @NotNull Matcher<?> matcher) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers.with(matcherName, matcher), pathsToBeIgnored, differenceListener, pathOptions, numberComparator);
+        return new Configuration(
+                tolerance,
+                options,
+                ignorePlaceholder,
+                matchers.with(matcherName, matcher),
+                pathsToBeIgnored,
+                differenceListener,
+                pathOptions,
+                numberComparator);
     }
 
     /**
@@ -206,7 +285,15 @@ public class Configuration {
      */
     @NotNull
     public Configuration withDifferenceListener(@NotNull DifferenceListener differenceListener) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions, numberComparator);
+        return new Configuration(
+                tolerance,
+                options,
+                ignorePlaceholder,
+                matchers,
+                pathsToBeIgnored,
+                differenceListener,
+                pathOptions,
+                numberComparator);
     }
 
     /**
@@ -214,7 +301,15 @@ public class Configuration {
      */
     @NotNull
     public Configuration withNumberComparator(@NotNull NumberComparator numberComparator) {
-        return new Configuration(tolerance, options, ignorePlaceholder, matchers, pathsToBeIgnored, differenceListener, pathOptions, numberComparator);
+        return new Configuration(
+                tolerance,
+                options,
+                ignorePlaceholder,
+                matchers,
+                pathsToBeIgnored,
+                differenceListener,
+                pathOptions,
+                numberComparator);
     }
 
     @NotNull
@@ -264,9 +359,11 @@ public class Configuration {
 
     public boolean shouldIgnore(String expectedValue) {
         if (DEFAULT_IGNORE_PLACEHOLDER.equals(ignorePlaceholder)) {
-            // special handling of default state. We want to support both # and $ before {json-unit.ignore} but do not want to
+            // special handling of default state. We want to support both # and $ before {json-unit.ignore} but do not
+            // want to
             // override user specified value if any
-            return DEFAULT_IGNORE_PLACEHOLDER.equals(expectedValue) || ALTERNATIVE_IGNORE_PLACEHOLDER.equals(expectedValue);
+            return DEFAULT_IGNORE_PLACEHOLDER.equals(expectedValue)
+                    || ALTERNATIVE_IGNORE_PLACEHOLDER.equals(expectedValue);
         } else {
             return ignorePlaceholder.equals(expectedValue);
         }

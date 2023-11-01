@@ -1,12 +1,11 @@
 package net.javacrumbs.jsonunit.spring;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.InvalidMediaTypeException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
-
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 
 class Utils {
     static String getContentAsString(EntityExchangeResult<byte[]> result) {
@@ -22,7 +21,7 @@ class Utils {
                 return contentType.getCharset();
             }
         } catch (InvalidMediaTypeException e) {
-            //ignore
+            // ignore
         }
         return StandardCharsets.UTF_8;
     }

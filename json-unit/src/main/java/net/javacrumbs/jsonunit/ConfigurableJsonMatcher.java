@@ -15,15 +15,14 @@
  */
 package net.javacrumbs.jsonunit;
 
+import java.math.BigDecimal;
+import java.util.Collection;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
-
-import java.math.BigDecimal;
-import java.util.Collection;
 
 /**
  * JsonMatcher interface.
@@ -73,5 +72,5 @@ public interface ConfigurableJsonMatcher<T> extends Matcher<T> {
      *
      * @see Configuration#when(PathsParam, ApplicableForPath...)
      */
-   ConfigurableJsonMatcher<T> when(PathsParam object, ApplicableForPath... actions);
+    ConfigurableJsonMatcher<T> when(PathsParam object, ApplicableForPath... actions);
 }

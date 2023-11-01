@@ -15,15 +15,6 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
-
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-
 import static java.math.BigDecimal.ONE;
 import static java.math.BigDecimal.valueOf;
 import static java.util.Arrays.asList;
@@ -31,6 +22,14 @@ import static net.javacrumbs.jsonunit.core.internal.Utils.toReader;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Iterator;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
 public class NodeFactoryTest {
@@ -43,11 +42,8 @@ public class NodeFactoryTest {
 
     @Parameters
     public static Collection<Object[]> data() {
-        return Arrays.asList(new Object[][]{
-            {new JsonOrgNodeFactory()},
-            {new Jackson2NodeFactory()},
-            {new GsonNodeFactory()},
-            {new MoshiNodeFactory()},
+        return Arrays.asList(new Object[][] {
+            {new JsonOrgNodeFactory()}, {new Jackson2NodeFactory()}, {new GsonNodeFactory()}, {new MoshiNodeFactory()},
         });
     }
 
@@ -116,7 +112,7 @@ public class NodeFactoryTest {
 
     @Test
     public void shouldConvertArray() {
-        Node node = factory.convertValue(new int[]{1, 2});
+        Node node = factory.convertValue(new int[] {1, 2});
         assertEquals(Node.NodeType.ARRAY, node.getNodeType());
         assertEquals(ONE, node.element(0).decimalValue());
     }
@@ -132,5 +128,4 @@ public class NodeFactoryTest {
     private Node read(String value) {
         return factory.readValue(toReader(value), "label", false);
     }
-
 }

@@ -15,6 +15,11 @@
  */
 package net.javacrumbs.jsonunit.fluent;
 
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix;
+import static net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher.ACTUAL;
+
+import java.math.BigDecimal;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
@@ -24,13 +29,6 @@ import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
-
-import java.math.BigDecimal;
-
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix;
-import static net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher.ACTUAL;
-
 
 /**
  * Contains JSON related fluent assertions inspired by FEST or AssertJ. Typical usage is:
@@ -102,7 +100,6 @@ public class JsonFluentAssert {
         return this;
     }
 
-
     /**
      * Fails if the selected JSON is not a String or is not present or the value
      * is not equal to expected value.
@@ -157,7 +154,6 @@ public class JsonFluentAssert {
         return this;
     }
 
-
     /**
      * Fails if the selected JSON is not an Array or is not present.
      *
@@ -167,7 +163,6 @@ public class JsonFluentAssert {
 
         return new ArrayAssert(internalMatcher.isArray());
     }
-
 
     /**
      * Fails if the selected JSON is not an Object or is not present.
@@ -199,7 +194,6 @@ public class JsonFluentAssert {
         internalMatcher.matches(matcher);
         return this;
     }
-
 
     /**
      * Array assertions
@@ -235,9 +229,7 @@ public class JsonFluentAssert {
             arrayMatcher.isNotEmpty();
             return this;
         }
-
     }
-
 
     /**
      * JsonFluentAssert that can be configured. To make sure that configuration is done before comparison and not after.
@@ -325,7 +317,6 @@ public class JsonFluentAssert {
         public ConfigurableJsonFluentAssert withTolerance(BigDecimal tolerance) {
             return new ConfigurableJsonFluentAssert(internalMatcher.withTolerance(tolerance));
         }
-
 
         /**
          * Adds a internalMatcher to be used in ${json-unit.matches:matcherName} macro.

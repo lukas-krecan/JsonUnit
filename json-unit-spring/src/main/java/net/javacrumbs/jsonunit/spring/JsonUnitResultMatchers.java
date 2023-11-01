@@ -15,6 +15,9 @@
  */
 package net.javacrumbs.jsonunit.spring;
 
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.util.function.BiConsumer;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
@@ -22,10 +25,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
-
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.util.function.BiConsumer;
 
 /**
  * Matchers compatible with Spring MVC test framework.
@@ -60,9 +59,11 @@ public class JsonUnitResultMatchers extends AbstractSpringMatchers<JsonUnitResul
         return new JsonUnitResultMatchers(path, configuration);
     }
 
-
     private static class JsonResultMatcher extends AbstractSpringMatcher implements ResultMatcher {
-        private JsonResultMatcher(@NotNull Path path, @NotNull Configuration configuration, @NotNull BiConsumer<Object, InternalMatcher> matcher) {
+        private JsonResultMatcher(
+                @NotNull Path path,
+                @NotNull Configuration configuration,
+                @NotNull BiConsumer<Object, InternalMatcher> matcher) {
             super(path, configuration, matcher);
         }
 
@@ -73,7 +74,8 @@ public class JsonUnitResultMatchers extends AbstractSpringMatchers<JsonUnitResul
         }
 
         @NotNull
-        private String getContentAsString(@NotNull MockHttpServletResponse response) throws UnsupportedEncodingException {
+        private String getContentAsString(@NotNull MockHttpServletResponse response)
+                throws UnsupportedEncodingException {
             return response.getContentAsString(StandardCharsets.UTF_8);
         }
     }

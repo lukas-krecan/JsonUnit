@@ -1,9 +1,8 @@
 package net.javacrumbs.jsonunit.core;
 
+import java.math.BigDecimal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.math.BigDecimal;
 
 /**
  * Interface enabling customization of number comparison.

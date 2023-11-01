@@ -27,5 +27,3 @@ public interface JsonSource {
 
     List<String> getMatchingPaths();
 }
-
-

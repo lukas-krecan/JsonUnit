@@ -15,10 +15,9 @@
  */
 package net.javacrumbs.jsonunit.assertj;
 
+import java.util.Set;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
-
-import java.util.Set;
 
 class JsonComparisonStrategy {
     private final Configuration configuration;

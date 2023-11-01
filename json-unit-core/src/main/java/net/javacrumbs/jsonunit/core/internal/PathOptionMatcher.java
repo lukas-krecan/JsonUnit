@@ -1,10 +1,8 @@
 package net.javacrumbs.jsonunit.core.internal;
 
-
-import net.javacrumbs.jsonunit.core.Option;
-
 import java.util.Collection;
 import java.util.stream.Stream;
+import net.javacrumbs.jsonunit.core.Option;
 
 class PathOptionMatcher {
     private final PathMatcher pathMatcher;
@@ -23,7 +21,7 @@ class PathOptionMatcher {
 
     static Stream<PathOptionMatcher> createMatchersFromPathOption(PathOption pathOption) {
         return pathOption.getOptions().stream()
-            .map(option -> new PathOptionMatcher(pathOption.getPaths(), option, pathOption.isIncluded()));
+                .map(option -> new PathOptionMatcher(pathOption.getPaths(), option, pathOption.isIncluded()));
     }
 
     public boolean matches(String path) {

@@ -15,6 +15,15 @@
  */
 package net.javacrumbs.jsonunit;
 
+import static net.javacrumbs.jsonunit.core.internal.Diff.createInternal;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
+
+import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.IdentityHashMap;
+import java.util.Map;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
@@ -26,16 +35,6 @@ import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-
-import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.IdentityHashMap;
-import java.util.Map;
-
-import static net.javacrumbs.jsonunit.core.internal.Diff.createInternal;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
 
 /**
  * Contains Hamcrest matchers to be used with Hamcrest assertThat and other tools.
@@ -109,7 +108,7 @@ public class JsonMatchers {
         return new JsonNodePresenceMatcher<>(path);
     }
 
-    private static abstract class AbstractMatcher<T> extends BaseMatcher<T> {
+    private abstract static class AbstractMatcher<T> extends BaseMatcher<T> {
         final String path;
         Object actual;
 
@@ -130,10 +129,10 @@ public class JsonMatchers {
         }
     }
 
-    private static abstract class AbstractJsonMatcher<T> extends AbstractMatcher<T> implements ConfigurableJsonMatcher<T> {
+    private abstract static class AbstractJsonMatcher<T> extends AbstractMatcher<T>
+            implements ConfigurableJsonMatcher<T> {
 
         Configuration configuration = JsonAssert.getConfiguration();
-
 
         AbstractJsonMatcher(String path) {
             super(path);
@@ -196,12 +195,15 @@ public class JsonMatchers {
     }
 
     private static final class JsonPartMatcher<T> extends AbstractJsonMatcher<T> {
-        // IntelliJ integration is broken by default difference string. Hamcrest generates 'Expected:' and IntelliJ searches for last 'but was:' and everything between is taken as expected value
+        // IntelliJ integration is broken by default difference string. Hamcrest generates 'Expected:' and IntelliJ
+        // searches for last 'but was:' and everything between is taken as expected value
         private static final String HAMCREST_DIFFERENCE_STRING = "expected <%s> but was <%s>";
         private final Object expected;
 
-        // One matcher can be used to match multiple array items. We need to persist diff description between doMatch() and
-        // describeMismatch() method calls. While Hamcrest 1 called doMatch() and describeMismatch() one after each other
+        // One matcher can be used to match multiple array items. We need to persist diff description between doMatch()
+        // and
+        // describeMismatch() method calls. While Hamcrest 1 called doMatch() and describeMismatch() one after each
+        // other
         // Hamcrest 2 calls doMatch() multiple times followed by multiple calls of describeMismatch()
         // using IdentityHashMap since not all compared object do have to implement hashCode and equals
         private final Map<Object, String> differences = new IdentityHashMap<>();
@@ -213,7 +215,8 @@ public class JsonMatchers {
 
         @Override
         boolean doMatch(Object item) {
-            Diff diff = createInternal(expected, item, FULL_JSON,  Path.create(path, ""), configuration, HAMCREST_DIFFERENCE_STRING);
+            Diff diff = createInternal(
+                    expected, item, FULL_JSON, Path.create(path, ""), configuration, HAMCREST_DIFFERENCE_STRING);
             if (!diff.similar()) {
                 differences.put(item, diff.differences());
             }
@@ -225,7 +228,11 @@ public class JsonMatchers {
             if (EMPTY_PATH.equals(path)) {
                 description.appendText(safeToString());
             } else {
-                description.appendText(safeToString()).appendText(" in \"").appendText(path).appendText("\"");
+                description
+                        .appendText(safeToString())
+                        .appendText(" in \"")
+                        .appendText(path)
+                        .appendText("\"");
             }
         }
 
@@ -248,7 +255,6 @@ public class JsonMatchers {
             }
         }
     }
-
 
     private static final class JsonNodeAbsenceMatcher<T> extends AbstractJsonMatcher<T> {
         JsonNodeAbsenceMatcher(String path) {

@@ -1,12 +1,10 @@
 package net.javacrumbs.jsonunit.core.internal;
 
-
-import net.javacrumbs.jsonunit.core.Option;
-
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
+import net.javacrumbs.jsonunit.core.Option;
 
 public class PathOption {
     private final List<String> paths;

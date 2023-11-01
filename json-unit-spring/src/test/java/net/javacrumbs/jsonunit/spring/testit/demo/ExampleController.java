@@ -15,18 +15,17 @@
  */
 package net.javacrumbs.jsonunit.spring.testit.demo;
 
+import static java.util.Collections.singletonMap;
+import static org.springframework.http.MediaType.parseMediaType;
+
+import java.math.BigDecimal;
+import java.nio.charset.Charset;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.math.BigDecimal;
-import java.nio.charset.Charset;
-
-import static java.util.Collections.singletonMap;
-import static org.springframework.http.MediaType.parseMediaType;
 
 @RestController
 public class ExampleController {
@@ -50,9 +49,7 @@ public class ExampleController {
     }
 
     @GetMapping(value = "/empty")
-    public void empty() {
-    }
-
+    public void empty() {}
 
     private static class Result {
         public String getString() {
@@ -60,12 +57,13 @@ public class ExampleController {
         }
 
         public int[] getArray() {
-            return new int[]{1, 2, 3};
+            return new int[] {1, 2, 3};
         }
 
         public BigDecimal getDecimal() {
             return new BigDecimal("1.00001");
         }
+
         public boolean getBoolean() {
             return true;
         }
@@ -79,7 +77,8 @@ public class ExampleController {
         }
     }
 
-    public static final String CORRECT_JSON = "{\"result\":{\"string\":\"stringValue\", \"array\":[1, 2, 3],\"decimal\":1.00001, \"boolean\": true, \"null\" : null, \"utf8\":\"€\"}}";
+    public static final String CORRECT_JSON =
+            "{\"result\":{\"string\":\"stringValue\", \"array\":[1, 2, 3],\"decimal\":1.00001, \"boolean\": true, \"null\" : null, \"utf8\":\"€\"}}";
 
     public static final String ISO_VALUE = "Příliš žluťoučký kůň";
 }

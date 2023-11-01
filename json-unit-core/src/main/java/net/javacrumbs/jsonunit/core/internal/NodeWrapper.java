@@ -82,7 +82,5 @@ interface NodeWrapper extends Node {
     }
 
     @Override
-    default void ___do_not_implement_this_interface_seriously() {
-
-    }
+    default void ___do_not_implement_this_interface_seriously() {}
 }

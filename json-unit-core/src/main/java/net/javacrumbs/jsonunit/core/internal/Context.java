@@ -15,18 +15,28 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import net.javacrumbs.jsonunit.core.Configuration;
-
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
+
+import net.javacrumbs.jsonunit.core.Configuration;
 
 record Context(Node expectedNode, Node actualNode, Path expectedPath, Path actualPath, Configuration configuration) {
 
     Context inField(String key) {
-        return new Context(expectedNode.get(key), actualNode.get(key), expectedPath.toField(key), actualPath.toField(key), configuration);
+        return new Context(
+                expectedNode.get(key),
+                actualNode.get(key),
+                expectedPath.toField(key),
+                actualPath.toField(key),
+                configuration);
     }
 
     Context toElement(int i) {
-        return new Context(expectedNode.element(i), actualNode.element(i), expectedPath.toElement(i), actualPath.toElement(i), configuration);
+        return new Context(
+                expectedNode.element(i),
+                actualNode.element(i),
+                expectedPath.toElement(i),
+                actualPath.toElement(i),
+                configuration);
     }
 
     Context missingElement(int i) {
@@ -38,6 +48,11 @@ record Context(Node expectedNode, Node actualNode, Path expectedPath, Path actua
     }
 
     Context length(Object expectedLength) {
-        return new Context(wrapDeserializedObject(expectedLength), wrapDeserializedObject(actualNode.size()), expectedPath.length(), actualPath.length(), configuration);
+        return new Context(
+                wrapDeserializedObject(expectedLength),
+                wrapDeserializedObject(actualNode.size()),
+                expectedPath.length(),
+                actualPath.length(),
+                configuration);
     }
 }

@@ -17,13 +17,12 @@ package net.javacrumbs.jsonunit.test.base;
 
 import com.google.gson.JsonParser;
 import com.squareup.moshi.Moshi;
-import org.json.JSONTokener;
-
-import javax.json.Json;
-import javax.json.JsonReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Map;
+import javax.json.Json;
+import javax.json.JsonReader;
+import org.json.JSONTokener;
 
 public class JsonTestUtils {
 
@@ -36,7 +35,7 @@ public class JsonTestUtils {
     }
 
     public static Object readByJohnzon(String value) {
-        try (JsonReader reader = Json.createReader(new StringReader(value))){
+        try (JsonReader reader = Json.createReader(new StringReader(value))) {
             return reader.read();
         }
     }
@@ -46,8 +45,8 @@ public class JsonTestUtils {
     }
 
     public static Object readByJsonOrg(String value) {
-            return new JSONTokener(value).nextValue();
-        }
+        return new JSONTokener(value).nextValue();
+    }
 
     public static Object readByMoshi(String value) {
         Moshi moshi = new Moshi.Builder().build();

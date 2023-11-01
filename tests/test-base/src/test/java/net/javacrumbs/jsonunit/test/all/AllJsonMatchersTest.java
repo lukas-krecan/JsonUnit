@@ -15,15 +15,15 @@
  */
 package net.javacrumbs.jsonunit.test.all;
 
-import net.javacrumbs.jsonunit.test.base.AbstractJsonMatchersTest;
-import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
-import org.junit.jupiter.api.Test;
-
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
 import static net.javacrumbs.jsonunit.core.util.ResourceUtils.resource;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson2;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJsonOrg;
 import static org.hamcrest.MatcherAssert.assertThat;
+
+import net.javacrumbs.jsonunit.test.base.AbstractJsonMatchersTest;
+import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
+import org.junit.jupiter.api.Test;
 
 class AllJsonMatchersTest extends AbstractJsonMatchersTest {
     @Test
@@ -38,7 +38,9 @@ class AllJsonMatchersTest extends AbstractJsonMatchersTest {
 
     @Test
     void shouldCompareJSONArrays() {
-        assertThat(readByJsonOrg("[{\"a\":1}, {\"a\":2}, {\"a\":2}]"), jsonEquals(readByJsonOrg("[{\"a\":1}, {\"a\":2}, {\"a\":2}]")));
+        assertThat(
+                readByJsonOrg("[{\"a\":1}, {\"a\":2}, {\"a\":2}]"),
+                jsonEquals(readByJsonOrg("[{\"a\":1}, {\"a\":2}, {\"a\":2}]")));
     }
 
     @Test
@@ -53,6 +55,6 @@ class AllJsonMatchersTest extends AbstractJsonMatchersTest {
 
     @Override
     protected Object readValue(String value) {
-            return JsonTestUtils.readByJackson2(value);
-        }
+        return JsonTestUtils.readByJackson2(value);
+    }
 }

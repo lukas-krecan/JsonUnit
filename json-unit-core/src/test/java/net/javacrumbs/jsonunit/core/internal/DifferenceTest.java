@@ -15,6 +15,17 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import static java.math.BigDecimal.valueOf;
+import static java.util.Collections.singletonMap;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
@@ -24,18 +35,6 @@ import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.math.BigDecimal.valueOf;
-import static java.util.Collections.singletonMap;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DifferenceTest {
     private final RecordingDifferenceListener listener = new RecordingDifferenceListener();
@@ -178,7 +177,8 @@ public class DifferenceTest {
 
     @Test
     void shouldSeeObjectDiffNodes() {
-        Diff diff = Diff.create("{\"test\": { \"test1\": \"1\"}}", "{\"test\": { \"test1\": \"2\"} }", "", "", commonConfig());
+        Diff diff = Diff.create(
+                "{\"test\": { \"test1\": \"1\"}}", "{\"test\": { \"test1\": \"2\"} }", "", "", commonConfig());
         diff.similar();
         assertThat(listener.getDifferenceList(), hasSize(1));
         assertThat(listener.getDifferenceList().get(0).getType(), equalTo(DifferenceImpl.Type.DIFFERENT));
@@ -196,7 +196,12 @@ public class DifferenceTest {
 
     @Test
     void shouldWorkWhenIgnoringArrayOrder() {
-        Diff diff = Diff.create("{\"test\": [[1,2],[2,3]]}", "{\"test\":[[4,2],[1,2]]}", "", "", commonConfig().when(Option.IGNORING_ARRAY_ORDER));
+        Diff diff = Diff.create(
+                "{\"test\": [[1,2],[2,3]]}",
+                "{\"test\":[[4,2],[1,2]]}",
+                "",
+                "",
+                commonConfig().when(Option.IGNORING_ARRAY_ORDER));
         diff.similar();
         assertThat(listener.getDifferenceList(), hasSize(1));
         assertThat(listener.getDifferenceList().get(0).getType(), equalTo(DifferenceImpl.Type.DIFFERENT));
@@ -222,8 +227,13 @@ public class DifferenceTest {
 
     @Test
     void shouldMatchWithLineSeparatorCustomMatcher() {
-        Configuration cfg = commonConfig().withMatcher("equalTo",  new EqualsMatcher());
-        Diff diff = Diff.create("{\"key\": \"${json-unit.matches:equalTo}separated \\n line\"}", "{\"key\": \"separated \\n line\"}", "", "", cfg);
+        Configuration cfg = commonConfig().withMatcher("equalTo", new EqualsMatcher());
+        Diff diff = Diff.create(
+                "{\"key\": \"${json-unit.matches:equalTo}separated \\n line\"}",
+                "{\"key\": \"separated \\n line\"}",
+                "",
+                "",
+                cfg);
         assertTrue(diff.similar());
         assertThat(listener.getDifferenceList(), hasSize(0));
     }

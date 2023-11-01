@@ -15,12 +15,6 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
-import java.math.BigDecimal;
-
 import static java.util.Collections.singletonMap;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
@@ -36,6 +30,11 @@ import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
+import java.math.BigDecimal;
+import org.junit.jupiter.api.Test;
 
 class JsonUtilsTest {
 
@@ -66,7 +65,7 @@ class JsonUtilsTest {
         assertEquals(NUMBER, valueToNode(1.0).getNodeType());
         assertEquals(STRING, valueToNode("1.0").getNodeType());
         assertEquals(OBJECT, valueToNode(singletonMap("a", 1)).getNodeType());
-        assertEquals(ARRAY, valueToNode(new int[]{1 ,2, 3}).getNodeType());
+        assertEquals(ARRAY, valueToNode(new int[] {1, 2, 3}).getNodeType());
         assertEquals(STRING, valueToNode("true").getNodeType());
         assertEquals(BOOLEAN, valueToNode(true).getNodeType());
         assertEquals(STRING, valueToNode("false").getNodeType());
@@ -84,7 +83,6 @@ class JsonUtilsTest {
         assertEquals("true", quoteIfNeeded("true"));
         assertEquals("false", quoteIfNeeded("false"));
         assertEquals("null", quoteIfNeeded("null"));
-
 
         assertEquals("\"a\"", quoteIfNeeded("a"));
         assertEquals("\"a b\"", quoteIfNeeded("a b"));
@@ -123,7 +121,8 @@ class JsonUtilsTest {
 
     @Test
     void testGetStartNodeArrays2() throws IOException {
-        Node startNode = getNode(mapper.readTree("{\"test\":[{\"values\":[1,2]}, {\"values\":[3,4]}]}"), "test[1].values[1]");
+        Node startNode =
+                getNode(mapper.readTree("{\"test\":[{\"values\":[1,2]}, {\"values\":[3,4]}]}"), "test[1].values[1]");
         assertEquals(4, startNode.decimalValue().intValue());
     }
 
@@ -135,7 +134,8 @@ class JsonUtilsTest {
 
     @Test
     void testGetStartNodeArraysConvoluted() throws IOException {
-        Node startNode = getNode(mapper.readTree("{\"test\":[{\"values\":[1,2]}, {\"values\":[3,4]}]}"), "test.[1].values.[1]");
+        Node startNode =
+                getNode(mapper.readTree("{\"test\":[{\"values\":[1,2]}, {\"values\":[3,4]}]}"), "test.[1].values.[1]");
         assertEquals(4, startNode.decimalValue().intValue());
     }
 

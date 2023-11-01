@@ -15,26 +15,23 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-
-import net.javacrumbs.jsonunit.core.Configuration;
-import net.javacrumbs.jsonunit.core.Option;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import static java.util.Collections.emptyList;
+import static java.util.Map.Entry.comparingByKey;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import static java.util.Collections.emptyList;
-import static java.util.Map.Entry.comparingByKey;
+import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.Option;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Internal utility class to parse JSON values.
  */
 public class JsonUtils {
     private static final Converter converter = Converter.createDefaultConverter();
-
 
     /**
      * Converts object to JSON.
@@ -58,7 +55,6 @@ public class JsonUtils {
         }
     }
 
-
     /**
      * Converts value to Json node. It can be Map, String, null, or primitive. Should not be parsed, just converted.
      */
@@ -80,12 +76,12 @@ public class JsonUtils {
     }
 
     /**
-      * Returns node with given path.
-      */
-     @NotNull
-     public static Node getNode(Object root, Path path) {
-         return path.getNode(convertToJson(root, "actual"));
-     }
+     * Returns node with given path.
+     */
+    @NotNull
+    public static Node getNode(Object root, Path path) {
+        return path.getNode(convertToJson(root, "actual"));
+    }
 
     public static boolean nodeAbsent(Object json, String path, Configuration configuration) {
         return nodeAbsent(json, Path.create(path), configuration);
@@ -126,7 +122,6 @@ public class JsonUtils {
         }
     }
 
-
     /**
      * Add quotes around the object iff it's not a JSON object.
      *
@@ -136,9 +131,12 @@ public class JsonUtils {
     static String quoteIfNeeded(String source) {
         String trimmed = source.trim();
 
-        if (isObject(trimmed) || isArray(trimmed) || isString(trimmed)
-            || isBoolean(trimmed) || isNull(trimmed)
-            || isNumber(trimmed)) {
+        if (isObject(trimmed)
+                || isArray(trimmed)
+                || isString(trimmed)
+                || isBoolean(trimmed)
+                || isNull(trimmed)
+                || isNumber(trimmed)) {
             return source;
         } else {
             return "\"" + source + "\"";
@@ -202,7 +200,8 @@ public class JsonUtils {
     static String prettyPrint(Map<String, Object> map) {
         StringBuilder builder = new StringBuilder();
         builder.append("{");
-        Iterator<Entry<String, Object>> entries = map.entrySet().stream().sorted(comparingByKey()).iterator();
+        Iterator<Entry<String, Object>> entries =
+                map.entrySet().stream().sorted(comparingByKey()).iterator();
         while (entries.hasNext()) {
             Entry<String, Object> entry = entries.next();
             builder.append('"').append(entry.getKey()).append('"').append(":");
@@ -251,7 +250,7 @@ public class JsonUtils {
 
         @Override
         public String toString() {
-            return "JSON in path \"" + pathPrefix +"\"";
+            return "JSON in path \"" + pathPrefix + "\"";
         }
     }
 }

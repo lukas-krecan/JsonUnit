@@ -15,16 +15,15 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import static net.javacrumbs.jsonunit.core.internal.Utils.closeQuietly;
+import static net.javacrumbs.jsonunit.core.internal.Utils.toReader;
+
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-
-import static net.javacrumbs.jsonunit.core.internal.Utils.closeQuietly;
-import static net.javacrumbs.jsonunit.core.internal.Utils.toReader;
 
 /**
  * Deserializes node using Moshi

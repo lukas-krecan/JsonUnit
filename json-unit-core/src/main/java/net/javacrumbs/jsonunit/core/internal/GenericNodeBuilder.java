@@ -15,17 +15,16 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import org.jetbrains.annotations.NotNull;
+import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toBoolList;
+import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toDoubleList;
+import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toIntList;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toBoolList;
-import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toDoubleList;
-import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toIntList;
+import org.jetbrains.annotations.NotNull;
 
 class GenericNodeBuilder implements NodeBuilder {
     private static final GenericNodeBuilder INSTANCE = new GenericNodeBuilder();
@@ -64,7 +63,7 @@ class GenericNodeBuilder implements NodeBuilder {
         }
     }
 
-    static abstract class NodeSkeleton extends AbstractNode {
+    abstract static class NodeSkeleton extends AbstractNode {
         @Override
         public Node element(int index) {
             return MISSING_NODE;
@@ -155,7 +154,6 @@ class GenericNodeBuilder implements NodeBuilder {
             return decimalValue().toString();
         }
     }
-
 
     static final class StringNode extends GenericNodeBuilder.NodeSkeleton {
         private final String value;
@@ -339,10 +337,11 @@ class GenericNodeBuilder implements NodeBuilder {
             Iterator<Node.KeyValue> entries = this.iterator();
             while (entries.hasNext()) {
                 Node.KeyValue entry = entries.next();
-                builder
-                    .append('"').append(entry.getKey()).append('"')
-                    .append(":")
-                    .append(entry.getValue());
+                builder.append('"')
+                        .append(entry.getKey())
+                        .append('"')
+                        .append(":")
+                        .append(entry.getValue());
                 if (entries.hasNext()) {
                     builder.append(",");
                 }

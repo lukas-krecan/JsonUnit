@@ -15,18 +15,17 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import net.javacrumbs.jsonunit.core.internal.GenericNodeBuilder.NodeSkeleton;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
+import static net.javacrumbs.jsonunit.core.internal.Utils.closeQuietly;
 
 import java.io.Reader;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-
-import static net.javacrumbs.jsonunit.core.internal.Utils.closeQuietly;
+import net.javacrumbs.jsonunit.core.internal.GenericNodeBuilder.NodeSkeleton;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 /**
  * Deserializes node using org.json.JSONObject
@@ -188,5 +187,4 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
             return jsonObject.toString();
         }
     }
-
 }

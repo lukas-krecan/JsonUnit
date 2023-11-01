@@ -18,7 +18,7 @@ package net.javacrumbs.jsonunit.test.gson;
 import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
 
-public class GsonAssertJTest  extends AbstractAssertJTest {
+public class GsonAssertJTest extends AbstractAssertJTest {
 
     @Override
     protected Object readValue(String value) {

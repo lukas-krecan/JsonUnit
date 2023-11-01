@@ -1,15 +1,14 @@
 package net.javacrumbs.jsonunit.spring;
 
+import static net.javacrumbs.jsonunit.spring.Utils.getContentAsString;
+
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
-
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-
-import static net.javacrumbs.jsonunit.spring.Utils.getContentAsString;
 
 /**
  * Matcher compatible with Spring TestWebClient.
@@ -21,7 +20,8 @@ import static net.javacrumbs.jsonunit.spring.Utils.getContentAsString;
  * .consumeWith(json().isEqualTo(CORRECT_JSON));
  * </code>
  */
-public class WebTestClientJsonMatcher extends AbstractSpringMatchers<WebTestClientJsonMatcher, Consumer<EntityExchangeResult<byte[]>>> {
+public class WebTestClientJsonMatcher
+        extends AbstractSpringMatchers<WebTestClientJsonMatcher, Consumer<EntityExchangeResult<byte[]>>> {
     private WebTestClientJsonMatcher(Path path, Configuration configuration) {
         super(path, configuration);
     }
@@ -42,8 +42,12 @@ public class WebTestClientJsonMatcher extends AbstractSpringMatchers<WebTestClie
         return new WebTestClientJsonMatcher(path, configuration);
     }
 
-    private static class JsonUnitWebTestClientMatcher extends AbstractSpringMatcher implements Consumer<EntityExchangeResult<byte[]>> {
-        private JsonUnitWebTestClientMatcher(@NotNull Path path, @NotNull Configuration configuration, @NotNull BiConsumer<Object, InternalMatcher> matcher) {
+    private static class JsonUnitWebTestClientMatcher extends AbstractSpringMatcher
+            implements Consumer<EntityExchangeResult<byte[]>> {
+        private JsonUnitWebTestClientMatcher(
+                @NotNull Path path,
+                @NotNull Configuration configuration,
+                @NotNull BiConsumer<Object, InternalMatcher> matcher) {
             super(path, configuration, matcher);
         }
 
