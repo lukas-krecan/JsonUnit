@@ -15,6 +15,26 @@
  */
 package net.javacrumbs.jsonunit.assertj;
 
+import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.ARRAY;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.BOOLEAN;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NULL;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NUMBER;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
+import static net.javacrumbs.jsonunit.jsonpath.InternalJsonPathUtils.resolveJsonPaths;
+import static org.assertj.core.description.Description.mostRelevantDescription;
+import static org.assertj.core.util.Strings.isNullOrEmpty;
+
+import java.math.BigDecimal;
+import java.net.URI;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
@@ -39,34 +59,15 @@ import org.hamcrest.Matcher;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.math.BigDecimal;
-import java.net.URI;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-
-import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix;
-import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.ARRAY;
-import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.BOOLEAN;
-import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NULL;
-import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NUMBER;
-import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
-import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
-import static net.javacrumbs.jsonunit.jsonpath.InternalJsonPathUtils.resolveJsonPaths;
-import static org.assertj.core.description.Description.mostRelevantDescription;
-import static org.assertj.core.util.Strings.isNullOrEmpty;
-
 public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     final Path path;
     final Configuration configuration;
     private final Object actualForMatcher;
 
     JsonAssert(Path path, Configuration configuration, Object actual, boolean alreadyParsed) {
-        super(alreadyParsed ? JsonUtils.wrapDeserializedObject(actual) : JsonUtils.convertToJson(actual, "actual"), JsonAssert.class);
+        super(
+                alreadyParsed ? JsonUtils.wrapDeserializedObject(actual) : JsonUtils.convertToJson(actual, "actual"),
+                JsonAssert.class);
         this.path = path;
         this.configuration = configuration;
         this.actualForMatcher = alreadyParsed ? JsonUtils.wrapDeserializedObject(actual) : actual;
@@ -88,7 +89,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     public JsonAssert node(@NotNull String node) {
         return new JsonAssert(path.to(node), configuration, getNode(actual, node));
     }
-
 
     /**
      * Allows to do multiple comparisons on a document like
@@ -133,7 +133,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     public JsonMapAssert isObject() {
         Node node = assertType(OBJECT);
         return new JsonMapAssert((Map<String, Object>) node.getValue(), path.asPrefix(), configuration)
-            .as("Different value found in node \"%s\"", path);
+                .as("Different value found in node \"%s\"", path);
     }
 
     /**
@@ -151,7 +151,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     public BigIntegerAssert isIntegralNumber() {
         Node node = internalMatcher().assertIntegralNumber();
         return new BigIntegerAssert(node.decimalValue().toBigIntegerExact())
-            .as("Different value found in node \"%s\"", path);
+                .as("Different value found in node \"%s\"", path);
     }
 
     /**
@@ -167,7 +167,8 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
             try {
                 return createBigDecimalAssert(new BigDecimal(node.asText()));
             } catch (NumberFormatException e) {
-                failWithMessage("Node \"" + path + "\" can not be converted to number expected: <a number> but was: <" + quoteTextValue(node.getValue()) + ">.");
+                failWithMessage("Node \"" + path + "\" can not be converted to number expected: <a number> but was: <"
+                        + quoteTextValue(node.getValue()) + ">.");
             }
         } else {
             internalMatcher().failOnType(node, "number or string");
@@ -182,13 +183,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
 
     private InternalMatcher internalMatcher() {
         String description = mostRelevantDescription(info.description(), "Node \"" + path + "\"");
-        return new InternalMatcher(
-            actualForMatcher,
-            path.asPrefix(),
-            "",
-            configuration,
-            description
-        );
+        return new InternalMatcher(actualForMatcher, path.asPrefix(), "", configuration, description);
     }
 
     /**
@@ -199,8 +194,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     @NotNull
     public JsonListAssert isArray() {
         Node node = assertType(ARRAY);
-        return new JsonListAssert((List<?>)node.getValue(), path.asPrefix(), configuration)
-            .as( "Node \"%s\"", path);
+        return new JsonListAssert((List<?>) node.getValue(), path.asPrefix(), configuration).as("Node \"%s\"", path);
     }
 
     /**
@@ -345,7 +339,8 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
          * </code>
          */
         @NotNull
-        public ConfigurableJsonAssert withConfiguration(@NotNull Function<Configuration, Configuration> configurationFunction) {
+        public ConfigurableJsonAssert withConfiguration(
+                @NotNull Function<Configuration, Configuration> configurationFunction) {
             Configuration newConfiguration = configurationFunction.apply(configuration);
             newConfiguration = resolveJsonPaths(originalActual, newConfiguration);
             return new ConfigurableJsonAssert(path, newConfiguration, actual);
@@ -407,7 +402,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
         public ConfigurableJsonAssert withMatcher(@NotNull String matcherName, @NotNull Matcher<?> matcher) {
             return withConfiguration(c -> c.withMatcher(matcherName, matcher));
         }
-
 
         /**
          * Sets difference listener

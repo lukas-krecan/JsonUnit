@@ -15,6 +15,18 @@
  */
 package net.javacrumbs.jsonunit.spring.testit;
 
+import static java.math.BigDecimal.valueOf;
+import static net.javacrumbs.jsonunit.spring.WebTestClientJsonMatcher.json;
+import static net.javacrumbs.jsonunit.spring.testit.demo.ExampleController.CORRECT_JSON;
+import static net.javacrumbs.jsonunit.spring.testit.demo.ExampleController.ISO_VALUE;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.hamcrest.Matchers.everyItem;
+import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.listener.Difference;
 import net.javacrumbs.jsonunit.core.listener.DifferenceContext;
@@ -31,18 +43,6 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
 import org.springframework.web.context.WebApplicationContext;
-
-import static java.math.BigDecimal.valueOf;
-import static net.javacrumbs.jsonunit.spring.WebTestClientJsonMatcher.json;
-import static net.javacrumbs.jsonunit.spring.testit.demo.ExampleController.CORRECT_JSON;
-import static net.javacrumbs.jsonunit.spring.testit.demo.ExampleController.ISO_VALUE;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.hamcrest.Matchers.everyItem;
-import static org.hamcrest.Matchers.lessThan;
-import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {SpringConfig.class})
@@ -77,8 +77,10 @@ class WebTestClientTest {
     @Test
     void isEqualToShouldFailIfDoesNotEqual() {
         DifferenceListener listener = mock(DifferenceListener.class);
-        assertThatThrownBy(() -> exec().consumeWith(json().withDifferenceListener(listener).isEqualTo(CORRECT_JSON.replace("stringValue", "stringValue2"))))
-            .hasMessageStartingWith("""
+        assertThatThrownBy(() -> exec().consumeWith(json().withDifferenceListener(listener)
+                        .isEqualTo(CORRECT_JSON.replace("stringValue", "stringValue2"))))
+                .hasMessageStartingWith(
+                        """
                 JSON documents are different:
                 Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
                 """);
@@ -89,21 +91,21 @@ class WebTestClientTest {
     @Test
     void isEqualToInNodeFailIfDoesNotEqual() {
         assertThatThrownBy(() -> exec().consumeWith(json().node("result.string").isEqualTo("stringValue2")))
-            .hasMessageStartingWith("""
+                .hasMessageStartingWith(
+                        """
                 JSON documents are different:
                 Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
                 """);
-
     }
+
     @Test
     void useMatcher() {
-        assertThatThrownBy(() -> exec().consumeWith(json()
-            .withMatcher("negative", lessThan(valueOf(0)))
-            .node("result.decimal").isEqualTo("${json-unit.matches:negative}")))
-            .hasMessage("JSON documents are different:\nMatcher \"negative\" does not match value 1.00001 in node \"result.decimal\". <1.00001> was greater than <0>\n");
-
+        assertThatThrownBy(() -> exec().consumeWith(json().withMatcher("negative", lessThan(valueOf(0)))
+                        .node("result.decimal")
+                        .isEqualTo("${json-unit.matches:negative}")))
+                .hasMessage(
+                        "JSON documents are different:\nMatcher \"negative\" does not match value 1.00001 in node \"result.decimal\". <1.00001> was greater than <0>\n");
     }
-
 
     @Test
     void isNullShouldPassOnNull() {
@@ -113,13 +115,16 @@ class WebTestClientTest {
     @Test
     void isNullShouldFailOnNonNull() {
         assertThatThrownBy(() -> exec().consumeWith(json().node("result.string").isNull()))
-            .hasMessageStartingWith("Node \"result.string\" has invalid type, expected: <a null> but was: <\"stringValue\">.");
+                .hasMessageStartingWith(
+                        "Node \"result.string\" has invalid type, expected: <a null> but was: <\"stringValue\">.");
     }
 
     @Test
     void isNullShouldFailOnMissing() {
-        assertThatThrownBy(() -> exec().consumeWith(json().node("result.missing").isNull()))
-            .hasMessageStartingWith("Different value found in node \"result.missing\", expected: <node to be present> but was: <missing>.");
+        assertThatThrownBy(
+                        () -> exec().consumeWith(json().node("result.missing").isNull()))
+                .hasMessageStartingWith(
+                        "Different value found in node \"result.missing\", expected: <node to be present> but was: <missing>.");
     }
 
     @Test
@@ -130,13 +135,14 @@ class WebTestClientTest {
     @Test
     void isNotNullShouldFailOnNull() {
         assertThatThrownBy(() -> exec().consumeWith(json().node("result.null").isNotNull()))
-            .hasMessageStartingWith("Node \"result.null\" has invalid type, expected: <not null> but was: <null>.");
+                .hasMessageStartingWith("Node \"result.null\" has invalid type, expected: <not null> but was: <null>.");
     }
 
     @Test
     void isStringEqualToShouldFailOnNumber() {
-        assertThatThrownBy(() -> exec().consumeWith(json().node("result.array[0]").isStringEqualTo("1")))
-            .hasMessageStartingWith("Node \"result.array[0]\" has invalid type, expected: <string> but was: <1>.");
+        assertThatThrownBy(
+                        () -> exec().consumeWith(json().node("result.array[0]").isStringEqualTo("1")))
+                .hasMessageStartingWith("Node \"result.array[0]\" has invalid type, expected: <string> but was: <1>.");
     }
 
     @Test
@@ -146,8 +152,10 @@ class WebTestClientTest {
 
     @Test
     void isFalseShouldFailOnTrue() {
-        assertThatThrownBy(() -> exec().consumeWith(json().node("result.boolean").isFalse()))
-            .hasMessageStartingWith("""
+        assertThatThrownBy(
+                        () -> exec().consumeWith(json().node("result.boolean").isFalse()))
+                .hasMessageStartingWith(
+                        """
                 JSON documents are different:
                 Different value found in node "result.boolean", expected: <false> but was: <true>.
                 """);
@@ -156,7 +164,8 @@ class WebTestClientTest {
     @Test
     void isTrueShouldFailOnString() {
         assertThatThrownBy(() -> exec().consumeWith(json().node("result.string").isTrue()))
-            .hasMessageStartingWith("""
+                .hasMessageStartingWith(
+                        """
                 JSON documents are different:
                 Different value found in node "result.string", expected: <true> but was: <"stringValue">.
                 """);
@@ -170,9 +179,9 @@ class WebTestClientTest {
     @Test
     void isAbsentShouldFailIfNodeExists() {
         assertThatThrownBy(() -> exec().consumeWith(json().node("result.string").isAbsent()))
-            .hasMessageStartingWith("Different value found in node \"result.string\", expected: <node to be absent> but was: <\"stringValue\">.");
+                .hasMessageStartingWith(
+                        "Different value found in node \"result.string\", expected: <node to be absent> but was: <\"stringValue\">.");
     }
-
 
     @Test
     void isAbsentShouldPassIfNodeIsAbsent() {
@@ -181,8 +190,10 @@ class WebTestClientTest {
 
     @Test
     void isPresentShouldFailIfNodeIsAbsent() {
-        assertThatThrownBy(() -> exec().consumeWith(json().node("result.string2").isPresent()))
-            .hasMessageStartingWith("Different value found in node \"result.string2\", expected: <node to be present> but was: <missing>.");
+        assertThatThrownBy(
+                        () -> exec().consumeWith(json().node("result.string2").isPresent()))
+                .hasMessageStartingWith(
+                        "Different value found in node \"result.string2\", expected: <node to be present> but was: <missing>.");
     }
 
     @Test
@@ -193,26 +204,29 @@ class WebTestClientTest {
     @Test
     void isArrayShouldFailOnNotArray() {
         assertThatThrownBy(() -> exec().consumeWith(json().node("result.string").isArray()))
-            .hasMessageStartingWith("Node \"result.string\" has invalid type, expected: <array> but was: <\"stringValue\">.");
+                .hasMessageStartingWith(
+                        "Node \"result.string\" has invalid type, expected: <array> but was: <\"stringValue\">.");
     }
 
     @Test
     void isArrayShouldFailIfNotPresent() {
         assertThatThrownBy(() -> exec().consumeWith(json().node("result.array2").isArray()))
-            .hasMessageStartingWith("Different value found in node \"result.array2\", expected: <array> but was: <missing>.");
+                .hasMessageStartingWith(
+                        "Different value found in node \"result.array2\", expected: <array> but was: <missing>.");
     }
-
 
     @Test
     void isObjectShouldFailOnArray() {
         assertThatThrownBy(() -> exec().consumeWith(json().node("result.array").isObject()))
-            .hasMessageStartingWith("Node \"result.array\" has invalid type, expected: <object> but was: <[1, 2, 3]>.");
+                .hasMessageStartingWith(
+                        "Node \"result.array\" has invalid type, expected: <object> but was: <[1, 2, 3]>.");
     }
 
     @Test
     void isStringShouldFailOnArray() {
         assertThatThrownBy(() -> exec().consumeWith(json().node("result.array").isString()))
-            .hasMessageStartingWith("Node \"result.array\" has invalid type, expected: <string> but was: <[1, 2, 3]>.");
+                .hasMessageStartingWith(
+                        "Node \"result.array\" has invalid type, expected: <string> but was: <[1, 2, 3]>.");
     }
 
     @Test
@@ -237,20 +251,22 @@ class WebTestClientTest {
 
     @Test
     void settingOptionShouldTakeEffect() {
-        exec().consumeWith(json().node("result.array").when(Option.IGNORING_ARRAY_ORDER).isEqualTo(new int[]{3, 2, 1}));
+        exec().consumeWith(json().node("result.array")
+                .when(Option.IGNORING_ARRAY_ORDER)
+                .isEqualTo(new int[] {3, 2, 1}));
     }
 
     @Test
     void isNotEqualToShouldFailIfEquals() {
         assertThatThrownBy(() -> exec().consumeWith(json().isNotEqualTo(CORRECT_JSON)))
-            .hasMessageStartingWith("JSON is equal.");
+                .hasMessageStartingWith("JSON is equal.");
     }
 
     @Test
     void isEqualToShouldFailIfNodeDoesNotEqual() {
-        assertThatThrownBy(() -> exec()
-            .consumeWith(json().node("result.string").isEqualTo("stringValue2")))
-            .hasMessageStartingWith("""
+        assertThatThrownBy(() -> exec().consumeWith(json().node("result.string").isEqualTo("stringValue2")))
+                .hasMessageStartingWith(
+                        """
                 JSON documents are different:
                 Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
                 """);
@@ -263,8 +279,10 @@ class WebTestClientTest {
 
     @Test
     void intValueShouldFailIfDoesNotMatch() {
-        assertThatThrownBy(() -> exec().consumeWith(json().node("result.array").matches(everyItem(lessThanOrEqualTo(valueOf(2))))))
-            .hasMessageStartingWith("""
+        assertThatThrownBy(() -> exec().consumeWith(
+                                json().node("result.array").matches(everyItem(lessThanOrEqualTo(valueOf(2))))))
+                .hasMessageStartingWith(
+                        """
                 Node "result.array" does not match.
                 Expected: every item is a value less than or equal to <2>
                      but: an item <3> was greater than <2>""");
@@ -276,7 +294,12 @@ class WebTestClientTest {
 
     private WebTestClient.BodyContentSpec exec(String path) {
         try {
-            return this.client.get().uri(path).accept(MediaType.APPLICATION_JSON).exchange().expectBody();
+            return this.client
+                    .get()
+                    .uri(path)
+                    .accept(MediaType.APPLICATION_JSON)
+                    .exchange()
+                    .expectBody();
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }

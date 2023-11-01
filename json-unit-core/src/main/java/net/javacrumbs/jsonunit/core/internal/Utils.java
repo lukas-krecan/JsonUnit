@@ -15,11 +15,10 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Resource reading utility

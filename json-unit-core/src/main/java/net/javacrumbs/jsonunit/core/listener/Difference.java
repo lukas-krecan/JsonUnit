@@ -19,7 +19,11 @@ package net.javacrumbs.jsonunit.core.listener;
  * Describes differences between documents.
  */
 public interface Difference {
-    enum Type {EXTRA, MISSING, DIFFERENT}
+    enum Type {
+        EXTRA,
+        MISSING,
+        DIFFERENT
+    }
 
     /**
      * Path to the difference
@@ -35,7 +39,6 @@ public interface Difference {
      * Actual node serialized as Map&lt;String, Object&gt; for objects, BigDecimal for numbers, ...
      */
     Object getActual();
-
 
     /**
      * Expected node serialized as Map&lt;String, Object&gt; for objects, BigDecimal for numbers, ...

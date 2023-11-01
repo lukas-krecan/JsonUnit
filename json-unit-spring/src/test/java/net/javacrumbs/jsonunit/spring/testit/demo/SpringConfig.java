@@ -22,6 +22,4 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @Configuration
 @ComponentScan("net.javacrumbs.jsonunit.spring.testit.demo")
 @EnableWebMvc
-public class SpringConfig {
-
-}
+public class SpringConfig {}

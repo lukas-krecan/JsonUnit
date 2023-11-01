@@ -15,11 +15,11 @@
  */
 package net.javacrumbs.jsonunit.test.jsonorg;
 
+import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
+
 import net.javacrumbs.jsonunit.test.base.AbstractJsonFluentAssertTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
 import org.junit.jupiter.api.Test;
-
-import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 
 public class JsonOrgJsonFluentAssertTest extends AbstractJsonFluentAssertTest {
     @Override

@@ -15,11 +15,11 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 class ArrayUtils {
     static List<Double> toDoubleList(double[] source) {

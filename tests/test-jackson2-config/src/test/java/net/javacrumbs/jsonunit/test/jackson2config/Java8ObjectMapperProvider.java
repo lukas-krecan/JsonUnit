@@ -27,7 +27,6 @@ public class Java8ObjectMapperProvider implements Jackson2ObjectMapperProvider {
 
     private final ObjectMapper lenientMapper;
 
-
     public Java8ObjectMapperProvider() {
         mapper = new ObjectMapper().registerModule(new JavaTimeModule());
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);

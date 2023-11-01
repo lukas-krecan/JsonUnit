@@ -1,14 +1,13 @@
 package net.javacrumbs.jsonunit.core;
 
-import net.javacrumbs.jsonunit.core.internal.PathOption;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import net.javacrumbs.jsonunit.core.internal.PathOption;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Everything for {@link Configuration#when(PathsParam, ApplicableForPath...)}
@@ -113,8 +112,7 @@ public class ConfigurationWhen {
     }
 
     static class IgnoredParam implements ApplicableForPath {
-        private IgnoredParam() {
-        }
+        private IgnoredParam() {}
 
         @Override
         @NotNull

@@ -29,9 +29,7 @@ public final class JsonAssertions {
         Assertions.useRepresentation(new JsonRepresentation());
     }
 
-    private JsonAssertions() {
-
-    }
+    private JsonAssertions() {}
 
     @NotNull
     public static ConfigurableJsonAssert assertThatJson(@Nullable Object actual) {
@@ -49,9 +47,10 @@ public final class JsonAssertions {
      * }</pre>
      */
     @NotNull
-    public static ConfigurableJsonAssert assertThatJson(@NotNull Object actual, @NotNull JsonAssertionCallback... callbacks) {
+    public static ConfigurableJsonAssert assertThatJson(
+            @NotNull Object actual, @NotNull JsonAssertionCallback... callbacks) {
         ConfigurableJsonAssert a = assertThatJson(actual);
-        for (JsonAssertionCallback callback: callbacks) {
+        for (JsonAssertionCallback callback : callbacks) {
             callback.doAssert(a);
         }
         return a;
@@ -67,7 +66,6 @@ public final class JsonAssertions {
     public static Object json(Object input) {
         return new ExpectedNode(JsonUtils.convertToJson(input, "expected", true));
     }
-
 
     /**
      * Value passed here is not parsed as JSON but used as it is

@@ -15,18 +15,18 @@
  */
 package net.javacrumbs.jsonunit.spring.testit;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.web.client.RestTemplate;
-
 import static net.javacrumbs.jsonunit.spring.JsonUnitRequestMatchers.json;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.client.MockRestServiceServer;
+import org.springframework.web.client.RestTemplate;
 
 class ClientTest {
     private static final String URI = "/sample";
@@ -39,35 +39,39 @@ class ClientTest {
 
     @Test
     void shouldAssertClient() {
-        mockServer.expect(requestTo(URI))
-            .andExpect(json().isEqualTo(json))
-            .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
+        mockServer
+                .expect(requestTo(URI))
+                .andExpect(json().isEqualTo(json))
+                .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
 
-        assertThat(restTemplate.postForEntity(URI, json, String.class).getBody()).isEqualTo(jsonResponse);
-
+        assertThat(restTemplate.postForEntity(URI, json, String.class).getBody())
+                .isEqualTo(jsonResponse);
     }
 
     @Test
     void shouldFailOnMismatch() {
-        mockServer.expect(requestTo(URI))
-            .andExpect(json().isEqualTo("[]"))
-            .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
+        mockServer
+                .expect(requestTo(URI))
+                .andExpect(json().isEqualTo("[]"))
+                .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
 
         assertThatThrownBy(() -> restTemplate.postForEntity(URI, json, String.class))
-            .hasMessage("""
+                .hasMessage(
+                        """
                 JSON documents are different:
                 Different value found in node "", expected: <[]> but was: <{"test":1}>.
                 """);
-
     }
 
     @Test
     void shouldAssertClientComplex() {
-        mockServer.expect(requestTo(URI))
-            .andExpect(method(HttpMethod.POST))
-            .andExpect(json().node("test").withTolerance(0.1).isEqualTo(0.99))
-            .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
+        mockServer
+                .expect(requestTo(URI))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(json().node("test").withTolerance(0.1).isEqualTo(0.99))
+                .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
 
-        assertThat(restTemplate.postForEntity(URI, json, String.class).getBody()).isEqualTo(jsonResponse);
+        assertThat(restTemplate.postForEntity(URI, json, String.class).getBody())
+                .isEqualTo(jsonResponse);
     }
 }

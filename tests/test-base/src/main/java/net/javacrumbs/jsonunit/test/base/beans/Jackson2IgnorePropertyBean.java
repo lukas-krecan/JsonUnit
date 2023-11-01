@@ -15,7 +15,6 @@
  */
 package net.javacrumbs.jsonunit.test.base.beans;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Jackson2IgnorePropertyBean {

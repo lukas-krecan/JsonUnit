@@ -15,12 +15,11 @@
  */
 package net.javacrumbs.jsonunit.test.base;
 
+import java.util.ArrayList;
+import java.util.List;
 import net.javacrumbs.jsonunit.core.listener.Difference;
 import net.javacrumbs.jsonunit.core.listener.DifferenceContext;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class RecordingDifferenceListener implements DifferenceListener {
     private final List<Difference> differenceList = new ArrayList<>();

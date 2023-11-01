@@ -15,15 +15,16 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import java.util.List;
-
 import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
+
+import java.util.List;
 
 class ExceptionUtils {
     private static final String ROOT_MESSAGE = "JSON documents are different:\n";
 
-    private static final ExceptionFactory exceptionFactory
-        = isClassPresent("org.opentest4j.AssertionFailedError") ? new Opentest4jExceptionFactory() : new BasicExceptionFactory();
+    private static final ExceptionFactory exceptionFactory = isClassPresent("org.opentest4j.AssertionFailedError")
+            ? new Opentest4jExceptionFactory()
+            : new BasicExceptionFactory();
 
     static String formatDifferences(String message, Differences differences) {
         return formatDifferences(message, differences.getDifferences());
@@ -53,5 +54,5 @@ class ExceptionUtils {
                 builder.append('[').append(message).append("] ");
             }
         }
-     }
+    }
 }

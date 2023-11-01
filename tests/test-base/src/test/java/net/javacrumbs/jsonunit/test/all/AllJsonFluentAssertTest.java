@@ -15,14 +15,14 @@
  */
 package net.javacrumbs.jsonunit.test.all;
 
-import net.javacrumbs.jsonunit.test.base.AbstractJsonFluentAssertTest;
-import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
-import org.junit.jupiter.api.Test;
-
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByGson;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson2;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJsonOrg;
+
+import net.javacrumbs.jsonunit.test.base.AbstractJsonFluentAssertTest;
+import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
+import org.junit.jupiter.api.Test;
 
 public class AllJsonFluentAssertTest extends AbstractJsonFluentAssertTest {
     @Test

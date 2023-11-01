@@ -15,6 +15,22 @@
  */
 package net.javacrumbs.jsonunit.core.internal.matchers;
 
+import static java.util.Collections.singletonList;
+import static net.javacrumbs.jsonunit.core.internal.Diff.create;
+import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.ARRAY;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NULL;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NUMBER;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
@@ -28,24 +44,6 @@ import org.hamcrest.Matcher;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import static java.util.Collections.singletonList;
-import static net.javacrumbs.jsonunit.core.internal.Diff.create;
-import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
-import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.ARRAY;
-import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NULL;
-import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NUMBER;
-import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
-import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
-import static org.hamcrest.MatcherAssert.assertThat;
-
-
 /**
  * Internal class, please do not use outside the library
  */
@@ -58,7 +56,12 @@ public final class InternalMatcher {
     private final Configuration configuration;
     private final String nodeDescription;
 
-    public InternalMatcher(@Nullable Object actual, @NotNull Path path, @NotNull String description, @NotNull Configuration configuration, @NotNull String nodeDescription) {
+    public InternalMatcher(
+            @Nullable Object actual,
+            @NotNull Path path,
+            @NotNull String description,
+            @NotNull Configuration configuration,
+            @NotNull String nodeDescription) {
         this.path = path;
         this.actual = actual;
         this.description = description;
@@ -66,7 +69,11 @@ public final class InternalMatcher {
         this.nodeDescription = nodeDescription;
     }
 
-    public InternalMatcher(@Nullable Object actual, @NotNull Path path, @NotNull String description, @NotNull Configuration configuration) {
+    public InternalMatcher(
+            @Nullable Object actual,
+            @NotNull Path path,
+            @NotNull String description,
+            @NotNull Configuration configuration) {
         this(actual, path, description, configuration, "Node \"" + path + "\"");
     }
 
@@ -114,7 +121,6 @@ public final class InternalMatcher {
         return new InternalMatcher(actual, path, description, configuration.withTolerance(tolerance));
     }
 
-
     /**
      * Adds a internalMatcher to be used in ${json-unit.matches:matcherName} macro.
      */
@@ -155,12 +161,10 @@ public final class InternalMatcher {
         return new InternalMatcher(actual, path, description, configuration.when(object, actions));
     }
 
-
     public void isEqualTo(@Nullable Object expected) {
         Diff diff = createDiff(expected, configuration);
         diff.failIfDifferent(description);
     }
-
 
     /**
      * Fails if the selected JSON is not a String or is not present or the value
@@ -188,7 +192,8 @@ public final class InternalMatcher {
             path = paths.toString();
             node = "nodes";
         }
-        failWithMessage(String.format("Different value found in %s \"%s\", expected: <%s> but was: <%s>.", node, path, expected, actual));
+        failWithMessage(String.format(
+                "Different value found in %s \"%s\", expected: <%s> but was: <%s>.", node, path, expected, actual));
     }
 
     /**
@@ -229,7 +234,6 @@ public final class InternalMatcher {
             throw new AssertionError(message);
         }
     }
-
 
     /**
      * Fails if the node exists.
@@ -337,7 +341,8 @@ public final class InternalMatcher {
     }
 
     private void failOnType(@NotNull String expectedType, @Nullable Object actualType) {
-        failWithMessage(nodeDescription + " has invalid type, expected: <" + expectedType + "> but was: <" + actualType + ">.");
+        failWithMessage(
+                nodeDescription + " has invalid type, expected: <" + expectedType + "> but was: <" + actualType + ">.");
     }
 
     /**
@@ -360,7 +365,6 @@ public final class InternalMatcher {
         assertThat(nodeDescription + " does not match.", node.getValue(), (Matcher<? super Object>) matcher);
     }
 
-
     /**
      * Array assertions
      */
@@ -380,7 +384,8 @@ public final class InternalMatcher {
          */
         public void ofLength(int expectedLength) {
             if (array.size() != expectedLength) {
-                failWithMessage(nodeDescription + " has invalid length, expected: <" + expectedLength + "> but was: <" + array.size() + ">.");
+                failWithMessage(nodeDescription + " has invalid length, expected: <" + expectedLength + "> but was: <"
+                        + array.size() + ">.");
             }
         }
 
@@ -407,6 +412,5 @@ public final class InternalMatcher {
                 failWithMessage(nodeDescription + " is an empty array.");
             }
         }
-
     }
 }

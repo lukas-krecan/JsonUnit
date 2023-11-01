@@ -23,5 +23,4 @@ public class RegexBuilder {
     public String toString() {
         return expression + "$\"";
     }
-
 }

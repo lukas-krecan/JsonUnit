@@ -15,6 +15,10 @@
  */
 package net.javacrumbs.jsonunit.assertj;
 
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
+import static org.assertj.core.util.Lists.newArrayList;
+
+import java.util.List;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Path;
@@ -24,11 +28,6 @@ import org.assertj.core.api.InstanceOfAssertFactory;
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
-import static org.assertj.core.util.Lists.newArrayList;
 
 public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAssert, List<?>, Object, JsonAssert> {
     private final Configuration configuration;
@@ -57,7 +56,8 @@ public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAsse
         Diff diff = createDiff(other);
         if (diff.similar()) {
             JsonComparisonStrategy strategy = new JsonComparisonStrategy(configuration);
-            throwAssertionError(new BasicErrorMessageFactory("%nExpecting:%n <%s>%nnot to be equal to:%n <%s>%n%s", actual, other, strategy));
+            throwAssertionError(new BasicErrorMessageFactory(
+                    "%nExpecting:%n <%s>%nnot to be equal to:%n <%s>%n%s", actual, other, strategy));
         }
         return this;
     }
@@ -72,7 +72,8 @@ public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAsse
      */
     @Override
     @Deprecated
-    public <ASSERT extends AbstractAssert<?, ?>> ASSERT element(int index, InstanceOfAssertFactory<?, ASSERT> assertFactory) {
+    public <ASSERT extends AbstractAssert<?, ?>> ASSERT element(
+            int index, InstanceOfAssertFactory<?, ASSERT> assertFactory) {
         return super.element(index, assertFactory);
     }
 
@@ -81,14 +82,16 @@ public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAsse
      */
     @Override
     @Deprecated
-    public <ASSERT extends AbstractAssert<?, ?>> ASSERT singleElement(InstanceOfAssertFactory<?, ASSERT> assertFactory) {
+    public <ASSERT extends AbstractAssert<?, ?>> ASSERT singleElement(
+            InstanceOfAssertFactory<?, ASSERT> assertFactory) {
         return super.singleElement(assertFactory);
     }
 
     @Override
-    public <ASSERT extends AbstractAssert<?, ?>> ASSERT asInstanceOf(InstanceOfAssertFactory<?, ASSERT> instanceOfAssertFactory) {
+    public <ASSERT extends AbstractAssert<?, ?>> ASSERT asInstanceOf(
+            InstanceOfAssertFactory<?, ASSERT> instanceOfAssertFactory) {
         throw failure("Please use isString(), isNumber(), isBoolean(), isNull(), isUri(), isArray() or isObject().%n"
-            + "This method will most likely not provide the result you expect it to.");
+                + "This method will most likely not provide the result you expect it to.");
     }
 
     /**

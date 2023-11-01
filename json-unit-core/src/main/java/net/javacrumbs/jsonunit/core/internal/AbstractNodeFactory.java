@@ -15,14 +15,13 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import net.javacrumbs.jsonunit.core.internal.Utils.JsonStringReader;
-import org.jetbrains.annotations.NotNull;
+import static net.javacrumbs.jsonunit.core.internal.Utils.closeQuietly;
+import static net.javacrumbs.jsonunit.core.internal.Utils.toReader;
 
 import java.io.Reader;
 import java.math.BigDecimal;
-
-import static net.javacrumbs.jsonunit.core.internal.Utils.closeQuietly;
-import static net.javacrumbs.jsonunit.core.internal.Utils.toReader;
+import net.javacrumbs.jsonunit.core.internal.Utils.JsonStringReader;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Common superclass for node factories
@@ -64,16 +63,15 @@ abstract class AbstractNodeFactory implements NodeFactory {
         }
     }
 
-
     @NotNull
     protected IllegalArgumentException newParseException(String label, Reader value, Exception e) {
         if (value instanceof JsonStringReader) {
-            return new IllegalArgumentException("Can not parse " + label + " value: '" + ((JsonStringReader) value).getString() + "'", e);
+            return new IllegalArgumentException(
+                    "Can not parse " + label + " value: '" + ((JsonStringReader) value).getString() + "'", e);
         } else {
             return new IllegalArgumentException("Can not parse " + label + " value.", e);
         }
     }
-
 
     protected abstract Node doConvertValue(Object source);
 

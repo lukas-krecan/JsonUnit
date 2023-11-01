@@ -15,11 +15,9 @@
  */
 package net.javacrumbs.jsonunit.assertj;
 
-
-import net.javacrumbs.jsonunit.core.internal.Node;
-
 import java.math.BigDecimal;
 import java.util.Iterator;
+import net.javacrumbs.jsonunit.core.internal.Node;
 
 /**
  * In AssertJ we need to know which node is expected and which is actual. This class marks expected node.
@@ -93,8 +91,7 @@ class ExpectedNode implements Node {
     }
 
     @Override
-    public void ___do_not_implement_this_interface_seriously() {
-    }
+    public void ___do_not_implement_this_interface_seriously() {}
 
     @Override
     public String toString() {

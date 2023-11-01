@@ -15,13 +15,12 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Converts object to Node using {@link NodeFactory}.
@@ -29,21 +28,16 @@ import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
 record Converter(List<NodeFactory> factories) {
     static final String LIBRARIES_PROPERTY_NAME = "json-unit.libraries";
 
-    private static final boolean jackson2Present =
-        isClassPresent("com.fasterxml.jackson.databind.ObjectMapper") &&
-            isClassPresent("com.fasterxml.jackson.core.JsonGenerator");
+    private static final boolean jackson2Present = isClassPresent("com.fasterxml.jackson.databind.ObjectMapper")
+            && isClassPresent("com.fasterxml.jackson.core.JsonGenerator");
 
-    private static final boolean gsonPresent =
-        isClassPresent("com.google.gson.Gson");
+    private static final boolean gsonPresent = isClassPresent("com.google.gson.Gson");
 
-    private static final boolean jsonOrgPresent =
-        isClassPresent("org.json.JSONObject");
+    private static final boolean jsonOrgPresent = isClassPresent("org.json.JSONObject");
 
-    private static final boolean moshiPresent =
-        isClassPresent("com.squareup.moshi.Moshi");
+    private static final boolean moshiPresent = isClassPresent("com.squareup.moshi.Moshi");
 
-    private static final boolean johnzonPresent =
-        isClassPresent("org.apache.johnzon.mapper.Mapper");
+    private static final boolean johnzonPresent = isClassPresent("org.apache.johnzon.mapper.Mapper");
 
     Converter {
         if (factories.isEmpty()) {
@@ -65,7 +59,8 @@ record Converter(List<NodeFactory> factories) {
         }
 
         if (factories.isEmpty()) {
-            throw new IllegalStateException("Please add either json.org, Jackson 1.x, Jackson 2.x, Johnzon or Gson to the classpath");
+            throw new IllegalStateException(
+                    "Please add either json.org, Jackson 1.x, Jackson 2.x, Johnzon or Gson to the classpath");
         }
         return new Converter(factories);
     }
@@ -109,6 +104,7 @@ record Converter(List<NodeFactory> factories) {
         }
         return factories;
     }
+
     @NotNull
     Node convertToNode(@Nullable Object source, String label, boolean lenient) {
         for (int i = 0; i < factories.size(); i++) {

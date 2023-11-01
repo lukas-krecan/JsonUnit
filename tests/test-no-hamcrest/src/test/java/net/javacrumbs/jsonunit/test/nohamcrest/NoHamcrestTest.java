@@ -15,11 +15,11 @@
  */
 package net.javacrumbs.jsonunit.test.nohamcrest;
 
-import org.junit.jupiter.api.Test;
-
 import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 
-class NoHamcrestTest  {
+import org.junit.jupiter.api.Test;
+
+class NoHamcrestTest {
 
     @Test
     void comparisonShouldWork() {

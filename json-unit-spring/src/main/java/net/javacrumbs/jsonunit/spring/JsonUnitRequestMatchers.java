@@ -15,6 +15,7 @@
  */
 package net.javacrumbs.jsonunit.spring;
 
+import java.util.function.BiConsumer;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
@@ -22,9 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.mock.http.client.MockClientHttpRequest;
 import org.springframework.test.web.client.RequestMatcher;
-
-import java.util.function.BiConsumer;
-
 
 /**
  * Matchers compatible with Spring mocking framework.
@@ -63,9 +61,11 @@ public class JsonUnitRequestMatchers extends AbstractSpringMatchers<JsonUnitRequ
         return new JsonUnitRequestMatchers(Path.root(), Configuration.empty());
     }
 
-
     private static class JsonRequestMatcher extends AbstractSpringMatcher implements RequestMatcher {
-        private JsonRequestMatcher(@NotNull Path path, @NotNull Configuration configuration, @NotNull BiConsumer<Object, InternalMatcher> matcher) {
+        private JsonRequestMatcher(
+                @NotNull Path path,
+                @NotNull Configuration configuration,
+                @NotNull BiConsumer<Object, InternalMatcher> matcher) {
             super(path, configuration, matcher);
         }
 

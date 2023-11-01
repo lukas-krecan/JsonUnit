@@ -15,14 +15,13 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
+
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
-
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
-
 
 /**
  * For internal use only!!! Abstract node representation.
@@ -210,6 +209,7 @@ public interface Node {
             return "<missing>";
         }
     };
+
     interface ValueExtractor {
         Object getValue(Node node);
     }

@@ -38,7 +38,6 @@ public enum Option {
      */
     IGNORING_EXTRA_FIELDS,
 
-
     /**
      * Passes even if array in compared document has more items than expected.
      * Items are taken from the beginning of the expected array unless IGNORING_ARRAY_ORDER is specified.

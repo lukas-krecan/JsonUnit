@@ -33,7 +33,6 @@ public class GsonJsonAssertTest extends AbstractJsonAssertTest {
         // GSON is by default lenient
     }
 
-
     @Test
     @Override
     @Disabled

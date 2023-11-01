@@ -15,10 +15,9 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import net.javacrumbs.jsonunit.core.Configuration;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import net.javacrumbs.jsonunit.core.Configuration;
 
 class ArrayComparison {
     private final ComparisonMatrix comparisonMatrix;
@@ -38,18 +37,22 @@ class ArrayComparison {
     record NodeWithIndex(Node node, int index) {
 
         @Override
-            public String toString() {
-                return node.toString();
-            }
+        public String toString() {
+            return node.toString();
         }
+    }
 
     static class ComparisonResult {
         private final List<NodeWithIndex> extraValues;
         private final List<NodeWithIndex> missingValues;
 
         private ComparisonResult(ComparisonMatrix result, List<Node> expectedElements, List<Node> actualElements) {
-            extraValues = result.getExtra().stream().map(i -> new NodeWithIndex(actualElements.get(i), i)).collect(Collectors.toList());
-            missingValues = result.getMissing().stream().map(i -> new NodeWithIndex(expectedElements.get(i), i)).collect(Collectors.toList());
+            extraValues = result.getExtra().stream()
+                    .map(i -> new NodeWithIndex(actualElements.get(i), i))
+                    .collect(Collectors.toList());
+            missingValues = result.getMissing().stream()
+                    .map(i -> new NodeWithIndex(expectedElements.get(i), i))
+                    .collect(Collectors.toList());
         }
 
         public List<NodeWithIndex> getExtraValues() {
@@ -60,5 +63,4 @@ class ArrayComparison {
             return missingValues;
         }
     }
-
 }

@@ -15,28 +15,28 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import static net.javacrumbs.jsonunit.core.internal.Utils.closeQuietly;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.NullNode;
-import net.javacrumbs.jsonunit.providers.Jackson2ObjectMapperProvider;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
-
-import static net.javacrumbs.jsonunit.core.internal.Utils.closeQuietly;
+import net.javacrumbs.jsonunit.providers.Jackson2ObjectMapperProvider;
 
 /**
  * Deserializes node using Jackson 2
  */
 class Jackson2NodeFactory extends AbstractNodeFactory {
-    private final ServiceLoader<Jackson2ObjectMapperProvider> serviceLoader = ServiceLoader.load(Jackson2ObjectMapperProvider.class);
+    private final ServiceLoader<Jackson2ObjectMapperProvider> serviceLoader =
+            ServiceLoader.load(Jackson2ObjectMapperProvider.class);
 
     @Override
     protected Node doConvertValue(Object source) {

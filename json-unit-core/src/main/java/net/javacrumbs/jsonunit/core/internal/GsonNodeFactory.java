@@ -15,6 +15,7 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import static net.javacrumbs.jsonunit.core.internal.Utils.closeQuietly;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -25,13 +26,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
-
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.Map;
-
-import static net.javacrumbs.jsonunit.core.internal.Utils.closeQuietly;
 
 /**
  * Deserializes node using Gson
@@ -98,11 +96,11 @@ class GsonNodeFactory extends AbstractNodeFactory {
             }
         }
 
-
         @Override
         public Iterator<KeyValue> fields() {
             if (jsonNode instanceof JsonObject) {
-                final Iterator<Map.Entry<String, JsonElement>> iterator = ((JsonObject) jsonNode).entrySet().iterator();
+                final Iterator<Map.Entry<String, JsonElement>> iterator =
+                        ((JsonObject) jsonNode).entrySet().iterator();
                 return new Iterator<>() {
                     @Override
                     public boolean hasNext() {

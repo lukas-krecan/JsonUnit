@@ -15,14 +15,12 @@
  */
 package net.javacrumbs.jsonunit.core;
 
-import org.hamcrest.Matcher;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
+import org.hamcrest.Matcher;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Immutable map of matchers.
@@ -35,7 +33,6 @@ class Matchers {
     private Matchers(Map<String, Matcher<?>> matcherMap) {
         this.matcherMap = matcherMap;
     }
-
 
     static Matchers empty() {
         return EMPTY;

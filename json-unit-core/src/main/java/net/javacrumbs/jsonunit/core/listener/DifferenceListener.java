@@ -15,7 +15,6 @@
  */
 package net.javacrumbs.jsonunit.core.listener;
 
-
 /**
  * Can listen on differences between documents.
  */

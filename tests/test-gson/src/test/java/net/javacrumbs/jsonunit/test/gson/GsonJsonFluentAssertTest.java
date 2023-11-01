@@ -15,12 +15,12 @@
  */
 package net.javacrumbs.jsonunit.test.gson;
 
+import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
+
 import com.google.gson.JsonObject;
 import net.javacrumbs.jsonunit.test.base.AbstractJsonFluentAssertTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
 import org.junit.jupiter.api.Test;
-
-import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 
 public class GsonJsonFluentAssertTest extends AbstractJsonFluentAssertTest {
     @Override

@@ -30,8 +30,8 @@ class DifferenceContextImpl implements DifferenceContext {
         this.expectedSource = expectedSource;
     }
 
-
-    static DifferenceContextImpl differenceContext(Configuration configuration, Node actualSource, Node expectedSource) {
+    static DifferenceContextImpl differenceContext(
+            Configuration configuration, Node actualSource, Node expectedSource) {
         return new DifferenceContextImpl(configuration, actualSource, expectedSource);
     }
 

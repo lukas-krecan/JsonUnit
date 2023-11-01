@@ -15,11 +15,11 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
-
-import static java.util.stream.Collectors.toList;
 
 abstract class PathMatcher {
     private static final PathMatcher EMPTY = new PathMatcher() {
@@ -71,19 +71,12 @@ abstract class PathMatcher {
             int from = 0;
             int to;
             while ((to = path.indexOf("[*]", from)) >= 0) {
-                regexp
-                    .append("\\Q")
-                    .append(path, from, to)
-                    .append("\\E")
-                    .append("\\[\\d+\\]");
+                regexp.append("\\Q").append(path, from, to).append("\\E").append("\\[\\d+\\]");
                 from = to + 3; // length of the placeholder [*]
             }
             // End of the pattern if any
             if (from < path.length()) {
-                regexp
-                    .append("\\Q")
-                    .append(path.substring(from))
-                    .append("\\E");
+                regexp.append("\\Q").append(path.substring(from)).append("\\E");
             }
             pattern = Pattern.compile(regexp.toString());
         }

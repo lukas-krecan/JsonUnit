@@ -15,10 +15,9 @@
  */
 package net.javacrumbs.jsonunit.assertj.internal;
 
+import java.util.Map;
 import net.javacrumbs.jsonunit.core.internal.Node;
 import org.assertj.core.presentation.StandardRepresentation;
-
-import java.util.Map;
 
 public class JsonRepresentation extends StandardRepresentation {
     @Override

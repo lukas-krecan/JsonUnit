@@ -15,12 +15,6 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import net.javacrumbs.jsonunit.core.Configuration;
-
-import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.List;
-
 import static java.lang.Math.min;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
@@ -28,13 +22,19 @@ import static net.javacrumbs.jsonunit.core.Configuration.dummyDifferenceListener
 import static net.javacrumbs.jsonunit.core.internal.Diff.DEFAULT_DIFFERENCE_STRING;
 import static net.javacrumbs.jsonunit.core.internal.JsonUnitLogger.NULL_LOGGER;
 
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
+import net.javacrumbs.jsonunit.core.Configuration;
+
 /**
  * Stores comparison result when comparing two arrays.
  */
 class ComparisonMatrix {
-    private final List<List<Integer>> equalElements; //equalElements[actualIndex] = [expectedElementIndex1, expectedElementIndex2, ...]
+    private final List<List<Integer>>
+            equalElements; // equalElements[actualIndex] = [expectedElementIndex1, expectedElementIndex2, ...]
     private final int compareFrom;
-    private final Integer[] matches; //matches[expectedElementIndex] = actualElementIndex
+    private final Integer[] matches; // matches[expectedElementIndex] = actualElementIndex
     private final List<Integer> extra;
     private final BitSet alreadyMatched;
 
@@ -42,7 +42,14 @@ class ComparisonMatrix {
     private final List<Node> expectedElements;
     private final List<Node> actualElements;
 
-    private ComparisonMatrix(List<List<Integer>> equalElements, int compareFrom, Integer[] matches, List<Integer> extra, BitSet alreadyMatched, List<Node> expectedElements, List<Node> actualElements) {
+    private ComparisonMatrix(
+            List<List<Integer>> equalElements,
+            int compareFrom,
+            Integer[] matches,
+            List<Integer> extra,
+            BitSet alreadyMatched,
+            List<Node> expectedElements,
+            List<Node> actualElements) {
         this.equalElements = equalElements;
         this.compareFrom = compareFrom;
         this.matches = matches;
@@ -53,10 +60,18 @@ class ComparisonMatrix {
     }
 
     ComparisonMatrix(List<Node> expectedElements, List<Node> actualElements, Path path, Configuration configuration) {
-        this(generateEqualElements(expectedElements, actualElements, path, configuration), 0, new Integer[expectedElements.size()], new ArrayList<>(), new BitSet(), expectedElements, actualElements);
+        this(
+                generateEqualElements(expectedElements, actualElements, path, configuration),
+                0,
+                new Integer[expectedElements.size()],
+                new ArrayList<>(),
+                new BitSet(),
+                expectedElements,
+                actualElements);
     }
 
-    private static List<List<Integer>> generateEqualElements(List<Node> expectedElements, List<Node> actualElements, Path path, Configuration configuration) {
+    private static List<List<Integer>> generateEqualElements(
+            List<Node> expectedElements, List<Node> actualElements, Path path, Configuration configuration) {
         List<List<Integer>> equalElements = new ArrayList<>(actualElements.size());
 
         // Compare all elements
@@ -66,7 +81,14 @@ class ComparisonMatrix {
 
             for (int j = 0; j < expectedElements.size(); j++) {
                 Node expected = expectedElements.get(j);
-                Diff diff = new Diff(expected, actual, Path.create("", path.toElement(i).getFullPath()), configuration.withDifferenceListener(dummyDifferenceListener()), NULL_LOGGER, NULL_LOGGER, DEFAULT_DIFFERENCE_STRING);
+                Diff diff = new Diff(
+                        expected,
+                        actual,
+                        Path.create("", path.toElement(i).getFullPath()),
+                        configuration.withDifferenceListener(dummyDifferenceListener()),
+                        NULL_LOGGER,
+                        NULL_LOGGER,
+                        DEFAULT_DIFFERENCE_STRING);
                 if (diff.similar()) {
                     actualIsEqualTo.add(j);
                 }
@@ -74,7 +96,7 @@ class ComparisonMatrix {
 
             equalElements.add(unmodifiableList(actualIsEqualTo));
         }
-        //System.out.println(actualElements + " x " + expectedElements + " -> " + equalElements);
+        // System.out.println(actualElements + " x " + expectedElements + " -> " + equalElements);
         return equalElements;
     }
 
@@ -87,7 +109,8 @@ class ComparisonMatrix {
                 if (matches.size() == 1) {
                     recordMatch(i, matches.get(0));
                 } else if (matches.size() > 0) {
-                    // we have more matches, since comparison does not have to be transitive ([1, 2] == [2] == [2, 3]), we have to check all the possibilities
+                    // we have more matches, since comparison does not have to be transitive ([1, 2] == [2] == [2, 3]),
+                    // we have to check all the possibilities
                     for (int match : matches) {
                         ComparisonMatrix copy = copy(i + 1);
                         copy.recordMatch(i, match);
@@ -123,8 +146,11 @@ class ComparisonMatrix {
                             recordMatch(equivalentElements.get(j), equalTo.get(j));
                         }
                     } else if (equivalentElements.size() > 1 && equalTo.size() > 1) {
-                        List<Integer> equalToUsedOnlyInEquivalentElements = getEqualToUsedOnlyInEquivalentElements(equalTo, equivalentElements);
-                        for (int j = 0; j < min(equivalentElements.size(), equalToUsedOnlyInEquivalentElements.size()); j++) {
+                        List<Integer> equalToUsedOnlyInEquivalentElements =
+                                getEqualToUsedOnlyInEquivalentElements(equalTo, equivalentElements);
+                        for (int j = 0;
+                                j < min(equivalentElements.size(), equalToUsedOnlyInEquivalentElements.size());
+                                j++) {
                             recordMatch(equivalentElements.get(j), equalTo.get(j));
                         }
                     }
@@ -138,7 +164,8 @@ class ComparisonMatrix {
      * we iterate over actual elements that are not in equivalentElements and from equalTo remove those
      * that are used outside equivalent elements
      */
-    private List<Integer> getEqualToUsedOnlyInEquivalentElements(List<Integer> equalTo, List<Integer> equivalentElements) {
+    private List<Integer> getEqualToUsedOnlyInEquivalentElements(
+            List<Integer> equalTo, List<Integer> equivalentElements) {
         List<Integer> result = new ArrayList<>(equalTo);
         for (int i = 0; i < equalElements.size(); i++) {
             if (!alreadyMatched.get(i)) {
@@ -162,7 +189,6 @@ class ComparisonMatrix {
         return equivalentElments;
     }
 
-
     private void addExtra(int index) {
         extra.add(index);
     }
@@ -172,7 +198,14 @@ class ComparisonMatrix {
     }
 
     private ComparisonMatrix copy(int compareFrom) {
-        return new ComparisonMatrix(new ArrayList<>(equalElements), compareFrom, matches.clone(), new ArrayList<>(extra), (BitSet) alreadyMatched.clone(), expectedElements, actualElements);
+        return new ComparisonMatrix(
+                new ArrayList<>(equalElements),
+                compareFrom,
+                matches.clone(),
+                new ArrayList<>(extra),
+                (BitSet) alreadyMatched.clone(),
+                expectedElements,
+                actualElements);
     }
 
     private void recordMatch(int actualIndex, int expectedIndex) {
@@ -180,7 +213,11 @@ class ComparisonMatrix {
         // remove all matches of expectedIndex
         for (int i = 0; i < equalElements.size(); i++) {
             if (!alreadyMatched.get(i)) {
-                equalElements.set(i, equalElements.get(i).stream().filter(n -> n != expectedIndex).collect(toList()));
+                equalElements.set(
+                        i,
+                        equalElements.get(i).stream()
+                                .filter(n -> n != expectedIndex)
+                                .collect(toList()));
             }
         }
         alreadyMatched.set(actualIndex);

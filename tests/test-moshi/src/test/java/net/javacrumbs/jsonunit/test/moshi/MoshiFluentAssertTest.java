@@ -15,11 +15,11 @@
  */
 package net.javacrumbs.jsonunit.test.moshi;
 
+import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
+
 import net.javacrumbs.jsonunit.test.base.AbstractJsonFluentAssertTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
 import org.junit.jupiter.api.Test;
-
-import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 
 public class MoshiFluentAssertTest extends AbstractJsonFluentAssertTest {
     @Override

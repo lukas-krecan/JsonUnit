@@ -15,10 +15,15 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import org.apache.johnzon.core.JsonLongImpl;
-import org.apache.johnzon.mapper.Mapper;
-import org.apache.johnzon.mapper.MapperBuilder;
+import static java.util.Arrays.asList;
+import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toBoolList;
+import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toDoubleList;
+import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toIntList;
 
+import java.io.Reader;
+import java.math.BigDecimal;
+import java.util.Iterator;
+import java.util.Map;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonNumber;
@@ -27,15 +32,9 @@ import javax.json.JsonReader;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 import javax.json.stream.JsonParsingException;
-import java.io.Reader;
-import java.math.BigDecimal;
-import java.util.Iterator;
-import java.util.Map;
-
-import static java.util.Arrays.asList;
-import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toBoolList;
-import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toDoubleList;
-import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toIntList;
+import org.apache.johnzon.core.JsonLongImpl;
+import org.apache.johnzon.mapper.Mapper;
+import org.apache.johnzon.mapper.MapperBuilder;
 
 public class JohnzonNodeFactory extends AbstractNodeFactory {
 
@@ -99,8 +98,7 @@ public class JohnzonNodeFactory extends AbstractNodeFactory {
             if (jsonNode instanceof JsonArray) {
                 try {
                     return newNode(((JsonArray) jsonNode).get(index));
-                }
-                catch (IndexOutOfBoundsException e) {
+                } catch (IndexOutOfBoundsException e) {
                     return MISSING_NODE;
                 }
             } else {
@@ -111,7 +109,8 @@ public class JohnzonNodeFactory extends AbstractNodeFactory {
         @Override
         public Iterator<KeyValue> fields() {
             if (jsonNode instanceof JsonObject) {
-                final Iterator<Map.Entry<String, JsonValue>> iterator = ((JsonObject) jsonNode).entrySet().iterator();
+                final Iterator<Map.Entry<String, JsonValue>> iterator =
+                        ((JsonObject) jsonNode).entrySet().iterator();
                 return new Iterator<>() {
                     @Override
                     public boolean hasNext() {
@@ -203,10 +202,8 @@ public class JohnzonNodeFactory extends AbstractNodeFactory {
 
         @Override
         public String asText() {
-            if (jsonNode.getValueType() == JsonValue.ValueType.STRING)
-                return ((JsonString) jsonNode).getString();
-            else
-                throw new IllegalStateException("Not a JsonString: " + jsonNode);
+            if (jsonNode.getValueType() == JsonValue.ValueType.STRING) return ((JsonString) jsonNode).getString();
+            else throw new IllegalStateException("Not a JsonString: " + jsonNode);
         }
 
         @Override
@@ -229,12 +226,9 @@ public class JohnzonNodeFactory extends AbstractNodeFactory {
 
         @Override
         public Boolean asBoolean() {
-            if (jsonNode.getValueType() == JsonValue.ValueType.TRUE)
-                return true;
-            else if (jsonNode.getValueType() == JsonValue.ValueType.FALSE)
-                return false;
-            else
-                throw new IllegalStateException("Not a JsonBoolean: " + jsonNode);
+            if (jsonNode.getValueType() == JsonValue.ValueType.TRUE) return true;
+            else if (jsonNode.getValueType() == JsonValue.ValueType.FALSE) return false;
+            else throw new IllegalStateException("Not a JsonBoolean: " + jsonNode);
         }
 
         @Override
