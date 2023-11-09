@@ -46,19 +46,23 @@ public class JohnzonNodeFactory extends AbstractNodeFactory {
             return newNode((JsonValue) source);
         } else if (source instanceof int[]) {
             // Johnzon can't convert arrays but it support lists
-            return newNode(mapper.toStructure(toIntList((int[]) source)));
+            return newNodeFrom(toIntList((int[]) source));
         } else if (source instanceof double[]) {
             // Johnzon can't convert arrays but it support lists
-            return newNode(mapper.toStructure(toDoubleList((double[]) source)));
+            return newNodeFrom(toDoubleList((double[]) source));
         } else if (source instanceof boolean[]) {
             // Johnzon can't convert arrays but it support lists
-            return newNode(mapper.toStructure(toBoolList((boolean[]) source)));
+            return newNodeFrom(toBoolList((boolean[]) source));
         } else if (source instanceof Object[]) {
             // Johnzon can't convert arrays but it support lists
-            return newNode(mapper.toStructure(asList((Object[]) source)));
+            return newNodeFrom(asList((Object[]) source));
         } else {
-            return newNode(mapper.toStructure(source));
+            return newNodeFrom(source);
         }
+    }
+
+    private Node newNodeFrom(Object source) {
+        return newNode(mapper.toStructure(source));
     }
 
     @Override
