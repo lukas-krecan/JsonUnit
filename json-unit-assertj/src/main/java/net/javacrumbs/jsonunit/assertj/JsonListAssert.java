@@ -25,6 +25,7 @@ import net.javacrumbs.jsonunit.core.internal.Path;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.FactoryBasedNavigableListAssert;
 import org.assertj.core.api.InstanceOfAssertFactory;
+import org.assertj.core.description.Description;
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,7 +45,7 @@ public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAsse
     @Override
     @NotNull
     public JsonListAssert isEqualTo(@Nullable Object expected) {
-        describedAs(null);
+        describedAs((Description) null);
         Diff diff = createDiff(expected);
         diff.failIfDifferent();
         return this;

@@ -15,6 +15,20 @@
  */
 package net.javacrumbs.jsonunit.assertj;
 
+import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.internal.Diff;
+import net.javacrumbs.jsonunit.core.internal.Node;
+import net.javacrumbs.jsonunit.core.internal.Path;
+import org.assertj.core.api.AbstractMapAssert;
+import org.assertj.core.description.Description;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
 import static java.util.Arrays.stream;
 import static java.util.Objects.deepEquals;
 import static java.util.stream.Collectors.toList;
@@ -27,18 +41,6 @@ import static org.assertj.core.error.ShouldContainAnyOf.shouldContainAnyOf;
 import static org.assertj.core.error.ShouldContainValue.shouldContainValue;
 import static org.assertj.core.error.ShouldNotContainValue.shouldNotContainValue;
 import static org.assertj.core.util.Arrays.array;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-import net.javacrumbs.jsonunit.core.Configuration;
-import net.javacrumbs.jsonunit.core.internal.Diff;
-import net.javacrumbs.jsonunit.core.internal.Node;
-import net.javacrumbs.jsonunit.core.internal.Path;
-import org.assertj.core.api.AbstractMapAssert;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, Object>, String, Object> {
     private final Configuration configuration;
@@ -281,7 +283,7 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
 
     @NotNull
     private JsonMapAssert compare(@Nullable Object other, @NotNull Configuration configuration) {
-        describedAs(null);
+        describedAs((Description) null);
         Diff diff = Diff.create(other, actual, "fullJson", path, configuration);
         diff.failIfDifferent();
         return this;
