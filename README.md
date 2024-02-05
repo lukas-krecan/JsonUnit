@@ -138,7 +138,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>3.2.2</version>
+    <version>3.2.4</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -171,7 +171,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>3.2.2</version>
+    <version>3.2.4</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -216,7 +216,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>3.2.2</version>
+    <version>3.2.4</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -260,7 +260,7 @@ Import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>3.2.2</version>
+    <version>3.2.4</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -283,7 +283,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>3.2.2</version>
+    <version>3.2.4</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -299,7 +299,7 @@ Import:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-kotest</artifactId>
-    <version>3.2.2</version>
+    <version>3.2.4</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -365,7 +365,7 @@ For the other API styles you have to first import JsonPath support module
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-json-path</artifactId>
-    <version>3.2.2</version>
+    <version>3.2.4</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -735,6 +735,10 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 3.2.4 (2024-02-05)
+* Dependency updates
+* Version 3.2.3 skipped due to release issues
+
 ## 3.2.2 (2023-09-14)
 * Fix Kotest module dependencies
 
