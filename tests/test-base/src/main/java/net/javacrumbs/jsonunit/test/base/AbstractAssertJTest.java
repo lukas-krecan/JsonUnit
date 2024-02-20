@@ -679,6 +679,14 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void shouldIgnoreJsonPaths() {
+        String expected = "[{\"name\":\"123\",\"age\":2},{\"name\":\"321\",\"age\":5}]";
+        String actual = "[{\"name\":\"123\",\"age\":5},{\"name\":\"321\",\"age\":8}]";
+
+        assertThatJson(expected).whenIgnoringPaths("$..age").isEqualTo(actual);
+    }
+
+    @Test
     void arraySimpleIgnoringOrderNotEqualComparison() {
         assertThatJson("{\"a\":[{\"b\": 1}, {\"c\": 1}, {\"d\": 1}]}")
                 .when(Option.IGNORING_ARRAY_ORDER)
