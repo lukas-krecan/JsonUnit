@@ -56,7 +56,9 @@ abstract class PathMatcher {
 
         @Override
         boolean matches(String pathToMatch) {
-            return path.equals(pathToMatch) || path.equals("$." + pathToMatch) || path.equals("$" + pathToMatch);
+            return path.equals(pathToMatch)
+                    || (path.startsWith("$.") && path.substring(2).equals(pathToMatch))
+                    || (path.startsWith("$") && path.substring(1).equals(pathToMatch));
         }
     }
 
