@@ -138,7 +138,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>3.2.5</version>
+    <version>3.2.6</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -171,7 +171,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>3.2.5</version>
+    <version>3.2.6</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -216,7 +216,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>3.2.5</version>
+    <version>3.2.6</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -260,7 +260,7 @@ Import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>3.2.5</version>
+    <version>3.2.6</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -283,7 +283,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>3.2.5</version>
+    <version>3.2.6</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -299,7 +299,7 @@ Import:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-kotest</artifactId>
-    <version>3.2.5</version>
+    <version>3.2.6</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -365,7 +365,7 @@ For the other API styles you have to first import JsonPath support module
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-json-path</artifactId>
-    <version>3.2.5</version>
+    <version>3.2.6</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -735,8 +735,11 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 3.2.6 (2024-02-21)
+* #483 More optimal fix for JsonPath arrays matching in `whenIgnoringPaths`
+
 ## 3.2.5 (2024-02-20)
-* #483 Fix JsonPath arrays marching in `whenIgnoringPaths`
+* #483 Fix JsonPath arrays matching in `whenIgnoringPaths`
 * Dependency updates
 
 ## 3.2.4 (2024-02-05)
