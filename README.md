@@ -735,8 +735,9 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
-## 3.2.6 (2024-02-21)
+## 3.2.7 (2024-02-21)
 * #483 More optimal fix for JsonPath arrays matching in `whenIgnoringPaths`
+* Version 3.2.6 skipped due tue a mistake
 
 ## 3.2.5 (2024-02-20)
 * #483 Fix JsonPath arrays matching in `whenIgnoringPaths`
