@@ -136,7 +136,7 @@ Different value found in node "$.test", expected: <2> but was: <1>."""
         assertThrows<AssertionError> {
                 """{"test": [1, 2, 3, 1]}""".inPath("test").shouldBeJsonArray().shouldNotContainDuplicates()
             }
-            .shouldHaveMessage("""Collection should not contain duplicates""")
+            .shouldHaveMessage("""Collection should not contain duplicates, but has some: [1]""")
     }
 
     @Test
