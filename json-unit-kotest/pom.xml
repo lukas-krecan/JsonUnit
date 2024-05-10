@@ -8,7 +8,7 @@
     <properties>
         <kotlin.compiler.jvmTarget>17</kotlin.compiler.jvmTarget>
         <osgi.exportPackage>net.javacrumbs.jsonunit.kotest</osgi.exportPackage>
-        <kotest.version>5.8.1</kotest.version>
+        <kotest.version>5.9.0</kotest.version>
     </properties>
 
     <parent>
