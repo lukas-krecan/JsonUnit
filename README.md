@@ -723,6 +723,16 @@ Although the differences are printed out by the assert statement, sometimes you 
 logging. JsonUnit uses [SLF4J](http://www.slf4j.org/). The only thing you need to do is to configure your logging
 framework to log `net.javacrumbs.jsonunit.difference` on DEBUG level.
 
+## DifferenceListener
+
+If you need better difference reporting, you can implement [`DifferenceListener`](https://github.com/lukas-krecan/JsonUnit/blob/master/json-unit-core/src/main/java/net/javacrumbs/jsonunit/core/listener/DifferenceListener.java) and use it this way
+
+```java
+assertThatJson("{\"test\":-1}")
+    .withDifferenceListener(listener)
+    .isEqualTo(json);
+```
+
 ## Selecting underlying library
 
 JsonUnit is trying to cleverly match which JSON library to use. In case you need to change the default behavior, you can
