@@ -24,6 +24,7 @@ JsonUnit is a library that simplifies JSON comparison in tests.
   * [Numerical comparison](#numbers)
   * [Escaping dots](#dots)
   * [Lenient parsing of expected value](#lenient-parsing-of-expected-value)
+  * [DifferenceListener](#differencelistener)
   * [Jackson Object Mapper customization](#jackson-object-mapper-customization)
 - [Release notes](#release-notes)
 
