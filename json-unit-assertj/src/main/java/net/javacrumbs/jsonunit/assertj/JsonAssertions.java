@@ -19,6 +19,7 @@ import net.javacrumbs.jsonunit.assertj.JsonAssert.ConfigurableJsonAssert;
 import net.javacrumbs.jsonunit.assertj.internal.JsonRepresentation;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
+import org.assertj.core.api.AssertFactory;
 import org.assertj.core.api.Assertions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -75,8 +76,19 @@ public final class JsonAssertions {
         return new ExpectedNode(JsonUtils.wrapDeserializedObject(input));
     }
 
+    public static AssertFactory<Object, ConfigurableJsonAssert> jsonUnitAssert() {
+        return new JsonUnitAssertFactory();
+    }
+
     @FunctionalInterface
     public interface JsonAssertionCallback {
         void doAssert(@NotNull ConfigurableJsonAssert assertion);
+    }
+
+    private static class JsonUnitAssertFactory implements AssertFactory<Object, ConfigurableJsonAssert> {
+        @Override
+        public ConfigurableJsonAssert createAssert(Object actual) {
+            return new ConfigurableJsonAssert(actual, Configuration.empty());
+        }
     }
 }
