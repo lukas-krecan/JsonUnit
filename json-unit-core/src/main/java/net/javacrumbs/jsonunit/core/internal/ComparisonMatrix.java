@@ -88,7 +88,8 @@ class ComparisonMatrix {
                         configuration.withDifferenceListener(dummyDifferenceListener()),
                         NULL_LOGGER,
                         NULL_LOGGER,
-                        DEFAULT_DIFFERENCE_STRING);
+                        DEFAULT_DIFFERENCE_STRING,
+                        true);
                 if (diff.similar()) {
                     actualIsEqualTo.add(j);
                 }

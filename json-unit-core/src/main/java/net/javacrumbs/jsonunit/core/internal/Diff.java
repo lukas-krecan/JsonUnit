@@ -88,6 +88,8 @@ public class Diff {
     private final JsonUnitLogger valuesLogger;
     private final String differenceString;
 
+    private final boolean failFast;
+
     Diff(
             Node expected,
             Node actual,
@@ -95,7 +97,8 @@ public class Diff {
             Configuration configuration,
             JsonUnitLogger diffLogger,
             JsonUnitLogger valuesLogger,
-            String differenceString) {
+            String differenceString,
+            boolean failFast) {
         this.expectedRoot = expected;
         this.actualRoot = actual;
         this.startPath = startPath;
@@ -107,6 +110,7 @@ public class Diff {
                 .flatMap(PathOptionMatcher::createMatchersFromPathOption)
                 .collect(Collectors.groupingBy(PathOptionMatcher::getOption));
         this.differenceString = differenceString;
+        this.failFast = failFast;
     }
 
     public static Diff create(
@@ -142,7 +146,8 @@ public class Diff {
                 configuration,
                 DEFAULT_DIFF_LOGGER,
                 DEFAULT_VALUE_LOGGER,
-                differenceString);
+                differenceString,
+                false);
     }
 
     private void compare() {
@@ -205,9 +210,18 @@ public class Diff {
             }
         }
 
-        for (String fieldName : commonFields(expectedFields, actualFields)) {
-            compareNodes(context.inField(fieldName));
+        if (isNotShortCircuit()) {
+            for (String fieldName : commonFields(expectedFields, actualFields)) {
+                compareNodes(context.inField(fieldName));
+            }
         }
+    }
+
+    /**
+     * We either should not fail fast or there is no difference found yet.
+     */
+    private boolean isNotShortCircuit() {
+        return !failFast || differences.isEmpty();
     }
 
     private void removeMissingIgnoredElements(Node expected, Set<String> missingKeys) {
@@ -530,7 +544,7 @@ public class Diff {
             }
         }
 
-        if (hasOption(context.actualPath(), IGNORING_ARRAY_ORDER)) {
+        if (hasOption(context.actualPath(), IGNORING_ARRAY_ORDER) && isNotShortCircuit()) {
             ComparisonResult arrayComparison = compareArraysIgnoringOrder(expectedElements, actualElements, path);
             List<NodeWithIndex> missingValues = arrayComparison.getMissingValues();
             List<NodeWithIndex> extraValues = arrayComparison.getExtraValues();

@@ -30,7 +30,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.NumberComparator;
 import net.javacrumbs.jsonunit.core.Option;
@@ -249,23 +248,18 @@ public class DifferenceTest {
     @Timeout(1)
     void shouldRunDiffBeforeTimeout() throws URISyntaxException, IOException {
         //noinspection DataFlowIssue
-        var actual = Files.readString(
-            Paths.get(this.getClass().getResource("/big-json-with-common-keys-actual.json").toURI())
-        );
+        var actual = Files.readString(Paths.get(this.getClass()
+                .getResource("/big-json-with-common-keys-actual.json")
+                .toURI()));
         //noinspection DataFlowIssue
-        var expected = Files.readString(
-            Paths.get(this.getClass().getResource("/big-json-with-common-keys-expected.json").toURI())
-        );
+        var expected = Files.readString(Paths.get(this.getClass()
+                .getResource("/big-json-with-common-keys-expected.json")
+                .toURI()));
         var cfg = commonConfig()
-            .withNumberComparator(new NormalisedNumberComparator())
-            .withOptions(Option.IGNORING_ARRAY_ORDER, Option.IGNORING_EXTRA_ARRAY_ITEMS, Option.IGNORING_EXTRA_FIELDS);
-        Diff diff = Diff.create(
-            expected,
-            actual,
-            "",
-            "",
-            cfg
-        );
+                .withNumberComparator(new NormalisedNumberComparator())
+                .withOptions(
+                        Option.IGNORING_ARRAY_ORDER, Option.IGNORING_EXTRA_ARRAY_ITEMS, Option.IGNORING_EXTRA_FIELDS);
+        Diff diff = Diff.create(expected, actual, "", "", cfg);
         diff.similar();
     }
 
