@@ -15,7 +15,7 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import org.jetbrains.annotations.NotNull;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
 
 import java.math.BigDecimal;
 import java.util.AbstractMap;
@@ -26,8 +26,7 @@ import java.util.Set;
 import java.util.Spliterators;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * For internal use only!!! Abstract node representation.
@@ -232,8 +231,9 @@ public interface Node {
         public Set<Entry<String, Object>> entrySet() {
             Iterator<KeyValue> fields = wrappedNode.fields();
             return StreamSupport.stream(Spliterators.spliteratorUnknownSize(fields, 0), false)
-                .map(keyValue -> new SimpleEntry<>(keyValue.getKey(), keyValue.getValue().getValue()))
-                .collect(Collectors.toSet());
+                    .map(keyValue -> new SimpleEntry<>(
+                            keyValue.getKey(), keyValue.getValue().getValue()))
+                    .collect(Collectors.toSet());
         }
 
         @Override
