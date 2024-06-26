@@ -15,13 +15,19 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
+import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
+import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
+import java.util.Set;
+import java.util.Spliterators;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
 
 /**
  * For internal use only!!! Abstract node representation.
@@ -32,7 +38,7 @@ public interface Node {
         OBJECT("object") {
             @Override
             public Object getValue(Node node) {
-                // custom conversion to map. We want be consistent and native mapping may have different rules for
+                // custom conversion to map. We want to be consistent and native mapping may have different rules for
                 // serializing numbers, dates etc.
                 return new JsonMap(node);
             }
@@ -214,16 +220,20 @@ public interface Node {
         Object getValue(Node node);
     }
 
-    class JsonMap extends LinkedHashMap<String, Object> implements NodeWrapper {
+    class JsonMap extends AbstractMap<String, Object> implements NodeWrapper {
         private final Node wrappedNode;
 
         JsonMap(Node node) {
             wrappedNode = node;
-            Iterator<KeyValue> fields = node.fields();
-            while (fields.hasNext()) {
-                KeyValue keyValue = fields.next();
-                put(keyValue.getKey(), keyValue.getValue().getValue());
-            }
+        }
+
+        @NotNull
+        @Override
+        public Set<Entry<String, Object>> entrySet() {
+            Iterator<KeyValue> fields = wrappedNode.fields();
+            return StreamSupport.stream(Spliterators.spliteratorUnknownSize(fields, 0), false)
+                .map(keyValue -> new SimpleEntry<>(keyValue.getKey(), keyValue.getValue().getValue()))
+                .collect(Collectors.toSet());
         }
 
         @Override
