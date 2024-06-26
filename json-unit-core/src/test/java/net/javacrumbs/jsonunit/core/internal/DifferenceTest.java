@@ -23,10 +23,16 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+
 import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.NumberComparator;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
 import net.javacrumbs.jsonunit.core.listener.Difference;
@@ -35,6 +41,7 @@ import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 
 public class DifferenceTest {
     private final RecordingDifferenceListener listener = new RecordingDifferenceListener();
@@ -238,6 +245,30 @@ public class DifferenceTest {
         assertThat(listener.getDifferenceList(), hasSize(0));
     }
 
+    @Test
+    @Timeout(1)
+    void shouldRunDiffBeforeTimeout() throws URISyntaxException, IOException {
+        //noinspection DataFlowIssue
+        var actual = Files.readString(
+            Paths.get(this.getClass().getResource("/big-json-with-common-keys-actual.json").toURI())
+        );
+        //noinspection DataFlowIssue
+        var expected = Files.readString(
+            Paths.get(this.getClass().getResource("/big-json-with-common-keys-expected.json").toURI())
+        );
+        var cfg = commonConfig()
+            .withNumberComparator(new NormalisedNumberComparator())
+            .withOptions(Option.IGNORING_ARRAY_ORDER, Option.IGNORING_EXTRA_ARRAY_ITEMS, Option.IGNORING_EXTRA_FIELDS);
+        Diff diff = Diff.create(
+            expected,
+            actual,
+            "",
+            "",
+            cfg
+        );
+        diff.similar();
+    }
+
     private Configuration commonConfig() {
         return Configuration.empty().withDifferenceListener(listener);
     }
@@ -283,6 +314,20 @@ public class DifferenceTest {
         @Override
         public void describeTo(Description description) {
             description.appendText("the same ").appendText(parameter);
+        }
+    }
+
+    private static class NormalisedNumberComparator implements NumberComparator {
+        @Override
+        public boolean compare(BigDecimal expectedValue, BigDecimal actualValue, BigDecimal tolerance) {
+            var normalisedExpectedValue = expectedValue.stripTrailingZeros();
+            var normalisedActualValue = actualValue.stripTrailingZeros();
+            if (tolerance != null) {
+                var diff = normalisedExpectedValue.subtract(normalisedActualValue).abs();
+                return diff.compareTo(tolerance) <= 0;
+            } else {
+                return normalisedExpectedValue.equals(normalisedActualValue);
+            }
         }
     }
 }
