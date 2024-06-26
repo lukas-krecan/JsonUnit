@@ -86,8 +86,9 @@ class ComparisonMatrix {
                 List<Integer> matches = getEqualValues(i);
                 if (matches.size() == 1) {
                     recordMatch(i, matches.get(0));
-                } else if (matches.size() > 0) {
-                    // we have more matches, since comparison does not have to be transitive ([1, 2] == [2] == [2, 3]), we have to check all the possibilities
+                } else if (!matches.isEmpty()) {
+                    // we have more matches, since comparison does not have to be transitive ([1, 2] == [2] == [2, 3]),
+                    // we have to check all the possibilities
                     for (int match : matches) {
                         ComparisonMatrix copy = copy(i + 1);
                         copy.recordMatch(i, match);
@@ -114,7 +115,7 @@ class ComparisonMatrix {
         for (int i = 0; i < equalElements.size(); i++) {
             if (!alreadyMatched.get(i)) {
                 List<Integer> equalTo = equalElements.get(i);
-                if (equalTo.size() > 0) {
+                if (!equalTo.isEmpty()) {
                     List<Integer> equivalentElements = getEquivalentElements(equalTo);
 
                     // We have the same set matching as is equivalent, we can remove them all
