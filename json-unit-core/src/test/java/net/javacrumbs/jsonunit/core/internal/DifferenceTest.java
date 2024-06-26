@@ -17,6 +17,7 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import static java.math.BigDecimal.valueOf;
 import static java.util.Collections.singletonMap;
+import static net.javacrumbs.jsonunit.core.util.ResourceUtils.resource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -26,11 +27,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.NumberComparator;
 import net.javacrumbs.jsonunit.core.Option;
@@ -249,23 +247,14 @@ public class DifferenceTest {
     @Timeout(1)
     void shouldRunDiffBeforeTimeout() throws URISyntaxException, IOException {
         //noinspection DataFlowIssue
-        var actual = Files.readString(
-            Paths.get(this.getClass().getResource("/big-json-with-common-keys-actual.json").toURI())
-        );
+        var actual = resource("big-json-with-common-keys-actual.json");
         //noinspection DataFlowIssue
-        var expected = Files.readString(
-            Paths.get(this.getClass().getResource("/big-json-with-common-keys-expected.json").toURI())
-        );
+        var expected = resource("big-json-with-common-keys-expected.json");
         var cfg = commonConfig()
-            .withNumberComparator(new NormalisedNumberComparator())
-            .withOptions(Option.IGNORING_ARRAY_ORDER, Option.IGNORING_EXTRA_ARRAY_ITEMS, Option.IGNORING_EXTRA_FIELDS);
-        Diff diff = Diff.create(
-            expected,
-            actual,
-            "",
-            "",
-            cfg
-        );
+                .withNumberComparator(new NormalisedNumberComparator())
+                .withOptions(
+                        Option.IGNORING_ARRAY_ORDER, Option.IGNORING_EXTRA_ARRAY_ITEMS, Option.IGNORING_EXTRA_FIELDS);
+        Diff diff = Diff.create(expected, actual, "", "", cfg);
         diff.similar();
     }
 
@@ -323,7 +312,8 @@ public class DifferenceTest {
             var normalisedExpectedValue = expectedValue.stripTrailingZeros();
             var normalisedActualValue = actualValue.stripTrailingZeros();
             if (tolerance != null) {
-                var diff = normalisedExpectedValue.subtract(normalisedActualValue).abs();
+                var diff =
+                        normalisedExpectedValue.subtract(normalisedActualValue).abs();
                 return diff.compareTo(tolerance) <= 0;
             } else {
                 return normalisedExpectedValue.equals(normalisedActualValue);
