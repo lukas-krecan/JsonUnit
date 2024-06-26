@@ -24,9 +24,14 @@ import java.util.List;
 import static java.lang.Math.min;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
-import static net.javacrumbs.jsonunit.core.Configuration.dummyDifferenceListener;
 import static net.javacrumbs.jsonunit.core.internal.Diff.DEFAULT_DIFFERENCE_STRING;
 import static net.javacrumbs.jsonunit.core.internal.JsonUnitLogger.NULL_LOGGER;
+
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
+import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 
 /**
  * Stores comparison result when comparing two arrays.
@@ -66,8 +71,8 @@ class ComparisonMatrix {
 
             for (int j = 0; j < expectedElements.size(); j++) {
                 Node expected = expectedElements.get(j);
-                Diff diff = new Diff(expected, actual, Path.create("", path.toElement(i).getFullPath()), configuration.withDifferenceListener(dummyDifferenceListener()), NULL_LOGGER, NULL_LOGGER, DEFAULT_DIFFERENCE_STRING);
-                if (diff.similar()) {
+                boolean similar = isSimilar(path, configuration, expected, actual, i);
+                if (similar) {
                     actualIsEqualTo.add(j);
                 }
             }
@@ -76,6 +81,22 @@ class ComparisonMatrix {
         }
         //System.out.println(actualElements + " x " + expectedElements + " -> " + equalElements);
         return equalElements;
+    }
+
+    private static boolean isSimilar(Path path, Configuration configuration, Node expected, Node actual, int i) {
+        Diff diff = new Diff(
+                expected,
+                actual,
+                Path.create("", path.toElement(i).getFullPath()),
+                configuration.withDifferenceListener(failFastDifferenceListener),
+                NULL_LOGGER,
+                NULL_LOGGER,
+                DEFAULT_DIFFERENCE_STRING);
+        try {
+            return diff.similar();
+        } catch (DifferenceFoundException e) {
+            return false;
+        }
     }
 
     ComparisonMatrix compare() {
@@ -152,15 +173,15 @@ class ComparisonMatrix {
     }
 
     private List<Integer> getEquivalentElements(List<Integer> equalTo) {
-        List<Integer> equivalentElments = new ArrayList<>();
+        List<Integer> equivalentElements = new ArrayList<>();
         for (int i = 0; i < equalElements.size(); i++) {
             if (!alreadyMatched.get(i)) {
                 if (equalTo.equals(equalElements.get(i))) {
-                    equivalentElments.add(i);
+                    equivalentElements.add(i);
                 }
             }
         }
-        return equivalentElments;
+        return equivalentElements;
     }
 
 
@@ -203,5 +224,16 @@ class ComparisonMatrix {
 
     List<Integer> getExtra() {
         return extra;
+    }
+
+    private static final DifferenceListener failFastDifferenceListener = (difference, context) -> {
+        throw new DifferenceFoundException();
+    };
+
+    private static final class DifferenceFoundException extends RuntimeException {
+        @Override
+        public synchronized Throwable fillInStackTrace() {
+            return this;
+        }
     }
 }
