@@ -222,6 +222,8 @@ public interface Node {
     class JsonMap extends AbstractMap<String, Object> implements NodeWrapper {
         private final Node wrappedNode;
 
+        private Set<Entry<String, Object>> entrySet;
+
         JsonMap(Node node) {
             wrappedNode = node;
         }
@@ -229,11 +231,14 @@ public interface Node {
         @NotNull
         @Override
         public Set<Entry<String, Object>> entrySet() {
-            Iterator<KeyValue> fields = wrappedNode.fields();
-            return StreamSupport.stream(Spliterators.spliteratorUnknownSize(fields, 0), false)
-                    .map(keyValue -> new SimpleEntry<>(
-                            keyValue.getKey(), keyValue.getValue().getValue()))
-                    .collect(Collectors.toSet());
+            if (entrySet == null) {
+                Iterator<KeyValue> fields = wrappedNode.fields();
+                entrySet = StreamSupport.stream(Spliterators.spliteratorUnknownSize(fields, 0), false)
+                        .map(keyValue -> new SimpleEntry<>(
+                                keyValue.getKey(), keyValue.getValue().getValue()))
+                        .collect(Collectors.toSet());
+            }
+            return entrySet;
         }
 
         @Override
