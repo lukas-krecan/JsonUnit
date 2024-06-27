@@ -15,6 +15,7 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import static java.util.stream.Collectors.toUnmodifiableSet;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
 
 import java.math.BigDecimal;
@@ -24,7 +25,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.Spliterators;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 import org.jetbrains.annotations.NotNull;
 
@@ -236,7 +236,7 @@ public interface Node {
                 entrySet = StreamSupport.stream(Spliterators.spliteratorUnknownSize(fields, 0), false)
                         .map(keyValue -> new SimpleEntry<>(
                                 keyValue.getKey(), keyValue.getValue().getValue()))
-                        .collect(Collectors.toSet());
+                        .collect(toUnmodifiableSet());
             }
             return entrySet;
         }
