@@ -15,8 +15,8 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-
 import org.jetbrains.annotations.NotNull;
+
 import java.math.BigDecimal;
 import java.util.AbstractMap;
 import java.util.Collections;
@@ -27,8 +27,7 @@ import java.util.Spliterators;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
-
+import static java.util.Collections.unmodifiableSet;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
 
 
@@ -225,6 +224,8 @@ public interface Node {
     class JsonMap extends AbstractMap<String, Object> implements NodeWrapper {
         private final Node wrappedNode;
 
+        private Set<Entry<String, Object>> entrySet;
+
         JsonMap(Node node) {
             wrappedNode = node;
         }
@@ -232,10 +233,14 @@ public interface Node {
         @NotNull
         @Override
         public Set<Entry<String, Object>> entrySet() {
-            Iterator<KeyValue> fields = wrappedNode.fields();
-            return StreamSupport.stream(Spliterators.spliteratorUnknownSize(fields, 0), false)
-                .map(keyValue -> new SimpleEntry<>(keyValue.getKey(), keyValue.getValue().getValue()))
-                .collect(Collectors.toSet());
+            if (entrySet == null) {
+                Iterator<KeyValue> fields = wrappedNode.fields();
+                entrySet = unmodifiableSet(StreamSupport.stream(Spliterators.spliteratorUnknownSize(fields, 0), false)
+                        .map(keyValue -> new SimpleEntry<>(
+                                keyValue.getKey(), keyValue.getValue().getValue()))
+                        .collect(Collectors.toSet()));
+            }
+            return entrySet;
         }
 
         @Override
