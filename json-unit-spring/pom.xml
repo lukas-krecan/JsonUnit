@@ -6,7 +6,7 @@
         Spring Mock assertions
     </description>
     <properties>
-        <spring.version>6.1.10</spring.version>
+        <spring.version>6.2.0-SNAPSHOT</spring.version>
         <kotlin.compiler.jvmTarget>17</kotlin.compiler.jvmTarget>
         <osgi.exportPackage>net.javacrumbs.jsonunit.spring</osgi.exportPackage>
     </properties>
@@ -106,6 +106,22 @@
         </dependency>
 
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/snapshot</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+        <repository>
+            <id>spring-milestone</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/milestone</url>
+        </repository>
+    </repositories>
 
     <build>
         <plugins>
