@@ -17,11 +17,11 @@ package net.javacrumbs.jsonunit.test.base;
 
 import com.google.gson.JsonParser;
 import com.squareup.moshi.Moshi;
+import jakarta.json.Json;
+import jakarta.json.JsonReader;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Map;
-import javax.json.Json;
-import javax.json.JsonReader;
 import org.json.JSONTokener;
 
 public class JsonTestUtils {
