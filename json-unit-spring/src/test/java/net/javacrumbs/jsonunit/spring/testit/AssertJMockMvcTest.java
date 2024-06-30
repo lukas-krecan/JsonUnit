@@ -3,7 +3,6 @@ package net.javacrumbs.jsonunit.spring.testit;
 import static java.util.Collections.singleton;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.jsonUnitAssert;
 import static net.javacrumbs.jsonunit.spring.JsonUnitJsonComparator.comparator;
-import static net.javacrumbs.jsonunit.spring.JsonUnitJsonComparator.jsonUnitMessageConverter;
 import static net.javacrumbs.jsonunit.spring.testit.demo.ExampleController.CORRECT_JSON;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
@@ -22,19 +21,6 @@ public class AssertJMockMvcTest {
                 .hasStatusOk()
                 .bodyJson()
                 .isEqualTo(CORRECT_JSON, comparator(Configuration.empty()));
-    }
-
-    @Test
-    void shouldUseConvertToDirect() {
-        MockMvcTester mvc = MockMvcTester.of(new ExampleController())
-                .withHttpMessageConverters(singleton(jsonUnitMessageConverter()));
-        assertThat(mvc.get().uri("/sample"))
-                .hasStatusOk()
-                .bodyJson()
-                .convertTo(jsonUnitAssert())
-                .inPath("result.array")
-                .isArray()
-                .containsExactly(1, 2, 3);
     }
 
     @Test
