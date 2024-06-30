@@ -12,19 +12,6 @@ interface ExceptionFactory {
     AssertionError createException(String message, Differences diffs);
 }
 
-class BasicExceptionFactory implements ExceptionFactory {
-    @Override
-    public AssertionError createException(String message, Differences diffs) {
-        return new BasicJsonAssertError(message, diffs);
-    }
-
-    private static class BasicJsonAssertError extends AssertionError {
-        BasicJsonAssertError(String message, Differences differences) {
-            super(formatDifferences(message, differences));
-        }
-    }
-}
-
 class Opentest4jExceptionFactory implements ExceptionFactory {
     @Override
     public AssertionError createException(String message, Differences diffs) {
