@@ -750,6 +750,9 @@ Release notes
 * Perf improvements when comparing arrays of nested objects`
 * Dependency updates
 
+## 2.39.0 (2024-07-01)
+* Perf improvements when comparing arrays of nested objects`
+
 ## 3.2.7 (2024-02-21)
 * #483 More optimal fix for JsonPath arrays matching in `whenIgnoringPaths`
 * Version 3.2.6 skipped due tue a mistake
