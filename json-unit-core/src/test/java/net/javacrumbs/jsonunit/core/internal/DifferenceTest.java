@@ -255,8 +255,7 @@ public class DifferenceTest {
         var expected = resource("big-json-with-common-keys-expected.json");
         var cfg = commonConfig()
                 .withNumberComparator(new NormalisedNumberComparator())
-                .withOptions(
-                        IGNORING_ARRAY_ORDER, IGNORING_EXTRA_ARRAY_ITEMS, IGNORING_EXTRA_FIELDS, FAIL_FAST);
+                .withOptions(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_ARRAY_ITEMS, IGNORING_EXTRA_FIELDS, FAIL_FAST);
         Diff diff = Diff.create(expected, actual, "", "", cfg);
         diff.similar();
     }
