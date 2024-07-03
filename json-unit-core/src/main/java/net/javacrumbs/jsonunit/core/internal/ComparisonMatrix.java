@@ -24,6 +24,8 @@ import java.util.List;
 import static java.lang.Math.min;
 import static java.util.Collections.unmodifiableList;
 import static java.util.stream.Collectors.toList;
+import static net.javacrumbs.jsonunit.core.Configuration.dummyDifferenceListener;
+import static net.javacrumbs.jsonunit.core.Option.FAIL_FAST;
 import static net.javacrumbs.jsonunit.core.internal.Diff.DEFAULT_DIFFERENCE_STRING;
 import static net.javacrumbs.jsonunit.core.internal.JsonUnitLogger.NULL_LOGGER;
 
@@ -31,7 +33,6 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import net.javacrumbs.jsonunit.core.Configuration;
-import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 
 /**
  * Stores comparison result when comparing two arrays.
@@ -88,15 +89,12 @@ class ComparisonMatrix {
                 expected,
                 actual,
                 Path.create("", path.toElement(i).getFullPath()),
-                configuration.withDifferenceListener(failFastDifferenceListener),
+                configuration.withDifferenceListener(dummyDifferenceListener()).withOptions(FAIL_FAST),
                 NULL_LOGGER,
                 NULL_LOGGER,
                 DEFAULT_DIFFERENCE_STRING);
-        try {
-            return diff.similar();
-        } catch (DifferenceFoundException e) {
-            return false;
-        }
+
+        return diff.similar();
     }
 
     ComparisonMatrix compare() {
@@ -224,16 +222,5 @@ class ComparisonMatrix {
 
     List<Integer> getExtra() {
         return extra;
-    }
-
-    private static final DifferenceListener failFastDifferenceListener = (difference, context) -> {
-        throw new DifferenceFoundException();
-    };
-
-    private static final class DifferenceFoundException extends RuntimeException {
-        @Override
-        public synchronized Throwable fillInStackTrace() {
-            return this;
-        }
     }
 }

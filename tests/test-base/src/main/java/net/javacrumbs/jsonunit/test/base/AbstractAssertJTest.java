@@ -43,6 +43,7 @@ import static net.javacrumbs.jsonunit.core.ConfigurationWhen.rootPath;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.then;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.thenIgnore;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.thenNot;
+import static net.javacrumbs.jsonunit.core.Option.FAIL_FAST;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
@@ -1978,6 +1979,14 @@ public abstract class AbstractAssertJTest {
             .when(path("a"), thenIgnore())
             .when(path("b"), thenIgnore())
             .isEqualTo("{\"c\":3}");
+    }
+
+    @Test
+    void shouldFailFast() {
+        assertThatThrownBy(() -> assertThatJson("{\"a\":{\"a1\": 1},\"b\":{\"b1\": 1}}")
+            .withConfiguration(c -> c.withOptions(FAIL_FAST))
+            .isEqualTo("{\"a\":{\"a1\": 2},\"b\":{\"b1\": 2}}"))
+            .hasMessage("JSON documents are different:\nDifferent value found in node \"a.a1\", expected: <2> but was: <1>.\n");
     }
 
     private static final String json = "{\n" +

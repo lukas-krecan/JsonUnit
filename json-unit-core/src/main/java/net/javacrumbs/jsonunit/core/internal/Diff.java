@@ -20,6 +20,23 @@ import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.ArrayComparison.ComparisonResult;
 import net.javacrumbs.jsonunit.core.internal.ArrayComparison.NodeWithIndex;
 import net.javacrumbs.jsonunit.core.listener.Difference;
+import static java.util.Collections.emptySet;
+import static net.javacrumbs.jsonunit.core.Option.FAIL_FAST;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
+import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
+import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
+import static net.javacrumbs.jsonunit.core.internal.DifferenceContextImpl.differenceContext;
+import static net.javacrumbs.jsonunit.core.internal.ExceptionUtils.createException;
+import static net.javacrumbs.jsonunit.core.internal.ExceptionUtils.formatDifferences;
+import static net.javacrumbs.jsonunit.core.internal.JsonUnitLogger.NULL_LOGGER;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
+import static net.javacrumbs.jsonunit.core.internal.Node.KeyValue;
+import static net.javacrumbs.jsonunit.core.internal.Node.NodeType;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -124,7 +141,11 @@ public class Diff {
             if (part.isMissingNode()) {
                 structureDifferenceFound(context, "Missing node in path \"%s\".", startPath);
             } else {
-                compareNodes(context);
+                try {
+                    compareNodes(context);
+                } catch (FailedFastException e) {
+                    // ignore, the difference is already in the `differences` list.
+                }
             }
             compared = true;
 
@@ -538,6 +559,7 @@ public class Diff {
 
     private void structureDifferenceFound(Context context, String message, Object... arguments) {
         differences.add(new JsonDifference(context, message, arguments));
+        possiblyFailFast(context);
     }
 
     @SuppressWarnings("deprecation")
@@ -545,11 +567,19 @@ public class Diff {
         if (!hasOption(context.getActualPath(), COMPARING_ONLY_STRUCTURE)) {
             differences.add(new JsonDifference(context, message, arguments));
         }
+        possiblyFailFast(context);
     }
 
     private void reportValueDifference(Context context, String message, Object... arguments) {
         reportDifference(DifferenceImpl.different(context));
         valueDifferenceFound(context, message, arguments);
+        possiblyFailFast(context);
+    }
+
+    private void possiblyFailFast(Context context) {
+        if (hasOption(context.getActualPath(), FAIL_FAST)) {
+            throw new FailedFastException();
+        }
     }
 
     private Set<String> commonFields(Map<String, Node> expectedFields, Map<String, Node> actualFields) {
@@ -623,6 +653,16 @@ public class Diff {
             return new JsonUnitLogger.SLF4JLogger(name);
         } else {
             return NULL_LOGGER;
+        }
+    }
+
+    /**
+     * Exception throw on the first difference when FAIL_FAST option is on.
+     */
+    private static final class FailedFastException extends RuntimeException {
+        @Override
+        public synchronized Throwable fillInStackTrace() {
+            return this;
         }
     }
 }

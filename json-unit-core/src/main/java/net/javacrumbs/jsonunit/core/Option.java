@@ -58,5 +58,10 @@ public enum Option {
      * Ignores values but fails if value types are different.
      * When using within {@link ConfigurationWhen#then(Option, Option...)}, path to the node with ignored value should be passed.
      */
-    IGNORING_VALUES
+    IGNORING_VALUES,
+
+    /**
+     * Stops comparison at the first difference. Can bring performance boots to use-cases that do not need the full list of all differences.
+     */
+    FAIL_FAST
 }
