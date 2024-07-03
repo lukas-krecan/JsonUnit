@@ -2281,6 +2281,18 @@ public abstract class AbstractAssertJTest {
                 .isEqualTo("{\"c\":3}");
     }
 
+    @Test
+    void shouldFailFast() {
+        assertThatThrownBy(() -> assertThatJson("{\"a\":{\"a1\": 1},\"b\":{\"b1\": 1}}")
+                        .withOptions(Option.FAIL_FAST)
+                        .isEqualTo("{\"a\":{\"a1\": 2},\"b\":{\"b1\": 2}}"))
+                .hasMessage(
+                        """
+                    JSON documents are different:
+                    Different value found in node "a.a1", expected: <2> but was: <1>.
+                    """);
+    }
+
     private static final String json =
             """
         {
