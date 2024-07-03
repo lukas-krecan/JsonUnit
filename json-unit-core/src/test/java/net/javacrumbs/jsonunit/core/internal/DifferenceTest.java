@@ -17,6 +17,10 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import static java.math.BigDecimal.valueOf;
 import static java.util.Collections.singletonMap;
+import static net.javacrumbs.jsonunit.core.Option.FAIL_FAST;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.util.ResourceUtils.resource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -31,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.NumberComparator;
-import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
 import net.javacrumbs.jsonunit.core.listener.Difference;
 import net.javacrumbs.jsonunit.core.listener.DifferenceContext;
@@ -206,7 +209,7 @@ public class DifferenceTest {
                 "{\"test\":[[4,2],[1,2]]}",
                 "",
                 "",
-                commonConfig().when(Option.IGNORING_ARRAY_ORDER));
+                commonConfig().when(IGNORING_ARRAY_ORDER));
         diff.similar();
         assertThat(listener.getDifferenceList(), hasSize(1));
         assertThat(listener.getDifferenceList().get(0).getType(), equalTo(DifferenceImpl.Type.DIFFERENT));
@@ -253,7 +256,7 @@ public class DifferenceTest {
         var cfg = commonConfig()
                 .withNumberComparator(new NormalisedNumberComparator())
                 .withOptions(
-                        Option.IGNORING_ARRAY_ORDER, Option.IGNORING_EXTRA_ARRAY_ITEMS, Option.IGNORING_EXTRA_FIELDS);
+                        IGNORING_ARRAY_ORDER, IGNORING_EXTRA_ARRAY_ITEMS, IGNORING_EXTRA_FIELDS, FAIL_FAST);
         Diff diff = Diff.create(expected, actual, "", "", cfg);
         diff.similar();
     }
