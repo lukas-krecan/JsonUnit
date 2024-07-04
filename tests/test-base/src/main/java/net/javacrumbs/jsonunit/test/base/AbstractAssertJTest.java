@@ -32,6 +32,7 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
+import static net.javacrumbs.jsonunit.core.Option.REPORTING_DIFFERENCE_AS_NORMALIZED_STRING;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
 import static net.javacrumbs.jsonunit.test.base.RegexBuilder.regex;
@@ -2331,6 +2332,73 @@ public abstract class AbstractAssertJTest {
             JSON documents are different:
             Matcher "exampleMatcher" does not match value "abc123" in node "someText". Expected "def456" but was "abc123"
             """);
+    }
+
+    @Nested
+    class ReportAsString {
+        @Test
+        void shouldSortMapKeys() {
+            assertThatThrownBy(() -> assertThatJson("{\"a\": {\"c\": [{\"e\": 2}, 3]}, \"b\": false}")
+                            .when(REPORTING_DIFFERENCE_AS_NORMALIZED_STRING)
+                            .isEqualTo("{\"b\": true, \"a\": {\"c\": [{\"e\": 3}, 5]}}"))
+                    .hasMessage(
+                            """
+                JSON documents are different: expected <{
+                  "a": {
+                    "c": [
+                      {
+                        "e": 3
+                      },
+                      5
+                    ]
+                  },
+                  "b": true
+                }>but was <{
+                  "a": {
+                    "c": [
+                      {
+                        "e": 2
+                      },
+                      3
+                    ]
+                  },
+                  "b": false
+                }>""");
+        }
+
+        @Test
+        void shouldWorkWithMissingPath() {
+            assertThatThrownBy(() -> assertThatJson("{\"a\": 1}")
+                            .when(REPORTING_DIFFERENCE_AS_NORMALIZED_STRING)
+                            .inPath("c")
+                            .isEqualTo("{\"b\": true}"))
+                    .hasMessage(
+                            """
+                JSON documents are different:
+                Missing node in path "c".
+                """);
+        }
+
+        @Test
+        void shouldWorkWithPaths() {
+            assertThatThrownBy(() -> assertThatJson("{\"a\": {\"c\": [{\"e\": 2}, 3]}, \"b\": false}")
+                            .when(REPORTING_DIFFERENCE_AS_NORMALIZED_STRING)
+                            .inPath("a.c")
+                            .isEqualTo("[{\"e\": 3}, 5]"))
+                    .hasMessage(
+                            """
+                JSON documents are different: expected <[
+                  {
+                    "e": 3
+                  },
+                  5
+                ]>but was <[
+                  {
+                    "e": 2
+                  },
+                  3
+                ]>""");
+        }
     }
 
     private static final String json =
