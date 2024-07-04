@@ -58,7 +58,7 @@ public class DifferenceTest {
         assertThat(listener.getDifferenceList()).hasSize(1);
         Difference difference = listener.getDifferenceList().get(0);
         assertThat(difference.getType()).isEqualTo(DifferenceImpl.Type.MISSING);
-        assertThat(difference.getActualPath()).isEqualTo("test");
+        assertThat(difference.getActualPath()).isEqualTo(null);
         assertThat(difference.getExpected()).isEqualTo("1");
         assertThat(difference.getActual()).isNull();
     }
@@ -297,6 +297,26 @@ public class DifferenceTest {
                 commonConfig().when(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_ARRAY_ITEMS));
         assertThat(diff.similar()).isTrue();
         assertThat(listener.getDifferenceList()).isEmpty();
+    }
+
+    @Test
+    void shouldWorkWithDifferentKeys() {
+        Diff diff = Diff.create("{\"a\": 1}", "{\"b\": 1}", "", "", commonConfig());
+        assertThat(diff.similar()).isFalse();
+
+        assertThat(listener.getDifferenceList()).hasSize(2);
+
+        assertThat(listener.getDifferenceList().get(0).getType()).isEqualTo(MISSING);
+        assertThat(listener.getDifferenceList().get(0).getExpectedPath()).isEqualTo("a");
+        assertThat(listener.getDifferenceList().get(0).getActualPath()).isEqualTo(null);
+        assertThat(listener.getDifferenceList().get(0).getExpected()).isEqualTo(valueOf(1));
+        assertThat(listener.getDifferenceList().get(0).getActual()).isEqualTo(null);
+
+        assertThat(listener.getDifferenceList().get(1).getType()).isEqualTo(EXTRA);
+        assertThat(listener.getDifferenceList().get(1).getExpectedPath()).isEqualTo(null);
+        assertThat(listener.getDifferenceList().get(1).getActualPath()).isEqualTo("b");
+        assertThat(listener.getDifferenceList().get(1).getExpected()).isEqualTo(null);
+        assertThat(listener.getDifferenceList().get(1).getActual()).isEqualTo(valueOf(1));
     }
 
     @Test

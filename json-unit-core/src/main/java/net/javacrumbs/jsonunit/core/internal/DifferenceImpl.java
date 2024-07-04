@@ -82,11 +82,11 @@ class DifferenceImpl implements Difference {
     }
 
     static Difference missing(Context context) {
-        return new MissingDifference(context);
+        return new MissingDifference(context.clearActual());
     }
 
     static Difference extra(Context context) {
-        return new ExtraDifference(context);
+        return new ExtraDifference(context.clearExpected());
     }
 
     static Difference different(Context context) {
