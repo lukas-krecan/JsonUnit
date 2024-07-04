@@ -21,6 +21,7 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
+import static net.javacrumbs.jsonunit.core.Option.REPORTING_DIFFERENCE_AS_NORMALIZED_STRING;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
 import static net.javacrumbs.jsonunit.core.internal.DifferenceContextImpl.differenceContext;
@@ -34,6 +35,7 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
 import static net.javacrumbs.jsonunit.core.internal.Node.KeyValue;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType;
+import static net.javacrumbs.jsonunit.core.internal.Normalizer.toNormalizedString;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -55,6 +57,7 @@ import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.ArrayComparison.ComparisonResult;
 import net.javacrumbs.jsonunit.core.internal.ArrayComparison.NodeWithIndex;
 import net.javacrumbs.jsonunit.core.listener.Difference;
+import org.opentest4j.AssertionFailedError;
 
 /**
  * Compares JSON structures. Mainly for internal use, the API might be more volatile than the rest.
@@ -684,9 +687,6 @@ public class Diff {
 
     /**
      * Returns children of an ObjectNode.
-     *
-     * @param node
-     * @return
      */
     private static Map<String, Node> getFields(Node node) {
         Map<String, Node> result = new HashMap<>();
@@ -720,7 +720,18 @@ public class Diff {
 
     public void failIfDifferent(String message) {
         if (!similar()) {
-            throw createException(message, differences);
+            if (!configuration.getOptions().contains(REPORTING_DIFFERENCE_AS_NORMALIZED_STRING)
+                    || actualRoot.isMissingNode()) {
+                throw createException(message, differences);
+            } else {
+                String normalizedExpected = toNormalizedString(expectedRoot);
+                String normalizedActual = toNormalizedString(actualRoot);
+                throw new AssertionFailedError(
+                        "JSON documents are different: expected <" + normalizedExpected + ">" + "but was <"
+                                + normalizedActual + ">",
+                        normalizedExpected,
+                        normalizedActual);
+            }
         }
     }
 
