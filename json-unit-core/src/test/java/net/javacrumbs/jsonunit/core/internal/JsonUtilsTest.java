@@ -15,15 +15,12 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import static java.util.Collections.singletonMap;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.valueToNode;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.ARRAY;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.BOOLEAN;
-import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NULL;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NUMBER;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
@@ -33,7 +30,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 
 class JsonUtilsTest {
@@ -55,23 +51,6 @@ class JsonUtilsTest {
         assertEquals(BOOLEAN, convertToJson(false, "x").getNodeType());
         assertTrue(convertToJson("null", "x").isNull());
         assertTrue(convertToJson(null, "x").isNull());
-    }
-
-    @Test
-    void testValueToJson() {
-        assertEquals(STRING, valueToNode("a").getNodeType());
-        assertEquals(NUMBER, valueToNode(BigDecimal.valueOf(1)).getNodeType());
-        assertEquals(STRING, valueToNode("1").getNodeType());
-        assertEquals(NUMBER, valueToNode(1.0).getNodeType());
-        assertEquals(STRING, valueToNode("1.0").getNodeType());
-        assertEquals(OBJECT, valueToNode(singletonMap("a", 1)).getNodeType());
-        assertEquals(ARRAY, valueToNode(new int[] {1, 2, 3}).getNodeType());
-        assertEquals(STRING, valueToNode("true").getNodeType());
-        assertEquals(BOOLEAN, valueToNode(true).getNodeType());
-        assertEquals(STRING, valueToNode("false").getNodeType());
-        assertEquals(BOOLEAN, valueToNode(false).getNodeType());
-        assertEquals(STRING, valueToNode("null").getNodeType());
-        assertEquals(NULL, valueToNode(null).getNodeType());
     }
 
     @Test
