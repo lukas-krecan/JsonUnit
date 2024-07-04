@@ -344,7 +344,7 @@ See the [tests](https://github.com/lukas-krecan/JsonUnit/blob/master/json-unit-k
 JsonUnit support all this features regardless of API you use.
 
 ## <a name="jsonpath"></a>JsonPath support
-You can use JsonPath navigation together with JsonUnit. It has native support in AssertJ integration so you can do something like this:
+You can use JsonPath navigation together with JsonUnit. It has native support in AssertJ integration, so you can do something like this:
 
 ```java
 // AssertJ style
@@ -644,7 +644,7 @@ Numbers are by default compared in the following way:
 * Floating number comparison is exact, down to the scale - 1.0 and 1.00 are considered to be different.
 
 You can change this behavior by setting tolerance. If you set tolerance to `0` two numbers are considered equal if they are
-equal mathematically even though they have different type or precision (`a.compareTo(b) == 0`)).
+equal mathematically even though they have different type or precision (`a.compareTo(b) == 0`).
 
 ```java
 assertThatJson("{\"test\":1.00}").node("test").withTolerance(0).isEqualTo(1);
