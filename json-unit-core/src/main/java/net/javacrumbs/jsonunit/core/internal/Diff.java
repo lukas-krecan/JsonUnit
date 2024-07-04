@@ -139,8 +139,8 @@ public class Diff {
             Configuration configuration,
             String differenceString) {
         return new Diff(
-                convertToJson(quoteIfNeeded(expected), "expected", true),
-                convertToJson(actual, actualName, false),
+                convertToJson(quoteIfNeeded(expected), "expected", true, configuration.getMapperProvider()),
+                convertToJson(actual, actualName, false, configuration.getMapperProvider()),
                 path,
                 configuration,
                 DEFAULT_DIFF_LOGGER,

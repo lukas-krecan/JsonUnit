@@ -35,8 +35,16 @@ import net.javacrumbs.jsonunit.providers.Jackson2ObjectMapperProvider;
  * Deserializes node using Jackson 2
  */
 class Jackson2NodeFactory extends AbstractNodeFactory {
-    private final ServiceLoader<Jackson2ObjectMapperProvider> serviceLoader =
-            ServiceLoader.load(Jackson2ObjectMapperProvider.class);
+
+    private final Jackson2ObjectMapperProvider mapperProvider;
+
+    Jackson2NodeFactory() {
+        this(findMapperProvider());
+    }
+
+    Jackson2NodeFactory(Jackson2ObjectMapperProvider mapperProvider) {
+        this.mapperProvider = mapperProvider;
+    }
 
     @Override
     protected Node doConvertValue(Object source) {
@@ -64,18 +72,7 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
     }
 
     private ObjectMapper getMapper(boolean lenient) {
-        return getMapperProvider().getObjectMapper(lenient);
-    }
-
-    private Jackson2ObjectMapperProvider getMapperProvider() {
-        synchronized (serviceLoader) {
-            Iterator<Jackson2ObjectMapperProvider> iterator = serviceLoader.iterator();
-            if (iterator.hasNext()) {
-                return iterator.next();
-            } else {
-                return DefaultObjectMapperProvider.INSTANCE;
-            }
-        }
+        return mapperProvider.getObjectMapper(lenient);
     }
 
     private static Node newNode(JsonNode jsonNode) {
@@ -205,6 +202,19 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
         @Override
         public String toString() {
             return jsonNode.toString();
+        }
+    }
+
+    /**
+     * Tries to find Jackson2ObjectMapperProvider in the ServiceLoader or returns a default one.
+     */
+    private static Jackson2ObjectMapperProvider findMapperProvider() {
+        ServiceLoader<Jackson2ObjectMapperProvider> serviceLoader = ServiceLoader.load(Jackson2ObjectMapperProvider.class);
+        Iterator<Jackson2ObjectMapperProvider> iterator = serviceLoader.iterator();
+        if (iterator.hasNext()) {
+            return iterator.next();
+        } else {
+            return DefaultObjectMapperProvider.INSTANCE;
         }
     }
 

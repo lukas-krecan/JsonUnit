@@ -19,6 +19,7 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson2;
 
+import java.time.Instant;
 import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;
 import org.junit.jupiter.api.Test;
 
@@ -32,8 +33,17 @@ public class Jackson2AssertJTest extends AbstractAssertJTest {
                 .containsExactlyInAnyOrder(json(readValue("{\"c\": 1}")), json(readValue("{\"b\": 1}")));
     }
 
+    @Test
+    void shouldUseMapperProvider() {
+        assertThatJson(new Data(Instant.parse("2019-01-11T18:12:00Z")))
+                .withConfiguration(c -> c.withMapperProvider(new Java8ObjectMapperProvider()))
+                .isEqualTo("{time:'2019-01-11T18:12:00Z'}");
+    }
+
     @Override
     protected Object readValue(String value) {
         return readByJackson2(value);
     }
+
+    public record Data(Instant time) {}
 }

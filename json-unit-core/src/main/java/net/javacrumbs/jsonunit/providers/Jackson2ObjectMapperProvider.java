@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * Interface for customizing Jackson 2 ObjectMapper. @see <a href="https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html">SPI intro</a>
  */
-public interface Jackson2ObjectMapperProvider {
+public interface Jackson2ObjectMapperProvider extends MapperProvider {
     /**
      * Provides ObjectMapper
      * @param lenient Lenient parsing is used for parsing the expected JSON value

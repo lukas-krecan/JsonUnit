@@ -65,7 +65,7 @@ public final class JsonAssertions {
      */
     @NotNull
     public static Object json(Object input) {
-        return new ExpectedNode(JsonUtils.convertToJson(input, "expected", true));
+        return new ExpectedNode(JsonUtils.convertToJson(input, "expected", true, null));
     }
 
     /**

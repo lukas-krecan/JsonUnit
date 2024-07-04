@@ -19,6 +19,8 @@ import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.javacrumbs.jsonunit.providers.Jackson2ObjectMapperProvider;
+import net.javacrumbs.jsonunit.providers.MapperProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,15 +41,37 @@ record Converter(List<NodeFactory> factories) {
 
     private static final boolean johnzonPresent = isClassPresent("org.apache.johnzon.mapper.Mapper");
 
+    private static Converter defaultConverter;
+
     Converter {
         if (factories.isEmpty()) {
             throw new IllegalStateException("List of factories can not be empty");
         }
     }
 
+    @NotNull
+    static Converter getConverter(@Nullable MapperProvider mapperProvider) {
+        if (mapperProvider == null) {
+            return defaultConverter();
+        } else {
+            if (mapperProvider instanceof Jackson2ObjectMapperProvider) {
+                return new Converter(List.of(new Jackson2NodeFactory((Jackson2ObjectMapperProvider) mapperProvider)));
+            }
+            throw new UnsupportedOperationException();
+        }
+    }
+
+    private static Converter defaultConverter() {
+        if (defaultConverter == null) {
+            defaultConverter = createDefaultConverter();
+        }
+        return defaultConverter;
+    }
+
     /**
      * Creates converter based on the libraries on the classpath.
      */
+    @NotNull
     static Converter createDefaultConverter() {
         List<NodeFactory> factories;
         String property = System.getProperty(LIBRARIES_PROPERTY_NAME);

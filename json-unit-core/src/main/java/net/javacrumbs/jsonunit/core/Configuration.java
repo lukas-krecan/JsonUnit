@@ -28,6 +28,7 @@ import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
 import net.javacrumbs.jsonunit.core.internal.DefaultNumberComparator;
 import net.javacrumbs.jsonunit.core.internal.PathOption;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
+import net.javacrumbs.jsonunit.providers.MapperProvider;
 import org.hamcrest.Matcher;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -49,7 +50,8 @@ public class Configuration {
             Collections.emptySet(),
             DUMMY_LISTENER,
             Collections.emptyList(),
-            DEFAULT_NUMBER_COMPARATOR);
+            DEFAULT_NUMBER_COMPARATOR,
+            null);
     private final BigDecimal tolerance;
     private final Options options;
     private final String ignorePlaceholder;
@@ -58,6 +60,7 @@ public class Configuration {
     private final Set<String> pathsToBeIgnored;
     private final DifferenceListener differenceListener;
     private final NumberComparator numberComparator;
+    private final MapperProvider mapperProvider;
 
     private Configuration(
             @Nullable BigDecimal tolerance,
@@ -67,7 +70,8 @@ public class Configuration {
             Set<String> pathsToBeIgnored,
             DifferenceListener differenceListener,
             List<PathOption> pathOptions,
-            NumberComparator numberComparator) {
+            NumberComparator numberComparator,
+            MapperProvider mapperProvider) {
         this.tolerance = tolerance;
         this.options = options;
         this.ignorePlaceholder = ignorePlaceholder;
@@ -76,6 +80,7 @@ public class Configuration {
         this.pathOptions = pathOptions;
         this.differenceListener = differenceListener;
         this.numberComparator = numberComparator;
+        this.mapperProvider = mapperProvider;
     }
 
     /**
@@ -88,9 +93,6 @@ public class Configuration {
 
     /**
      * Sets numerical comparison tolerance.
-     *
-     * @param tolerance
-     * @return
      */
     @NotNull
     public Configuration withTolerance(@Nullable BigDecimal tolerance) {
@@ -102,7 +104,8 @@ public class Configuration {
                 pathsToBeIgnored,
                 differenceListener,
                 pathOptions,
-                numberComparator);
+                numberComparator,
+                mapperProvider);
     }
 
     /**
@@ -145,7 +148,8 @@ public class Configuration {
                 pathsToBeIgnored,
                 differenceListener,
                 pathOptions,
-                numberComparator);
+                numberComparator,
+                mapperProvider);
     }
 
     /**
@@ -161,7 +165,8 @@ public class Configuration {
                 pathsToBeIgnored,
                 differenceListener,
                 pathOptions,
-                numberComparator);
+                numberComparator,
+                mapperProvider);
     }
 
     @NotNull
@@ -174,7 +179,8 @@ public class Configuration {
                 pathsToBeIgnored,
                 differenceListener,
                 pathOptions,
-                numberComparator);
+                numberComparator,
+                mapperProvider);
     }
 
     /**
@@ -211,7 +217,8 @@ public class Configuration {
                 pathsToBeIgnored,
                 differenceListener,
                 List.copyOf(pathOptions),
-                numberComparator);
+                numberComparator,
+                mapperProvider);
     }
 
     @NotNull
@@ -224,7 +231,8 @@ public class Configuration {
                 Set.copyOf(pathsToBeIgnored),
                 differenceListener,
                 pathOptions,
-                numberComparator);
+                numberComparator,
+                mapperProvider);
     }
 
     /**
@@ -257,7 +265,8 @@ public class Configuration {
                 pathsToBeIgnored,
                 differenceListener,
                 pathOptions,
-                numberComparator);
+                numberComparator,
+                mapperProvider);
     }
 
     /**
@@ -277,7 +286,8 @@ public class Configuration {
                 pathsToBeIgnored,
                 differenceListener,
                 pathOptions,
-                numberComparator);
+                numberComparator,
+                mapperProvider);
     }
 
     /**
@@ -293,7 +303,8 @@ public class Configuration {
                 pathsToBeIgnored,
                 differenceListener,
                 pathOptions,
-                numberComparator);
+                numberComparator,
+                mapperProvider);
     }
 
     /**
@@ -309,7 +320,22 @@ public class Configuration {
                 pathsToBeIgnored,
                 differenceListener,
                 pathOptions,
-                numberComparator);
+                numberComparator,
+                mapperProvider);
+    }
+
+    @NotNull
+    public Configuration withMapperProvider(MapperProvider mapperProvider) {
+        return new Configuration(
+            tolerance,
+            options,
+            ignorePlaceholder,
+            matchers,
+            pathsToBeIgnored,
+            differenceListener,
+            pathOptions,
+            numberComparator,
+            mapperProvider);
     }
 
     @NotNull
@@ -355,6 +381,11 @@ public class Configuration {
     @NotNull
     public NumberComparator getNumberComparator() {
         return numberComparator;
+    }
+
+    @Nullable
+    public MapperProvider getMapperProvider() {
+        return mapperProvider;
     }
 
     public boolean shouldIgnore(String expectedValue) {

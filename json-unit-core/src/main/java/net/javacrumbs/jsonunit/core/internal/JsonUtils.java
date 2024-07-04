@@ -17,6 +17,7 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import static java.util.Collections.emptyList;
 import static java.util.Map.Entry.comparingByKey;
+import static net.javacrumbs.jsonunit.core.internal.Converter.getConverter;
 
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
+import net.javacrumbs.jsonunit.providers.MapperProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,7 +33,6 @@ import org.jetbrains.annotations.Nullable;
  * Internal utility class to parse JSON values.
  */
 public class JsonUtils {
-    private static final Converter converter = Converter.createDefaultConverter();
 
     /**
      * Converts object to JSON.
@@ -41,17 +42,17 @@ public class JsonUtils {
      * @return
      */
     public static Node convertToJson(@Nullable Object source, String label) {
-        return convertToJson(source, label, false);
+        return convertToJson(source, label, false, null);
     }
 
     /**
      * Converts object to JSON.
      */
-    public static Node convertToJson(@Nullable Object source, String label, boolean lenient) {
+    public static Node convertToJson(@Nullable Object source, String label, boolean lenient, MapperProvider mapperProvider) {
         if (source instanceof JsonSource) {
-            return converter.convertToNode(((JsonSource) source).getJson(), label, lenient);
+            return getConverter(mapperProvider).convertToNode(((JsonSource) source).getJson(), label, lenient);
         } else {
-            return converter.convertToNode(source, label, lenient);
+            return getConverter(mapperProvider).convertToNode(source, label, lenient);
         }
     }
 
@@ -112,9 +113,6 @@ public class JsonUtils {
 
     /**
      * Add quotes around the object iff it's not a JSON object.
-     *
-     * @param source
-     * @return
      */
     static String quoteIfNeeded(String source) {
         String trimmed = source.trim();
@@ -133,9 +131,6 @@ public class JsonUtils {
 
     /**
      * Add quotes around the object iff it's not a JSON object.
-     *
-     * @param source
-     * @return
      */
     static Object quoteIfNeeded(Object source) {
         if (source instanceof String) {
