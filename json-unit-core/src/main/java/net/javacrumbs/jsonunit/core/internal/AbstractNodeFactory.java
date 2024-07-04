@@ -46,15 +46,6 @@ abstract class AbstractNodeFactory implements NodeFactory {
         }
     }
 
-    @Override
-    public Node valueToNode(Object source) {
-        if (source == null) {
-            return nullNode();
-        } else {
-            return convertValue(source);
-        }
-    }
-
     final Node convertValue(Object source) {
         if (source instanceof BigDecimal) {
             return new GenericNodeBuilder.NumberNode((Number) source);
