@@ -20,19 +20,11 @@ import org.jetbrains.annotations.Nullable;
 interface NodeFactory {
     /**
      * Returns true if this factory is preferred for given source.
-     *
-     * @param source
-     * @return
      */
     boolean isPreferredFor(Object source);
 
     /**
      * Creates node from given source.
-     *
-     * @param source
-     * @param label
-     * @param lenient
-     * @return
      */
     Node convertToNode(@Nullable Object source, String label, boolean lenient);
 }
