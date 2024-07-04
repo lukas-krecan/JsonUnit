@@ -110,11 +110,6 @@ record Converter(List<NodeFactory> factories) {
         return findBestFactory(source).convertToNode(source, label, lenient);
     }
 
-    @NotNull
-    Node valueToNode(Object source) {
-        return findBestFactory(source).valueToNode(source);
-    }
-
     private NodeFactory findBestFactory(Object source) {
         if (factories.size() == 1) return factories.get(0);
 
