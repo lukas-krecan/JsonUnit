@@ -60,7 +60,7 @@ record Converter(List<NodeFactory> factories) {
 
         if (factories.isEmpty()) {
             throw new IllegalStateException(
-                    "Please add either json.org, Jackson 1.x, Jackson 2.x, Johnzon or Gson to the classpath");
+                    "Please add either json.org, Moshi, Jackson 2.x, Johnzon or Gson to the classpath");
         }
         return new Converter(factories);
     }
