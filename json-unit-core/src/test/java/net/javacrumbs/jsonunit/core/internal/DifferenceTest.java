@@ -15,17 +15,20 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+
 import static java.math.BigDecimal.valueOf;
 import static java.util.Collections.singletonMap;
 import static net.javacrumbs.jsonunit.core.Option.FAIL_FAST;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
+import static net.javacrumbs.jsonunit.core.listener.Difference.Type.MISSING;
 import static net.javacrumbs.jsonunit.core.util.ResourceUtils.resource;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -39,6 +42,7 @@ import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
 import net.javacrumbs.jsonunit.core.listener.Difference;
 import net.javacrumbs.jsonunit.core.listener.DifferenceContext;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
+import org.assertj.core.api.Assertions;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.junit.jupiter.api.Test;
@@ -247,11 +251,23 @@ public class DifferenceTest {
     }
 
     @Test
+    void shouldBeAwareOfRootMissingElement() {
+        Diff diff = Diff.create("foo", "{\"test\":-1}", "", "path.node", commonConfig());
+        assertFalse(diff.similar());
+
+        Assertions.assertThat(listener.getDifferenceList()).hasSize(1);
+        Difference difference = listener.getDifferenceList().get(0);
+        Assertions.assertThat(difference.getType()).isEqualTo(MISSING);
+        Assertions.assertThat(difference.getExpectedPath()).isEqualTo("path.node");
+        Assertions.assertThat(difference.getActualPath()).isEqualTo(null);
+        Assertions.assertThat(difference.getExpected()).isEqualTo("bar");
+        Assertions.assertThat(difference.getActual()).isEqualTo(null);
+    }
+
+    @Test
     @Timeout(1)
     void shouldRunDiffBeforeTimeout() throws URISyntaxException, IOException {
-        //noinspection DataFlowIssue
         var actual = resource("big-json-with-common-keys-actual.json");
-        //noinspection DataFlowIssue
         var expected = resource("big-json-with-common-keys-expected.json");
         var cfg = commonConfig()
                 .withNumberComparator(new NormalisedNumberComparator())
