@@ -24,6 +24,7 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
 import static net.javacrumbs.jsonunit.core.internal.DifferenceContextImpl.differenceContext;
+import static net.javacrumbs.jsonunit.core.internal.DifferenceImpl.missing;
 import static net.javacrumbs.jsonunit.core.internal.ExceptionUtils.createException;
 import static net.javacrumbs.jsonunit.core.internal.ExceptionUtils.formatDifferences;
 import static net.javacrumbs.jsonunit.core.internal.JsonUnitLogger.NULL_LOGGER;
@@ -152,6 +153,7 @@ public class Diff {
             Context context = new Context(expectedRoot, part, startPath, startPath, configuration);
             if (part.isMissingNode()) {
                 structureDifferenceFound(context, "Missing node in path \"%s\".", startPath);
+                reportDifference(missing(new Context(expectedRoot, null, startPath, null, configuration)));
             } else {
                 try {
                     compareNodes(context);
@@ -192,7 +194,7 @@ public class Diff {
 
             if (!missingKeys.isEmpty() || !extraKeys.isEmpty()) {
                 for (String key : missingKeys) {
-                    reportDifference(DifferenceImpl.missing(context.inField(key)));
+                    reportDifference(missing(context.inField(key)));
                 }
                 for (String key : extraKeys) {
                     reportDifference(DifferenceImpl.extra(context.inField(key)));
@@ -230,6 +232,19 @@ public class Diff {
                 .getDifferenceListener()
                 .diff(difference, differenceContext(configuration, actualRoot, expectedRoot));
     }
+
+    private void reportMissingValues(Context context, List<NodeWithIndex> missingValues) {
+        for (NodeWithIndex missingValue : missingValues) {
+            reportDifference(missing(context.missingElement(missingValue.index())));
+        }
+    }
+
+    private void reportExtraValues(Context context, List<NodeWithIndex> extraValues) {
+        for (NodeWithIndex extraValue : extraValues) {
+            reportDifference(DifferenceImpl.extra(context.extraElement(extraValue.index())));
+        }
+    }
+
 
     private void removePathsToBeIgnored(Path path, Set<String> extraKeys) {
         if (!configuration.getPathsToBeIgnored().isEmpty()) {
@@ -580,7 +595,7 @@ public class Diff {
         } else {
             if (expectedElements.size() > actualElements.size()) {
                 for (int i = actualElements.size(); i < expectedElements.size(); i++) {
-                    reportDifference(DifferenceImpl.missing(context.missingElement(i)));
+                    reportDifference(missing(context.missingElement(i)));
                 }
                 valueDifferenceFound(
                         context,
@@ -607,18 +622,6 @@ public class Diff {
         }
     }
 
-    private void reportMissingValues(Context context, List<NodeWithIndex> missingValues) {
-        for (NodeWithIndex missingValue : missingValues) {
-            reportDifference(DifferenceImpl.missing(context.missingElement(missingValue.index())));
-        }
-    }
-
-    private void reportExtraValues(Context context, List<NodeWithIndex> extraValues) {
-        for (NodeWithIndex extraValue : extraValues) {
-            reportDifference(DifferenceImpl.extra(context.extraElement(extraValue.index())));
-        }
-    }
-
     private ComparisonResult compareArraysIgnoringOrder(
             List<Node> expectedElements, List<Node> actualElements, Path path) {
         return new ArrayComparison(expectedElements, actualElements, path, configuration).compareArraysIgnoringOrder();
@@ -629,6 +632,7 @@ public class Diff {
     }
 
     private List<Node> asList(Iterator<Node> elements) {
+        //TODO:
         List<Node> result = new ArrayList<>();
         elements.forEachRemaining(result::add);
         return Collections.unmodifiableList(result);
