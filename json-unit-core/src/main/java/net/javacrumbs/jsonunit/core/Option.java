@@ -51,6 +51,10 @@ public enum Option {
     IGNORING_VALUES,
 
     /**
+     * Changes the exception thrown, so it's more friendly to IDE diff visualization.
+     */
+    REPORTING_DIFFERENCE_AS_NORMALIZED_STRING,
+    /**
      * Stops comparison at the first difference. Can bring performance boots to use-cases that do not need the full list of all differences.
      */
     FAIL_FAST
