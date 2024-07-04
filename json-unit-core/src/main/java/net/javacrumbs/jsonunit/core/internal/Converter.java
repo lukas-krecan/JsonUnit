@@ -107,27 +107,20 @@ record Converter(List<NodeFactory> factories) {
 
     @NotNull
     Node convertToNode(@Nullable Object source, String label, boolean lenient) {
-        for (int i = 0; i < factories.size(); i++) {
-            NodeFactory factory = factories.get(i);
-            if (isLastFactory(i) || factory.isPreferredFor(source)) {
-                return factory.convertToNode(source, label, lenient);
-            }
-        }
-        throw new IllegalStateException("Should not happen");
+        return findBestFactory(source).convertToNode(source, label, lenient);
     }
 
     @NotNull
     Node valueToNode(Object source) {
-        for (int i = 0; i < factories.size(); i++) {
-            NodeFactory factory = factories.get(i);
-            if (isLastFactory(i) || factory.isPreferredFor(source)) {
-                return factory.valueToNode(source);
-            }
-        }
-        throw new IllegalStateException("Should not happen");
+        return findBestFactory(source).valueToNode(source);
     }
 
-    private boolean isLastFactory(int i) {
-        return factories.size() - 1 == i;
+    private NodeFactory findBestFactory(Object source) {
+        if (factories.size() == 1) return factories.get(0);
+
+        return factories.stream()
+                .filter(factory -> factory.isPreferredFor(source))
+                .findFirst()
+                .orElseGet(() -> factories.get(factories.size() - 1));
     }
 }
