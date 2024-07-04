@@ -22,18 +22,13 @@ import static net.javacrumbs.jsonunit.core.Option.FAIL_FAST;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
+import static net.javacrumbs.jsonunit.core.listener.Difference.Type.DIFFERENT;
+import static net.javacrumbs.jsonunit.core.listener.Difference.Type.EXTRA;
 import static net.javacrumbs.jsonunit.core.listener.Difference.Type.MISSING;
 import static net.javacrumbs.jsonunit.core.util.ResourceUtils.resource;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.nullValue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import net.javacrumbs.jsonunit.core.Configuration;
@@ -42,7 +37,6 @@ import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
 import net.javacrumbs.jsonunit.core.listener.Difference;
 import net.javacrumbs.jsonunit.core.listener.DifferenceContext;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
-import org.assertj.core.api.Assertions;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.junit.jupiter.api.Test;
@@ -55,136 +49,145 @@ public class DifferenceTest {
     void shouldSeeEmptyDiffNodes() {
         Diff diff = Diff.create("{}", "{}", "", "", commonConfig());
         diff.similar();
-        assertThat(listener.getDifferenceList(), hasSize(0));
+        assertThat(listener.getDifferenceList()).isEmpty();
     }
 
     @Test
     void shouldSeeRemovedNode() {
         Diff diff = Diff.create("{\"test\": \"1\"}", "{}", "", "", commonConfig());
         diff.similar();
-        assertThat(listener.getDifferenceList(), hasSize(1));
-        assertThat(listener.getDifferenceList().get(0).getType(), equalTo(DifferenceImpl.Type.MISSING));
-        assertThat(listener.getDifferenceList().get(0).getActualPath(), equalTo("test"));
-        assertThat(listener.getDifferenceList().get(0).getExpected(), equalTo("1"));
-        assertThat(listener.getDifferenceList().get(0).getActual(), nullValue());
+        assertThat(listener.getDifferenceList()).hasSize(1);
+        Difference difference = listener.getDifferenceList().get(0);
+        assertThat(difference.getType()).isEqualTo(DifferenceImpl.Type.MISSING);
+        assertThat(difference.getActualPath()).isEqualTo("test");
+        assertThat(difference.getExpected()).isEqualTo("1");
+        assertThat(difference.getActual()).isNull();
     }
 
     @Test
     void shouldSeeAddedNode() {
         Diff diff = Diff.create("{}", "{\"test\": \"1\"}", "", "", commonConfig());
         diff.similar();
-        assertThat(listener.getDifferenceList(), hasSize(1));
-        assertThat(listener.getDifferenceList().get(0).getType(), equalTo(DifferenceImpl.Type.EXTRA));
-        assertThat(listener.getDifferenceList().get(0).getActualPath(), equalTo("test"));
-        assertThat(listener.getDifferenceList().get(0).getActual(), equalTo("1"));
-        assertThat(listener.getDifferenceList().get(0).getExpected(), nullValue());
+        assertThat(listener.getDifferenceList()).hasSize(1);
+        Difference difference = listener.getDifferenceList().get(0);
+        assertThat(difference.getType()).isEqualTo(EXTRA);
+        assertThat(difference.getActualPath()).isEqualTo("test");
+        assertThat(difference.getActual()).isEqualTo("1");
+        assertThat(difference.getExpected()).isNull();
     }
 
     @Test
     void shouldSeeEmptyForCheckAnyNode() {
         Diff diff = Diff.create("{\"test\": \"${json-unit.ignore}\"}", "{\"test\":\"1\"}", "", "", commonConfig());
         diff.similar();
-        assertThat(listener.getDifferenceList(), hasSize(0));
+        assertThat(listener.getDifferenceList()).isEmpty();
     }
 
     @Test
     void shouldSeeEmptyForCheckAnyBooleanNode() {
         Diff diff = Diff.create("{\"test\": \"${json-unit.any-boolean}\"}", "{\"test\": true}", "", "", commonConfig());
         diff.similar();
-        assertThat(listener.getDifferenceList(), hasSize(0));
+        assertThat(listener.getDifferenceList()).isEmpty();
     }
 
     @Test
     void shouldSeeEmptyForCheckAnyNumberNode() {
         Diff diff = Diff.create("{\"test\": \"${json-unit.any-number}\"}", "{\"test\": 11}", "", "", commonConfig());
         diff.similar();
-        assertThat(listener.getDifferenceList(), hasSize(0));
+        assertThat(listener.getDifferenceList()).isEmpty();
     }
 
     @Test
     void shouldSeeEmptyForCheckAnyStringNode() {
         Diff diff = Diff.create("{\"test\": \"${json-unit.any-string}\"}", "{\"test\": \"1\"}", "", "", commonConfig());
         diff.similar();
-        assertThat(listener.getDifferenceList(), hasSize(0));
+        assertThat(listener.getDifferenceList()).isEmpty();
     }
 
     @Test
     void shouldSeeChangedStringNode() {
         Diff diff = Diff.create("{\"test\": \"1\"}", "{\"test\": \"2\"}", "", "", commonConfig());
         diff.similar();
-        assertThat(listener.getDifferenceList(), hasSize(1));
-        assertThat(listener.getDifferenceList().get(0).getType(), equalTo(DifferenceImpl.Type.DIFFERENT));
-        assertThat(listener.getDifferenceList().get(0).getActualPath(), equalTo("test"));
-        assertThat(listener.getDifferenceList().get(0).getExpected(), equalTo("1"));
-        assertThat(listener.getDifferenceList().get(0).getActual(), equalTo("2"));
+        assertThat(listener.getDifferenceList()).hasSize(1);
+        Difference difference = listener.getDifferenceList().get(0);
+        assertThat(difference.getType()).isEqualTo(DIFFERENT);
+        assertThat(difference.getActualPath()).isEqualTo("test");
+        assertThat(difference.getExpected()).isEqualTo("1");
+        assertThat(difference.getActual()).isEqualTo("2");
     }
 
     @Test
     void shouldSeeChangedNumberNode() {
         Diff diff = Diff.create("{\"test\": 1}", "{\"test\": 2 }", "", "", commonConfig());
         diff.similar();
-        assertThat(listener.getDifferenceList(), hasSize(1));
-        assertThat(listener.getDifferenceList().get(0).getType(), equalTo(DifferenceImpl.Type.DIFFERENT));
-        assertThat(listener.getDifferenceList().get(0).getActualPath(), equalTo("test"));
-        assertThat(listener.getDifferenceList().get(0).getExpected(), equalTo(new BigDecimal(1)));
-        assertThat(listener.getDifferenceList().get(0).getActual(), equalTo(new BigDecimal(2)));
+        assertThat(listener.getDifferenceList()).hasSize(1);
+        Difference difference = listener.getDifferenceList().get(0);
+        assertThat(difference.getType()).isEqualTo(DIFFERENT);
+        assertThat(difference.getActualPath()).isEqualTo("test");
+        assertThat(difference.getExpected()).isEqualTo(new BigDecimal(1));
+        assertThat(difference.getActual()).isEqualTo(new BigDecimal(2));
     }
 
     @Test
     void shouldSeeChangedBooleanNode() {
         Diff diff = Diff.create("{\"test\": true}", "{\"test\": false}", "", "", commonConfig());
         diff.similar();
-        assertThat(listener.getDifferenceList(), hasSize(1));
-        assertThat(listener.getDifferenceList().get(0).getType(), equalTo(DifferenceImpl.Type.DIFFERENT));
-        assertThat(listener.getDifferenceList().get(0).getActualPath(), equalTo("test"));
-        assertThat(listener.getDifferenceList().get(0).getExpected(), equalTo(true));
-        assertThat(listener.getDifferenceList().get(0).getActual(), equalTo(false));
+        assertThat(listener.getDifferenceList()).hasSize(1);
+        Difference difference = listener.getDifferenceList().get(0);
+        assertThat(difference.getType()).isEqualTo(DIFFERENT);
+        assertThat(difference.getActualPath()).isEqualTo("test");
+        assertThat(difference.getExpected()).isEqualTo(true);
+        assertThat(difference.getActual()).isEqualTo(false);
     }
 
     @Test
     void shouldSeeChangedStructureNode() {
         Diff diff = Diff.create("{\"test\": \"1\"}", "{\"test\": false}", "", "", commonConfig());
         diff.similar();
-        assertThat(listener.getDifferenceList(), hasSize(1));
-        assertThat(listener.getDifferenceList().get(0).getType(), equalTo(DifferenceImpl.Type.DIFFERENT));
-        assertThat(listener.getDifferenceList().get(0).getActualPath(), equalTo("test"));
-        assertThat(listener.getDifferenceList().get(0).getExpected(), equalTo("1"));
-        assertThat(listener.getDifferenceList().get(0).getActual(), equalTo(false));
+        assertThat(listener.getDifferenceList()).hasSize(1);
+        Difference difference = listener.getDifferenceList().get(0);
+        assertThat(difference.getType()).isEqualTo(DIFFERENT);
+        assertThat(difference.getActualPath()).isEqualTo("test");
+        assertThat(difference.getExpected()).isEqualTo("1");
+        assertThat(difference.getActual()).isEqualTo(false);
     }
 
     @Test
     void shouldSeeChangedArrayNode() {
         Diff diff = Diff.create("[1, 1]", "[1, 2]", "", "", commonConfig());
         diff.similar();
-        assertThat(listener.getDifferenceList(), hasSize(1));
-        assertThat(listener.getDifferenceList().get(0).getType(), equalTo(DifferenceImpl.Type.DIFFERENT));
-        assertThat(listener.getDifferenceList().get(0).getActualPath(), equalTo("[1]"));
-        assertThat(listener.getDifferenceList().get(0).getExpected(), equalTo(valueOf(1)));
-        assertThat(listener.getDifferenceList().get(0).getActual(), equalTo(valueOf(2)));
+        assertThat(listener.getDifferenceList()).hasSize(1);
+        Difference difference = listener.getDifferenceList().get(0);
+        assertThat(difference.getType()).isEqualTo(DIFFERENT);
+        assertThat(difference.getActualPath()).isEqualTo("[1]");
+        assertThat(difference.getExpected()).isEqualTo(valueOf(1));
+        assertThat(difference.getActual()).isEqualTo(valueOf(2));
     }
 
     @Test
     void shouldSeeRemovedArrayNode() {
         Diff diff = Diff.create("[1, 2]", "[1]", "", "", commonConfig());
         diff.similar();
-        assertThat(listener.getDifferenceList(), hasSize(1));
-        assertThat(listener.getDifferenceList().get(0).getType(), equalTo(DifferenceImpl.Type.MISSING));
-        assertThat(listener.getDifferenceList().get(0).getActualPath(), nullValue());
-        assertThat(listener.getDifferenceList().get(0).getExpectedPath(), equalTo("[1]"));
-        assertThat(listener.getDifferenceList().get(0).getExpected(), equalTo(valueOf(2)));
-        assertThat(listener.getDifferenceList().get(0).getActual(), nullValue());
+        assertThat(listener.getDifferenceList()).hasSize(1);
+        Difference difference = listener.getDifferenceList().get(0);
+        assertThat(difference.getType()).isEqualTo(DifferenceImpl.Type.MISSING);
+        assertThat(difference.getActualPath()).isNull();
+        assertThat(difference.getExpectedPath()).isEqualTo("[1]");
+        assertThat(difference.getExpected()).isEqualTo(valueOf(2));
+        assertThat(difference.getActual()).isNull();
     }
 
     @Test
     void shouldSeeAddedArrayNode() {
         Diff diff = Diff.create("[1]", "[1, 2]", "", "", commonConfig());
         diff.similar();
-        assertThat(listener.getDifferenceList(), hasSize(1));
-        assertThat(listener.getDifferenceList().get(0).getType(), equalTo(DifferenceImpl.Type.EXTRA));
-        assertThat(listener.getDifferenceList().get(0).getActual(), equalTo(valueOf(2)));
-        assertThat(listener.getDifferenceList().get(0).getActualPath(), equalTo("[1]"));
-        assertThat(listener.getDifferenceList().get(0).getExpectedPath(), nullValue());
-        assertThat(listener.getDifferenceList().get(0).getExpected(), nullValue());
+        assertThat(listener.getDifferenceList()).hasSize(1);
+        Difference difference = listener.getDifferenceList().get(0);
+        assertThat(difference.getType()).isEqualTo(EXTRA);
+        assertThat(difference.getActual()).isEqualTo(valueOf(2));
+        assertThat(difference.getActualPath()).isEqualTo("[1]");
+        assertThat(difference.getExpectedPath()).isNull();
+        assertThat(difference.getExpected()).isNull();
     }
 
     @Test
@@ -192,18 +195,19 @@ public class DifferenceTest {
         Diff diff = Diff.create(
                 "{\"test\": { \"test1\": \"1\"}}", "{\"test\": { \"test1\": \"2\"} }", "", "", commonConfig());
         diff.similar();
-        assertThat(listener.getDifferenceList(), hasSize(1));
-        assertThat(listener.getDifferenceList().get(0).getType(), equalTo(DifferenceImpl.Type.DIFFERENT));
-        assertThat(listener.getDifferenceList().get(0).getActualPath(), equalTo("test.test1"));
-        assertThat(listener.getDifferenceList().get(0).getExpected(), equalTo("1"));
-        assertThat(listener.getDifferenceList().get(0).getActual(), equalTo("2"));
+        assertThat(listener.getDifferenceList()).hasSize(1);
+        Difference difference = listener.getDifferenceList().get(0);
+        assertThat(difference.getType()).isEqualTo(DIFFERENT);
+        assertThat(difference.getActualPath()).isEqualTo("test.test1");
+        assertThat(difference.getExpected()).isEqualTo("1");
+        assertThat(difference.getActual()).isEqualTo("2");
     }
 
     @Test
     void shouldSeeNullNode() {
         Diff diff = Diff.create(null, null, "", "", commonConfig());
         diff.similar();
-        assertThat(listener.getDifferenceList(), hasSize(0));
+        assertThat(listener.getDifferenceList()).isEmpty();
     }
 
     @Test
@@ -215,26 +219,27 @@ public class DifferenceTest {
                 "",
                 commonConfig().when(IGNORING_ARRAY_ORDER));
         diff.similar();
-        assertThat(listener.getDifferenceList(), hasSize(1));
-        assertThat(listener.getDifferenceList().get(0).getType(), equalTo(DifferenceImpl.Type.DIFFERENT));
-        assertThat(listener.getDifferenceList().get(0).getActualPath(), equalTo("test[0][0]"));
-        assertThat(listener.getDifferenceList().get(0).getActual(), equalTo(valueOf(4)));
-        assertThat(listener.getDifferenceList().get(0).getExpectedPath(), equalTo("test[1][1]"));
-        assertThat(listener.getDifferenceList().get(0).getExpected(), equalTo(valueOf(3)));
+        assertThat(listener.getDifferenceList()).hasSize(1);
+        Difference difference = listener.getDifferenceList().get(0);
+        assertThat(difference.getType()).isEqualTo(DIFFERENT);
+        assertThat(difference.getActualPath()).isEqualTo("test[0][0]");
+        assertThat(difference.getActual()).isEqualTo(valueOf(4));
+        assertThat(difference.getExpectedPath()).isEqualTo("test[1][1]");
+        assertThat(difference.getExpected()).isEqualTo(valueOf(3));
     }
 
     @Test
     void shouldSeeActualSource() {
         Diff diff = Diff.create("{\"test\": \"1\"}", "{}", "", "", commonConfig());
         diff.similar();
-        assertThat(listener.getActualSource().toString(), equalTo("{}"));
+        assertThat(listener.getActualSource().toString()).isEqualTo("{}");
     }
 
     @Test
     void shouldSeeExpectedSource() {
         Diff diff = Diff.create("{\"test\": \"1\"}", "{}", "", "", commonConfig());
         diff.similar();
-        assertThat(listener.getExpectedSource(), equalTo(singletonMap("test", "1")));
+        assertThat(listener.getExpectedSource()).isEqualTo(singletonMap("test", "1"));
     }
 
     @Test
@@ -246,27 +251,27 @@ public class DifferenceTest {
                 "",
                 "",
                 cfg);
-        assertTrue(diff.similar());
-        assertThat(listener.getDifferenceList(), hasSize(0));
+        assertThat(diff.similar()).isTrue();
+        assertThat(listener.getDifferenceList()).isEmpty();
     }
 
     @Test
     void shouldBeAwareOfRootMissingElement() {
         Diff diff = Diff.create("foo", "{\"test\":-1}", "", "path.node", commonConfig());
-        assertFalse(diff.similar());
+        assertThat(diff.similar()).isFalse();
 
-        Assertions.assertThat(listener.getDifferenceList()).hasSize(1);
+        assertThat(listener.getDifferenceList()).hasSize(1);
         Difference difference = listener.getDifferenceList().get(0);
-        Assertions.assertThat(difference.getType()).isEqualTo(MISSING);
-        Assertions.assertThat(difference.getExpectedPath()).isEqualTo("path.node");
-        Assertions.assertThat(difference.getActualPath()).isEqualTo(null);
-        Assertions.assertThat(difference.getExpected()).isEqualTo("bar");
-        Assertions.assertThat(difference.getActual()).isEqualTo(null);
+        assertThat(difference.getType()).isEqualTo(MISSING);
+        assertThat(difference.getExpectedPath()).isEqualTo("path.node");
+        assertThat(difference.getActualPath()).isEqualTo(null);
+        assertThat(difference.getExpected()).isEqualTo("foo");
+        assertThat(difference.getActual()).isEqualTo(null);
     }
 
     @Test
     @Timeout(1)
-    void shouldRunDiffBeforeTimeout() throws URISyntaxException, IOException {
+    void shouldRunDiffBeforeTimeout() {
         var actual = resource("big-json-with-common-keys-actual.json");
         var expected = resource("big-json-with-common-keys-expected.json");
         var cfg = commonConfig()
