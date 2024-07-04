@@ -15,7 +15,6 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-
 import static java.math.BigDecimal.valueOf;
 import static java.util.Collections.singletonMap;
 import static net.javacrumbs.jsonunit.core.Option.FAIL_FAST;
@@ -267,6 +266,37 @@ public class DifferenceTest {
         assertThat(difference.getActualPath()).isEqualTo(null);
         assertThat(difference.getExpected()).isEqualTo("foo");
         assertThat(difference.getActual()).isEqualTo(null);
+    }
+
+    @Test
+    void shouldWorkWhenExtraArrayItemsAreNotAllowed() {
+        Diff diff = Diff.create(
+                "{\"test\": [2, 3]}",
+                "{\"test\": [1, 2, 3]}",
+                "",
+                "",
+                commonConfig().when(IGNORING_ARRAY_ORDER));
+        assertThat(diff.similar()).isFalse();
+
+        assertThat(listener.getDifferenceList()).hasSize(1);
+        Difference difference = listener.getDifferenceList().get(0);
+        assertThat(difference.getType()).isEqualTo(EXTRA);
+        assertThat(difference.getExpectedPath()).isEqualTo(null);
+        assertThat(difference.getActualPath()).isEqualTo("test[0]");
+        assertThat(difference.getExpected()).isEqualTo(null);
+        assertThat(difference.getActual()).isEqualTo(valueOf(1));
+    }
+
+    @Test
+    void shouldWorkWhenExtraArrayItemsAreAllowed() {
+        Diff diff = Diff.create(
+                "{\"test\": [2, 3]}",
+                "{\"test\": [1, 2, 3]}",
+                "",
+                "",
+                commonConfig().when(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_ARRAY_ITEMS));
+        assertThat(diff.similar()).isTrue();
+        assertThat(listener.getDifferenceList()).isEmpty();
     }
 
     @Test

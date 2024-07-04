@@ -245,7 +245,6 @@ public class Diff {
         }
     }
 
-
     private void removePathsToBeIgnored(Path path, Set<String> extraKeys) {
         if (!configuration.getPathsToBeIgnored().isEmpty()) {
             extraKeys.removeIf(key -> shouldIgnorePath(path.toField(key)));
@@ -632,7 +631,6 @@ public class Diff {
     }
 
     private List<Node> asList(Iterator<Node> elements) {
-        //TODO:
         List<Node> result = new ArrayList<>();
         elements.forEachRemaining(result::add);
         return Collections.unmodifiableList(result);
