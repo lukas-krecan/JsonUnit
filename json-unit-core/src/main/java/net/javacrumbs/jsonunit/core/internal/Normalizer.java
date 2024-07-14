@@ -1,8 +1,10 @@
 package net.javacrumbs.jsonunit.core.internal;
 
-import static java.util.Comparator.comparing;
-
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 import java.util.Spliterators;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -12,28 +14,33 @@ class Normalizer {
 
     private static int depth = 2;
 
-    static String toNormalizedString(Node node) {
+    /**
+     *
+     * @param node to be printed
+     * @param expected to use for ordering in objects
+     */
+    static String toNormalizedString(Node node, Node expected) {
         StringBuilder sb = new StringBuilder();
-        normalize(node, sb, 0);
+        normalize(node, expected, sb, 0);
         return sb.toString();
     }
 
-    private static void normalize(Node node, StringBuilder sb, int indent) {
+    private static void normalize(Node node, Node expected, StringBuilder sb, int indent) {
         switch (node.getNodeType()) {
-            case OBJECT -> normalizeObject(node, sb, indent);
-            case ARRAY -> normalizeArray(node, sb, indent);
-            case STRING -> sb.append('\"').append(node).append('"');
+            case OBJECT -> normalizeObject(node, expected, sb, indent);
+            case ARRAY -> normalizeArray(node, expected, sb, indent);
             default -> sb.append(node);
         }
     }
 
-    private static void normalizeArray(Node node, StringBuilder sb, int indent) {
+    private static void normalizeArray(Node node, Node expected, StringBuilder sb, int indent) {
         sb.append("[\n");
         Iterator<Node> elements = node.arrayElements();
+        int i = 0;
         while (elements.hasNext()) {
             var element = elements.next();
             addIndent(sb, indent + depth);
-            normalize(element, sb, indent + depth);
+            normalize(element, expected.element(i), sb, indent + depth);
             if (elements.hasNext()) sb.append(",");
             sb.append('\n');
         }
@@ -41,16 +48,37 @@ class Normalizer {
         sb.append("]");
     }
 
-    private static void normalizeObject(Node node, StringBuilder sb, int indent) {
+    private static void normalizeObject(Node node, Node expected, StringBuilder sb, int indent) {
         sb.append("{\n");
-        Iterator<KeyValue> sortedValues =
-                stream(node.fields()).sorted(comparing(KeyValue::getKey)).iterator();
-        while (sortedValues.hasNext()) {
-            var keyValue = sortedValues.next();
+        Iterator<KeyValue> expectedValues = expected.fields();
+        List<KeyValue> toBePrinted = new ArrayList<>();
+        Set<String> processedKeys = new HashSet<>();
+        // Print actual values in order of expected values
+        while (expectedValues.hasNext()) {
+            var key = expectedValues.next().getKey();
+            var value = node.get(key);
+            if (!value.isMissingNode()) {
+                toBePrinted.add(new KeyValue(key, value));
+                processedKeys.add(key);
+            }
+        }
+
+        // Print values that were not in expected
+        Iterator<KeyValue> nodeFields = node.fields();
+        while (nodeFields.hasNext()) {
+            var keyValue = nodeFields.next();
+            if (!processedKeys.contains(keyValue.getKey())) {
+                toBePrinted.add(keyValue);
+            }
+        }
+
+        var toBePrintedIterator = toBePrinted.iterator();
+        while (toBePrintedIterator.hasNext()) {
+            var keyValue = toBePrintedIterator.next();
             addIndent(sb, indent + depth);
             sb.append('"').append(keyValue.getKey()).append("\": ");
-            normalize(keyValue.getValue(), sb, indent + depth);
-            if (sortedValues.hasNext()) sb.append(",");
+            normalize(keyValue.getValue(), expected.get(keyValue.getKey()), sb, indent + depth);
+            if (toBePrintedIterator.hasNext()) sb.append(",");
             sb.append('\n');
         }
         addIndent(sb, indent);

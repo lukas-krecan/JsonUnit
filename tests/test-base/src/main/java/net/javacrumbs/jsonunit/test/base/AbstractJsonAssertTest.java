@@ -1390,7 +1390,7 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
-    void shouldCompareLongArraysWithTwoEquivaletSets() {
+    void shouldCompareLongArraysWithTwoEquivalentSets() {
         String actual =
                 "[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5]";
 

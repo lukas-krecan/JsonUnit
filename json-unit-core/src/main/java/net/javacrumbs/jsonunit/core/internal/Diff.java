@@ -34,6 +34,7 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
 import static net.javacrumbs.jsonunit.core.internal.Node.KeyValue;
+import static net.javacrumbs.jsonunit.core.internal.Node.MISSING_NODE;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType;
 import static net.javacrumbs.jsonunit.core.internal.Normalizer.toNormalizedString;
 
@@ -724,8 +725,8 @@ public class Diff {
                     || actualRoot.isMissingNode()) {
                 throw createException(message, differences);
             } else {
-                String normalizedExpected = toNormalizedString(expectedRoot);
-                String normalizedActual = toNormalizedString(actualRoot);
+                String normalizedExpected = toNormalizedString(expectedRoot, MISSING_NODE);
+                String normalizedActual = toNormalizedString(actualRoot, expectedRoot);
                 throw new AssertionFailedError(
                         "JSON documents are different: expected <" + normalizedExpected + ">" + "but was <"
                                 + normalizedActual + ">",
