@@ -30,6 +30,7 @@ import jakarta.json.JsonValue;
 import jakarta.json.stream.JsonParsingException;
 import java.io.Reader;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 import org.apache.johnzon.core.JsonLongImpl;
@@ -133,7 +134,7 @@ class JohnzonNodeFactory extends AbstractNodeFactory {
                     }
                 };
             }
-            throw new IllegalStateException("Can call fields() only on an JsonObject");
+            return Collections.emptyIterator();
         }
 
         @Override
