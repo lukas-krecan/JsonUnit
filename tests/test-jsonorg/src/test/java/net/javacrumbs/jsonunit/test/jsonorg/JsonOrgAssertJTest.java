@@ -60,7 +60,6 @@ public class JsonOrgAssertJTest extends AbstractAssertJTest {
         // ignored, no support of object serialization neither
     }
 
-
     @Override
     @Test
     protected void objectFieldsShouldBeKeptInOrder() {
