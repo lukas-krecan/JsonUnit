@@ -47,6 +47,11 @@ interface NodeWrapper extends Node {
     }
 
     @Override
+    default boolean isObject() {
+        return getWrappedNode().isObject();
+    }
+
+    @Override
     default Iterator<Node> arrayElements() {
         return getWrappedNode().arrayElements();
     }

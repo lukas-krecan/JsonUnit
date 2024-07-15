@@ -1,5 +1,7 @@
 package net.javacrumbs.jsonunit.core.internal;
 
+import static java.util.Collections.emptyIterator;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -50,7 +52,7 @@ class Normalizer {
 
     private static void normalizeObject(Node node, Node expected, StringBuilder sb, int indent) {
         sb.append("{\n");
-        Iterator<KeyValue> expectedValues = expected.fields();
+        Iterator<KeyValue> expectedValues = expected.isObject() ? expected.fields() : emptyIterator();
         List<KeyValue> toBePrinted = new ArrayList<>();
         Set<String> processedKeys = new HashSet<>();
         // Print actual values in order of expected values
