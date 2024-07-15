@@ -96,6 +96,8 @@ public interface Node {
 
     boolean isNull();
 
+    boolean isObject();
+
     Iterator<Node> arrayElements();
 
     /**
@@ -170,6 +172,11 @@ public interface Node {
 
         @Override
         public boolean isNull() {
+            return false;
+        }
+
+        @Override
+        public boolean isObject() {
             return false;
         }
 

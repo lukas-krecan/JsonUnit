@@ -56,6 +56,11 @@ class ExpectedNode implements Node {
     }
 
     @Override
+    public boolean isObject() {
+        return wrappedNode.isObject();
+    }
+
+    @Override
     public Iterator<Node> arrayElements() {
         return wrappedNode.arrayElements();
     }

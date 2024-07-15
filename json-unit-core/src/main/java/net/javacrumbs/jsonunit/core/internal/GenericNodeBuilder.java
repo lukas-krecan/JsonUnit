@@ -85,6 +85,11 @@ class GenericNodeBuilder implements NodeBuilder {
         }
 
         @Override
+        public boolean isObject() {
+            return false;
+        }
+
+        @Override
         public boolean isNull() {
             return false;
         }
@@ -305,6 +310,11 @@ class GenericNodeBuilder implements NodeBuilder {
                     return new KeyValue(fieldName, newNode(fieldName));
                 }
             };
+        }
+
+        @Override
+        public boolean isObject() {
+            return true;
         }
 
         @Override
