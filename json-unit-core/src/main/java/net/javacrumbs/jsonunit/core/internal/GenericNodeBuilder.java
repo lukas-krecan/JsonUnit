@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.jetbrains.annotations.NotNull;
 
 class GenericNodeBuilder implements NodeBuilder {
     private static final GenericNodeBuilder INSTANCE = new GenericNodeBuilder();
@@ -276,7 +275,7 @@ class GenericNodeBuilder implements NodeBuilder {
         }
     }
 
-    static final class ObjectNode extends NodeSkeleton implements Iterable<Node.KeyValue> {
+    static final class ObjectNode extends NodeSkeleton {
         private final Map<String, Object> jsonObject;
         private final NodeBuilder nodeBuilder;
 
@@ -318,11 +317,6 @@ class GenericNodeBuilder implements NodeBuilder {
         }
 
         @Override
-        public @NotNull Iterator<KeyValue> iterator() {
-            return fields();
-        }
-
-        @Override
         public Node get(String key) {
             if (jsonObject.containsKey(key)) {
                 return newNode(key);
@@ -344,7 +338,7 @@ class GenericNodeBuilder implements NodeBuilder {
         public String toString() {
             StringBuilder builder = new StringBuilder();
             builder.append("{");
-            Iterator<Node.KeyValue> entries = this.iterator();
+            Iterator<Node.KeyValue> entries = this.fields();
             while (entries.hasNext()) {
                 Node.KeyValue entry = entries.next();
                 builder.append('"')
