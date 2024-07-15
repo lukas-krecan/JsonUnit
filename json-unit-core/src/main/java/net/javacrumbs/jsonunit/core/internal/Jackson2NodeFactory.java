@@ -141,6 +141,11 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
         }
 
         @Override
+        public boolean isObject() {
+            return jsonNode.isObject();
+        }
+
+        @Override
         public Iterator<Node> arrayElements() {
             final Iterator<JsonNode> elements = jsonNode.elements();
             return new Iterator<>() {
