@@ -15,7 +15,6 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import static java.util.stream.Collectors.toUnmodifiableSet;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toCollection;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
@@ -236,9 +235,11 @@ public interface Node {
         public Set<Entry<String, Object>> entrySet() {
             if (entrySet == null) {
                 Iterator<KeyValue> fields = wrappedNode.fields();
-                entrySet = StreamSupport.stream(Spliterators.spliteratorUnknownSize(fields, java.util.Spliterator.ORDERED), false)
-                                        .map(keyValue -> new SimpleEntry<>(keyValue.getKey(), keyValue.getValue().getValue()))
-                                        .collect(collectingAndThen(toCollection(LinkedHashSet::new), Collections::unmodifiableSet));
+                entrySet = StreamSupport.stream(
+                                Spliterators.spliteratorUnknownSize(fields, java.util.Spliterator.ORDERED), false)
+                        .map(keyValue -> new SimpleEntry<>(
+                                keyValue.getKey(), keyValue.getValue().getValue()))
+                        .collect(collectingAndThen(toCollection(LinkedHashSet::new), Collections::unmodifiableSet));
             }
             return entrySet;
         }
