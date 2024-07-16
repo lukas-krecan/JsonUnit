@@ -57,4 +57,10 @@ public class JsonOrgAssertJTest extends AbstractAssertJTest {
     protected void shouldEqualNumberInObject() {
         // ignored, no support of object serialization neither
     }
+
+    @Override
+    @Test
+    protected void objectFieldsShouldBeKeptInOrder() {
+        // ignored, json org does not keep the order in JSON
+    }
 }
