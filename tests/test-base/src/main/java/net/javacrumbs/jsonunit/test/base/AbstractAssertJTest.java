@@ -256,12 +256,12 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
-    void objectFieldsShouldBeKeptInOrder() {
+    protected void objectFieldsShouldBeKeptInOrder() {
         assertThatJson("{\"root\":{\"key3\": 3, \"key2\": 2, \"key1\": 1 }}").node("root")
             .isObject()
-            .containsExactly(entry("key3", 3),
-                             entry("key2", 2),
-                             entry("key1", 1));
+            .containsExactly(entry("key3", valueOf(3)),
+                             entry("key2", valueOf(2)),
+                             entry("key1", valueOf(1)));
     }
 
     @Test
