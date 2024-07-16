@@ -15,21 +15,21 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import org.jetbrains.annotations.NotNull;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toCollection;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
 
 import java.math.BigDecimal;
 import java.util.AbstractMap;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Set;
 import java.util.Spliterators;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static java.util.Collections.unmodifiableSet;
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
-
+import org.jetbrains.annotations.NotNull;
 
 /**
  * For internal use only!!! Abstract node representation.
@@ -235,10 +235,9 @@ public interface Node {
         public Set<Entry<String, Object>> entrySet() {
             if (entrySet == null) {
                 Iterator<KeyValue> fields = wrappedNode.fields();
-                entrySet = unmodifiableSet(StreamSupport.stream(Spliterators.spliteratorUnknownSize(fields, 0), false)
-                        .map(keyValue -> new SimpleEntry<>(
-                                keyValue.getKey(), keyValue.getValue().getValue()))
-                        .collect(Collectors.toSet()));
+                entrySet = StreamSupport.stream(Spliterators.spliteratorUnknownSize(fields, java.util.Spliterator.ORDERED), false)
+                                        .map(keyValue -> new SimpleEntry<>(keyValue.getKey(), keyValue.getValue().getValue()))
+                                        .collect(collectingAndThen(toCollection(LinkedHashSet::new), Collections::unmodifiableSet));
             }
             return entrySet;
         }
