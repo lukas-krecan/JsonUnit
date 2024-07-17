@@ -98,7 +98,7 @@ class GsonNodeFactory extends AbstractNodeFactory {
 
         @Override
         public Iterator<KeyValue> fields() {
-            if (jsonNode instanceof JsonObject) {
+            if (isObject()) {
                 final Iterator<Map.Entry<String, JsonElement>> iterator =
                         ((JsonObject) jsonNode).entrySet().iterator();
                 return new Iterator<>() {
@@ -139,6 +139,11 @@ class GsonNodeFactory extends AbstractNodeFactory {
         @Override
         public boolean isNull() {
             return jsonNode.isJsonNull();
+        }
+
+        @Override
+        public boolean isObject() {
+            return jsonNode instanceof JsonObject;
         }
 
         @Override
