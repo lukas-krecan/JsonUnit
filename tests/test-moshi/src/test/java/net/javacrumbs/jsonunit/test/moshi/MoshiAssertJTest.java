@@ -30,7 +30,8 @@ public class MoshiAssertJTest extends AbstractAssertJTest {
     }
 
     @Test
-    void shouldAssertInteger() {
+    @Override
+    protected void shouldAssertInteger() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":1}").node("a").isIntegralNumber())
                 .isInstanceOf(UnsupportedOperationException.class);
     }
@@ -42,7 +43,8 @@ public class MoshiAssertJTest extends AbstractAssertJTest {
     }
 
     @Test
-    void shouldAssertIntegerFailure() {
+    @Override
+    protected void shouldAssertIntegerFailure() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":1.0}").node("a").isIntegralNumber())
                 .isInstanceOf(UnsupportedOperationException.class);
     }
