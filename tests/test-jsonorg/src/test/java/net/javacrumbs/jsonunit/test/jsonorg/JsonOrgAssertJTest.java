@@ -68,9 +68,10 @@ public class JsonOrgAssertJTest extends AbstractAssertJTest {
 
     @Nested
     class ReportAsString extends AbstractAssertJTest.ReportAsString {
+        @Override
         @Test
         @Disabled
-        void shouldNormalizeComplexJsons() {
+        public void shouldNormalizeComplexJsons() {
             // ignored, does not maintain order
         }
     }

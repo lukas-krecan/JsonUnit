@@ -14,7 +14,7 @@ import net.javacrumbs.jsonunit.core.internal.Node.KeyValue;
 
 class Normalizer {
 
-    private static int depth = 2;
+    private static final int depth = 2;
 
     /**
      *
