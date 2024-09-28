@@ -55,6 +55,7 @@ import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest.DivisionMatcher;
 import org.hamcrest.Matcher;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
 import org.opentest4j.MultipleFailuresError;
@@ -2337,7 +2338,7 @@ public abstract class AbstractAssertJTest {
     @Nested
     protected class ReportAsString {
         @Test
-        void shouldNormalizeComplexJsons() {
+        protected void shouldNormalizeComplexJsons() {
             assertThatThrownBy(() -> assertThatJson("{\"a\": {\"c\": [{\"e\": 2, \"f\": 3}, 3]}, \"b\": false}")
                             .when(REPORTING_DIFFERENCE_AS_NORMALIZED_STRING)
                             .isEqualTo("{\"b\": true, \"a\": {\"c\": [{\"f\": 2, \"e\": 3}, 5]}}"))
