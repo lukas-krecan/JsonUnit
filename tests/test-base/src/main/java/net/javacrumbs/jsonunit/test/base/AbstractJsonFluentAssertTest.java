@@ -476,7 +476,7 @@ public abstract class AbstractJsonFluentAssertTest {
                         .withDifferenceListener(listener)
                         .isEqualTo("{\"test\": \"#{json-unit.matches:positive}\"}"))
                 .hasMessage(
-                        "JSON documents are different:\nMatcher \"positive\" does not match value -1 in node \"test\". <-1> was less than <0>\n");
+                        "JSON documents are different:\nMatcher \"positive\" does not match value -1 in node \"test\". Expected a value greater than <0> but <-1> was less than <0>\n");
         assertThat(listener.getDifferenceList()).hasSize(1);
         assertThat(listener.getDifferenceList().get(0).toString())
                 .isEqualTo("DIFFERENT Expected #{json-unit.matches:positive} in test got -1 in test");

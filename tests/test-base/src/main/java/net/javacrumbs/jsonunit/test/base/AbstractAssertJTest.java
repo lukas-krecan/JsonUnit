@@ -1311,7 +1311,7 @@ public abstract class AbstractAssertJTest {
                         .withDifferenceListener(listener)
                         .isEqualTo("{\"test\": \"${json-unit.matches:positive}\"}"))
                 .hasMessage(
-                        "JSON documents are different:\nMatcher \"positive\" does not match value -1 in node \"test\". <-1> was less than <0>\n");
+                        "JSON documents are different:\nMatcher \"positive\" does not match value -1 in node \"test\". Expected a value greater than <0> but <-1> was less than <0>\n");
 
         assertThat(listener.getDifferenceList()).hasSize(1);
         assertThat(listener.getDifferenceList().get(0).toString())
@@ -1327,7 +1327,7 @@ public abstract class AbstractAssertJTest {
                     .isEqualTo("{\"test\": \"${json-unit.matches:isDivisibleBy}3\"}");
         } catch (AssertionError e) {
             assertEquals(
-                    "JSON documents are different:\nMatcher \"isDivisibleBy\" does not match value 5 in node \"test\". It is not divisible by <3>\n",
+                    "JSON documents are different:\nMatcher \"isDivisibleBy\" does not match value 5 in node \"test\". Expected value divisible by <3> but was <5>\n",
                     e.getMessage());
         }
     }
@@ -2309,6 +2309,28 @@ public abstract class AbstractAssertJTest {
                     JSON documents are different:
                     Different value found in node "a.a1", expected: <2> but was: <1>.
                     """);
+    }
+
+    @Test
+    void hamcrestMessageTest() {
+        assertThatThrownBy(
+                        () -> assertThatJson("""
+        {
+          "someText": "abc123"
+        }
+        """)
+                                .withMatcher("exampleMatcher", org.hamcrest.Matchers.equalTo("def456"))
+                                .isEqualTo(
+                                        """
+            {
+              "someText": "${json-unit.matches:exampleMatcher}"
+            }
+            """))
+                .hasMessage(
+                        """
+            JSON documents are different:
+            Matcher "exampleMatcher" does not match value "abc123" in node "someText". Expected "def456" but was "abc123"
+            """);
     }
 
     private static final String json =

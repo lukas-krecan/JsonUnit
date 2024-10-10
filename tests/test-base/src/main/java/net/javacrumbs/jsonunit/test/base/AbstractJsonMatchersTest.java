@@ -131,7 +131,7 @@ public abstract class AbstractJsonMatchersTest {
 
                 Expected: {"test": "${json-unit.matches:positive}"}
                      but: JSON documents are different:
-                Matcher "positive" does not match value -1 in node "test". <-1> was less than <0>
+                Matcher "positive" does not match value -1 in node "test". Expected a value greater than <0> but <-1> was less than <0>
                 """);
     }
 

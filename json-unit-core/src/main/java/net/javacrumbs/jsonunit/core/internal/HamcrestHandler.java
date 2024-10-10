@@ -34,6 +34,9 @@ class HamcrestHandler {
             Object value = actualNode.getValue();
             if (!matcher.matches(value)) {
                 Description description = new StringDescription();
+                description.appendText("Expected ");
+                matcher.describeTo(description);
+                description.appendText(" but ");
                 matcher.describeMismatch(value, description);
                 valueDifferenceReporter.differenceFound(
                         context,
