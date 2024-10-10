@@ -1049,7 +1049,7 @@ public abstract class AbstractJsonAssertTest {
                     JsonAssert.withMatcher("isDivisibleBy", divisionMatcher));
         } catch (AssertionError e) {
             assertEquals(
-                    "JSON documents are different:\nMatcher \"isDivisibleBy\" does not match value 5 in node \"test\". It is not divisible by <3>\n",
+                    "JSON documents are different:\nMatcher \"isDivisibleBy\" does not match value 5 in node \"test\". Expected value divisible by <3> but was <5>\n",
                     e.getMessage());
         }
     }
@@ -1102,7 +1102,7 @@ public abstract class AbstractJsonAssertTest {
                         """
                 JSON documents are different:
                 Different value found when comparing expected array element test[0] to actual element test[1].
-                Matcher "eq" does not match value 2 in node "test[1]".\s
+                Matcher "eq" does not match value 2 in node "test[1]". Expected number equal to <1> but was <2>
                 """);
     }
 
@@ -1116,12 +1116,7 @@ public abstract class AbstractJsonAssertTest {
 
         @Override
         public void describeTo(Description description) {
-            description.appendValue(param);
-        }
-
-        @Override
-        public void describeMismatch(Object item, Description description) {
-            description.appendText("It is not divisible by ").appendValue(param);
+            description.appendText("value divisible by ").appendValue(param);
         }
 
         @Override
@@ -1163,11 +1158,8 @@ public abstract class AbstractJsonAssertTest {
 
         @Override
         public void describeTo(Description description) {
-            description.appendValue(param);
+            description.appendText("number equal to ").appendValue(param);
         }
-
-        @Override
-        public void describeMismatch(Object item, Description description) {}
 
         @Override
         public void setParameter(String parameter) {
@@ -1295,7 +1287,7 @@ public abstract class AbstractJsonAssertTest {
                         "{\"test\":-1}",
                         withMatcher("positive", greaterThan(valueOf(0)))))
                 .hasMessage(
-                        "JSON documents are different:\nMatcher \"positive\" does not match value -1 in node \"test\". <-1> was less than <0>\n");
+                        "JSON documents are different:\nMatcher \"positive\" does not match value -1 in node \"test\". Expected a value greater than <0> but <-1> was less than <0>\n");
     }
 
     @Test

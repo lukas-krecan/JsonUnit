@@ -104,7 +104,7 @@ class WebTestClientTest {
                         .node("result.decimal")
                         .isEqualTo("${json-unit.matches:negative}")))
                 .hasMessage(
-                        "JSON documents are different:\nMatcher \"negative\" does not match value 1.00001 in node \"result.decimal\". <1.00001> was greater than <0>\n");
+                        "JSON documents are different:\nMatcher \"negative\" does not match value 1.00001 in node \"result.decimal\". Expected a value less than <0> but <1.00001> was greater than <0>\n");
     }
 
     @Test
