@@ -19,6 +19,8 @@ import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJsonOrg;
 
 import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 public class JsonOrgAssertJTest extends AbstractAssertJTest {
@@ -62,5 +64,15 @@ public class JsonOrgAssertJTest extends AbstractAssertJTest {
     @Test
     protected void objectFieldsShouldBeKeptInOrder() {
         // ignored, json org does not keep the order in JSON
+    }
+
+    @Nested
+    class ReportAsString extends AbstractAssertJTest.ReportAsString {
+        @Override
+        @Test
+        @Disabled
+        public void shouldNormalizeComplexJsons() {
+            // ignored, does not maintain order
+        }
     }
 }
