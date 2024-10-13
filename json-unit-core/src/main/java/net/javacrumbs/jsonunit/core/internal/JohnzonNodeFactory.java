@@ -20,23 +20,23 @@ import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toBoolList;
 import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toDoubleList;
 import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toIntList;
 
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonNumber;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
+import jakarta.json.JsonString;
+import jakarta.json.JsonValue;
+import jakarta.json.stream.JsonParsingException;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.Map;
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonNumber;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonString;
-import javax.json.JsonValue;
-import javax.json.stream.JsonParsingException;
 import org.apache.johnzon.core.JsonLongImpl;
 import org.apache.johnzon.mapper.Mapper;
 import org.apache.johnzon.mapper.MapperBuilder;
 
-public class JohnzonNodeFactory extends AbstractNodeFactory {
+class JohnzonNodeFactory extends AbstractNodeFactory {
 
     private final Mapper mapper = new MapperBuilder().build();
 
@@ -138,7 +138,7 @@ public class JohnzonNodeFactory extends AbstractNodeFactory {
 
         @Override
         public Node get(String key) {
-            if (jsonNode instanceof JsonObject) {
+            if (isObject()) {
                 JsonObject jsonObject = (JsonObject) this.jsonNode;
                 if (jsonObject.containsKey(key)) {
                     return newNode(jsonObject.get(key));
@@ -158,6 +158,11 @@ public class JohnzonNodeFactory extends AbstractNodeFactory {
         @Override
         public boolean isNull() {
             return jsonNode.equals(JsonValue.NULL);
+        }
+
+        @Override
+        public boolean isObject() {
+            return jsonNode instanceof JsonObject;
         }
 
         @Override

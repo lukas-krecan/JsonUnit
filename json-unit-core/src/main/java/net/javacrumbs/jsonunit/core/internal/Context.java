@@ -39,12 +39,12 @@ record Context(Node expectedNode, Node actualNode, Path expectedPath, Path actua
                 configuration);
     }
 
-    Context missingElement(int i) {
-        return new Context(expectedNode.element(i), null, expectedPath.toElement(i), null, configuration);
+    public Context clearActual() {
+        return new Context(expectedNode, null, expectedPath, null, configuration);
     }
 
-    Context extraElement(int i) {
-        return new Context(null, actualNode.element(i), null, actualPath.toElement(i), configuration);
+    public Context clearExpected() {
+        return new Context(null, actualNode, null, actualPath, configuration);
     }
 
     Context length(Object expectedLength) {
