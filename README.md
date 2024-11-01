@@ -139,7 +139,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>3.4.1</version>
+    <version>3.5.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -172,7 +172,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>3.4.1</version>
+    <version>3.5.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -217,7 +217,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>3.4.1</version>
+    <version>3.5.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -261,7 +261,7 @@ Import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>3.4.1</version>
+    <version>3.5.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -284,7 +284,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>3.4.1</version>
+    <version>3.5.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -300,7 +300,7 @@ Import:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-kotest</artifactId>
-    <version>3.4.1</version>
+    <version>3.5.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -366,7 +366,7 @@ For the other API styles you have to first import JsonPath support module
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-json-path</artifactId>
-    <version>3.4.1</version>
+    <version>3.5.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -749,6 +749,10 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release notes
 =============
+## 3.5.0 (2024-11-01)
+* Direct support for when path option in Spring matchers
+* Dependency updates
+
 ## 3.4.1 + 2.40.1 (2024-07-16)
 * #796 fix order of elements in JsonMap (thanks @glhez)
 
