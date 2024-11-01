@@ -751,6 +751,7 @@ Release notes
 =============
 ## 3.5.0 (2024-11-01)
 * Direct support for when path option in Spring matchers
+* #820 Fix Hamcrest matcher error message
 * Dependency updates
 
 ## 3.4.1 + 2.40.1 (2024-07-16)
