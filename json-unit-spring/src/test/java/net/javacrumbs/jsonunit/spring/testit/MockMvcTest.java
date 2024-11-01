@@ -16,6 +16,9 @@
 package net.javacrumbs.jsonunit.spring.testit;
 
 import static java.math.BigDecimal.valueOf;
+import static net.javacrumbs.jsonunit.core.ConfigurationWhen.path;
+import static net.javacrumbs.jsonunit.core.ConfigurationWhen.then;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static net.javacrumbs.jsonunit.spring.JsonUnitResultMatchers.json;
 import static net.javacrumbs.jsonunit.spring.testit.demo.ExampleController.CORRECT_JSON;
 import static net.javacrumbs.jsonunit.spring.testit.demo.ExampleController.ISO_VALUE;
@@ -28,7 +31,6 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.listener.Difference;
 import net.javacrumbs.jsonunit.core.listener.DifferenceContext;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
@@ -63,6 +65,13 @@ class MockMvcTest {
     @Test
     void shouldPassIfEqualsWithProduces() throws Exception {
         exec("/sampleProduces").andExpect(json().isEqualTo(CORRECT_JSON));
+    }
+
+    @Test
+    void shouldAllowOptionsOnPath() throws Exception {
+        exec("/sampleProduces")
+                .andExpect(json().when(path("result.array"), then(IGNORING_ARRAY_ORDER))
+                        .isEqualTo(CORRECT_JSON));
     }
 
     @Test
@@ -234,9 +243,7 @@ class MockMvcTest {
 
     @Test
     void settingOptionShouldTakeEffect() throws Exception {
-        exec().andExpect(json().node("result.array")
-                .when(Option.IGNORING_ARRAY_ORDER)
-                .isEqualTo(new int[] {3, 2, 1}));
+        exec().andExpect(json().node("result.array").when(IGNORING_ARRAY_ORDER).isEqualTo(new int[] {3, 2, 1}));
     }
 
     @Test

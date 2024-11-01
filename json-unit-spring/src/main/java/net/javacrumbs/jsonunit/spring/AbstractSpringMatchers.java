@@ -18,6 +18,7 @@ package net.javacrumbs.jsonunit.spring;
 import java.math.BigDecimal;
 import java.util.function.BiConsumer;
 import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.ConfigurationWhen;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
@@ -111,6 +112,17 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
     @NotNull
     public ME when(@NotNull Option firstOption, @NotNull Option... otherOptions) {
         return matchers(path, configuration.withOptions(firstOption, otherOptions));
+    }
+
+    /**
+     * Adds path specific options.
+     *
+     * @see Configuration#when(ConfigurationWhen.PathsParam, ConfigurationWhen.ApplicableForPath...)
+     */
+    @NotNull
+    public ME when(
+            @NotNull ConfigurationWhen.PathsParam object, @NotNull ConfigurationWhen.ApplicableForPath... actions) {
+        return matchers(path, configuration.when(object, actions));
     }
 
     /**
