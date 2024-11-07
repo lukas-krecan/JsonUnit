@@ -42,6 +42,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.entry;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.api.InstanceOfAssertFactories.type;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -2251,6 +2252,11 @@ public abstract class AbstractAssertJTest {
                 .asInstanceOf(jsonUnitJson())
                 .isObject()
                 .containsEntry("foo", "bar"); // <- JsonUnit API
+    }
+
+    @Test
+    void shouldUseAsInstanceOfToMoveFromJsonUnit() {
+        assertThatJson("{\"a\":[1, 2, 3]}").inPath("a").isArray().last(type(Integer.class)).isEqualTo(2);
     }
 
     @Test
