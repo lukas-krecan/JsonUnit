@@ -21,6 +21,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.jsonUnitJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.value;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.path;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.paths;
@@ -2237,6 +2238,19 @@ public abstract class AbstractAssertJTest {
         assertThatJson("{\"a\":[1,2,3]}")
                 .when(path("a"), then(IGNORING_EXTRA_ARRAY_ITEMS))
                 .isEqualTo("{\"a\":[1,2]}");
+    }
+
+    @Test
+    void shouldUseAsInstanceOfToMoveToJsonUnit() {
+        record DummyResponse(String trackingId, String json) {}
+        DummyResponse resp = new DummyResponse("abcd-0001", "{ \"foo\": \"bar\" }");
+
+        assertThat(resp)
+                .hasFieldOrPropertyWithValue("trackingId", "abcd-0001") // <- Assertj API
+                .extracting("json")
+                .asInstanceOf(jsonUnitJson())
+                .isObject()
+                .containsEntry("foo", "bar"); // <- JsonUnit API
     }
 
     @Test
