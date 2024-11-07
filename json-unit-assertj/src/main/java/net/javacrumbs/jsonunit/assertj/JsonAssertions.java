@@ -21,6 +21,7 @@ import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 import org.assertj.core.api.AssertFactory;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.InstanceOfAssertFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -76,8 +77,33 @@ public final class JsonAssertions {
         return new ExpectedNode(JsonUtils.wrapDeserializedObject(input));
     }
 
+    /**
+     * Returns AssertFactory allowing to move from standard AssertJ to JsonUnit. For example:
+     * <code>
+     *      assertThat(mvc.get().uri("/sample"))
+     *                 .hasStatusOk()
+     *                 .bodyJson()
+     *                 .convertTo(jsonUnitAssert())
+     *                 .inPath("result.array") <-- JsonUnit assert
+     *                 .isArray()
+     *                 .containsExactly(1, 2, 3);
+     * </code>
+     */
     public static AssertFactory<Object, ConfigurableJsonAssert> jsonUnitAssert() {
         return new JsonUnitAssertFactory();
+    }
+
+    /**
+     * Allows to move from standard AssertJ asserts to JsonUnit. For example
+     * <code>
+     *       assertThat(resp)
+     *             .hasFieldOrPropertyWithValue("trackingId", "abcd-0001")  //<- Assertj API
+     *             .extracting("json").asInstanceOf(jsonUnitJson())
+     *             .isObject().containsEntry("foo", "bar"); // <- JsonUnit API
+     * </code>
+     */
+    public static InstanceOfAssertFactory<Object, ConfigurableJsonAssert> jsonUnitJson() {
+        return new InstanceOfAssertFactory<>(Object.class, jsonUnitAssert());
     }
 
     @FunctionalInterface
