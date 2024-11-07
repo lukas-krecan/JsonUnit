@@ -27,6 +27,18 @@ import org.jetbrains.annotations.Nullable;
 
 public final class JsonAssertions {
 
+    /**
+     * Allows to move from standard AssertJ asserts to JsonUnit. For example
+     * <code>
+     *       assertThat(resp)
+     *             .hasFieldOrPropertyWithValue("trackingId", "abcd-0001")  //<- Assertj API
+     *             .extracting("json").asInstanceOf(JSON)
+     *             .isObject().containsEntry("foo", "bar"); // <- JsonUnit API
+     * </code>
+     */
+    public static final InstanceOfAssertFactory<Object, ConfigurableJsonAssert> JSON =
+            new InstanceOfAssertFactory<>(Object.class, jsonUnitJson());
+
     static {
         Assertions.useRepresentation(new JsonRepresentation());
     }
@@ -83,27 +95,14 @@ public final class JsonAssertions {
      *      assertThat(mvc.get().uri("/sample"))
      *                 .hasStatusOk()
      *                 .bodyJson()
-     *                 .convertTo(jsonUnitAssert())
+     *                 .convertTo(jsonUnitJson())
      *                 .inPath("result.array") <-- JsonUnit assert
      *                 .isArray()
      *                 .containsExactly(1, 2, 3);
      * </code>
      */
-    public static AssertFactory<Object, ConfigurableJsonAssert> jsonUnitAssert() {
+    public static AssertFactory<Object, ConfigurableJsonAssert> jsonUnitJson() {
         return new JsonUnitAssertFactory();
-    }
-
-    /**
-     * Allows to move from standard AssertJ asserts to JsonUnit. For example
-     * <code>
-     *       assertThat(resp)
-     *             .hasFieldOrPropertyWithValue("trackingId", "abcd-0001")  //<- Assertj API
-     *             .extracting("json").asInstanceOf(jsonUnitJson())
-     *             .isObject().containsEntry("foo", "bar"); // <- JsonUnit API
-     * </code>
-     */
-    public static InstanceOfAssertFactory<Object, ConfigurableJsonAssert> jsonUnitJson() {
-        return new InstanceOfAssertFactory<>(Object.class, jsonUnitAssert());
     }
 
     @FunctionalInterface

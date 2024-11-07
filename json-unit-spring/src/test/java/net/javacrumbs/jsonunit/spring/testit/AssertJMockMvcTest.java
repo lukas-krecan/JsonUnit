@@ -1,7 +1,7 @@
 package net.javacrumbs.jsonunit.spring.testit;
 
 import static java.util.Collections.singleton;
-import static net.javacrumbs.jsonunit.assertj.JsonAssertions.jsonUnitAssert;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.jsonUnitJson;
 import static net.javacrumbs.jsonunit.spring.JsonUnitJsonComparator.comparator;
 import static net.javacrumbs.jsonunit.spring.testit.demo.ExampleController.CORRECT_JSON;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -30,7 +30,7 @@ public class AssertJMockMvcTest {
         assertThat(mvc.get().uri("/sample"))
                 .hasStatusOk()
                 .bodyJson()
-                .convertTo(jsonUnitAssert())
+                .convertTo(jsonUnitJson())
                 .inPath("result.array")
                 .isArray()
                 .containsExactly(1, 2, 3);
