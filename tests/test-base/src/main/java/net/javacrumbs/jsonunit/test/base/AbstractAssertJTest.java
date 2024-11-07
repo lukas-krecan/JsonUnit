@@ -19,9 +19,9 @@ import static java.math.BigDecimal.valueOf;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.JSON;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
-import static net.javacrumbs.jsonunit.assertj.JsonAssertions.jsonUnitJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.value;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.path;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.paths;
@@ -2248,7 +2248,7 @@ public abstract class AbstractAssertJTest {
         assertThat(resp)
                 .hasFieldOrPropertyWithValue("trackingId", "abcd-0001") // <- Assertj API
                 .extracting("json")
-                .asInstanceOf(jsonUnitJson())
+                .asInstanceOf(JSON)
                 .isObject()
                 .containsEntry("foo", "bar"); // <- JsonUnit API
     }
