@@ -28,6 +28,8 @@ import static net.javacrumbs.jsonunit.jsonpath.InternalJsonPathUtils.resolveJson
 import static org.assertj.core.description.Description.mostRelevantDescription;
 import static org.assertj.core.util.Strings.isNullOrEmpty;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.Arrays;
@@ -51,6 +53,8 @@ import org.assertj.core.api.AbstractStringAssert;
 import org.assertj.core.api.BigDecimalAssert;
 import org.assertj.core.api.BigIntegerAssert;
 import org.assertj.core.api.BooleanAssert;
+import org.assertj.core.api.InstanceOfAssertFactory;
+import org.assertj.core.api.IntegerAssert;
 import org.assertj.core.api.StringAssert;
 import org.assertj.core.api.UriAssert;
 import org.assertj.core.description.Description;
@@ -184,6 +188,31 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     private InternalMatcher internalMatcher() {
         String description = mostRelevantDescription(info.description(), "Node \"" + path + "\"");
         return new InternalMatcher(actualForMatcher, path.asPrefix(), "", configuration, description);
+    }
+
+    @Override
+    public <ASSERT extends AbstractAssert<?, ?>> ASSERT asInstanceOf(InstanceOfAssertFactory<?, ASSERT> instanceOfAssertFactory) {
+        Class<?> rawClass = getRawClass(instanceOfAssertFactory);
+        if (rawClass.equals(Integer.class)) {
+            Node node = assertType(NUMBER);
+            if (!node.isIntegralNumber()) throw new AssertionError("Node \"" + path + "\" can not be converted to integer");
+            return new IntegerAssert(node.decimalValue().intValue()).asInstanceOf(instanceOfAssertFactory);
+        }
+        if (rawClass.equals(BigDecimal.class)) {
+            return isNumber().asInstanceOf(instanceOfAssertFactory);
+        }
+        throw new UnsupportedOperationException("TODO");
+    }
+
+    // This is wrong!!
+    private Class<?> getRawClass(InstanceOfAssertFactory<?, ?> instanceOfAssertFactory) {
+        try {
+            Method method = instanceOfAssertFactory.getClass().getDeclaredMethod("getRawClass");
+            method.setAccessible(true);
+            return (Class<?>) method.invoke(instanceOfAssertFactory);
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
