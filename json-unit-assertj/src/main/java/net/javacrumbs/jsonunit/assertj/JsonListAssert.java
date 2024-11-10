@@ -95,24 +95,6 @@ public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAsse
                 + "This method will most likely not provide the result you expect it to.");
     }
 
-    /**
-     * @deprecated  InstanceOfAssertFactory is not supported with JsonUnit
-     */
-    @Override
-    @Deprecated
-    public <ASSERT extends AbstractAssert<?, ?>> ASSERT first(InstanceOfAssertFactory<?, ASSERT> assertFactory) {
-        return super.first(assertFactory);
-    }
-
-    /**
-     * @deprecated  InstanceOfAssertFactory is not supported with JsonUnit
-     */
-    @Override
-    @Deprecated
-    public <ASSERT extends AbstractAssert<?, ?>> ASSERT last(InstanceOfAssertFactory<?, ASSERT> assertFactory) {
-        return super.last(assertFactory);
-    }
-
     @NotNull
     private Diff createDiff(Object other) {
         return Diff.create(other, wrapDeserializedObject(actual), "fullJson", path, configuration);

@@ -42,6 +42,11 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.entry;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
+import static org.assertj.core.api.InstanceOfAssertFactories.BIG_DECIMAL;
+import static org.assertj.core.api.InstanceOfAssertFactories.BOOLEAN;
+import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
+import static org.assertj.core.api.InstanceOfAssertFactories.STRING;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -2251,6 +2256,16 @@ public abstract class AbstractAssertJTest {
                 .asInstanceOf(JSON)
                 .isObject()
                 .containsEntry("foo", "bar"); // <- JsonUnit API
+    }
+
+    @Test
+    void shouldUseAsInstanceOfToMoveFromJsonUnit() {
+        assertThatJson("{\"a\":[1, 2, 3]}").inPath("a").isArray().first(BIG_DECIMAL).isEqualTo("1");
+        assertThatJson("{\"a\":[1, 2, true]}").inPath("a").isArray().last(BOOLEAN).isEqualTo(true);
+        assertThatJson("{\"a\":[1, \"s\", true]}").inPath("a").isArray().element(1, STRING).startsWith("s");
+        assertThatJson("{\"a\":{\"b\": \"c\"}}").inPath("a").isObject().extracting("b", STRING).endsWith("c");
+        assertThatJson("{\"a\":[1, 2, 3]}").inPath("a").asInstanceOf(ARRAY).hasSize(3);
+        assertThatJson("{\"a\":[1, 2, 3]}").inPath("a").asInstanceOf(LIST).hasSize(3);
     }
 
     @Test
