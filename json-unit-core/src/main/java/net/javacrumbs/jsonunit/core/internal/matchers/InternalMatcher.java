@@ -328,7 +328,7 @@ public final class InternalMatcher {
         }
     }
 
-    private Node getActualNode() {
+    public Node getActualNode() {
         return getNode(actual, path);
     }
 

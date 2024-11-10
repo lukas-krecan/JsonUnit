@@ -51,6 +51,7 @@ import org.assertj.core.api.AbstractStringAssert;
 import org.assertj.core.api.BigDecimalAssert;
 import org.assertj.core.api.BigIntegerAssert;
 import org.assertj.core.api.BooleanAssert;
+import org.assertj.core.api.InstanceOfAssertFactory;
 import org.assertj.core.api.StringAssert;
 import org.assertj.core.api.UriAssert;
 import org.assertj.core.description.Description;
@@ -132,8 +133,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     @SuppressWarnings("unchecked")
     public JsonMapAssert isObject() {
         Node node = assertType(OBJECT);
-        return new JsonMapAssert((Map<String, Object>) node.getValue(), path.asPrefix(), configuration)
-                .as("Different value found in node \"%s\"", path);
+        return describe(new JsonMapAssert((Map<String, Object>) node.getValue(), path.asPrefix(), configuration));
     }
 
     /**
@@ -150,8 +150,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      */
     public BigIntegerAssert isIntegralNumber() {
         Node node = internalMatcher().assertIntegralNumber();
-        return new BigIntegerAssert(node.decimalValue().toBigIntegerExact())
-                .as("Different value found in node \"%s\"", path);
+        return describe(new BigIntegerAssert(node.decimalValue().toBigIntegerExact()));
     }
 
     /**
@@ -178,7 +177,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     }
 
     private BigDecimalAssert createBigDecimalAssert(BigDecimal value) {
-        return new BigDecimalAssert(value).as("Different value found in node \"%s\"", path);
+        return describe(new BigDecimalAssert(value));
     }
 
     private InternalMatcher internalMatcher() {
@@ -188,35 +187,45 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
 
     /**
      * Asserts that given node is present and is of type array.
-     *
-     * @return
      */
     @NotNull
     public JsonListAssert isArray() {
         Node node = assertType(ARRAY);
-        return new JsonListAssert((List<?>) node.getValue(), path.asPrefix(), configuration).as("Node \"%s\"", path);
+        return createListAssert(node).as("Node \"%s\"", path);
+    }
+
+    private @NotNull JsonListAssert createListAssert(Node node) {
+        return new JsonListAssert((List<?>) node.getValue(), path.asPrefix(), configuration);
     }
 
     /**
      * Asserts that given node is present and is of type boolean.
-     *
-     * @return
      */
     @NotNull
     public BooleanAssert isBoolean() {
         Node node = assertType(BOOLEAN);
-        return new BooleanAssert((Boolean) node.getValue()).as("Different value found in node \"%s\"", path);
+        return createBooleanAssert(node);
+    }
+
+    private BooleanAssert createBooleanAssert(Node node) {
+        return describe(new BooleanAssert((Boolean) node.getValue()));
     }
 
     /**
      * Asserts that given node is present and is of type string.
-     *
-     * @return
      */
     @NotNull
     public StringAssert isString() {
         Node node = assertType(STRING);
-        return new StringAssert((String) node.getValue()).as("Different value found in node \"%s\"", path);
+        return createStringAssert(node);
+    }
+
+    private StringAssert createStringAssert(Node node) {
+        return describe(new StringAssert((String) node.getValue()));
+    }
+
+    private <T extends AbstractAssert<T, ?>> T describe(T ass) {
+        return ass.as("Different value found in node \"%s\"", path);
     }
 
     @Override
@@ -227,8 +236,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
 
     /**
      * Asserts that given node is present and is null.
-     *
-     * @return
      */
     @Override
     public void isNull() {
@@ -237,13 +244,11 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
 
     /**
      * Asserts that given node is present and is URI.
-     *
-     * @return
      */
     @NotNull
     public UriAssert isUri() {
         Node node = assertType(STRING);
-        return new UriAssert(URI.create((String) node.getValue())).as("Different value found in node \"%s\"", path);
+        return describe(new UriAssert(URI.create((String) node.getValue())));
     }
 
     /**
@@ -274,6 +279,25 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
 
     private Node assertType(Node.NodeType type) {
         return internalMatcher().assertType(type);
+    }
+
+    @Override
+    public <ASSERT extends AbstractAssert<?, ?>> ASSERT asInstanceOf(
+            InstanceOfAssertFactory<?, ASSERT> instanceOfAssertFactory) {
+        Node node = internalMatcher().getActualNode();
+
+        var ass =
+                switch (node.getNodeType()) {
+                    case OBJECT -> throw new UnsupportedOperationException(
+                            "asInstanceOf is not supported for Object type");
+                    case ARRAY -> createListAssert(node);
+                    case STRING -> createStringAssert(node);
+                    case NUMBER -> createBigDecimalAssert(node.decimalValue());
+                    case BOOLEAN -> createBooleanAssert(node);
+                    case NULL -> new StringAssert(null);
+                };
+
+        return ass.asInstanceOf(instanceOfAssertFactory);
     }
 
     /**
