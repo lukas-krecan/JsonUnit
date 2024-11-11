@@ -212,7 +212,7 @@
                 </plugin>
 
                 <!-- Asserts that the resulting bundle resolves adequately in OSGi in terms
-                     of it's dependencies. If this check fails it is most likely a problem
+                     of its dependencies. If this check fails it is most likely a problem
                      with package export or import specification. -->
                 <plugin>
                     <groupId>biz.aQute.bnd</groupId>
