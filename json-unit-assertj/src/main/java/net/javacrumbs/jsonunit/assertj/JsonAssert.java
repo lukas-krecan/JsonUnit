@@ -372,9 +372,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
 
         /**
          * Sets numerical comparison tolerance.
-         *
-         * @param tolerance
-         * @return
          */
         @NotNull
         public ConfigurableJsonAssert withTolerance(@Nullable BigDecimal tolerance) {
@@ -383,9 +380,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
 
         /**
          * Sets numerical comparison tolerance.
-         *
-         * @param tolerance
-         * @return
          */
         @NotNull
         public ConfigurableJsonAssert withTolerance(double tolerance) {
@@ -395,9 +389,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
         /**
          * Makes JsonUnit ignore the specified paths in the actual value. If the path matches,
          * it's completely ignored. It may be missing, null or have any value
-         *
-         * @param pathsToBeIgnored
-         * @return
          */
         @NotNull
         public ConfigurableJsonAssert whenIgnoringPaths(@NotNull String... pathsToBeIgnored) {
@@ -406,9 +397,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
 
         /**
          * Sets ignore placeholder.
-         *
-         * @param ignorePlaceholder
-         * @return
          */
         @NotNull
         public ConfigurableJsonAssert withIgnorePlaceholder(@NotNull String ignorePlaceholder) {
@@ -417,10 +405,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
 
         /**
          * Adds a matcher to be used in ${json-unit.matches:matcherName} macro.
-         *
-         * @param matcherName
-         * @param matcher
-         * @return
          */
         @NotNull
         public ConfigurableJsonAssert withMatcher(@NotNull String matcherName, @NotNull Matcher<?> matcher) {
