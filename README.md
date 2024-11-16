@@ -623,7 +623,7 @@ assertThatJson("{\"test\":[{\"key\":3},{\"key\":2, \"extraField\":2},{\"key\":1}
 ```
 
 **REPORTING_DIFFERENCE_AS_NORMALIZED_STRING** - reports errors as normalized strings. Applies some basic normalization
-to comapred values and then reports full json strings so you can see the difference in the IDE diff.
+to compared values and then reports full json strings, so you can see the difference in the IDE diff.
 
 
 In Hamcrest assertion you can set the option like this
