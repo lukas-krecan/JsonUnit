@@ -4,7 +4,7 @@ There are two API types that are still supported but not recommended to use for 
   * [Standard assert](#standard)
   * [Fluent assertions](#fluent)
 
-## <a name="fluent"></a>Fluent assertions
+## <a name="fluent"></a>Fluent assertions (deprecated)
 Fluent assertions were inspired by FEST and AssertJ. This API was created before AssertJ become so popular
 so it does not depend on it. I would recommend to use AssertJ integration.
 

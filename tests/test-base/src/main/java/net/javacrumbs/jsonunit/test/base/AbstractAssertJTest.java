@@ -2252,9 +2252,9 @@ public abstract class AbstractAssertJTest {
         assertThat(resp)
                 .hasFieldOrPropertyWithValue("trackingId", "abcd-0001") // <- Assertj API
                 .extracting("json")
-                .asInstanceOf(JSON)
+                .asInstanceOf(JSON) // <- JsonUnit API
                 .isObject()
-                .containsEntry("foo", "bar"); // <- JsonUnit API
+                .containsEntry("foo", "bar");
     }
 
     @Test
