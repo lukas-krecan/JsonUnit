@@ -51,7 +51,10 @@ import org.hamcrest.Matcher;
  * <li>{@link java.io.Reader} similarly to String</li>
  * <li>null as null Node</li>
  * </ol>
+ *
+ * @deprecated Use AssertJ integration
  */
+@Deprecated(forRemoval = true)
 public class JsonFluentAssert {
     final InternalMatcher internalMatcher;
 
