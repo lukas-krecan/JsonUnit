@@ -2,7 +2,7 @@ Release notes
 =============
 ## 4.0.0 (2024-11-16)
 * See the [documentation changes](https://github.com/lukas-krecan/JsonUnit/commit/1b76844b3f07a1049b08eaf61cade97d1a3609a2)
-* Support for [Spring MockMvc AssertJ assertions](https://github.com/lukas-krecan/JsonUnit?tab=readme-ov-file#spring-assertj-for-mockmvc) introduced id Spring 6.2.0
+* Support for [Spring MockMvc AssertJ assertions](https://github.com/lukas-krecan/JsonUnit?tab=readme-ov-file#spring-assertj-for-mockmvc) introduced in Spring 6.2.0
 * Support for [AssertJ `asInstanceOf`](https://github.com/lukas-krecan/JsonUnit?tab=readme-ov-file#support-for-asinstanceof)
 * Added `REPORTING_DIFFERENCE_AS_NORMALIZED_STRING` option
 * Opentest4j added as mandatory dependency
