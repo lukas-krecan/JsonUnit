@@ -70,6 +70,11 @@ class WebTestClientTest {
     }
 
     @Test
+    void shouldSupportJsonPath() throws Exception {
+        exec("/sampleProduces").consumeWith(json().inPath("$.result.array[1]").isEqualTo(2));
+    }
+
+    @Test
     void shouldPassIfEquals() {
         exec().consumeWith(json().isEqualTo(CORRECT_JSON));
     }

@@ -380,7 +380,7 @@ See the [tests](https://github.com/lukas-krecan/JsonUnit/blob/master/json-unit-k
 JsonUnit support all this features regardless of API you use.
 
 ## <a name="jsonpath"></a>JsonPath support
-You can use JsonPath navigation together with JsonUnit. It has native support in AssertJ integration, so you can do something like this:
+You can use JsonPath navigation together with JsonUnit. It has native support in AssertJ and Spring integration, so you can do something like this:
 
 ```java
 // AssertJ style
@@ -395,28 +395,6 @@ assertThatJson(json)
             "                \"price\": 8.96\n" +
             "            }"
     ));
-```
-
-For the other API styles you have to first import JsonPath support module
-```xml
-<dependency>
-    <groupId>net.javacrumbs.json-unit</groupId>
-    <artifactId>json-unit-json-path</artifactId>
-    <version>4.0.0</version>
-    <scope>test</scope>
-</dependency>
-```
-
-and then use instead of actual value
-
-```xml
-import static net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter.inPath;
-
-...
-// Fluent assertions
-assertThatJson(inPath(json, "$.store.book[*].author"))
-    .when(Option.IGNORING_ARRAY_ORDER)
-    .isEqualTo("['J. R. R. Tolkien', 'Nigel Rees', 'Evelyn Waugh', 'Herman Melville']");
 ```
 
 ## <a name="ignorevalues"></a>Ignoring values

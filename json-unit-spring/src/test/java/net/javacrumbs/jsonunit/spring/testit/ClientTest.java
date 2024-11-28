@@ -74,4 +74,16 @@ class ClientTest {
         assertThat(restTemplate.postForEntity(URI, json, String.class).getBody())
                 .isEqualTo(jsonResponse);
     }
+
+    @Test
+    void shouldAssertClientJsonPath() {
+        mockServer
+                .expect(requestTo(URI))
+                .andExpect(method(HttpMethod.POST))
+                .andExpect(json().inPath("$.test").isEqualTo(1))
+                .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
+
+        assertThat(restTemplate.postForEntity(URI, json, String.class).getBody())
+                .isEqualTo(jsonResponse);
+    }
 }

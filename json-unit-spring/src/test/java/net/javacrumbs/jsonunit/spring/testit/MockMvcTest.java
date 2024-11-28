@@ -75,6 +75,11 @@ class MockMvcTest {
     }
 
     @Test
+    void shouldSupportJsonPath() throws Exception {
+        exec("/sampleProduces").andExpect(json().inPath("$.result.array[1]").isEqualTo(2));
+    }
+
+    @Test
     void shouldPassIfEqualsWithIsoEncoding() throws Exception {
         exec("/sampleIso").andExpect(json().node("result").isEqualTo(ISO_VALUE));
     }

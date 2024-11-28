@@ -7,6 +7,7 @@ import static net.javacrumbs.jsonunit.spring.testit.demo.ExampleController.CORRE
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.spring.testit.demo.ExampleController;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -24,13 +25,14 @@ public class AssertJMockMvcTest {
     }
 
     @Test
-    void shouldUseConvertToJAckson() {
+    void shouldUseConvertToJackson() {
         MockMvcTester mvc = MockMvcTester.of(new ExampleController())
                 .withHttpMessageConverters(singleton(new MappingJackson2HttpMessageConverter()));
         assertThat(mvc.get().uri("/sample"))
                 .hasStatusOk()
                 .bodyJson()
                 .convertTo(jsonUnitJson())
+                .when(Option.IGNORING_ARRAY_ORDER)
                 .inPath("result.array")
                 .isArray()
                 .containsExactly(1, 2, 3);
