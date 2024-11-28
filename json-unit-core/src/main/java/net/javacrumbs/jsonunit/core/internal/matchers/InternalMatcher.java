@@ -77,10 +77,6 @@ public final class InternalMatcher {
         this(actual, path, description, configuration, "Node \"" + path + "\"");
     }
 
-    private InternalMatcher(@NotNull Object actual, @NotNull String pathPrefix) {
-        this(actual, Path.create("", pathPrefix), "", Configuration.empty());
-    }
-
     @NotNull
     public InternalMatcher whenIgnoringPaths(@NotNull String... pathsToBeIgnored) {
         return new InternalMatcher(actual, path, description, configuration.whenIgnoringPaths(pathsToBeIgnored));

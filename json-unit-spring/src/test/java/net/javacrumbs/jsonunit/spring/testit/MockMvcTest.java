@@ -78,6 +78,16 @@ class MockMvcTest {
     void shouldSupportJsonPath() throws Exception {
         exec("/sampleProduces").andExpect(json().inPath("$.result.array[1]").isEqualTo(2));
     }
+    @Test
+    void shouldSupportJsonPathError() throws Exception {
+        assertThatThrownBy(() ->
+            exec("/sampleProduces").andExpect(json().inPath("$.result.array[1]").isEqualTo(3))
+        ).hasMessage("""
+            JSON documents are different:
+            Different value found in node "", expected: <3> but was: <2>.
+            """);
+    }
+
 
     @Test
     void shouldPassIfEqualsWithIsoEncoding() throws Exception {
