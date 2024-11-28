@@ -2,8 +2,8 @@ package net.javacrumbs.jsonunit.spring;
 
 import static net.javacrumbs.jsonunit.spring.Utils.getContentAsString;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
@@ -22,24 +22,27 @@ import org.springframework.test.web.reactive.server.EntityExchangeResult;
  */
 public class WebTestClientJsonMatcher
         extends AbstractSpringMatchers<WebTestClientJsonMatcher, Consumer<EntityExchangeResult<byte[]>>> {
-    private WebTestClientJsonMatcher(Path path, Configuration configuration) {
-        super(path, configuration);
+    private WebTestClientJsonMatcher(Path path, Configuration configuration, Function<Object, Object> jsonTransformer) {
+        super(path, configuration, jsonTransformer);
     }
 
     public static WebTestClientJsonMatcher json() {
-        return new WebTestClientJsonMatcher(Path.root(), Configuration.empty());
+        return new WebTestClientJsonMatcher(Path.root(), Configuration.empty(), Function.identity());
     }
 
     @Override
     @NotNull
-    Consumer<EntityExchangeResult<byte[]>> matcher(@NotNull BiConsumer<Object, InternalMatcher> matcher) {
-        return new JsonUnitWebTestClientMatcher(path, configuration, matcher);
+    Consumer<EntityExchangeResult<byte[]>> matcher(@NotNull Consumer<InternalMatcher> matcher) {
+        return new JsonUnitWebTestClientMatcher(path, configuration, matcher, jsonTransformer);
     }
 
     @Override
     @NotNull
-    WebTestClientJsonMatcher matchers(@NotNull Path path, @NotNull Configuration configuration) {
-        return new WebTestClientJsonMatcher(path, configuration);
+    WebTestClientJsonMatcher matchers(
+            @NotNull Path path,
+            @NotNull Configuration configuration,
+            @NotNull Function<Object, Object> jsonTransformer) {
+        return new WebTestClientJsonMatcher(path, configuration, jsonTransformer);
     }
 
     private static class JsonUnitWebTestClientMatcher extends AbstractSpringMatcher
@@ -47,8 +50,9 @@ public class WebTestClientJsonMatcher
         private JsonUnitWebTestClientMatcher(
                 @NotNull Path path,
                 @NotNull Configuration configuration,
-                @NotNull BiConsumer<Object, InternalMatcher> matcher) {
-            super(path, configuration, matcher);
+                @NotNull Consumer<InternalMatcher> matcher,
+                @NotNull Function<Object, Object> jsonTransformer) {
+            super(path, configuration, matcher, jsonTransformer);
         }
 
         @Override

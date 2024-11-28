@@ -17,7 +17,8 @@ package net.javacrumbs.jsonunit.spring;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
@@ -36,35 +37,39 @@ import org.springframework.test.web.servlet.ResultMatcher;
  * </code>
  */
 public class JsonUnitResultMatchers extends AbstractSpringMatchers<JsonUnitResultMatchers, ResultMatcher> {
-    private JsonUnitResultMatchers(Path path, Configuration configuration) {
-        super(path, configuration);
+    private JsonUnitResultMatchers(Path path, Configuration configuration, Function<Object, Object> jsonTransformer) {
+        super(path, configuration, jsonTransformer);
     }
 
     /**
      * Creates JsonUnitResultMatchers to be used for JSON assertions.
      */
     public static JsonUnitResultMatchers json() {
-        return new JsonUnitResultMatchers(Path.root(), Configuration.empty());
+        return new JsonUnitResultMatchers(Path.root(), Configuration.empty(), Function.identity());
     }
 
     @Override
     @NotNull
-    ResultMatcher matcher(@NotNull BiConsumer<Object, InternalMatcher> matcher) {
-        return new JsonResultMatcher(path, configuration, matcher);
+    ResultMatcher matcher(@NotNull Consumer<InternalMatcher> matcher) {
+        return new JsonResultMatcher(path, configuration, matcher, jsonTransformer);
     }
 
     @Override
     @NotNull
-    JsonUnitResultMatchers matchers(@NotNull Path path, @NotNull Configuration configuration) {
-        return new JsonUnitResultMatchers(path, configuration);
+    JsonUnitResultMatchers matchers(
+            @NotNull Path path,
+            @NotNull Configuration configuration,
+            @NotNull Function<Object, Object> jsonTransformer) {
+        return new JsonUnitResultMatchers(path, configuration, jsonTransformer);
     }
 
     private static class JsonResultMatcher extends AbstractSpringMatcher implements ResultMatcher {
         private JsonResultMatcher(
                 @NotNull Path path,
                 @NotNull Configuration configuration,
-                @NotNull BiConsumer<Object, InternalMatcher> matcher) {
-            super(path, configuration, matcher);
+                @NotNull Consumer<InternalMatcher> matcher,
+                @NotNull Function<Object, Object> jsonTransformer) {
+            super(path, configuration, matcher, jsonTransformer);
         }
 
         @Override

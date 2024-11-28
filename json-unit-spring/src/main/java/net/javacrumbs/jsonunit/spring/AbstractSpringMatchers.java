@@ -16,13 +16,15 @@
 package net.javacrumbs.jsonunit.spring;
 
 import java.math.BigDecimal;
-import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
+import net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter;
 import org.hamcrest.Matcher;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -35,17 +37,27 @@ import org.jetbrains.annotations.Nullable;
 abstract class AbstractSpringMatchers<ME, MATCHER> {
     final Path path;
     final Configuration configuration;
+    final Function<Object, Object> jsonTransformer;
 
-    AbstractSpringMatchers(@NotNull Path path, @NotNull Configuration configuration) {
+    AbstractSpringMatchers(
+            @NotNull Path path, @NotNull Configuration configuration, Function<Object, Object> jsonTransformer) {
         this.path = path;
         this.configuration = configuration;
+        this.jsonTransformer = jsonTransformer;
     }
 
     @NotNull
-    abstract MATCHER matcher(@NotNull BiConsumer<Object, InternalMatcher> matcher);
+    abstract MATCHER matcher(@NotNull Consumer<InternalMatcher> matcher);
 
     @NotNull
-    abstract ME matchers(@NotNull Path path, @NotNull Configuration configuration);
+    abstract ME matchers(
+            @NotNull Path path,
+            @NotNull Configuration configuration,
+            @NotNull Function<Object, Object> jsonTransformer);
+
+    protected ME matchers(@NotNull Path path, @NotNull Configuration configuration) {
+        return matchers(path, configuration, jsonTransformer);
+    }
 
     /**
      * Creates a matcher object that only compares given node.
@@ -55,12 +67,19 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      * this.mockMvc.perform(get("/sample").accept(MediaType.APPLICATION_JSON)).andExpect(json().node("root.test[0]").isEqualTo("1"));
      * </code>
      *
-     * @param newPath
      * @return object comparing only node given by path.
      */
     @NotNull
     public ME node(String newPath) {
         return matchers(path.copy(newPath), configuration);
+    }
+
+    /**
+     * Uses JsonPath to extract values from the actual value.
+     */
+    @NotNull
+    public ME inPath(String path) {
+        return matchers(this.path, configuration, json -> JsonPathAdapter.inPath(json, path));
     }
 
     /**
@@ -143,7 +162,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      */
     @NotNull
     public MATCHER isEqualTo(@Nullable Object expected) {
-        return matcher((actual, ctx) -> ctx.isEqualTo(expected));
+        return matcher(ctx -> ctx.isEqualTo(expected));
     }
 
     /**
@@ -152,7 +171,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      */
     @NotNull
     public MATCHER isStringEqualTo(@Nullable final String expected) {
-        return matcher((actual, ctx) -> ctx.isStringEqualTo(expected));
+        return matcher(ctx -> ctx.isStringEqualTo(expected));
     }
 
     /**
@@ -161,7 +180,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      */
     @NotNull
     public MATCHER isNotEqualTo(@Nullable Object expected) {
-        return matcher((actual, ctx) -> ctx.isNotEqualTo(expected));
+        return matcher(ctx -> ctx.isNotEqualTo(expected));
     }
 
     /**
@@ -169,7 +188,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      */
     @NotNull
     public MATCHER isAbsent() {
-        return matcher((actual, ctx) -> ctx.isAbsent());
+        return matcher(ctx -> ctx.isAbsent());
     }
 
     /**
@@ -177,7 +196,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      */
     @NotNull
     public MATCHER isPresent() {
-        return matcher((actual, ctx) -> ctx.isPresent());
+        return matcher(InternalMatcher::isPresent);
     }
 
     /**
@@ -185,7 +204,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      */
     @NotNull
     public MATCHER isArray() {
-        return matcher((actual, ctx) -> ctx.isArray());
+        return matcher(InternalMatcher::isArray);
     }
 
     /**
@@ -193,7 +212,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      */
     @NotNull
     public MATCHER isObject() {
-        return matcher((actual, ctx) -> ctx.isObject());
+        return matcher(InternalMatcher::isObject);
     }
 
     /**
@@ -201,7 +220,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      */
     @NotNull
     public MATCHER isString() {
-        return matcher((actual, ctx) -> ctx.isString());
+        return matcher(InternalMatcher::isString);
     }
 
     /**
@@ -209,7 +228,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      */
     @NotNull
     public MATCHER isNull() {
-        return matcher((actual, ctx) -> ctx.isNull());
+        return matcher(InternalMatcher::isNull);
     }
 
     /**
@@ -217,7 +236,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      */
     @NotNull
     public MATCHER isNotNull() {
-        return matcher((actual, ctx) -> ctx.isNotNull());
+        return matcher(InternalMatcher::isNotNull);
     }
 
     /**
@@ -234,7 +253,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      */
     @NotNull
     public MATCHER matches(@NotNull final Matcher<?> matcher) {
-        return matcher((actual, ctx) -> ctx.matches(matcher));
+        return matcher(ctx -> ctx.matches(matcher));
     }
 
     /**
