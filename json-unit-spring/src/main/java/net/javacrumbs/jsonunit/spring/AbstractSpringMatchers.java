@@ -149,7 +149,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      * <p/>
      * If the string parameter is not a valid JSON, it is quoted automatically.
      *
-     * @param expected
+     *
      * @return {@code this} object.
      * @see #isStringEqualTo(String)
      */
@@ -241,8 +241,8 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      * <li>Objects are mapped to a map so you can use json(Part)Equals or a Map matcher</li>
      * </ul>
      *
-     * @param matcher
-     * @return
+     *
+     *
      */
     @NotNull
     public MATCHER matches(@NotNull final Matcher<?> matcher) {

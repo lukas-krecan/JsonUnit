@@ -7,9 +7,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.Spliterators;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 import net.javacrumbs.jsonunit.core.internal.Node.KeyValue;
 
 class Normalizer {
@@ -91,9 +88,5 @@ class Normalizer {
         for (int i = 0; i < indent; i++) {
             sb.append(' ');
         }
-    }
-
-    private static <T> Stream<T> stream(Iterator<T> iterator) {
-        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, 0), false);
     }
 }

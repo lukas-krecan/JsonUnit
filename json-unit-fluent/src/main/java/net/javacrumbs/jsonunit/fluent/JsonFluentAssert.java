@@ -75,7 +75,7 @@ public class JsonFluentAssert {
      * It is not called assertThat to not clash with StringAssert.
      * The json parameter is converted to JSON using ObjectMapper.
      *
-     * @param json
+     *
      * @return new JsonFluentAssert object.
      */
     public static ConfigurableJsonFluentAssert assertThatJson(Object json) {
@@ -94,7 +94,7 @@ public class JsonFluentAssert {
      *
      * If the string parameter is not a valid JSON, it is quoted automatically.
      *
-     * @param expected
+     *
      * @return {@code this} object.
      * @see #isStringEqualTo(String)
      */
@@ -116,7 +116,7 @@ public class JsonFluentAssert {
      * Fails if compared documents are equal. The expected object is converted to JSON
      * before comparison. Ignores order of sibling nodes and whitespaces.
      *
-     * @param expected
+     *
      * @return {@code this} object.
      */
     public JsonFluentAssert isNotEqualTo(Object expected) {
@@ -132,7 +132,7 @@ public class JsonFluentAssert {
      * assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[0]").isEqualTo("1");
      * </code>
      *
-     * @param newPath
+     *
      * @return object comparing only node given by path.
      */
     public JsonFluentAssert node(String newPath) {
@@ -142,7 +142,7 @@ public class JsonFluentAssert {
     /**
      * Fails if the node exists.
      *
-     * @return
+     *
      */
     public JsonFluentAssert isAbsent() {
         internalMatcher.isAbsent();
@@ -160,7 +160,7 @@ public class JsonFluentAssert {
     /**
      * Fails if the selected JSON is not an Array or is not present.
      *
-     * @return
+     *
      */
     public ArrayAssert isArray() {
 
@@ -190,8 +190,8 @@ public class JsonFluentAssert {
      *     <li>Objects are mapped to a map so you can use json(Part)Equals or a Map internalMatcher</li>
      * </ul>
      *
-     * @param matcher
-     * @return
+     *
+     *
      */
     public JsonFluentAssert matches(Matcher<?> matcher) {
         internalMatcher.matches(matcher);
@@ -210,8 +210,8 @@ public class JsonFluentAssert {
 
         /**
          * Fails if the array has different length.
-         * @param expectedLength
-         * @return
+         *
+         *
          */
         public ArrayAssert ofLength(int expectedLength) {
             arrayMatcher.ofLength(expectedLength);
@@ -254,7 +254,7 @@ public class JsonFluentAssert {
          * assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[0]").isEqualTo("1");
          * </code>
          *
-         * @param newPath
+         *
          * @return object comparing only node given by path.
          */
         @Override
@@ -273,8 +273,8 @@ public class JsonFluentAssert {
         /**
          * Sets the description of this object.
          *
-         * @param description
-         * @return
+         *
+         *
          */
         public ConfigurableJsonFluentAssert as(String description) {
             return describedAs(description);
@@ -283,8 +283,8 @@ public class JsonFluentAssert {
         /**
          * Sets the description of this object.
          *
-         * @param description
-         * @return
+         *
+         *
          */
         public ConfigurableJsonFluentAssert describedAs(String description) {
             return new ConfigurableJsonFluentAssert(internalMatcher.describedAs(description));
@@ -294,8 +294,8 @@ public class JsonFluentAssert {
          * Sets the placeholder that can be used to ignore values.
          * The default value is ${json-unit.ignore}
          *
-         * @param ignorePlaceholder
-         * @return
+         *
+         *
          */
         public ConfigurableJsonFluentAssert ignoring(String ignorePlaceholder) {
             return new ConfigurableJsonFluentAssert(internalMatcher.withIgnorePlaceholder(ignorePlaceholder));
@@ -305,7 +305,7 @@ public class JsonFluentAssert {
          * Sets the tolerance for floating number comparison. If set to null, requires exact match of the values.
          * For example, if set to 0.01, ignores all differences lower than 0.01, so 1 and 0.9999 are considered equal.
          *
-         * @param tolerance
+         *
          */
         public ConfigurableJsonFluentAssert withTolerance(double tolerance) {
             return new ConfigurableJsonFluentAssert(internalMatcher.withTolerance(tolerance));
@@ -315,7 +315,7 @@ public class JsonFluentAssert {
          * Sets the tolerance for floating number comparison. If set to null, requires exact match of the values.
          * For example, if set to 0.01, ignores all differences lower than 0.01, so 1 and 0.9999 are considered equal.
          *
-         * @param tolerance
+         *
          */
         public ConfigurableJsonFluentAssert withTolerance(BigDecimal tolerance) {
             return new ConfigurableJsonFluentAssert(internalMatcher.withTolerance(tolerance));
@@ -337,8 +337,8 @@ public class JsonFluentAssert {
          * <b>before</b> assertion.
          * For more info see {@link net.javacrumbs.jsonunit.core.Option}
          *
-         * @param firstOption
-         * @param otherOptions
+         *
+         *
          * @see net.javacrumbs.jsonunit.core.Option
          */
         public ConfigurableJsonFluentAssert when(Option firstOption, Option... otherOptions) {

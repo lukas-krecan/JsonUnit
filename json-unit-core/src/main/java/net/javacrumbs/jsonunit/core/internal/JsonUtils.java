@@ -36,9 +36,9 @@ public class JsonUtils {
     /**
      * Converts object to JSON.
      *
-     * @param source
+     *
      * @param label  label to be logged in case of error.
-     * @return
+     *
      */
     public static Node convertToJson(@Nullable Object source, String label) {
         return convertToJson(source, label, false);
@@ -113,8 +113,8 @@ public class JsonUtils {
     /**
      * Add quotes around the object iff it's not a JSON object.
      *
-     * @param source
-     * @return
+     *
+     *
      */
     static String quoteIfNeeded(String source) {
         String trimmed = source.trim();
@@ -134,8 +134,8 @@ public class JsonUtils {
     /**
      * Add quotes around the object iff it's not a JSON object.
      *
-     * @param source
-     * @return
+     *
+     *
      */
     static Object quoteIfNeeded(Object source) {
         if (source instanceof String) {

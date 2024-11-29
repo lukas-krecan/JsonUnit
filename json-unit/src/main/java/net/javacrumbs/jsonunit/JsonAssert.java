@@ -43,7 +43,7 @@ import org.hamcrest.Matcher;
  */
 public class JsonAssert {
     private static final String FULL_JSON = "fullJson";
-    private static final String ACTUAL = "actual";
+
     private static final String ROOT = "";
     private static Configuration configuration = Configuration.empty();
 

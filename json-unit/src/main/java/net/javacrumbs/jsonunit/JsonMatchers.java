@@ -23,7 +23,6 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.IdentityHashMap;
-import java.util.Map;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
@@ -206,7 +205,7 @@ public class JsonMatchers {
         // other
         // Hamcrest 2 calls doMatch() multiple times followed by multiple calls of describeMismatch()
         // using IdentityHashMap since not all compared object do have to implement hashCode and equals
-        private final Map<Object, String> differences = new IdentityHashMap<>();
+        private final IdentityHashMap<Object, String> differences = new IdentityHashMap<>();
 
         JsonPartMatcher(String path, Object expected) {
             super(path);
