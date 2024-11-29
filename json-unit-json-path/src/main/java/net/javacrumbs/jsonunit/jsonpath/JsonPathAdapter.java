@@ -41,7 +41,8 @@ public final class JsonPathAdapter {
         try {
             MatchRecordingListener recordingListener = new MatchRecordingListener();
             Object value = readValue(defaultConfiguration().addEvaluationListeners(recordingListener), json, path);
-            return jsonSource(wrapDeserializedObject(value), concatJsonPaths(json, path), recordingListener.getMatchingPaths());
+            return jsonSource(
+                    wrapDeserializedObject(value), concatJsonPaths(json, path), recordingListener.getMatchingPaths());
         } catch (PathNotFoundException e) {
             return jsonSource(missingNode(), concatJsonPaths(json, path));
         }
@@ -55,9 +56,11 @@ public final class JsonPathAdapter {
         }
         if (newPathSegment.startsWith("$.")) {
             return pathPrefix + newPathSegment.substring(1);
-        } else {
+        }
+        if (newPathSegment.startsWith("[")) {
             return pathPrefix + newPathSegment;
         }
+        return pathPrefix + "." + newPathSegment;
     }
 
     private static class MatchRecordingListener implements EvaluationListener {

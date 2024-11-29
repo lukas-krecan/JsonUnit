@@ -31,6 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.util.List;
 import net.javacrumbs.jsonunit.core.listener.Difference;
 import net.javacrumbs.jsonunit.core.listener.DifferenceContext;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
@@ -47,7 +48,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import java.util.List;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {SpringConfig.class})
@@ -79,11 +79,13 @@ class MockMvcTest {
     void shouldSupportJsonPath() throws Exception {
         exec("/sampleProduces").andExpect(json().inPath("$.result.array[1]").isEqualTo(2));
     }
+
     @Test
     void shouldSupportJsonPathError() throws Exception {
-        assertThatThrownBy(() ->
-            exec("/sampleProduces").andExpect(json().inPath("$.result.array[1]").isEqualTo(3))
-        ).hasMessage("""
+        assertThatThrownBy(() -> exec("/sampleProduces")
+                        .andExpect(json().inPath("$.result.array[1]").isEqualTo(3)))
+                .hasMessage(
+                        """
             JSON documents are different:
             Different value found in node "$.result.array[1]", expected: <3> but was: <2>.
             """);
@@ -91,9 +93,11 @@ class MockMvcTest {
 
     @Test
     void shouldSupportJsonPathChainedError() {
-        assertThatThrownBy(() ->
-            exec("/sampleProduces").andExpect(json().inPath("$.result").inPath("$.array[*]").isEqualTo(List.of(1, 3, 3)))
-        ).hasMessage("""
+        assertThatThrownBy(() -> exec("/sampleProduces")
+                        .andExpect(
+                                json().inPath("$.result").inPath("$.array[*]").isEqualTo(List.of(1, 3, 3))))
+                .hasMessage(
+                        """
             JSON documents are different:
             Different value found in node "$.result.array[*][1]", expected: <3> but was: <2>.
             """);
@@ -101,11 +105,12 @@ class MockMvcTest {
 
     @Test
     void shouldSupportJsonPathChainedWithNodeError() {
-        assertThatThrownBy(() ->
-            exec("/sampleProduces").andExpect(json().node("result").inPath("$.array[1]").isEqualTo(3))
-        ).hasMessage("""
+        assertThatThrownBy(() -> exec("/sampleProduces")
+                        .andExpect(json().node("result").inPath("$.array[1]").isEqualTo(3)))
+                .hasMessage(
+                        """
             JSON documents are different:
-            Different value found in node "$.result.array[*][1]", expected: <3> but was: <2>.
+            Different value found in node "result.array[1]", expected: <3> but was: <2>.
             """);
     }
 
@@ -212,7 +217,7 @@ class MockMvcTest {
     void isAbsentShouldFailIfNodeExists() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.string").isAbsent()))
                 .hasMessage(
-                        "Different value found in node \"result.string\", expected: <node to be absent> but was: <\"stringValue\">.");
+                        "Different value found in node \"$.result.string\", expected: <node to be absent> but was: <\"stringValue\">.");
     }
 
     @Test

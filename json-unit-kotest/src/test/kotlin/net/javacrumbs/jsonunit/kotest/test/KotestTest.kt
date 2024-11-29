@@ -63,6 +63,17 @@ Different value found in node "test", expected: <2> but was: <1>."""
     }
 
     @Test
+    fun `Should assert chained inPath`() {
+        assertThrows<AssertionError> {
+                """{"test": {"nested": 1}}""".inPath("test").inPath("nested") should equalJson("2")
+            }
+            .shouldHaveMessage(
+                """JSON documents are different:
+Different value found in node "test.nested", expected: <2> but was: <1>."""
+            )
+    }
+
+    @Test
     fun `Should assert nested`() {
         assertThrows<AssertionError> {
                 """{"test": {"nested": 1}}""".inPath("test").asClue { it inPath "nested" should equalJson("2") }
@@ -70,7 +81,7 @@ Different value found in node "test", expected: <2> but was: <1>."""
             .shouldHaveMessage(
                 """JSON in path "test"
 JSON documents are different:
-Different value found in node "nested", expected: <2> but was: <1>."""
+Different value found in node "test.nested", expected: <2> but was: <1>."""
             )
     }
 
