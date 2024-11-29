@@ -208,6 +208,23 @@
                     <version>3.13.0</version>
                     <configuration>
                         <release>${target.java.version}</release>
+                        <compilerArgs>
+                            <arg>-XDcompilePolicy=simple</arg>
+                            <arg>--should-stop=ifError=FLOW</arg>
+                            <arg>-Xplugin:ErrorProne -XepOpt:NullAway:AnnotatedPackages=net.javacrumbs</arg>
+                        </compilerArgs>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>com.google.errorprone</groupId>
+                                <artifactId>error_prone_core</artifactId>
+                                <version>2.36.0</version>
+                            </path>
+                            <path>
+                                <groupId>com.uber.nullaway</groupId>
+                                <artifactId>nullaway</artifactId>
+                                <version>0.12.1</version>
+                            </path>
+                        </annotationProcessorPaths>
                     </configuration>
                 </plugin>
 
