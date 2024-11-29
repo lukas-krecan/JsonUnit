@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit.jsonpath;
 
 import static com.jayway.jsonpath.Configuration.defaultConfiguration;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.missingNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
@@ -37,13 +38,25 @@ public final class JsonPathAdapter {
 
     @NotNull
     public static Object inPath(@Nullable Object json, @NotNull String path) {
-        String normalizedPath = fromBracketNotation(path);
         try {
             MatchRecordingListener recordingListener = new MatchRecordingListener();
             Object value = readValue(defaultConfiguration().addEvaluationListeners(recordingListener), json, path);
-            return jsonSource(wrapDeserializedObject(value), normalizedPath, recordingListener.getMatchingPaths());
+            return jsonSource(wrapDeserializedObject(value), concatJsonPaths(json, path), recordingListener.getMatchingPaths());
         } catch (PathNotFoundException e) {
-            return jsonSource(missingNode(), normalizedPath);
+            return jsonSource(missingNode(), concatJsonPaths(json, path));
+        }
+    }
+
+    private static @NotNull String concatJsonPaths(@Nullable Object json, @NotNull String path) {
+        String newPathSegment = fromBracketNotation(path);
+        String pathPrefix = getPathPrefix(json);
+        if (pathPrefix.isEmpty()) {
+            return newPathSegment;
+        }
+        if (newPathSegment.startsWith("$.")) {
+            return pathPrefix + newPathSegment.substring(1);
+        } else {
+            return pathPrefix + newPathSegment;
         }
     }
 

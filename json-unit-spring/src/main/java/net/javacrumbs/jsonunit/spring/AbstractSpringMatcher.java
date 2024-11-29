@@ -18,9 +18,12 @@ package net.javacrumbs.jsonunit.spring;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import net.javacrumbs.jsonunit.core.Configuration;
+import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
 import org.jetbrains.annotations.NotNull;
+
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix;
 
 abstract class AbstractSpringMatcher {
     private final Path path;
@@ -40,6 +43,8 @@ abstract class AbstractSpringMatcher {
     }
 
     void doMatch(Object actual) {
-        matcher.accept(new InternalMatcher(jsonTransformer.apply(actual), path, "", configuration));
+        Object json = jsonTransformer.apply(actual);
+        String pathPrefix = JsonUtils.getPathPrefix(json);
+        matcher.accept(new InternalMatcher(json, pathPrefix.isEmpty() ? path : Path.create("", pathPrefix), "", configuration));
     }
 }

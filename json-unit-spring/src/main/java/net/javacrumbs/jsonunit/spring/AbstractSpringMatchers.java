@@ -79,7 +79,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      */
     @NotNull
     public ME inPath(String path) {
-        return matchers(this.path, configuration, json -> JsonPathAdapter.inPath(json, path));
+        return matchers(this.path, configuration, json -> JsonPathAdapter.inPath(jsonTransformer.apply(json), path));
     }
 
     /**
