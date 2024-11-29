@@ -47,6 +47,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import java.util.List;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {SpringConfig.class})
@@ -84,10 +85,29 @@ class MockMvcTest {
             exec("/sampleProduces").andExpect(json().inPath("$.result.array[1]").isEqualTo(3))
         ).hasMessage("""
             JSON documents are different:
-            Different value found in node "", expected: <3> but was: <2>.
+            Different value found in node "$.result.array[1]", expected: <3> but was: <2>.
             """);
     }
 
+    @Test
+    void shouldSupportJsonPathChainedError() {
+        assertThatThrownBy(() ->
+            exec("/sampleProduces").andExpect(json().inPath("$.result").inPath("$.array[*]").isEqualTo(List.of(1, 3, 3)))
+        ).hasMessage("""
+            JSON documents are different:
+            Different value found in node "$.result.array[*][1]", expected: <3> but was: <2>.
+            """);
+    }
+
+    @Test
+    void shouldSupportJsonPathChainedWithNodeError() {
+        assertThatThrownBy(() ->
+            exec("/sampleProduces").andExpect(json().node("result").inPath("$.array[1]").isEqualTo(3))
+        ).hasMessage("""
+            JSON documents are different:
+            Different value found in node "$.result.array[*][1]", expected: <3> but was: <2>.
+            """);
+    }
 
     @Test
     void shouldPassIfEqualsWithIsoEncoding() throws Exception {
