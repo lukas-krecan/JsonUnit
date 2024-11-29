@@ -18,7 +18,6 @@ package net.javacrumbs.jsonunit.core.internal;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Resource reading utility
@@ -58,7 +57,7 @@ class Utils {
     static class JsonStringReader extends StringReader {
         private final String string;
 
-        public JsonStringReader(@NotNull String s) {
+        public JsonStringReader(String s) {
             super(s);
             this.string = s;
         }

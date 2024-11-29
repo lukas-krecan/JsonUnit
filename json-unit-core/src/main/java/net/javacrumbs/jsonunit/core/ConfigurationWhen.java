@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import net.javacrumbs.jsonunit.core.internal.PathOption;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Everything for {@link Configuration#when(PathsParam, ApplicableForPath...)}
@@ -91,8 +90,8 @@ public class ConfigurationWhen {
     }
 
     public interface ApplicableForPath {
-        @NotNull
-        Configuration applyForPaths(@NotNull Configuration configuration, @NotNull PathsParam pathsParam);
+
+        Configuration applyForPaths(Configuration configuration, PathsParam pathsParam);
     }
 
     static class OptionsParam implements ApplicableForPath {
@@ -105,8 +104,7 @@ public class ConfigurationWhen {
         }
 
         @Override
-        @NotNull
-        public Configuration applyForPaths(@NotNull Configuration configuration, @NotNull PathsParam pathsParam) {
+        public Configuration applyForPaths(Configuration configuration, PathsParam pathsParam) {
             return configuration.addPathOption(new PathOption(pathsParam.getPaths(), options, included));
         }
     }
@@ -115,8 +113,7 @@ public class ConfigurationWhen {
         private IgnoredParam() {}
 
         @Override
-        @NotNull
-        public Configuration applyForPaths(@NotNull Configuration configuration, @NotNull PathsParam pathsParam) {
+        public Configuration applyForPaths(Configuration configuration, PathsParam pathsParam) {
             Set<String> ignoredPaths = new HashSet<>(configuration.getPathsToBeIgnored());
             ignoredPaths.addAll(pathsParam.paths);
             return configuration.whenIgnoringPaths(ignoredPaths);

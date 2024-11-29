@@ -19,7 +19,6 @@ import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -105,7 +104,6 @@ record Converter(List<NodeFactory> factories) {
         return factories;
     }
 
-    @NotNull
     Node convertToNode(@Nullable Object source, String label, boolean lenient) {
         return findBestFactory(source).convertToNode(source, label, lenient);
     }

@@ -1,7 +1,6 @@
 package net.javacrumbs.jsonunit.core;
 
 import java.math.BigDecimal;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -18,5 +17,5 @@ public interface NumberComparator {
      * @param tolerance tolerance
      * @return true if the numbers should be considered equal
      */
-    boolean compare(@NotNull BigDecimal expected, @NotNull BigDecimal actual, @Nullable BigDecimal tolerance);
+    boolean compare(BigDecimal expected, BigDecimal actual, @Nullable BigDecimal tolerance);
 }

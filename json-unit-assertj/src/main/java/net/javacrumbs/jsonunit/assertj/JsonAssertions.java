@@ -22,7 +22,6 @@ import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 import org.assertj.core.api.AssertFactory;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.InstanceOfAssertFactory;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public final class JsonAssertions {
@@ -45,7 +44,6 @@ public final class JsonAssertions {
 
     private JsonAssertions() {}
 
-    @NotNull
     public static ConfigurableJsonAssert assertThatJson(@Nullable Object actual) {
         return new ConfigurableJsonAssert(actual, Configuration.empty());
     }
@@ -60,9 +58,7 @@ public final class JsonAssertions {
      *         );
      * }</pre>
      */
-    @NotNull
-    public static ConfigurableJsonAssert assertThatJson(
-            @NotNull Object actual, @NotNull JsonAssertionCallback... callbacks) {
+    public static ConfigurableJsonAssert assertThatJson(Object actual, JsonAssertionCallback... callbacks) {
         ConfigurableJsonAssert a = assertThatJson(actual);
         for (JsonAssertionCallback callback : callbacks) {
             callback.doAssert(a);
@@ -76,7 +72,6 @@ public final class JsonAssertions {
      * @param input
      * @return Object suitable for comparison. Implementation type may change in the future.
      */
-    @NotNull
     public static Object json(Object input) {
         return new ExpectedNode(JsonUtils.convertToJson(input, "expected", true));
     }
@@ -84,7 +79,6 @@ public final class JsonAssertions {
     /**
      * Value passed here is not parsed as JSON but used as it is
      */
-    @NotNull
     public static Object value(Object input) {
         return new ExpectedNode(JsonUtils.wrapDeserializedObject(input));
     }
@@ -107,7 +101,7 @@ public final class JsonAssertions {
 
     @FunctionalInterface
     public interface JsonAssertionCallback {
-        void doAssert(@NotNull ConfigurableJsonAssert assertion);
+        void doAssert(ConfigurableJsonAssert assertion);
     }
 
     private static class JsonUnitAssertFactory implements AssertFactory<Object, ConfigurableJsonAssert> {
