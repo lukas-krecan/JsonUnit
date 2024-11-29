@@ -27,7 +27,7 @@ import org.hamcrest.Matcher;
 /**
  * JsonMatcher interface.
  *
- * @param <T>
+ * 
  */
 public interface ConfigurableJsonMatcher<T> extends Matcher<T> {
 

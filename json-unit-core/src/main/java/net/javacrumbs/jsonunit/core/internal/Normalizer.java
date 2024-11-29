@@ -93,7 +93,5 @@ class Normalizer {
         }
     }
 
-    private static <T> Stream<T> stream(Iterator<T> iterator) {
-        return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, 0), false);
-    }
+    
 }

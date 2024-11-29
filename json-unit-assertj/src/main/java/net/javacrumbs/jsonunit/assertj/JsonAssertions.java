@@ -69,7 +69,7 @@ public final class JsonAssertions {
     /**
      * JSON to be used in expected part of the assertion,
      *
-     * @param input
+     * 
      * @return Object suitable for comparison. Implementation type may change in the future.
      */
     public static Object json(Object input) {

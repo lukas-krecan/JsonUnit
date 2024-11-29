@@ -123,8 +123,8 @@ public final class InternalMatcher {
      * <b>before</b> assertion.
      * For more info see {@link net.javacrumbs.jsonunit.core.Option}
      *
-     * @param firstOption
-     * @param otherOptions
+     * 
+     * 
      * @see net.javacrumbs.jsonunit.core.Option
      */
     public InternalMatcher withOptions(Option firstOption, Option... otherOptions) {
@@ -135,8 +135,8 @@ public final class InternalMatcher {
      * Sets advanced/local options. This method has to be called <b>before</b> assertion.
      * For more info see {@link Configuration#when(PathsParam, ApplicableForPath...)}
      *
-     * @param object
-     * @param actions
+     * 
+     * 
      * @see Configuration#when(PathsParam, ApplicableForPath...)
      */
     public final InternalMatcher when(PathsParam object, ApplicableForPath... actions) {
@@ -197,7 +197,7 @@ public final class InternalMatcher {
      * assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[0]").isEqualTo("1");
      * </code>
      *
-     * @param newPath
+     * 
      */
     public InternalMatcher node(String newPath) {
         return new InternalMatcher(actual, path.copy(newPath), description, configuration);

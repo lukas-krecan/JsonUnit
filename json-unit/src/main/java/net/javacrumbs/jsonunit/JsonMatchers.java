@@ -206,7 +206,7 @@ public class JsonMatchers {
         // other
         // Hamcrest 2 calls doMatch() multiple times followed by multiple calls of describeMismatch()
         // using IdentityHashMap since not all compared object do have to implement hashCode and equals
-        private final Map<Object, String> differences = new IdentityHashMap<>();
+        private final IdentityHashMap<Object,String> differences = new IdentityHashMap<>();
 
         JsonPartMatcher(String path, Object expected) {
             super(path);
