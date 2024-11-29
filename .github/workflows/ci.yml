@@ -27,4 +27,4 @@ jobs:
     - name: Build
       env:
         MAVEN_OPTS: --add-opens java.base/java.util=ALL-UNNAMED
-      run: mvn -B clean spotless:check package biz.aQute.bnd:bnd-resolver-maven-plugin:resolve --file pom.xml
+      run: ./mvnw -B clean spotless:check package biz.aQute.bnd:bnd-resolver-maven-plugin:resolve --file pom.xml
