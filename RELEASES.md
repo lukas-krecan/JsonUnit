@@ -1,5 +1,9 @@
 Release notes
 =============
+## 4.1.0 (2024-11-29)
+* Support for JsonPath in Spring related modules
+* Dependency updates
+
 ## 4.0.0 (2024-11-16)
 * See the [documentation changes](https://github.com/lukas-krecan/JsonUnit/commit/1b76844b3f07a1049b08eaf61cade97d1a3609a2)
 * Support for [Spring MockMvc AssertJ assertions](https://github.com/lukas-krecan/JsonUnit?tab=readme-ov-file#spring-assertj-for-mockmvc) introduced in Spring 6.2.0
