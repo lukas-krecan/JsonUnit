@@ -18,7 +18,6 @@ package net.javacrumbs.jsonunit.spring;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import net.javacrumbs.jsonunit.core.Configuration;
-import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.http.client.ClientHttpRequest;
@@ -38,23 +37,21 @@ import org.springframework.test.web.client.RequestMatcher;
  */
 public class JsonUnitRequestMatchers extends AbstractSpringMatchers<JsonUnitRequestMatchers, RequestMatcher> {
 
-    private JsonUnitRequestMatchers(Path path, Configuration configuration, Function<Object, Object> jsonTransformer) {
-        super(path, configuration, jsonTransformer);
+    private JsonUnitRequestMatchers(Configuration configuration, Function<Object, Object> jsonTransformer) {
+        super(configuration, jsonTransformer);
     }
 
     @NotNull
     @Override
     RequestMatcher matcher(@NotNull Consumer<InternalMatcher> matcher) {
-        return new JsonRequestMatcher(path, configuration, matcher, jsonTransformer);
+        return new JsonRequestMatcher(configuration, matcher, jsonTransformer);
     }
 
     @Override
     @NotNull
     JsonUnitRequestMatchers matchers(
-            @NotNull Path path,
-            @NotNull Configuration configuration,
-            @NotNull Function<Object, Object> jsonTransformer) {
-        return new JsonUnitRequestMatchers(path, configuration, jsonTransformer);
+            @NotNull Configuration configuration, @NotNull Function<Object, Object> jsonTransformer) {
+        return new JsonUnitRequestMatchers(configuration, jsonTransformer);
     }
 
     /**
@@ -62,16 +59,15 @@ public class JsonUnitRequestMatchers extends AbstractSpringMatchers<JsonUnitRequ
      */
     @NotNull
     public static JsonUnitRequestMatchers json() {
-        return new JsonUnitRequestMatchers(Path.root(), Configuration.empty(), Function.identity());
+        return new JsonUnitRequestMatchers(Configuration.empty(), Function.identity());
     }
 
     private static class JsonRequestMatcher extends AbstractSpringMatcher implements RequestMatcher {
         private JsonRequestMatcher(
-                @NotNull Path path,
                 @NotNull Configuration configuration,
                 @NotNull Consumer<InternalMatcher> matcher,
                 @NotNull Function<Object, Object> jsonTransformer) {
-            super(path, configuration, matcher, jsonTransformer);
+            super(configuration, matcher, jsonTransformer);
         }
 
         @Override

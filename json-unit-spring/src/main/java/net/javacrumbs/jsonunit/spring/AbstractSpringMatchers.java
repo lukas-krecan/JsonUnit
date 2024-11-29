@@ -21,7 +21,6 @@ import java.util.function.Function;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen;
 import net.javacrumbs.jsonunit.core.Option;
-import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter;
@@ -35,13 +34,10 @@ import org.jetbrains.annotations.Nullable;
  * @param <MATCHER> Type of the matcher
  */
 abstract class AbstractSpringMatchers<ME, MATCHER> {
-    final Path path;
     final Configuration configuration;
     final Function<Object, Object> jsonTransformer;
 
-    AbstractSpringMatchers(
-            @NotNull Path path, @NotNull Configuration configuration, Function<Object, Object> jsonTransformer) {
-        this.path = path;
+    AbstractSpringMatchers(@NotNull Configuration configuration, Function<Object, Object> jsonTransformer) {
         this.configuration = configuration;
         this.jsonTransformer = jsonTransformer;
     }
@@ -50,13 +46,10 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
     abstract MATCHER matcher(@NotNull Consumer<InternalMatcher> matcher);
 
     @NotNull
-    abstract ME matchers(
-            @NotNull Path path,
-            @NotNull Configuration configuration,
-            @NotNull Function<Object, Object> jsonTransformer);
+    abstract ME matchers(@NotNull Configuration configuration, @NotNull Function<Object, Object> jsonTransformer);
 
-    protected ME matchers(@NotNull Path path, @NotNull Configuration configuration) {
-        return matchers(path, configuration, jsonTransformer);
+    protected ME matchers(@NotNull Configuration configuration) {
+        return matchers(configuration, jsonTransformer);
     }
 
     /**
@@ -70,8 +63,8 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      * @return object comparing only node given by path.
      */
     @NotNull
-    public ME node(String newPath) {
-        return matchers(path.copy(newPath), configuration);
+    public ME node(String path) {
+        return inPath(path);
     }
 
     /**
@@ -79,7 +72,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      */
     @NotNull
     public ME inPath(String path) {
-        return matchers(this.path, configuration, json -> JsonPathAdapter.inPath(jsonTransformer.apply(json), path));
+        return matchers(configuration, json -> JsonPathAdapter.inPath(jsonTransformer.apply(json), path));
     }
 
     /**
@@ -88,7 +81,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      */
     @NotNull
     public ME ignoring(@NotNull String ignorePlaceholder) {
-        return matchers(path, configuration.withIgnorePlaceholder(ignorePlaceholder));
+        return matchers(configuration.withIgnorePlaceholder(ignorePlaceholder));
     }
 
     /**
@@ -105,7 +98,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      */
     @NotNull
     public ME withMatcher(@NotNull String matcherName, @NotNull Matcher<?> matcher) {
-        return matchers(path, configuration.withMatcher(matcherName, matcher));
+        return matchers(configuration.withMatcher(matcherName, matcher));
     }
 
     /**
@@ -114,12 +107,12 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      */
     @NotNull
     public ME withTolerance(@Nullable BigDecimal tolerance) {
-        return matchers(path, configuration.withTolerance(tolerance));
+        return matchers(configuration.withTolerance(tolerance));
     }
 
     @NotNull
     public ME withDifferenceListener(@NotNull DifferenceListener differenceListener) {
-        return matchers(path, configuration.withDifferenceListener(differenceListener));
+        return matchers(configuration.withDifferenceListener(differenceListener));
     }
 
     /**
@@ -130,7 +123,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      */
     @NotNull
     public ME when(@NotNull Option firstOption, @NotNull Option... otherOptions) {
-        return matchers(path, configuration.withOptions(firstOption, otherOptions));
+        return matchers(configuration.withOptions(firstOption, otherOptions));
     }
 
     /**
@@ -141,7 +134,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
     @NotNull
     public ME when(
             @NotNull ConfigurationWhen.PathsParam object, @NotNull ConfigurationWhen.ApplicableForPath... actions) {
-        return matchers(path, configuration.when(object, actions));
+        return matchers(configuration.when(object, actions));
     }
 
     /**

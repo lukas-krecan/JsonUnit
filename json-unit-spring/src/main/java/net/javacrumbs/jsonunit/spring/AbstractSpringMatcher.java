@@ -23,20 +23,15 @@ import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
 import org.jetbrains.annotations.NotNull;
 
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix;
-
 abstract class AbstractSpringMatcher {
-    private final Path path;
     private final Configuration configuration;
     private final Consumer<InternalMatcher> matcher;
     private final Function<Object, Object> jsonTransformer;
 
     AbstractSpringMatcher(
-            @NotNull Path path,
             @NotNull Configuration configuration,
             @NotNull Consumer<InternalMatcher> matcher,
             @NotNull Function<Object, Object> jsonTransformer) {
-        this.path = path;
         this.configuration = configuration;
         this.matcher = matcher;
         this.jsonTransformer = jsonTransformer;
@@ -45,6 +40,7 @@ abstract class AbstractSpringMatcher {
     void doMatch(Object actual) {
         Object json = jsonTransformer.apply(actual);
         String pathPrefix = JsonUtils.getPathPrefix(json);
-        matcher.accept(new InternalMatcher(json, pathPrefix.isEmpty() ? path : Path.create("", pathPrefix), "", configuration));
+        Path path = Path.create("", pathPrefix);
+        matcher.accept(new InternalMatcher(json, path, "", configuration));
     }
 }

@@ -185,7 +185,7 @@ class WebTestClientTest {
     void isAbsentShouldFailIfNodeExists() {
         assertThatThrownBy(() -> exec().consumeWith(json().node("result.string").isAbsent()))
                 .hasMessageStartingWith(
-                        "Different value found in node \"result.string\", expected: <node to be absent> but was: <\"stringValue\">.");
+                        "Different value found in node \"$.result.string\", expected: <node to be absent> but was: <\"stringValue\">.");
     }
 
     @Test
