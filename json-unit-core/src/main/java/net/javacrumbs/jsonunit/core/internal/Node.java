@@ -15,6 +15,8 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import org.jetbrains.annotations.Nullable;
+
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toCollection;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
@@ -224,7 +226,7 @@ public interface Node {
     };
 
     interface ValueExtractor {
-        Object getValue(Node node);
+        @Nullable Object getValue(Node node);
     }
 
     class JsonMap extends AbstractMap<String, Object> implements NodeWrapper {
