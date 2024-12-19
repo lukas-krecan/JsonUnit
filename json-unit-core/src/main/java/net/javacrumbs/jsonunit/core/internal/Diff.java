@@ -72,6 +72,7 @@ public class Diff {
     private static final Pattern ANY_NUMBER_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.any-number\\}");
     private static final Pattern ANY_BOOLEAN_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.any-boolean\\}");
     private static final Pattern ANY_STRING_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.any-string\\}");
+    private static final Pattern ANY_ARRAY_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.any-array\\}");
 
     private static final Pattern REGEX_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.regex\\}(.*)");
     private static final Pattern MATCHER_PLACEHOLDER_PATTERN =
@@ -346,6 +347,11 @@ public class Diff {
 
         // Any string
         if (checkAny(NodeType.STRING, ANY_STRING_PLACEHOLDER, "a string", context)) {
+            return;
+        }
+
+        // Any array
+        if (checkAny(NodeType.ARRAY, ANY_ARRAY_PLACEHOLDER, "an array", context)) {
             return;
         }
 
