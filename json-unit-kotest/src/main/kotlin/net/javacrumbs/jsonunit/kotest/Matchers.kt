@@ -65,7 +65,7 @@ fun bePresent(): Matcher<Any?> = Matcher { actual ->
     MatcherResult(
         !node.isMissingNode,
         { "Node \"${getPathPrefix(actual)}\" is missing." },
-        { "Node \"${getPathPrefix(actual)}\" is present." }
+        { "Node \"${getPathPrefix(actual)}\" is present." },
     )
 }
 
@@ -80,7 +80,7 @@ private fun beType(expectedType: NodeType): Matcher<Any?> =
                 },
                 {
                     "Node \"${getPathPrefix(actual)}\" has invalid type, expected to not be ${expectedType.description} but was: <$node>."
-                }
+                },
             )
         }
 
@@ -113,5 +113,6 @@ fun Any?.shouldBeJsonArray(): List<*> {
 /** Asserts that JSON node is present, is an object and returns the value as [Map]. */
 fun Any?.shouldBeJsonObject(): Map<String, *> {
     this should beJsonObject()
-    @Suppress("UNCHECKED_CAST") return getNode(this).value as Map<String, *>
+    @Suppress("UNCHECKED_CAST")
+    return getNode(this).value as Map<String, *>
 }
