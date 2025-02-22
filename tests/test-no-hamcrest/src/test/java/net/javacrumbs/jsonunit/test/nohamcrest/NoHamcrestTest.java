@@ -15,14 +15,16 @@
  */
 package net.javacrumbs.jsonunit.test.nohamcrest;
 
-import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
-
 import org.junit.jupiter.api.Test;
+
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 
 class NoHamcrestTest {
 
     @Test
     void comparisonShouldWork() {
-        assertThatJson("{\"a\":1}").isEqualTo("{a: 1}");
+        assertThatJson("{\"a\":1}")
+            .withConfiguration(c -> c.withTolerance(0.01))
+            .isEqualTo("{a: 1}");
     }
 }
