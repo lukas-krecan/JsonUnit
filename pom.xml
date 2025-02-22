@@ -85,6 +85,12 @@
                 <version>${johnzon.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.hamcrest</groupId>
+                <artifactId>hamcrest-core</artifactId>
+                <version>${hamcrest.version}</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.geronimo.specs</groupId>
                 <artifactId>geronimo-json_1.1_spec</artifactId>
                 <version>${geronimo.jsonp.version}</version>
