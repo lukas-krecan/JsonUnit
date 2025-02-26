@@ -12,7 +12,7 @@
         <johnzon.version>2.0.1</johnzon.version>
         <geronimo.jsonp.version>1.5</geronimo.jsonp.version>
         <jsonorg.version>20250107</jsonorg.version>
-        <slf4j.version>2.0.16</slf4j.version>
+        <slf4j.version>2.0.17</slf4j.version>
         <assertj.version>3.27.3</assertj.version>
         <target.java.version>17</target.java.version>
         <junit-jupiter.version>5.12.0</junit-jupiter.version>
