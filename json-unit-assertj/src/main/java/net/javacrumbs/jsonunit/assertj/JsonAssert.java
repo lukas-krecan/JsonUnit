@@ -108,7 +108,17 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     }
 
     /**
-     * Compares JSONs.
+     * Compares JSONs. If <code>expected</code> is String it's first parsed as JSON. If it can't be
+     * parsed as JSON, it is treated as a String. If you want to disambiguate, specify the type first
+     * using <code>isString()</code>, <code>isNumber()</code> etc.
+     * Examples:
+     * <ul>
+     *     <li><code>isEqualTo("{\"a\":1}")</code> is parsed as JSON</li>
+     *     <li><code>isEqualTo("1")</code> is parsed as number 1</li>
+     *     <li><code>isEqualTo("true")</code> is parsed as boolean</li>
+     *     <li><code>isEqualTo("\"1\"")</code> is parsed as String "1"</li>
+     *     <li><code>isEqualTo("a")</code> is parsed as String "a"</li>
+     * </ul>
      */
     @Override
     @NotNull
@@ -122,6 +132,13 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
             diff.failIfDifferent(MessageFormatter.instance().format(info.description(), info.representation(), ""));
         }
         return this;
+    }
+
+    /**
+     * Assert that the value is string and checks for equality. A shortcut for <code>isString().isEqualTo(expected)</code>
+     */
+    public StringAssert isStringEqualTo(@NotNull String expected) {
+        return isString().isEqualTo(expected);
     }
 
     /**

@@ -1708,6 +1708,11 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void isSimplifiedStringEqualToShouldPass() {
+        assertThatJson("{\"test\":\"1\"}").node("test").isStringEqualTo("1");
+    }
+
+    @Test
     void testIssue3SpaceStrings() {
         assertThatJson("{\"someKey\":\"a b\"}").node("someKey").isEqualTo("a b");
     }
