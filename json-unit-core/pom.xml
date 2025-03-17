@@ -11,6 +11,7 @@
             jakarta.json;resolution:=optional,
             com.google.gson;resolution:=optional,
             com.squareup.moshi;resolution:=optional,
+            org.jspecify.annotations;resolution:=optional,
             *
         </osgi.importPackage>
         <osgi.exportPackage>
