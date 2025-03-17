@@ -21,7 +21,7 @@ import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 abstract class AbstractSpringMatcher {
     private final Configuration configuration;
@@ -29,9 +29,9 @@ abstract class AbstractSpringMatcher {
     private final Function<Object, Object> jsonTransformer;
 
     AbstractSpringMatcher(
-            @NotNull Configuration configuration,
-            @NotNull Consumer<InternalMatcher> matcher,
-            @NotNull Function<Object, Object> jsonTransformer) {
+            @NonNull Configuration configuration,
+            @NonNull Consumer<InternalMatcher> matcher,
+            @NonNull Function<Object, Object> jsonTransformer) {
         this.configuration = configuration;
         this.matcher = matcher;
         this.jsonTransformer = jsonTransformer;

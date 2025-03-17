@@ -38,8 +38,8 @@ import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import org.assertj.core.api.AbstractMapAssert;
 import org.assertj.core.description.Description;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, Object>, String, Object> {
     private final Configuration configuration;
@@ -53,7 +53,7 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
     }
 
     @Override
-    @NotNull
+    @NonNull
     public JsonMapAssert isEqualTo(@Nullable Object expected) {
         return compare(expected, configuration);
     }
@@ -61,13 +61,13 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
     /**
      * Moves comparison to given node. Second call navigates from the last position in the JSON.
      */
-    @NotNull
-    public JsonAssert node(@NotNull String node) {
+    @NonNull
+    public JsonAssert node(@NonNull String node) {
         return new JsonAssert(path.to(node), configuration, getNode(actual, node));
     }
 
     @Override
-    @NotNull
+    @NonNull
     public JsonMapAssert containsValue(@Nullable Object expected) {
         if (expected instanceof Node) {
             if (!contains(expected)) {
@@ -80,7 +80,7 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
     }
 
     @Override
-    @NotNull
+    @NonNull
     public JsonMapAssert doesNotContainValue(@Nullable Object expected) {
         if (expected instanceof Node) {
             if (contains(expected)) {
@@ -93,37 +93,37 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
     }
 
     @Override
-    @NotNull
+    @NonNull
     @Deprecated
     public JsonMapAssert isEqualToIgnoringGivenFields(
-            @Nullable Object other, @NotNull String... propertiesOrFieldsToIgnore) {
+            @Nullable Object other, @NonNull String... propertiesOrFieldsToIgnore) {
         return compare(other, configuration.whenIgnoringPaths(propertiesOrFieldsToIgnore));
     }
 
     @Override
-    @NotNull
+    @NonNull
     @Deprecated
     public JsonMapAssert isEqualToComparingOnlyGivenFields(
-            @Nullable Object other, @NotNull String... propertiesOrFieldsUsedInComparison) {
+            @Nullable Object other, @NonNull String... propertiesOrFieldsUsedInComparison) {
         throw unsupportedOperation();
     }
 
     @Override
-    @NotNull
+    @NonNull
     @Deprecated
     public JsonMapAssert isEqualToIgnoringNullFields(@Nullable Object other) {
         throw unsupportedOperation();
     }
 
     @Override
-    @NotNull
+    @NonNull
     @Deprecated
     public JsonMapAssert isEqualToComparingFieldByField(@Nullable Object other) {
         throw unsupportedOperation();
     }
 
     @Override
-    @NotNull
+    @NonNull
     @Deprecated
     public JsonMapAssert isEqualToComparingFieldByFieldRecursively(@Nullable Object other) {
         throw unsupportedOperation();
@@ -176,7 +176,7 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
         return isEqualTo(wrapDeserializedObject(expectedAsMap));
     }
 
-    @NotNull
+    @NonNull
     private List<Entry<? extends String, ?>> entriesNotFoundInMap(Entry<? extends String, ?>[] expected) {
         return stream(expected).filter(entry -> !doesContainEntry(entry)).collect(toList());
     }
@@ -275,13 +275,13 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
         return super.hasNoNullFieldsOrPropertiesExcept(propertiesOrFieldsToIgnore);
     }
 
-    @NotNull
+    @NonNull
     private UnsupportedOperationException unsupportedOperation() {
         return new UnsupportedOperationException("Operation not supported for JSON documents");
     }
 
-    @NotNull
-    private JsonMapAssert compare(@Nullable Object other, @NotNull Configuration configuration) {
+    @NonNull
+    private JsonMapAssert compare(@Nullable Object other, @NonNull Configuration configuration) {
         describedAs((Description) null);
         Diff diff = Diff.create(other, actual, "fullJson", path, configuration);
         diff.failIfDifferent();

@@ -6,6 +6,7 @@
     <description>JSON Assertions based on AssertJ</description>
 
     <properties>
+        <osgi.importPackage>org.jspecify.annotations;resolution:=optional</osgi.importPackage>
         <osgi.exportPackage>net.javacrumbs.jsonunit.assertj</osgi.exportPackage>
         <osgi.includeResource>META-INF=target/classes/META-INF</osgi.includeResource>
     </properties>

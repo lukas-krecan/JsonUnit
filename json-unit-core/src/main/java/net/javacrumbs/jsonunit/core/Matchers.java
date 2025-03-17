@@ -19,8 +19,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.hamcrest.Matcher;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Immutable map of matchers.
@@ -38,8 +38,8 @@ class Matchers {
         return EMPTY;
     }
 
-    @NotNull
-    public Matchers with(@NotNull String matcherName, @NotNull Matcher<?> matcher) {
+    @NonNull
+    public Matchers with(@NonNull String matcherName, @NonNull Matcher<?> matcher) {
         Map<String, Matcher<?>> newMatcherMap = new HashMap<>(matcherMap);
         newMatcherMap.put(matcherName, matcher);
         return new Matchers(newMatcherMap);
