@@ -31,6 +31,8 @@ record Converter(List<NodeFactory> factories) {
     private static final boolean jackson2Present = isClassPresent("com.fasterxml.jackson.databind.ObjectMapper")
             && isClassPresent("com.fasterxml.jackson.core.JsonGenerator");
 
+    private static final boolean jackson3Present = isClassPresent("tools.jackson.databind.ObjectMapper");
+
     private static final boolean gsonPresent = isClassPresent("com.google.gson.Gson");
 
     private static final boolean jsonOrgPresent = isClassPresent("org.json.JSONObject");
@@ -73,6 +75,7 @@ record Converter(List<NodeFactory> factories) {
                 case "moshi" -> factories.add(new MoshiNodeFactory());
                 case "json.org" -> factories.add(new JsonOrgNodeFactory());
                 case "jackson2" -> factories.add(new Jackson2NodeFactory());
+                case "jackson3" -> factories.add(new Jackson3NodeFactory());
                 case "gson" -> factories.add(new GsonNodeFactory());
                 case "johnzon" -> factories.add(new JohnzonNodeFactory());
                 default -> throw new IllegalArgumentException("'" + factoryName + "' library name not recognized.");
@@ -97,6 +100,10 @@ record Converter(List<NodeFactory> factories) {
 
         if (gsonPresent) {
             factories.add(new GsonNodeFactory());
+        }
+
+        if (jackson3Present) {
+            factories.add(new Jackson3NodeFactory());
         }
 
         if (jackson2Present) {
