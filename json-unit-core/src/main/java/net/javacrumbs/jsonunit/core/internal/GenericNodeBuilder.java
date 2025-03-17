@@ -241,11 +241,6 @@ class GenericNodeBuilder implements NodeBuilder {
                 public Node next() {
                     return newNode(iterator.next());
                 }
-
-                @Override
-                public void remove() {
-                    iterator.remove();
-                }
             };
         }
 
@@ -296,11 +291,6 @@ class GenericNodeBuilder implements NodeBuilder {
                 @Override
                 public boolean hasNext() {
                     return iterator.hasNext();
-                }
-
-                @Override
-                public void remove() {
-                    iterator.remove();
                 }
 
                 @Override
