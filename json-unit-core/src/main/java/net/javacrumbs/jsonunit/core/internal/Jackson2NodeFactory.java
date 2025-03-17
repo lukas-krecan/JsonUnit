@@ -113,6 +113,11 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
                 }
 
                 @Override
+                public void remove() {
+                    iterator.remove();
+                }
+
+                @Override
                 public KeyValue next() {
                     Map.Entry<String, JsonNode> entry = iterator.next();
                     return new KeyValue(entry.getKey(), newNode(entry.getValue()));
@@ -152,6 +157,11 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
                 @Override
                 public Node next() {
                     return newNode(elements.next());
+                }
+
+                @Override
+                public void remove() {
+                    elements.remove();
                 }
             };
         }

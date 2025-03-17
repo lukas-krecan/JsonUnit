@@ -114,6 +114,11 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
                 public Node next() {
                     return newNode(iterator.next());
                 }
+
+                @Override
+                public void remove() {
+                    iterator.remove();
+                }
             };
         }
 
@@ -147,6 +152,11 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
                 @Override
                 public boolean hasNext() {
                     return iterator.hasNext();
+                }
+
+                @Override
+                public void remove() {
+                    iterator.remove();
                 }
 
                 @Override

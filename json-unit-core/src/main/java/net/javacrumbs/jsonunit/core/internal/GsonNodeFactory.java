@@ -108,6 +108,11 @@ class GsonNodeFactory extends AbstractNodeFactory {
                     }
 
                     @Override
+                    public void remove() {
+                        iterator.remove();
+                    }
+
+                    @Override
                     public KeyValue next() {
                         Map.Entry<String, JsonElement> entry = iterator.next();
                         return new KeyValue(entry.getKey(), newNode(entry.getValue()));
@@ -149,6 +154,11 @@ class GsonNodeFactory extends AbstractNodeFactory {
                     @Override
                     public boolean hasNext() {
                         return iterator.hasNext();
+                    }
+
+                    @Override
+                    public void remove() {
+                        iterator.remove();
                     }
 
                     @Override
