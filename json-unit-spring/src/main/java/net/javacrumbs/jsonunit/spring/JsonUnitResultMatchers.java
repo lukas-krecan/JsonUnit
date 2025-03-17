@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultMatcher;
@@ -48,34 +48,34 @@ public class JsonUnitResultMatchers extends AbstractSpringMatchers<JsonUnitResul
     }
 
     @Override
-    @NotNull
-    ResultMatcher matcher(@NotNull Consumer<InternalMatcher> matcher) {
+    @NonNull
+    ResultMatcher matcher(@NonNull Consumer<InternalMatcher> matcher) {
         return new JsonResultMatcher(configuration, matcher, jsonTransformer);
     }
 
     @Override
-    @NotNull
+    @NonNull
     JsonUnitResultMatchers matchers(
-            @NotNull Configuration configuration, @NotNull Function<Object, Object> jsonTransformer) {
+            @NonNull Configuration configuration, @NonNull Function<Object, Object> jsonTransformer) {
         return new JsonUnitResultMatchers(configuration, jsonTransformer);
     }
 
     private static class JsonResultMatcher extends AbstractSpringMatcher implements ResultMatcher {
         private JsonResultMatcher(
-                @NotNull Configuration configuration,
-                @NotNull Consumer<InternalMatcher> matcher,
-                @NotNull Function<Object, Object> jsonTransformer) {
+                @NonNull Configuration configuration,
+                @NonNull Consumer<InternalMatcher> matcher,
+                @NonNull Function<Object, Object> jsonTransformer) {
             super(configuration, matcher, jsonTransformer);
         }
 
         @Override
-        public void match(@NotNull MvcResult result) throws Exception {
+        public void match(@NonNull MvcResult result) throws Exception {
             String actual = getContentAsString(result.getResponse());
             doMatch(actual);
         }
 
-        @NotNull
-        private String getContentAsString(@NotNull MockHttpServletResponse response)
+        @NonNull
+        private String getContentAsString(@NonNull MockHttpServletResponse response)
                 throws UnsupportedEncodingException {
             return response.getContentAsString(StandardCharsets.UTF_8);
         }

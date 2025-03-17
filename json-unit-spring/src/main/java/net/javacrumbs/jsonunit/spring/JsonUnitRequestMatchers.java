@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.mock.http.client.MockClientHttpRequest;
 import org.springframework.test.web.client.RequestMatcher;
@@ -41,37 +41,37 @@ public class JsonUnitRequestMatchers extends AbstractSpringMatchers<JsonUnitRequ
         super(configuration, jsonTransformer);
     }
 
-    @NotNull
+    @NonNull
     @Override
-    RequestMatcher matcher(@NotNull Consumer<InternalMatcher> matcher) {
+    RequestMatcher matcher(@NonNull Consumer<InternalMatcher> matcher) {
         return new JsonRequestMatcher(configuration, matcher, jsonTransformer);
     }
 
     @Override
-    @NotNull
+    @NonNull
     JsonUnitRequestMatchers matchers(
-            @NotNull Configuration configuration, @NotNull Function<Object, Object> jsonTransformer) {
+            @NonNull Configuration configuration, @NonNull Function<Object, Object> jsonTransformer) {
         return new JsonUnitRequestMatchers(configuration, jsonTransformer);
     }
 
     /**
      * Creates JsonUnitResultMatchers to be used for JSON assertions.
      */
-    @NotNull
+    @NonNull
     public static JsonUnitRequestMatchers json() {
         return new JsonUnitRequestMatchers(Configuration.empty(), Function.identity());
     }
 
     private static class JsonRequestMatcher extends AbstractSpringMatcher implements RequestMatcher {
         private JsonRequestMatcher(
-                @NotNull Configuration configuration,
-                @NotNull Consumer<InternalMatcher> matcher,
-                @NotNull Function<Object, Object> jsonTransformer) {
+                @NonNull Configuration configuration,
+                @NonNull Consumer<InternalMatcher> matcher,
+                @NonNull Function<Object, Object> jsonTransformer) {
             super(configuration, matcher, jsonTransformer);
         }
 
         @Override
-        public void match(@NotNull ClientHttpRequest request) throws AssertionError {
+        public void match(@NonNull ClientHttpRequest request) throws AssertionError {
             Object actual = ((MockClientHttpRequest) request).getBodyAsString();
             doMatch(actual);
         }

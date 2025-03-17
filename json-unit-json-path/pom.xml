@@ -15,6 +15,7 @@
     </parent>
 
     <properties>
+        <osgi.importPackage>org.jspecify.annotations;resolution:=optional</osgi.importPackage>
         <osgi.exportPackage>net.javacrumbs.jsonunit.jsonpath.*</osgi.exportPackage>
     </properties>
 

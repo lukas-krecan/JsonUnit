@@ -28,7 +28,7 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.Spliterators;
 import java.util.stream.StreamSupport;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * For internal use only!!! Abstract node representation.
@@ -237,7 +237,7 @@ public interface Node {
             wrappedNode = node;
         }
 
-        @NotNull
+        @NonNull
         @Override
         public Set<Entry<String, Object>> entrySet() {
             if (entrySet == null) {

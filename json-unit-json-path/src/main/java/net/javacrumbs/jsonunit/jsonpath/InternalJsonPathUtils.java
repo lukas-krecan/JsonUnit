@@ -25,13 +25,13 @@ import java.util.stream.Stream;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 import net.javacrumbs.jsonunit.core.internal.PathOption;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 public class InternalJsonPathUtils {
     private InternalJsonPathUtils() {}
 
-    @NotNull
-    public static Configuration resolveJsonPaths(@NotNull Object json, @NotNull Configuration configuration) {
+    @NonNull
+    public static Configuration resolveJsonPaths(@NonNull Object json, @NonNull Configuration configuration) {
         Collection<String> pathsToBeIgnored = resolveJsonPaths(json, configuration.getPathsToBeIgnored());
         List<PathOption> pathOptions = configuration.getPathOptions().stream()
                 .map(po -> {
@@ -43,8 +43,8 @@ public class InternalJsonPathUtils {
         return configuration.whenIgnoringPaths(pathsToBeIgnored).withPathOptions(pathOptions);
     }
 
-    @NotNull
-    private static List<String> resolveJsonPaths(@NotNull Object json, @NotNull Collection<String> paths) {
+    @NonNull
+    private static List<String> resolveJsonPaths(@NonNull Object json, @NonNull Collection<String> paths) {
         com.jayway.jsonpath.Configuration conf = com.jayway.jsonpath.Configuration.builder()
                 .options(Option.AS_PATH_LIST, Option.SUPPRESS_EXCEPTIONS)
                 .build();
