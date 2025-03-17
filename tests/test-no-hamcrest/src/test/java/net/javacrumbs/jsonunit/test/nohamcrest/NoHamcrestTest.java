@@ -15,7 +15,7 @@
  */
 package net.javacrumbs.jsonunit.test.nohamcrest;
 
-import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 
 import org.junit.jupiter.api.Test;
 
