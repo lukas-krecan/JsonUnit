@@ -13,7 +13,7 @@
     <dependencies>
         <dependency>
             <groupId>net.javacrumbs.json-unit</groupId>
-            <artifactId>json-unit-fluent</artifactId>
+            <artifactId>json-unit-assertj</artifactId>
             <version>${project.version}</version>
             <exclusions>
                 <exclusion>

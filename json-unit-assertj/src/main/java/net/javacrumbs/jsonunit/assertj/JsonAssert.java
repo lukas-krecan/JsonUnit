@@ -1,12 +1,12 @@
 /**
  * Copyright 2009-2019 the original author or authors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -58,6 +58,7 @@ import org.assertj.core.description.Description;
 import org.assertj.core.error.MessageFormatter;
 import org.hamcrest.Matcher;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
@@ -324,6 +325,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      * assertThatJson(...).isEqualsTo(...).when(...);
      * </code>
      */
+    @NullMarked
     public static class ConfigurableJsonAssert extends JsonAssert {
         // Want to pass to inPath to not parse twice.
         private final Object originalActual;
@@ -340,8 +342,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
         /**
          * Adds comparison options.
          */
-        @NonNull
-        public ConfigurableJsonAssert when(@NonNull Option first, @NonNull Option... other) {
+        public ConfigurableJsonAssert when(Option first, Option... other) {
             return withConfiguration(c -> c.when(first, other));
         }
 
@@ -350,24 +351,21 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
          *
          * @see Configuration#when(PathsParam, ApplicableForPath...)
          */
-        @NonNull
-        public final ConfigurableJsonAssert when(@NonNull PathsParam object, @NonNull ApplicableForPath... actions) {
+        public final ConfigurableJsonAssert when(PathsParam object, ApplicableForPath... actions) {
             return withConfiguration(c -> c.when(object, actions));
         }
 
         /**
          * Adds comparison options.
          */
-        @NonNull
-        public ConfigurableJsonAssert withOptions(@NonNull Option first, @NonNull Option... next) {
+        public ConfigurableJsonAssert withOptions(Option first, Option... next) {
             return withConfiguration(c -> c.withOptions(first, next));
         }
 
         /**
          * Adds comparison options.
          */
-        @NonNull
-        public ConfigurableJsonAssert withOptions(@NonNull Collection<Option> optionsToAdd) {
+        public ConfigurableJsonAssert withOptions(Collection<Option> optionsToAdd) {
             return withConfiguration(c -> c.withOptions(optionsToAdd));
         }
 
@@ -379,9 +377,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
          *             ....
          * </code>
          */
-        @NonNull
-        public ConfigurableJsonAssert withConfiguration(
-                @NonNull Function<Configuration, Configuration> configurationFunction) {
+        public ConfigurableJsonAssert withConfiguration(Function<Configuration, Configuration> configurationFunction) {
             Configuration newConfiguration = configurationFunction.apply(configuration);
             newConfiguration = resolveJsonPaths(originalActual, newConfiguration);
             return new ConfigurableJsonAssert(path, newConfiguration, actual);
@@ -390,7 +386,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
         /**
          * Sets numerical comparison tolerance.
          */
-        @NonNull
         public ConfigurableJsonAssert withTolerance(@Nullable BigDecimal tolerance) {
             return withConfiguration(c -> c.withTolerance(tolerance));
         }
@@ -398,7 +393,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
         /**
          * Sets numerical comparison tolerance.
          */
-        @NonNull
         public ConfigurableJsonAssert withTolerance(double tolerance) {
             return withTolerance(BigDecimal.valueOf(tolerance));
         }
@@ -407,62 +401,53 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
          * Makes JsonUnit ignore the specified paths in the actual value. If the path matches,
          * it's completely ignored. It may be missing, null or have any value
          */
-        @NonNull
-        public ConfigurableJsonAssert whenIgnoringPaths(@NonNull String... pathsToBeIgnored) {
+        public ConfigurableJsonAssert whenIgnoringPaths(String... pathsToBeIgnored) {
             return withConfiguration(c -> c.whenIgnoringPaths(pathsToBeIgnored));
         }
 
         /**
          * Sets ignore placeholder.
          */
-        @NonNull
-        public ConfigurableJsonAssert withIgnorePlaceholder(@NonNull String ignorePlaceholder) {
+        public ConfigurableJsonAssert withIgnorePlaceholder(String ignorePlaceholder) {
             return withConfiguration(c -> c.withIgnorePlaceholder(ignorePlaceholder));
         }
 
         /**
          * Adds a matcher to be used in ${json-unit.matches:matcherName} macro.
          */
-        @NonNull
-        public ConfigurableJsonAssert withMatcher(@NonNull String matcherName, @NonNull Matcher<?> matcher) {
+        public ConfigurableJsonAssert withMatcher(String matcherName, Matcher<?> matcher) {
             return withConfiguration(c -> c.withMatcher(matcherName, matcher));
         }
 
         /**
          * Sets difference listener
          */
-        @NonNull
-        public ConfigurableJsonAssert withDifferenceListener(@NonNull DifferenceListener differenceListener) {
+        public ConfigurableJsonAssert withDifferenceListener(DifferenceListener differenceListener) {
             return withConfiguration(c -> c.withDifferenceListener(differenceListener));
         }
 
-        @NonNull
-        public JsonAssert inPath(@NonNull String jsonPath) {
+        public JsonAssert inPath(String jsonPath) {
             return new JsonAssert(JsonPathAdapter.inPath(originalActual, jsonPath), configuration);
         }
 
         // Following methods are here just to return ConfigurableJsonAssert instead of JsonAssert
         @Override
-        @NonNull
-        public ConfigurableJsonAssert describedAs(@NonNull Description description) {
+        public ConfigurableJsonAssert describedAs(Description description) {
             return (ConfigurableJsonAssert) super.describedAs(description);
         }
 
         @Override
-        @NonNull
-        public ConfigurableJsonAssert describedAs(@NonNull String description, Object... args) {
+        public ConfigurableJsonAssert describedAs(String description, Object... args) {
             return (ConfigurableJsonAssert) super.describedAs(description, args);
         }
 
         @Override
-        @NonNull
-        public ConfigurableJsonAssert as(@NonNull Description description) {
+        public ConfigurableJsonAssert as(Description description) {
             return (ConfigurableJsonAssert) super.as(description);
         }
 
         @Override
-        @NonNull
-        public ConfigurableJsonAssert as(@NonNull String description, Object... args) {
+        public ConfigurableJsonAssert as(String description, Object... args) {
             return (ConfigurableJsonAssert) super.as(description, args);
         }
     }
