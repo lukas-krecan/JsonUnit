@@ -21,7 +21,7 @@ import static net.javacrumbs.jsonunit.core.internal.Utils.toReader;
 import java.io.Reader;
 import java.math.BigDecimal;
 import net.javacrumbs.jsonunit.core.internal.Utils.JsonStringReader;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Common superclass for node factories
@@ -54,7 +54,7 @@ abstract class AbstractNodeFactory implements NodeFactory {
         }
     }
 
-    @NotNull
+    @NonNull
     protected IllegalArgumentException newParseException(String label, Reader value, Exception e) {
         if (value instanceof JsonStringReader) {
             return new IllegalArgumentException(

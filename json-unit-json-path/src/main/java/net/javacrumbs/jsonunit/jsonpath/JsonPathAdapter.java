@@ -27,8 +27,8 @@ import com.jayway.jsonpath.EvaluationListener;
 import com.jayway.jsonpath.PathNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Adapts json-path to json-unit.
@@ -36,8 +36,8 @@ import org.jetbrains.annotations.Nullable;
 public final class JsonPathAdapter {
     private JsonPathAdapter() {}
 
-    @NotNull
-    public static Object inPath(@Nullable Object json, @NotNull String path) {
+    @NonNull
+    public static Object inPath(@Nullable Object json, @NonNull String path) {
         try {
             MatchRecordingListener recordingListener = new MatchRecordingListener();
             Object value = readValue(defaultConfiguration().addEvaluationListeners(recordingListener), json, path);
@@ -48,7 +48,7 @@ public final class JsonPathAdapter {
         }
     }
 
-    private static @NotNull String concatJsonPaths(@Nullable Object json, @NotNull String path) {
+    private static @NonNull String concatJsonPaths(@Nullable Object json, @NonNull String path) {
         String newPathSegment = fromBracketNotation(path);
         String pathPrefix = getPathPrefix(json);
         if (pathPrefix.isEmpty()) {

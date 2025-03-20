@@ -13,27 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit.test.jackson2;
+package net.javacrumbs.jsonunit.test.jackson3;
 
-import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
-
-import net.javacrumbs.jsonunit.test.base.AbstractJsonFluentAssertTest;
+import net.javacrumbs.jsonunit.test.base.AbstractJsonMatchersTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
-import org.junit.jupiter.api.Test;
 
-public class Jackson2FluentAssertTest extends AbstractJsonFluentAssertTest {
+public class Jackson3JsonMatchersTest extends AbstractJsonMatchersTest {
     @Override
     protected Object readValue(String value) {
-        return JsonTestUtils.readByJackson2(value);
-    }
-
-    @Test
-    void testOkWithLibrary() {
-        System.setProperty("json-unit.libraries", "jackson2");
-        try {
-            assertThatJson("{\"test\":1}").isEqualTo("{\"test\":1}");
-        } finally {
-            System.setProperty("json-unit.libraries", "");
-        }
+        return JsonTestUtils.readByJackson3(value);
     }
 }
