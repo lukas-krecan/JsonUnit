@@ -57,16 +57,18 @@ import org.assertj.core.api.UriAssert;
 import org.assertj.core.description.Description;
 import org.assertj.core.error.MessageFormatter;
 import org.hamcrest.Matcher;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     final Path path;
     final Configuration configuration;
+
+    @Nullable
     private final Object actualForMatcher;
 
-    JsonAssert(Path path, Configuration configuration, Object actual, boolean alreadyParsed) {
+    JsonAssert(Path path, Configuration configuration, @Nullable Object actual, boolean alreadyParsed) {
         super(
                 alreadyParsed ? JsonUtils.wrapDeserializedObject(actual) : JsonUtils.convertToJson(actual, "actual"),
                 JsonAssert.class);
@@ -76,7 +78,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
         usingComparator(new JsonComparator(configuration, path, false));
     }
 
-    JsonAssert(Path path, Configuration configuration, Object actual) {
+    JsonAssert(Path path, Configuration configuration, @Nullable Object actual) {
         this(path, configuration, actual, false);
     }
 
@@ -87,8 +89,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     /**
      * Moves comparison to given node. Second call navigates from the last position in the JSON.
      */
-    @NonNull
-    public JsonAssert node(@NonNull String node) {
+    public JsonAssert node(String node) {
         return new JsonAssert(path.to(node), configuration, getNode(actual, node));
     }
 
@@ -102,8 +103,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      *     );
      * </code>
      */
-    @NonNull
-    public JsonAssert and(@NonNull JsonAssertion... assertions) {
+    public JsonAssert and(JsonAssertion... assertions) {
         Arrays.stream(assertions).forEach(a -> a.doAssert(this));
         return this;
     }
@@ -122,7 +122,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      * </ul>
      */
     @Override
-    @NonNull
     public JsonAssert isEqualTo(@Nullable Object expected) {
         Diff diff = Diff.create(expected, actual, "fullJson", path.asPrefix(), configuration);
 
@@ -138,7 +137,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     /**
      * Assert that the value is string and checks for equality. A shortcut for <code>isString().isEqualTo(expected)</code>
      */
-    public StringAssert isStringEqualTo(@NonNull String expected) {
+    public StringAssert isStringEqualTo(String expected) {
         return isString().isEqualTo(expected);
     }
 
@@ -147,7 +146,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      *
      * @return MapAssert where the object is serialized as Map
      */
-    @NonNull
     @SuppressWarnings("unchecked")
     public JsonMapAssert isObject() {
         Node node = assertType(OBJECT);
@@ -157,7 +155,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     /**
      * Asserts that given node is present and is of type number.
      */
-    @NonNull
     public BigDecimalAssert isNumber() {
         Node node = assertType(NUMBER);
         return createBigDecimalAssert(node.decimalValue());
@@ -174,7 +171,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     /**
      * Asserts that given node is present and is of type number or a string that can be parsed as a number.
      */
-    @NonNull
     public BigDecimalAssert asNumber() {
         internalMatcher().isPresent(NUMBER.getDescription());
         Node node = getNode(actual, "");
@@ -206,20 +202,18 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     /**
      * Asserts that given node is present and is of type array.
      */
-    @NonNull
     public JsonListAssert isArray() {
         Node node = assertType(ARRAY);
         return createListAssert(node).as("Node \"%s\"", path);
     }
 
-    private @NonNull JsonListAssert createListAssert(Node node) {
+    private JsonListAssert createListAssert(Node node) {
         return new JsonListAssert((List<?>) node.getValue(), path.asPrefix(), configuration);
     }
 
     /**
      * Asserts that given node is present and is of type boolean.
      */
-    @NonNull
     public BooleanAssert isBoolean() {
         Node node = assertType(BOOLEAN);
         return createBooleanAssert(node);
@@ -232,7 +226,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     /**
      * Asserts that given node is present and is of type string.
      */
-    @NonNull
     public StringAssert isString() {
         Node node = assertType(STRING);
         return createStringAssert(node);
@@ -247,7 +240,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     }
 
     @Override
-    @NonNull
     public AbstractStringAssert<?> asString() {
         return isString();
     }
@@ -263,7 +255,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     /**
      * Asserts that given node is present and is URI.
      */
-    @NonNull
     public UriAssert isUri() {
         Node node = assertType(STRING);
         return describe(new UriAssert(URI.create((String) node.getValue())));
@@ -272,7 +263,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     /**
      * Asserts that given node is present.
      */
-    @NonNull
     public JsonAssert isPresent() {
         internalMatcher().isPresent();
         return this;
@@ -289,7 +279,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      * Asserts that given node is present and is not null.
      */
     @Override
-    @NonNull
     public JsonAssert isNotNull() {
         internalMatcher().isNotNull();
         return this;
@@ -328,14 +317,15 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     @NullMarked
     public static class ConfigurableJsonAssert extends JsonAssert {
         // Want to pass to inPath to not parse twice.
+        @Nullable
         private final Object originalActual;
 
-        ConfigurableJsonAssert(Path path, Configuration configuration, Object actual) {
+        ConfigurableJsonAssert(Path path, Configuration configuration, @Nullable Object actual) {
             super(path, configuration, actual);
             this.originalActual = actual;
         }
 
-        ConfigurableJsonAssert(Object actual, Configuration configuration) {
+        ConfigurableJsonAssert(@Nullable Object actual, Configuration configuration) {
             this(Path.create("", getPathPrefix(actual)), configuration, actual);
         }
 
