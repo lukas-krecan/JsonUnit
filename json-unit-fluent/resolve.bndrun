@@ -1,2 +1,0 @@
--runfw: org.eclipse.osgi
--runrequires: bnd.identity;id='${project.groupId}.${project.artifactId}'

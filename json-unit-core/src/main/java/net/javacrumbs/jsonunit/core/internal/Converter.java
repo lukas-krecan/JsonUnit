@@ -19,8 +19,8 @@ import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Converts object to Node using {@link NodeFactory}.
@@ -30,6 +30,8 @@ record Converter(List<NodeFactory> factories) {
 
     private static final boolean jackson2Present = isClassPresent("com.fasterxml.jackson.databind.ObjectMapper")
             && isClassPresent("com.fasterxml.jackson.core.JsonGenerator");
+
+    private static final boolean jackson3Present = isClassPresent("tools.jackson.databind.ObjectMapper");
 
     private static final boolean gsonPresent = isClassPresent("com.google.gson.Gson");
 
@@ -73,6 +75,7 @@ record Converter(List<NodeFactory> factories) {
                 case "moshi" -> factories.add(new MoshiNodeFactory());
                 case "json.org" -> factories.add(new JsonOrgNodeFactory());
                 case "jackson2" -> factories.add(new Jackson2NodeFactory());
+                case "jackson3" -> factories.add(new Jackson3NodeFactory());
                 case "gson" -> factories.add(new GsonNodeFactory());
                 case "johnzon" -> factories.add(new JohnzonNodeFactory());
                 default -> throw new IllegalArgumentException("'" + factoryName + "' library name not recognized.");
@@ -99,13 +102,17 @@ record Converter(List<NodeFactory> factories) {
             factories.add(new GsonNodeFactory());
         }
 
+        if (jackson3Present) {
+            factories.add(new Jackson3NodeFactory());
+        }
+
         if (jackson2Present) {
             factories.add(new Jackson2NodeFactory());
         }
         return factories;
     }
 
-    @NotNull
+    @NonNull
     Node convertToNode(@Nullable Object source, String label, boolean lenient) {
         return findBestFactory(source).convertToNode(source, label, lenient);
     }
