@@ -13,25 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit.test.gson;
+package net.javacrumbs.jsonunit.test.jackson3;
 
-import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
-
-import com.google.gson.JsonObject;
-import net.javacrumbs.jsonunit.test.base.AbstractJsonFluentAssertTest;
+import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
-import org.junit.jupiter.api.Test;
 
-public class GsonJsonFluentAssertTest extends AbstractJsonFluentAssertTest {
+public class Jackson3JsonAssertTest extends AbstractJsonAssertTest {
+
     @Override
     protected Object readValue(String value) {
-        return JsonTestUtils.readByGson(value);
-    }
-
-    @Test
-    void shouldNotChangeObject() {
-        JsonObject json = new JsonObject();
-        json.add("test", null);
-        assertThatJson(json).isEqualTo("{\"test\":null}");
+        return JsonTestUtils.readByJackson3(value);
     }
 }
