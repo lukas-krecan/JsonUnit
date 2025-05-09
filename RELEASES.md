@@ -1,5 +1,9 @@
 Release notes
 =============
+## 4.1.1 (2025-05-09)
+* Publishing to OSS central
+* Dependency updates
+
 ## 4.1.0 (2024-11-29)
 * Support for JsonPath in Spring related modules
 * Dependency updates
