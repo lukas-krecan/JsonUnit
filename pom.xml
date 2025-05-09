@@ -211,6 +211,20 @@
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>central</publishingServerId>
+                    <excludeArtifacts>
+                        <artifact>tests</artifact>
+                        <artifact>test-gson</artifact>
+                        <artifact>test-jackson2</artifact>
+                        <artifact>test-jackson2-config</artifact>
+                        <artifact>test-jackson3</artifact>
+                        <artifact>test-johnzon</artifact>
+                        <artifact>test-json-path</artifact>
+                        <artifact>test-jsonorg</artifact>
+                        <artifact>test-junit4</artifact>
+                        <artifact>test-kotlin</artifact>
+                        <artifact>test-moshi</artifact>
+                        <artifact>test-no-hamcrest</artifact>
+                    </excludeArtifacts>
                 </configuration>
             </plugin>
         </plugins>
