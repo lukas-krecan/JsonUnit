@@ -7,28 +7,24 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>test-no-hamcrest</artifactId>
+    <artifactId>test-jackson3</artifactId>
     <version>4.1.2-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
             <groupId>net.javacrumbs.json-unit</groupId>
-            <artifactId>json-unit-assertj</artifactId>
+            <artifactId>test-base</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
+            <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson2.version}</version>
+            <version>${jackson3.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
         </dependency>
     </dependencies>
 </project>

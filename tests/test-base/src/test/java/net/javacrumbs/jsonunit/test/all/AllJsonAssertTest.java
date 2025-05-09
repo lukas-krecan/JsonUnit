@@ -20,6 +20,7 @@ import static net.javacrumbs.jsonunit.JsonAssert.when;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByGson;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson2;
+import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson3;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJsonOrg;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -58,8 +59,15 @@ class AllJsonAssertTest extends AbstractJsonAssertTest {
     }
 
     @Test
-    void testEqualsNodeFailJackson1() {
+    void testEqualsNodeFailJackson2() {
         assertThatThrownBy(() -> assertJsonEquals(readByJackson2("{\"test\":1}"), "{\"test\": 2}"))
+                .hasMessage(
+                        "JSON documents are different:\nDifferent value found in node \"test\", expected: <1> but was: <2>.\n");
+    }
+
+    @Test
+    void testEqualsNodeFailJackson3() {
+        assertThatThrownBy(() -> assertJsonEquals(readByJackson3("{\"test\":1}"), "{\"test\": 2}"))
                 .hasMessage(
                         "JSON documents are different:\nDifferent value found in node \"test\", expected: <1> but was: <2>.\n");
     }
