@@ -6,7 +6,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
 /**
@@ -30,24 +30,24 @@ public class WebTestClientJsonMatcher
     }
 
     @Override
-    @NotNull
-    Consumer<EntityExchangeResult<byte[]>> matcher(@NotNull Consumer<InternalMatcher> matcher) {
+    @NonNull
+    Consumer<EntityExchangeResult<byte[]>> matcher(@NonNull Consumer<InternalMatcher> matcher) {
         return new JsonUnitWebTestClientMatcher(configuration, matcher, jsonTransformer);
     }
 
     @Override
-    @NotNull
+    @NonNull
     WebTestClientJsonMatcher matchers(
-            @NotNull Configuration configuration, @NotNull Function<Object, Object> jsonTransformer) {
+            @NonNull Configuration configuration, @NonNull Function<Object, Object> jsonTransformer) {
         return new WebTestClientJsonMatcher(configuration, jsonTransformer);
     }
 
     private static class JsonUnitWebTestClientMatcher extends AbstractSpringMatcher
             implements Consumer<EntityExchangeResult<byte[]>> {
         private JsonUnitWebTestClientMatcher(
-                @NotNull Configuration configuration,
-                @NotNull Consumer<InternalMatcher> matcher,
-                @NotNull Function<Object, Object> jsonTransformer) {
+                @NonNull Configuration configuration,
+                @NonNull Consumer<InternalMatcher> matcher,
+                @NonNull Function<Object, Object> jsonTransformer) {
             super(configuration, matcher, jsonTransformer);
         }
 

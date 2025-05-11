@@ -13,16 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit.test.nohamcrest;
+package net.javacrumbs.jsonunit.test.jackson3;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
+import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson3;
 
+import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;
 import org.junit.jupiter.api.Test;
 
-class NoHamcrestTest {
+public class Jackson3AssertJTest extends AbstractAssertJTest {
 
     @Test
-    void comparisonShouldWork() {
-        assertThatJson("{\"a\":1}").isEqualTo("{a: 1}");
+    void arrayContainsWithObjects() {
+        assertThatJson("{\"a\":[{\"b\": 1}, {\"c\": 1}]}")
+                .inPath("$.a")
+                .isArray()
+                .containsExactlyInAnyOrder(json(readValue("{\"c\": 1}")), json(readValue("{\"b\": 1}")));
+    }
+
+    @Override
+    protected Object readValue(String value) {
+        return readByJackson3(value);
     }
 }
