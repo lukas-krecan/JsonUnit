@@ -14,6 +14,7 @@
     </parent>
 
     <properties>
+        <osgi.importPackage>org.jspecify.annotations;resolution:=optional</osgi.importPackage>
         <osgi.exportPackage>net.javacrumbs.jsonunit.jsonpath.*</osgi.exportPackage>
     </properties>
 
@@ -27,6 +28,10 @@
             <groupId>com.jayway.jsonpath</groupId>
             <artifactId>json-path</artifactId>
             <version>${json-path.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>

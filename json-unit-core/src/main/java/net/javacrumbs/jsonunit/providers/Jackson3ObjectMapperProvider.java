@@ -13,10 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.javacrumbs.jsonunit.assertj;
+package net.javacrumbs.jsonunit.providers;
 
-import org.jspecify.annotations.NonNull;
+import tools.jackson.databind.ObjectMapper;
 
-public interface JsonAssertion {
-    void doAssert(@NonNull JsonAssert root);
+/**
+ * Interface for customizing Jackson 2 ObjectMapper. @see <a href="https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html">SPI intro</a>
+ */
+public interface Jackson3ObjectMapperProvider {
+    /**
+     * Provides ObjectMapper
+     * @param lenient Lenient parsing is used for parsing the expected JSON value
+     * @return customized ObjectMapper.
+     */
+    ObjectMapper getObjectMapper(boolean lenient);
 }

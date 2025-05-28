@@ -867,6 +867,16 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void shouldWorkIfPathNotMatching() {
+        assertThatJson("{\"a\": 1}").inPath("$.c").isAbsent();
+    }
+
+    @Test
+    void shouldWorkWithNull() {
+        assertThatJson(null).inPath("[*].c").isAbsent();
+    }
+
+    @Test
     void shouldAssertNumber() {
         assertThatJson("{\"a\":1}").node("a").isNumber().isEqualByComparingTo("1");
     }

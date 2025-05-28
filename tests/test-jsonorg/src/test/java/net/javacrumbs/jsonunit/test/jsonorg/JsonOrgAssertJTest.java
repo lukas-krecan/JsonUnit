@@ -15,7 +15,7 @@
  */
 package net.javacrumbs.jsonunit.test.jsonorg;
 
-import static net.javacrumbs.jsonunit.fluent.JsonFluentAssert.assertThatJson;
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJsonOrg;
 
 import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;

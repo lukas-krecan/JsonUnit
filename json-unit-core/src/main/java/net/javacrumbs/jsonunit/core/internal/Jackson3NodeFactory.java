@@ -16,27 +16,30 @@
 package net.javacrumbs.jsonunit.core.internal;
 
 import static net.javacrumbs.jsonunit.core.internal.Utils.closeQuietly;
+import static tools.jackson.core.json.JsonReadFeature.ALLOW_JAVA_COMMENTS;
+import static tools.jackson.core.json.JsonReadFeature.ALLOW_SINGLE_QUOTES;
+import static tools.jackson.core.json.JsonReadFeature.ALLOW_UNQUOTED_PROPERTY_NAMES;
+import static tools.jackson.databind.DeserializationFeature.FAIL_ON_TRAILING_TOKENS;
+import static tools.jackson.databind.DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS;
+import static tools.jackson.databind.cfg.JsonNodeFeature.STRIP_TRAILING_BIGDECIMAL_ZEROES;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.cfg.JsonNodeFeature;
-import com.fasterxml.jackson.databind.node.NullNode;
-import java.io.IOException;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
-import net.javacrumbs.jsonunit.providers.Jackson2ObjectMapperProvider;
+import net.javacrumbs.jsonunit.providers.Jackson3ObjectMapperProvider;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.node.NullNode;
 
 /**
- * Deserializes node using Jackson 2
+ * Deserializes node using Jackson 3
  */
-class Jackson2NodeFactory extends AbstractNodeFactory {
-    private final ServiceLoader<Jackson2ObjectMapperProvider> serviceLoader =
-            ServiceLoader.load(Jackson2ObjectMapperProvider.class);
+class Jackson3NodeFactory extends AbstractNodeFactory {
+    private final ServiceLoader<Jackson3ObjectMapperProvider> serviceLoader =
+            ServiceLoader.load(Jackson3ObjectMapperProvider.class);
 
     @Override
     protected Node doConvertValue(Object source) {
@@ -56,7 +59,7 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
     protected Node readValue(Reader value, String label, boolean lenient) {
         try {
             return newNode(getMapper(lenient).readTree(value));
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw newParseException(label, value, e);
         } finally {
             closeQuietly(value);
@@ -67,9 +70,9 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
         return getMapperProvider().getObjectMapper(lenient);
     }
 
-    private Jackson2ObjectMapperProvider getMapperProvider() {
+    private Jackson3ObjectMapperProvider getMapperProvider() {
         synchronized (serviceLoader) {
-            Iterator<Jackson2ObjectMapperProvider> iterator = serviceLoader.iterator();
+            Iterator<Jackson3ObjectMapperProvider> iterator = serviceLoader.iterator();
             if (iterator.hasNext()) {
                 return iterator.next();
             } else {
@@ -80,7 +83,7 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
 
     private static Node newNode(JsonNode jsonNode) {
         if (jsonNode != null && !jsonNode.isMissingNode()) {
-            return new Jackson2Node(jsonNode);
+            return new Jackson3Node(jsonNode);
         } else {
             return Node.MISSING_NODE;
         }
@@ -91,10 +94,10 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
         return source instanceof JsonNode;
     }
 
-    static final class Jackson2Node extends AbstractNode {
+    static final class Jackson3Node extends AbstractNode {
         private final JsonNode jsonNode;
 
-        Jackson2Node(JsonNode jsonNode) {
+        Jackson3Node(JsonNode jsonNode) {
             this.jsonNode = jsonNode;
         }
 
@@ -105,7 +108,8 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
 
         @Override
         public Iterator<KeyValue> fields() {
-            final Iterator<Map.Entry<String, JsonNode>> iterator = jsonNode.fields();
+            final Iterator<Map.Entry<String, JsonNode>> iterator =
+                    jsonNode.propertyStream().iterator();
             return new Iterator<>() {
                 @Override
                 public boolean hasNext() {
@@ -142,7 +146,7 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
 
         @Override
         public Iterator<Node> arrayElements() {
-            final Iterator<JsonNode> elements = jsonNode.elements();
+            final Iterator<JsonNode> elements = jsonNode.iterator();
             return new Iterator<>() {
                 @Override
                 public boolean hasNext() {
@@ -163,28 +167,20 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
 
         @Override
         public String asText() {
-            return jsonNode.asText();
+            return jsonNode.asString();
         }
 
         @Override
         public NodeType getNodeType() {
-            if (jsonNode.isObject()) {
-                return NodeType.OBJECT;
-            } else if (jsonNode.isArray()) {
-                return NodeType.ARRAY;
-            } else if (jsonNode.isTextual()) {
-                return NodeType.STRING;
-            } else if (jsonNode.isNumber()) {
-                return NodeType.NUMBER;
-            } else if (jsonNode.isBoolean()) {
-                return NodeType.BOOLEAN;
-            } else if (jsonNode.isNull()) {
-                return NodeType.NULL;
-            } else if (jsonNode.isBinary()) {
-                return NodeType.STRING;
-            } else {
-                throw new IllegalStateException("Unexpected node type " + jsonNode);
-            }
+            return switch (jsonNode.getNodeType()) {
+                case OBJECT -> NodeType.OBJECT;
+                case ARRAY -> NodeType.ARRAY;
+                case BOOLEAN -> NodeType.BOOLEAN;
+                case STRING, BINARY -> NodeType.STRING;
+                case NUMBER -> NodeType.NUMBER;
+                case NULL -> NodeType.NULL;
+                default -> throw new IllegalStateException("Unexpected node type " + jsonNode);
+            };
         }
 
         @Override
@@ -203,23 +199,22 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
         }
     }
 
-    private static class DefaultObjectMapperProvider implements Jackson2ObjectMapperProvider {
-        static final Jackson2ObjectMapperProvider INSTANCE = new DefaultObjectMapperProvider();
+    private static class DefaultObjectMapperProvider implements Jackson3ObjectMapperProvider {
+        static final Jackson3ObjectMapperProvider INSTANCE = new DefaultObjectMapperProvider();
 
-        private static final ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
-        private static final ObjectMapper lenientMapper = new ObjectMapper().findAndRegisterModules();
+        private static final ObjectMapper mapper = JsonMapper.builder()
+                .configure(FAIL_ON_TRAILING_TOKENS, true)
+                .configure(USE_BIG_DECIMAL_FOR_FLOATS, true)
+                .configure(STRIP_TRAILING_BIGDECIMAL_ZEROES, false)
+                .build();
 
-        static {
-            mapper.configure(DeserializationFeature.FAIL_ON_TRAILING_TOKENS, true);
-            mapper.configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true);
-            mapper.configure(JsonNodeFeature.STRIP_TRAILING_BIGDECIMAL_ZEROES, false);
-
-            lenientMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
-            lenientMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
-            lenientMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
-            lenientMapper.configure(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS, true);
-            lenientMapper.configure(JsonNodeFeature.STRIP_TRAILING_BIGDECIMAL_ZEROES, false);
-        }
+        private static final ObjectMapper lenientMapper = JsonMapper.builder()
+                .configure(ALLOW_UNQUOTED_PROPERTY_NAMES, true)
+                .configure(ALLOW_JAVA_COMMENTS, true)
+                .configure(ALLOW_SINGLE_QUOTES, true)
+                .configure(USE_BIG_DECIMAL_FOR_FLOATS, true)
+                .configure(STRIP_TRAILING_BIGDECIMAL_ZEROES, false)
+                .build();
 
         @Override
         public ObjectMapper getObjectMapper(boolean lenient) {
