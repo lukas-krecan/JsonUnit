@@ -9,7 +9,7 @@
         <moshi.version>1.15.2</moshi.version>
         <gson.version>2.13.1</gson.version>
         <hamcrest.version>3.0</hamcrest.version>
-        <johnzon.version>2.0.1</johnzon.version>
+        <johnzon.version>2.0.2</johnzon.version>
         <geronimo.jsonp.version>1.5</geronimo.jsonp.version>
         <jsonorg.version>20250517</jsonorg.version>
         <slf4j.version>2.0.17</slf4j.version>
