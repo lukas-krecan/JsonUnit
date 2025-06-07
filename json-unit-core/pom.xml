@@ -2,6 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>json-unit-core</artifactId>
     <packaging>bundle</packaging>
+    <name>${project.groupId}:${project.artifactId}</name>
 
     <description>Core classes for JSON unit</description>
     <properties>
