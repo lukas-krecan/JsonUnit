@@ -1,4 +1,4 @@
-JsonUnit [![Apache License 2](https://img.shields.io/badge/license-ASF2-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0.txt) [![Build Status](https://github.com/lukas-krecan/JsonUnit/workflows/CI/badge.svg)](https://github.com/lukas-krecan/JsonUnit/actions) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/net.javacrumbs.json-unit/json-unit/badge.svg)](https://maven-badges.herokuapp.com/maven-central/net.javacrumbs.json-unit/json-unit)
+JsonUnit [![Apache License 2](https://img.shields.io/badge/license-ASF2-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0.txt) [![Build Status](https://github.com/lukas-krecan/JsonUnit/workflows/CI/badge.svg)](https://github.com/lukas-krecan/JsonUnit/actions) [![Maven Central](https://maven-badges.sml.io/sonatype-central/net.javacrumbs.json-unit/json-unit/badge.svg)](https://maven-badges.sml.io/sonatype-central/net.javacrumbs.json-unit/json-unit)
 ========
 
 JsonUnit is a library that simplifies JSON comparison in tests.
