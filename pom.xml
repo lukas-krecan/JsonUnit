@@ -212,6 +212,7 @@
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>central</publishingServerId>
+                    <autoPublish>true</autoPublish>
                     <excludeArtifacts>
                         <artifact>tests</artifact>
                         <artifact>test-base</artifact>
