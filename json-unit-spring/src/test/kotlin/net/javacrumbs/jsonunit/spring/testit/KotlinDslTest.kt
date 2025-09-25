@@ -80,10 +80,10 @@ internal class KotlinDslTest {
             }
             .hasMessage(
                 """
-    JSON documents are different:
-    Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
+                JSON documents are different:
+                Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
 
-    """
+                """
                     .trimIndent()
             )
         verify(listener).diff(any(Difference::class.java), any(DifferenceContext::class.java))
