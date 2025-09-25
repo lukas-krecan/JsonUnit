@@ -139,6 +139,26 @@ class AllJsonAssertTest extends AbstractJsonAssertTest {
     }
 
     @Test
+    void shouldSerializeBasedOnAnnotationWithJackson3() {
+        try {
+            System.setProperty("json-unit.libraries", "jackson3");
+            assertJsonEquals("{\"bean\": {\"property\": \"value\"}}", new Jackson2Bean("value"));
+        } finally {
+            System.setProperty("json-unit.libraries", "");
+        }
+    }
+
+    @Test
+    void shouldSerializeBasedOnMethodAnnotationWithJackson3() {
+        try {
+            System.setProperty("json-unit.libraries", "jackson3");
+            assertJsonEquals("{\"property\": \"value\"}", new Jackson2IgnorePropertyBean("value"));
+        } finally {
+            System.setProperty("json-unit.libraries", "");
+        }
+    }
+
+    @Test
     void dotInPathFailure() {
         assertThatThrownBy(() -> assertJsonEquals(
                         "{\"root\":{\"test\":1, \".ignored\": 1}}", "{\"root\":{\"test\":1, \".ignored\": 2}}"))

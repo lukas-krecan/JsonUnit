@@ -738,6 +738,40 @@ public class Java8ObjectMapperProvider implements Jackson2ObjectMapperProvider {
 and register it in `META-INF/services/net.javacrumbs.jsonunit.providers.Jackson2ObjectMapperProvider`.
 See [this example](https://github.com/lukas-krecan/JsonUnit/commit/8dc7c884448c7373886dcf3b0eabfecf47c0710b).
 
+If you need to customize Jackson 3 Json Mapper, you can do using [SPI](https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html).
+Implement `net.javacrumbs.jsonunit.providers.Jackson3JsonMapperProvider`.
+
+```java
+public class CustomObjectMapperProvider implements Jackson3JsonMapperProvider {
+    private final JsonMapper mapper;
+
+    private final JsonMapper lenientMapper;
+
+    public CustomObjectMapperProvider() {
+        mapper = JsonMapper.builder()
+                .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
+                .enable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .build();
+
+        lenientMapper = JsonMapper.builder()
+                .enable(JsonReadFeature.ALLOW_UNQUOTED_PROPERTY_NAMES)
+                .enable(JsonReadFeature.ALLOW_JAVA_COMMENTS)
+                .enable(JsonReadFeature.ALLOW_SINGLE_QUOTES)
+                .enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS)
+                .enable(DateTimeFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .build();
+    }
+
+    @Override
+    public JsonMapper getJsonMapper(boolean lenient) {
+        return lenient ? lenientMapper : mapper;
+    }
+}
+```
+
+and register it in `META-INF/services/net.javacrumbs.jsonunit.providers.Jackson3JsonMapperProvider`.
+See [this example](https://github.com/lukas-krecan/JsonUnit/commit/8dc7c884448c7373886dcf3b0eabfecf47c0710b).
+
 ## Logging
 
 Although the differences are printed out by the assert statement, sometimes you use JsonUnit with other libraries like
@@ -759,7 +793,7 @@ assertThatJson("{\"test\":-1}")
 
 JsonUnit is trying to cleverly match which JSON library to use. In case you need to change the default behavior, you can
 use `json-unit.libraries` system property. For example `-Djson-unit.libraries=jackson2,gson`
-or `System.setProperty("json-unit.libraries", "jackson2");`. Supported values are gson, json.org, moshi, jackson2
+or `System.setProperty("json-unit.libraries", "jackson2");`. Supported values are gson, json.org, moshi, jackson2, jackson3
 
 Licence
 -------

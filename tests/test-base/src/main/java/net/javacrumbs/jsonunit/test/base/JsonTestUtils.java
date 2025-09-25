@@ -34,6 +34,10 @@ public class JsonTestUtils {
         }
     }
 
+    public static Object readByJackson3(String value) {
+        return tools.jackson.databind.json.JsonMapper.shared().readTree(value);
+    }
+
     public static Object readByJohnzon(String value) {
         try (JsonReader reader = Json.createReader(new StringReader(value))) {
             return reader.read();

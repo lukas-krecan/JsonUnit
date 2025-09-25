@@ -8,6 +8,7 @@
     <properties>
         <osgi.importPackage>
             com.fasterxml.jackson.core;resolution:=optional,
+            tools.jackson.core;resolution:=optional,
             org.apache.johnzon.mapper;resolution:=optional,
             jakarta.json;resolution:=optional,
             com.google.gson;resolution:=optional,
@@ -42,6 +43,12 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson2.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson3.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>

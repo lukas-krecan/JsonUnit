@@ -43,7 +43,11 @@ public class NodeFactoryTest {
     @Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
-            {new JsonOrgNodeFactory()}, {new Jackson2NodeFactory()}, {new GsonNodeFactory()}, {new MoshiNodeFactory()},
+            {new JsonOrgNodeFactory()},
+            {new Jackson2NodeFactory()},
+            {new Jackson3NodeFactory()},
+            {new GsonNodeFactory()},
+            {new MoshiNodeFactory()},
         });
     }
 

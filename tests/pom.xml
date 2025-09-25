@@ -16,6 +16,8 @@
         <module>test-kotlin</module>
         <module>test-jackson2</module>
         <module>test-jackson2-config</module>
+        <module>test-jackson3</module>
+        <module>test-jackson3-config</module>
         <module>test-johnzon</module>
         <module>test-gson</module>
         <module>test-jsonorg</module>
