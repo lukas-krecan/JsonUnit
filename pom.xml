@@ -214,6 +214,7 @@
                     <publishingServerId>central</publishingServerId>
                     <excludeArtifacts>
                         <artifact>tests</artifact>
+                        <artifact>test-base</artifact>
                         <artifact>test-gson</artifact>
                         <artifact>test-jackson2</artifact>
                         <artifact>test-jackson2-config</artifact>
