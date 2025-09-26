@@ -241,6 +241,18 @@
                     </configuration>
                 </plugin>
 
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-clean-plugin</artifactId>
+                    <version>3.4.1</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.3.1</version>
+                </plugin>
+
                 <!-- Asserts that the resulting bundle resolves adequately in OSGi in terms
                      of its dependencies. If this check fails it is most likely a problem
                      with package export or import specification. -->
