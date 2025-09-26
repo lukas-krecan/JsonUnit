@@ -1,5 +1,6 @@
 package net.javacrumbs.jsonunit.kotest
 
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.and
@@ -89,30 +90,30 @@ private fun getNode(actual: Any?): Node = JsonUtils.getNode(actual, "")
 /** Asserts that JSON node is present, is a number and returns the value as [BigDecimal]. */
 fun Any?.shouldBeJsonNumber(): BigDecimal {
     this should beJsonNumber()
-    return getNode(this).decimalValue()
+    return shouldNotThrowAny { getNode(this).decimalValue() }
 }
 
 /** Asserts that JSON node is present, is a string and returns the value as [String]. */
 fun Any?.shouldBeJsonString(): String {
     this should beJsonString()
-    return getNode(this).asText()
+    return shouldNotThrowAny { getNode(this).asText() }
 }
 
 /** Asserts that JSON node is present, is a boolean and returns the value as [Boolean]. */
 fun Any?.shouldBeJsonBoolean(): Boolean {
     this should beJsonBoolean()
-    return getNode(this).asBoolean()
+    return shouldNotThrowAny { getNode(this).asBoolean() }
 }
 
 /** Asserts that JSON node is present, is an array and returns the value as [List]. */
 fun Any?.shouldBeJsonArray(): List<*> {
     this should beJsonArray()
-    return getNode(this).value as List<*>
+    return shouldNotThrowAny { getNode(this).value as List<*> }
 }
 
 /** Asserts that JSON node is present, is an object and returns the value as [Map]. */
 fun Any?.shouldBeJsonObject(): Map<String, *> {
     this should beJsonObject()
     @Suppress("UNCHECKED_CAST")
-    return getNode(this).value as Map<String, *>
+    return shouldNotThrowAny { getNode(this).value as Map<String, *> }
 }

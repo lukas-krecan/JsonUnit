@@ -9,7 +9,7 @@
 	<parent>
 		<groupId>net.javacrumbs.json-unit</groupId>
 		<artifactId>json-unit-parent</artifactId>
-		<version>4.1.2-SNAPSHOT</version>
+		<version>5.0.0-RC2-SNAPSHOT</version>
 	</parent>
 
 	<properties>
@@ -22,6 +22,10 @@
 			<artifactId>json-unit-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
+        </dependency>
 	</dependencies>
 
 	<build>

@@ -12,6 +12,7 @@
             jakarta.json;resolution:=optional,
             com.google.gson;resolution:=optional,
             com.squareup.moshi;resolution:=optional,
+            org.jspecify.annotations;resolution:=optional,
             *
         </osgi.importPackage>
         <osgi.exportPackage>
@@ -25,7 +26,7 @@
     <parent>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit-parent</artifactId>
-        <version>4.1.2-SNAPSHOT</version>
+        <version>5.0.0-RC2-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -42,6 +43,12 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson2.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>tools.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson3.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -82,7 +89,6 @@
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-core</artifactId>
-            <version>${hamcrest.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>

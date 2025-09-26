@@ -9,6 +9,7 @@ import io.kotest.matchers.comparables.shouldBeEqualComparingTo
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.maps.shouldMatchAll
 import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldBeLowerCase
 import io.kotest.matchers.throwable.haveMessage
@@ -147,7 +148,10 @@ Different value found in node "$.test", expected: <2> but was: <1>."""
         assertThrows<AssertionError> {
                 """{"test": [1, 2, 3, 1]}""".inPath("test").shouldBeJsonArray().shouldNotContainDuplicates()
             }
-            .shouldHaveMessage("""Collection should not contain duplicates, but has some: [1]""")
+            .shouldHaveMessage(
+                """List should not contain duplicates, but has:
+1 at indexes: [0, 3]"""
+            )
     }
 
     @Test
@@ -211,7 +215,7 @@ The following elements failed:
         assertThrows<AssertionError> {
                 assertSoftly {
                     """{"a":"a", "b": true}""" inPath "a" should equalJson("b")
-                    """{"a":"a", "b": true}""".inPath("a").shouldBeJsonBoolean()
+                    """{"a":"a", "b": true}""".inPath("a").shouldBeJsonBoolean() shouldBe true
                 }
             }
             .should(haveMessage(Regex("The following 2 assertions failed:.*", DOT_MATCHES_ALL)))
