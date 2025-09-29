@@ -181,7 +181,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      */
     @NonNull
     public MATCHER isAbsent() {
-        return matcher(ctx -> ctx.isAbsent());
+        return matcher(InternalMatcher::isAbsent);
     }
 
     /**

@@ -85,8 +85,6 @@ class Normalizer {
     }
 
     private static void addIndent(StringBuilder sb, int indent) {
-        for (int i = 0; i < indent; i++) {
-            sb.append(' ');
-        }
+        sb.append(" ".repeat(Math.max(0, indent)));
     }
 }

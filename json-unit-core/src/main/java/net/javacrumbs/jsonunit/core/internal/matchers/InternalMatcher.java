@@ -224,7 +224,7 @@ public final class InternalMatcher {
     }
 
     private void failWithMessage(@NonNull String message) {
-        if (description != null && description.length() > 0) {
+        if (description != null && !description.isEmpty()) {
             throw new AssertionError("[" + description + "] " + message);
         } else {
             throw new AssertionError(message);
