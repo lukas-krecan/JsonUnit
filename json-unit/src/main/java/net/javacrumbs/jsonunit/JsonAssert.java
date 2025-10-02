@@ -26,6 +26,7 @@ import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Assertions for comparing JSON. The comparison ignores white-spaces and order of nodes.
@@ -54,14 +55,14 @@ public class JsonAssert {
     /**
      * Compares to JSON documents. Throws {@link AssertionError} if they are different.
      */
-    public static void assertJsonEquals(Object expected, Object actual) {
+    public static void assertJsonEquals(@Nullable Object expected, @Nullable Object actual) {
         assertJsonEquals(expected, actual, configuration);
     }
 
     /**
      * Compares to JSON documents. Throws {@link AssertionError} if they are different.
      */
-    public static void assertJsonEquals(Object expected, Object actual, Configuration configuration) {
+    public static void assertJsonEquals(@Nullable Object expected, @Nullable Object actual, Configuration configuration) {
         assertJsonPartEquals(expected, actual, ROOT, configuration);
     }
 
@@ -76,7 +77,7 @@ public class JsonAssert {
      * Compares part of the JSON. Path has this format "root.array[0].value".
      */
     public static void assertJsonPartEquals(
-            Object expected, Object fullJson, String path, Configuration configuration) {
+            @Nullable Object expected, @Nullable Object fullJson, String path, Configuration configuration) {
         Diff diff = create(expected, fullJson, FULL_JSON, path, configuration);
         diff.failIfDifferent();
     }
@@ -159,7 +160,7 @@ public class JsonAssert {
      * Sets the tolerance for floating number comparison. If set to null, requires exact match of the values.
      * For example, if set to 0.01, ignores all differences lower than 0.01, so 1 and 0.9999 are considered equal.
      */
-    public static void setTolerance(BigDecimal numericComparisonTolerance) {
+    public static void setTolerance(@Nullable BigDecimal numericComparisonTolerance) {
         configuration = configuration.withTolerance(numericComparisonTolerance);
     }
 
@@ -171,7 +172,7 @@ public class JsonAssert {
         configuration = configuration.withTolerance(numberComparisonTolerance);
     }
 
-    public static BigDecimal getTolerance() {
+    public static @Nullable BigDecimal getTolerance() {
         return configuration.getTolerance();
     }
 

@@ -21,7 +21,7 @@ interface NodeFactory {
     /**
      * Returns true if this factory is preferred for given source.
      */
-    boolean isPreferredFor(Object source);
+    boolean isPreferredFor(@Nullable Object source);
 
     /**
      * Creates node from given source.

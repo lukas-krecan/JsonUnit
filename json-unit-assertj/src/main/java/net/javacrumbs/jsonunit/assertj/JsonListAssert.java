@@ -25,7 +25,6 @@ import net.javacrumbs.jsonunit.core.internal.Path;
 import org.assertj.core.api.FactoryBasedNavigableListAssert;
 import org.assertj.core.description.Description;
 import org.assertj.core.error.BasicErrorMessageFactory;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAssert, List<?>, Object, JsonAssert> {
@@ -41,7 +40,6 @@ public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAsse
     }
 
     @Override
-    @NonNull
     public JsonListAssert isEqualTo(@Nullable Object expected) {
         describedAs((Description) null);
         Diff diff = createDiff(expected);
@@ -50,7 +48,6 @@ public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAsse
     }
 
     @Override
-    @NonNull
     public JsonListAssert isNotEqualTo(@Nullable Object other) {
         Diff diff = createDiff(other);
         if (diff.similar()) {
@@ -66,8 +63,7 @@ public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAsse
         return new JsonListAssert(newArrayList(iterable), path, configuration);
     }
 
-    @NonNull
-    private Diff createDiff(Object other) {
+    private Diff createDiff(@Nullable Object other) {
         return Diff.create(other, wrapDeserializedObject(actual), "fullJson", path, configuration);
     }
 }

@@ -15,6 +15,8 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import org.jspecify.annotations.Nullable;
+
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toCollection;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
@@ -28,7 +30,6 @@ import java.util.LinkedList;
 import java.util.Set;
 import java.util.Spliterators;
 import java.util.stream.StreamSupport;
-import org.jspecify.annotations.NonNull;
 
 /**
  * For internal use only!!! Abstract node representation.
@@ -70,7 +71,7 @@ public interface Node {
         },
         NULL("null") {
             @Override
-            public Object getValue(Node node) {
+            public @Nullable Object getValue(Node node) {
                 return null;
             }
         };
@@ -225,19 +226,18 @@ public interface Node {
     };
 
     interface ValueExtractor {
-        Object getValue(Node node);
+        @Nullable Object getValue(Node node);
     }
 
     class JsonMap extends AbstractMap<String, Object> implements NodeWrapper {
         private final Node wrappedNode;
 
-        private Set<Entry<String, Object>> entrySet;
+        private @Nullable Set<Entry<String, Object>> entrySet;
 
         JsonMap(Node node) {
             wrappedNode = node;
         }
 
-        @NonNull
         @Override
         public Set<Entry<String, Object>> entrySet() {
             if (entrySet == null) {

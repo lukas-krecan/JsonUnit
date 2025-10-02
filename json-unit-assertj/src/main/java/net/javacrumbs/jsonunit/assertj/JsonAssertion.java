@@ -15,8 +15,6 @@
  */
 package net.javacrumbs.jsonunit.assertj;
 
-import org.jspecify.annotations.NonNull;
-
 public interface JsonAssertion {
-    void doAssert(@NonNull JsonAssert root);
+    void doAssert(JsonAssert root);
 }

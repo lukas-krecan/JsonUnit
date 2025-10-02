@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
 import net.javacrumbs.jsonunit.providers.Jackson3ObjectMapperProvider;
+import org.jspecify.annotations.Nullable;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
@@ -90,7 +91,7 @@ class Jackson3NodeFactory extends AbstractNodeFactory {
     }
 
     @Override
-    public boolean isPreferredFor(Object source) {
+    public boolean isPreferredFor(@Nullable Object source) {
         return source instanceof JsonNode;
     }
 

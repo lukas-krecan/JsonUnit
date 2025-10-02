@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -58,7 +57,6 @@ public class JsonUtils {
     /**
      * Returns node with given path.
      */
-    @NonNull
     public static Node getNode(Object root, String path) {
         return getNode(root, Path.create(path));
     }
@@ -66,7 +64,6 @@ public class JsonUtils {
     /**
      * Returns node with given path.
      */
-    @NonNull
     public static Node getNode(Object root, Path path) {
         return path.getNode(convertToJson(root, "actual"));
     }
@@ -79,18 +76,15 @@ public class JsonUtils {
         return nodeAbsent(json, path, configuration.getOptions().contains(Option.TREATING_NULL_AS_ABSENT));
     }
 
-    @NonNull
     public static Object jsonSource(Object json, String pathPrefix) {
         return jsonSource(json, pathPrefix, emptyList());
     }
 
-    @NonNull
     public static Object jsonSource(Object json, String pathPrefix, List<String> matchingPaths) {
         return new DefaultJsonSource(json, pathPrefix, matchingPaths);
     }
 
-    @NonNull
-    public static String getPathPrefix(Object json) {
+    public static String getPathPrefix(@Nullable Object json) {
         if (json instanceof JsonSource) {
             return ((JsonSource) json).getPathPrefix();
         } else {
@@ -133,11 +127,8 @@ public class JsonUtils {
 
     /**
      * Add quotes around the object iff it's not a JSON object.
-     *
-     *
-     *
      */
-    static Object quoteIfNeeded(Object source) {
+    static @Nullable Object quoteIfNeeded(@Nullable Object source) {
         if (source instanceof String) {
             return quoteIfNeeded((String) source);
         } else {
@@ -148,7 +139,7 @@ public class JsonUtils {
     /**
      * Wraps deserialized object - supports null, String, numbers, maps, lists, ...
      */
-    public static Node wrapDeserializedObject(Object source) {
+    public static Node wrapDeserializedObject(@Nullable Object source) {
         return GenericNodeBuilder.wrapDeserializedObject(source);
     }
 

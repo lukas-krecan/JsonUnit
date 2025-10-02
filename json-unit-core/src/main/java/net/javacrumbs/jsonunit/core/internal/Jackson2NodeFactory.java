@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.ServiceLoader;
 import net.javacrumbs.jsonunit.providers.Jackson2ObjectMapperProvider;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Deserializes node using Jackson 2
@@ -87,7 +88,7 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
     }
 
     @Override
-    public boolean isPreferredFor(Object source) {
+    public boolean isPreferredFor(@Nullable Object source) {
         return source instanceof JsonNode;
     }
 

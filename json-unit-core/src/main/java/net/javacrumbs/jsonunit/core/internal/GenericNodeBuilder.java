@@ -15,6 +15,8 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import org.jspecify.annotations.Nullable;
+
 import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toBoolList;
 import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toDoubleList;
 import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toIntList;
@@ -28,13 +30,13 @@ import java.util.Map;
 class GenericNodeBuilder implements NodeBuilder {
     private static final GenericNodeBuilder INSTANCE = new GenericNodeBuilder();
 
-    static Node wrapDeserializedObject(Object object) {
+    static Node wrapDeserializedObject(@Nullable Object object) {
         return INSTANCE.newNode(object);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Node newNode(Object object) {
+    public Node newNode(@Nullable Object object) {
         if (object == null) {
             return new NullNode();
         } else if (object instanceof Map) {

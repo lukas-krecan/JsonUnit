@@ -2,13 +2,11 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import java.math.BigDecimal;
 import net.javacrumbs.jsonunit.core.NumberComparator;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 public class DefaultNumberComparator implements NumberComparator {
     @Override
-    public boolean compare(
-            @NonNull BigDecimal expectedValue, @NonNull BigDecimal actualValue, @Nullable BigDecimal tolerance) {
+    public boolean compare(BigDecimal expectedValue, BigDecimal actualValue, @Nullable BigDecimal tolerance) {
         if (tolerance != null) {
             BigDecimal diff = expectedValue.subtract(actualValue).abs();
             return diff.compareTo(tolerance) <= 0;

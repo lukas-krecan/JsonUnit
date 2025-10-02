@@ -34,6 +34,7 @@ import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Contains Hamcrest matchers to be used with Hamcrest assertThat and other tools.
@@ -109,7 +110,7 @@ public class JsonMatchers {
 
     private abstract static class AbstractMatcher<T> extends BaseMatcher<T> {
         final String path;
-        Object actual;
+        @Nullable Object actual;
 
         AbstractMatcher(String path) {
             this.path = path;

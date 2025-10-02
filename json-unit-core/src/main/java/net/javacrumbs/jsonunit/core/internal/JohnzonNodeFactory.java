@@ -35,6 +35,7 @@ import java.util.Map;
 import org.apache.johnzon.core.JsonLongImpl;
 import org.apache.johnzon.mapper.Mapper;
 import org.apache.johnzon.mapper.MapperBuilder;
+import org.jspecify.annotations.Nullable;
 
 class JohnzonNodeFactory extends AbstractNodeFactory {
 
@@ -82,7 +83,7 @@ class JohnzonNodeFactory extends AbstractNodeFactory {
     }
 
     @Override
-    public boolean isPreferredFor(Object source) {
+    public boolean isPreferredFor(@Nullable Object source) {
         return source instanceof JsonValue;
     }
 

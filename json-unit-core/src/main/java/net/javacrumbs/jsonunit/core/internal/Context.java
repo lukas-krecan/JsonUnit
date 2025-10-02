@@ -18,6 +18,7 @@ package net.javacrumbs.jsonunit.core.internal;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
 
 import net.javacrumbs.jsonunit.core.Configuration;
+import org.jspecify.annotations.Nullable;
 
 record Context(Node expectedNode, Node actualNode, Path expectedPath, Path actualPath, Configuration configuration) {
 

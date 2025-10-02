@@ -26,6 +26,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Deserializes node using org.json.JSONObject
@@ -53,7 +54,7 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
         }
     }
 
-    private static Node newNode(Object object) {
+    private static Node newNode(@Nullable Object object) {
         if (object instanceof JSONObject) {
             return new JSONObjectNode((JSONObject) object);
         } else if (object instanceof Number) {
@@ -76,7 +77,7 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
     }
 
     @Override
-    public boolean isPreferredFor(Object source) {
+    public boolean isPreferredFor(@Nullable Object source) {
         return source instanceof JSONObject || source instanceof JSONArray;
     }
 

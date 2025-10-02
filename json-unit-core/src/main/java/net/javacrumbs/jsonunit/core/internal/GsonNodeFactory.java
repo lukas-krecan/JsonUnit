@@ -26,6 +26,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
+import org.jspecify.annotations.Nullable;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.util.Iterator;
@@ -72,7 +73,7 @@ class GsonNodeFactory extends AbstractNodeFactory {
     }
 
     @Override
-    public boolean isPreferredFor(Object source) {
+    public boolean isPreferredFor(@Nullable Object source) {
         return source instanceof JsonElement;
     }
 
