@@ -17,6 +17,7 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.listener.DifferenceContext;
+import org.jspecify.annotations.Nullable;
 
 class DifferenceContextImpl implements DifferenceContext {
 
@@ -41,12 +42,12 @@ class DifferenceContextImpl implements DifferenceContext {
     }
 
     @Override
-    public Object getActualSource() {
+    public @Nullable Object getActualSource() {
         return actualSource.getValue();
     }
 
     @Override
-    public Object getExpectedSource() {
+    public @Nullable Object getExpectedSource() {
         return expectedSource.getValue();
     }
 }

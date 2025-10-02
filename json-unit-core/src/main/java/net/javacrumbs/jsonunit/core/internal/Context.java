@@ -18,7 +18,6 @@ package net.javacrumbs.jsonunit.core.internal;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
 
 import net.javacrumbs.jsonunit.core.Configuration;
-import org.jspecify.annotations.Nullable;
 
 record Context(Node expectedNode, Node actualNode, Path expectedPath, Path actualPath, Configuration configuration) {
 
@@ -38,14 +37,6 @@ record Context(Node expectedNode, Node actualNode, Path expectedPath, Path actua
                 expectedPath.toElement(i),
                 actualPath.toElement(i),
                 configuration);
-    }
-
-    public Context clearActual() {
-        return new Context(expectedNode, null, expectedPath, null, configuration);
-    }
-
-    public Context clearExpected() {
-        return new Context(null, actualNode, null, actualPath, configuration);
     }
 
     Context length(Object expectedLength) {

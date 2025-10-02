@@ -45,8 +45,8 @@ class Opentest4jExceptionFactory implements ExceptionFactory {
         private static AssertionFailedError getError(JsonDifference difference) {
             return new AssertionFailedError(
                     difference.getMessage(),
-                    difference.getExpected().getValue(),
-                    difference.getActual().getValue());
+                    difference.getExpected() != null ? difference.getExpected().getValue() : null,
+                    difference.getActual() != null ? difference.getActual().getValue() : null);
         }
 
         @Override

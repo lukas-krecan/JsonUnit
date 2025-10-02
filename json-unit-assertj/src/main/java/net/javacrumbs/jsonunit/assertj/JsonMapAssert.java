@@ -40,7 +40,7 @@ import org.assertj.core.api.AbstractMapAssert;
 import org.assertj.core.description.Description;
 import org.jspecify.annotations.Nullable;
 
-public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, Object>, String, Object> {
+public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, Object>, String, @Nullable Object> {
     private final Configuration configuration;
     private final Path path;
 

@@ -15,8 +15,6 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import org.jspecify.annotations.Nullable;
-
 import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toBoolList;
 import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toDoubleList;
 import static net.javacrumbs.jsonunit.core.internal.ArrayUtils.toIntList;
@@ -26,6 +24,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 class GenericNodeBuilder implements NodeBuilder {
     private static final GenericNodeBuilder INSTANCE = new GenericNodeBuilder();

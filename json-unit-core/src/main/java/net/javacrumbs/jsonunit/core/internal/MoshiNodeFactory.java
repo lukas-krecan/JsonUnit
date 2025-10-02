@@ -20,11 +20,11 @@ import static net.javacrumbs.jsonunit.core.internal.Utils.toReader;
 
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
-import org.jspecify.annotations.Nullable;
 import java.io.IOException;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Deserializes node using Moshi

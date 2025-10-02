@@ -2,6 +2,7 @@ package net.javacrumbs.jsonunit.spring;
 
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Diff;
+import org.jspecify.annotations.Nullable;
 import org.springframework.test.json.JsonComparator;
 import org.springframework.test.json.JsonComparison;
 
@@ -32,7 +33,7 @@ public class JsonUnitJsonComparator implements JsonComparator {
     }
 
     @Override
-    public JsonComparison compare(String expectedJson, String actualJson) {
+    public JsonComparison compare(@Nullable String expectedJson, @Nullable String actualJson) {
         Diff diff = Diff.create(expectedJson, actualJson, "actual", "", configuration);
         if (diff.similar()) {
             return JsonComparison.match();

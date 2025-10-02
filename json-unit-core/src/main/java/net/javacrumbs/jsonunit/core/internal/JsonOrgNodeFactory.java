@@ -69,6 +69,8 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
             return new GenericNodeBuilder.NullNode();
         } else if (object instanceof Map) {
             return new JSONObjectNode(new JSONObject((Map<?, ?>) object));
+        } else if (object == null) {
+            return new GenericNodeBuilder.NullNode();
         } else if (object instanceof Collection || object.getClass().isArray()) {
             return new JSONArrayNode((JSONArray) JSONObject.wrap(object));
         } else {

@@ -26,11 +26,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSyntaxException;
-import org.jspecify.annotations.Nullable;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Deserializes node using Gson
@@ -64,7 +64,7 @@ class GsonNodeFactory extends AbstractNodeFactory {
         }
     }
 
-    private static Node newNode(JsonElement jsonNode) {
+    private static Node newNode(@Nullable JsonElement jsonNode) {
         if (jsonNode != null) {
             return new GsonNode(jsonNode);
         } else {

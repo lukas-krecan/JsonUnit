@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Map;
 import org.json.JSONTokener;
+import org.jspecify.annotations.Nullable;
 
 public class JsonTestUtils {
 
@@ -52,7 +53,7 @@ public class JsonTestUtils {
         return new JSONTokener(value).nextValue();
     }
 
-    public static Object readByMoshi(String value) {
+    public static @Nullable Object readByMoshi(String value) {
         Moshi moshi = new Moshi.Builder().build();
         try {
             return moshi.adapter(Map.class).fromJson(value);

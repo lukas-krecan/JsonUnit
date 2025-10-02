@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit.core.listener;
 
 import net.javacrumbs.jsonunit.core.Configuration;
+import org.jspecify.annotations.Nullable;
 
 public interface DifferenceContext {
 
@@ -27,10 +28,12 @@ public interface DifferenceContext {
     /**
      * Actual source serialized as Map&lt;String, Object&gt; for objects, BigDecimal for numbers, ...
      */
+    @Nullable
     Object getActualSource();
 
     /**
      * Expected source serialized as Map&lt;String, Object&gt; for objects, BigDecimal for numbers, ...
      */
+    @Nullable
     Object getExpectedSource();
 }

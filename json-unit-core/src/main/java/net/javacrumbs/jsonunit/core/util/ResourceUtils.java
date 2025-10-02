@@ -15,6 +15,8 @@
  */
 package net.javacrumbs.jsonunit.core.util;
 
+import org.jspecify.annotations.Nullable;
+
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -44,7 +46,7 @@ public class ResourceUtils {
         return new BufferedReader(new InputStreamReader(resourceStream, UTF_8));
     }
 
-    static void closeQuietly(final Reader resourceReader) {
+    static void closeQuietly(@Nullable Reader resourceReader) {
         if (resourceReader != null) {
             try {
                 resourceReader.close();

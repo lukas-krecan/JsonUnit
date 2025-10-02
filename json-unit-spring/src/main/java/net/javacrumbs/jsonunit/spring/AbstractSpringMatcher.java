@@ -21,20 +21,23 @@ import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
+import org.jspecify.annotations.Nullable;
 
 abstract class AbstractSpringMatcher {
     private final Configuration configuration;
     private final Consumer<InternalMatcher> matcher;
-    private final Function<Object, Object> jsonTransformer;
+    private final Function<@Nullable Object, Object> jsonTransformer;
 
     AbstractSpringMatcher(
-            Configuration configuration, Consumer<InternalMatcher> matcher, Function<Object, Object> jsonTransformer) {
+            Configuration configuration,
+            Consumer<InternalMatcher> matcher,
+            Function<@Nullable Object, Object> jsonTransformer) {
         this.configuration = configuration;
         this.matcher = matcher;
         this.jsonTransformer = jsonTransformer;
     }
 
-    void doMatch(Object actual) {
+    void doMatch(@Nullable Object actual) {
         Object json = jsonTransformer.apply(actual);
         String pathPrefix = JsonUtils.getPathPrefix(json);
         Path path = Path.create("", pathPrefix);

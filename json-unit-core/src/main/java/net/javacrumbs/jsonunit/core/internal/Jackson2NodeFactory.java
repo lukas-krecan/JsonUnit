@@ -79,7 +79,7 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
         }
     }
 
-    private static Node newNode(JsonNode jsonNode) {
+    private static Node newNode(@Nullable JsonNode jsonNode) {
         if (jsonNode != null && !jsonNode.isMissingNode()) {
             return new Jackson2Node(jsonNode);
         } else {

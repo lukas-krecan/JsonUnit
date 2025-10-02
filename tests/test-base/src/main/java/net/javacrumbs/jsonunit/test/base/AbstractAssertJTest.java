@@ -59,6 +59,7 @@ import net.javacrumbs.jsonunit.core.NumberComparator;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest.DivisionMatcher;
 import org.hamcrest.Matcher;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -1494,7 +1495,7 @@ public abstract class AbstractAssertJTest {
     void testEqualsToObjectArray() {
         assertThatJson("{\"test\":[{\"a\":1}, {\"b\":2}]}")
                 .node("test")
-                .isEqualTo(new Object[] {readValue("{\"a\":1}"), readValue("{\"b\":2}")});
+                .isEqualTo(new @Nullable Object[] {readValue("{\"a\":1}"), readValue("{\"b\":2}")});
     }
 
     @Test
@@ -2594,5 +2595,5 @@ public abstract class AbstractAssertJTest {
                 "expensive": 10
             }""";
 
-    protected abstract Object readValue(String value);
+    protected abstract @Nullable Object readValue(String value);
 }

@@ -15,12 +15,14 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Common Node code
  */
 abstract class AbstractNode implements Node {
     @Override
-    public Object getValue() {
+    public @Nullable Object getValue() {
         return getNodeType().getValue(this);
     }
 

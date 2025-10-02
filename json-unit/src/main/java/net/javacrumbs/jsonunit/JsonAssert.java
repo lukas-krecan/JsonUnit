@@ -62,7 +62,8 @@ public class JsonAssert {
     /**
      * Compares to JSON documents. Throws {@link AssertionError} if they are different.
      */
-    public static void assertJsonEquals(@Nullable Object expected, @Nullable Object actual, Configuration configuration) {
+    public static void assertJsonEquals(
+            @Nullable Object expected, @Nullable Object actual, Configuration configuration) {
         assertJsonPartEquals(expected, actual, ROOT, configuration);
     }
 

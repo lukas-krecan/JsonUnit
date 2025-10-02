@@ -57,22 +57,22 @@ public class JsonUtils {
     /**
      * Returns node with given path.
      */
-    public static Node getNode(Object root, String path) {
+    public static Node getNode(@Nullable Object root, String path) {
         return getNode(root, Path.create(path));
     }
 
     /**
      * Returns node with given path.
      */
-    public static Node getNode(Object root, Path path) {
+    public static Node getNode(@Nullable Object root, Path path) {
         return path.getNode(convertToJson(root, "actual"));
     }
 
-    public static boolean nodeAbsent(Object json, String path, Configuration configuration) {
+    public static boolean nodeAbsent(@Nullable Object json, String path, Configuration configuration) {
         return nodeAbsent(json, Path.create(path), configuration);
     }
 
-    public static boolean nodeAbsent(Object json, Path path, Configuration configuration) {
+    public static boolean nodeAbsent(@Nullable Object json, Path path, Configuration configuration) {
         return nodeAbsent(json, path, configuration.getOptions().contains(Option.TREATING_NULL_AS_ABSENT));
     }
 
@@ -95,7 +95,7 @@ public class JsonUtils {
     /**
      * Returns true if the is absent.
      */
-    static boolean nodeAbsent(Object json, Path path, boolean treatNullAsAbsent) {
+    static boolean nodeAbsent(@Nullable Object json, Path path, boolean treatNullAsAbsent) {
         Node node = getNode(json, path);
         if (node.isNull()) {
             return treatNullAsAbsent;

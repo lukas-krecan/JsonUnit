@@ -119,7 +119,11 @@ public class Diff {
     }
 
     public static Diff create(
-            @Nullable Object expected, @Nullable Object actual, String actualName, String path, Configuration configuration) {
+            @Nullable Object expected,
+            @Nullable Object actual,
+            String actualName,
+            String path,
+            Configuration configuration) {
         if (actual instanceof JsonSource) {
             return create(
                     expected,
@@ -133,7 +137,11 @@ public class Diff {
     }
 
     public static Diff create(
-            @Nullable Object expected, @Nullable Object actual, String actualName, Path path, Configuration configuration) {
+            @Nullable Object expected,
+            @Nullable Object actual,
+            String actualName,
+            Path path,
+            Configuration configuration) {
         return createInternal(expected, actual, actualName, path, configuration, DEFAULT_DIFFERENCE_STRING);
     }
 
@@ -503,7 +511,7 @@ public class Diff {
     /**
      * If the value is String than it's quoted in ".
      */
-    public static Object quoteTextValue(Object value) {
+    public static @Nullable Object quoteTextValue(@Nullable Object value) {
         if (value instanceof String) {
             return "\"" + value + "\"";
         } else {
@@ -630,12 +638,12 @@ public class Diff {
     /**
      * Adds a difference to the difference list.
      */
-    private void addDifference(Context context, String message, Object... arguments) {
+    private void addDifference(Context context, String message, @Nullable Object... arguments) {
         differences.add(new JsonDifference(context, message, arguments));
         possiblyFailFast(context);
     }
 
-    private void addAndReportDifference(Context context, String message, Object... arguments) {
+    private void addAndReportDifference(Context context, String message, @Nullable Object... arguments) {
         addDifference(context, message, arguments);
         reportDifference(DifferenceImpl.different(context));
         possiblyFailFast(context);

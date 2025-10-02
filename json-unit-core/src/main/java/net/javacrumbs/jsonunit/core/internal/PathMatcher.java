@@ -15,6 +15,8 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import org.jspecify.annotations.Nullable;
+
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
@@ -31,7 +33,7 @@ abstract class PathMatcher {
 
     abstract boolean matches(String pathToMatch);
 
-    static PathMatcher create(Collection<String> paths) {
+    static PathMatcher create(@Nullable Collection<String> paths) {
         if (paths == null || paths.isEmpty()) {
             return EMPTY;
         }

@@ -1,12 +1,12 @@
 /**
  * Copyright 2009-2019 the original author or authors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,34 +16,35 @@
 package net.javacrumbs.jsonunit.core.internal;
 
 import net.javacrumbs.jsonunit.core.listener.Difference;
+import org.jspecify.annotations.Nullable;
 
 class DifferenceImpl implements Difference {
-    private final Context context;
+    private final DiffContext context;
     private final Type type;
 
-    DifferenceImpl(Context context, Type type) {
+    DifferenceImpl(DiffContext context, Type type) {
         this.context = context;
         this.type = type;
     }
 
     @Override
-    public String getActualPath() {
+    public @Nullable String getActualPath() {
         return context.actualPath() != null ? context.actualPath().getFullPath() : null;
     }
 
     @Override
-    public String getExpectedPath() {
+    public @Nullable String getExpectedPath() {
         return context.expectedPath() != null ? context.expectedPath().getFullPath() : null;
     }
 
     @Override
-    public Object getActual() {
+    public @Nullable Object getActual() {
         Node actualNode = context.actualNode();
         return actualNode != null && !actualNode.isMissingNode() ? actualNode.getValue() : null;
     }
 
     @Override
-    public Object getExpected() {
+    public @Nullable Object getExpected() {
         Node expectedNode = context.expectedNode();
         return expectedNode != null && !expectedNode.isMissingNode() ? expectedNode.getValue() : null;
     }
@@ -55,7 +56,7 @@ class DifferenceImpl implements Difference {
     }
 
     private static class MissingDifference extends DifferenceImpl {
-        MissingDifference(Context context) {
+        MissingDifference(DiffContext context) {
             super(context, Type.MISSING);
         }
 
@@ -66,7 +67,7 @@ class DifferenceImpl implements Difference {
     }
 
     private static class ExtraDifference extends DifferenceImpl {
-        ExtraDifference(Context context) {
+        ExtraDifference(DiffContext context) {
             super(context, Type.EXTRA);
         }
 
@@ -82,14 +83,33 @@ class DifferenceImpl implements Difference {
     }
 
     static Difference missing(Context context) {
-        return new MissingDifference(context.clearActual());
+        return new MissingDifference(DiffContext.from(context).clearActual());
     }
 
     static Difference extra(Context context) {
-        return new ExtraDifference(context.clearExpected());
+        return new ExtraDifference(DiffContext.from(context).clearExpected());
     }
 
     static Difference different(Context context) {
-        return new DifferenceImpl(context, Type.DIFFERENT);
+        return new DifferenceImpl(DiffContext.from(context), Type.DIFFERENT);
+    }
+
+    private record DiffContext(
+            @Nullable Node expectedNode,
+            @Nullable Node actualNode,
+            @Nullable Path expectedPath,
+            @Nullable Path actualPath) {
+        public static DiffContext from(Context context) {
+            return new DiffContext(
+                    context.expectedNode(), context.actualNode(), context.expectedPath(), context.actualPath());
+        }
+
+        public DiffContext clearActual() {
+            return new DiffContext(expectedNode, null, expectedPath, null);
+        }
+
+        public DiffContext clearExpected() {
+            return new DiffContext(null, actualNode, null, actualPath);
+        }
     }
 }

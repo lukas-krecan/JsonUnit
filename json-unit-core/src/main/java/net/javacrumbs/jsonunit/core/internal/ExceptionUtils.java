@@ -15,8 +15,8 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import org.jspecify.annotations.Nullable;
 import java.util.List;
+import org.jspecify.annotations.Nullable;
 
 class ExceptionUtils {
     private static final String ROOT_MESSAGE = "JSON documents are different:\n";

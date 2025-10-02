@@ -7,6 +7,7 @@ import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Hamcrest dependent classes moved here so we can theoretically work without it.
@@ -53,6 +54,6 @@ class HamcrestHandler {
 
     @FunctionalInterface
     interface DifferenceReporter {
-        void differenceFound(Context context, String message, Object... arguments);
+        void differenceFound(Context context, String message, @Nullable Object... arguments);
     }
 }
