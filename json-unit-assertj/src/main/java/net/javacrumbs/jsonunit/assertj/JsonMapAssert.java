@@ -119,7 +119,7 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
     }
 
     @Override
-    public JsonMapAssert containsEntry(String key, Object value) {
+    public JsonMapAssert containsEntry(String key, @Nullable Object value) {
         return contains(array(entry(key, value)));
     }
 

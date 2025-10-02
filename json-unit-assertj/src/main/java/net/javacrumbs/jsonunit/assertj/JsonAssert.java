@@ -75,6 +75,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
         this.path = path;
         this.configuration = configuration;
         this.actualForMatcher = alreadyParsed ? JsonUtils.wrapDeserializedObject(actual) : actual;
+        //noinspection ResultOfMethodCallIgnored
         usingComparator(new JsonComparator(configuration, path, false));
     }
 
@@ -95,7 +96,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
 
     /**
      * Allows to do multiple comparisons on a document like
-     *
      * <code>
      *     assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}").and(
      *         a -&gt; a.node("test").isObject(),
@@ -149,6 +149,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     @SuppressWarnings("unchecked")
     public JsonMapAssert isObject() {
         Node node = assertType(OBJECT);
+        //noinspection DataFlowIssue
         return describe(new JsonMapAssert((Map<String, Object>) node.getValue(), path.asPrefix(), configuration));
     }
 
@@ -208,6 +209,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     }
 
     private JsonListAssert createListAssert(Node node) {
+        //noinspection DataFlowIssue
         return new JsonListAssert((List<?>) node.getValue(), path.asPrefix(), configuration);
     }
 
@@ -257,6 +259,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
      */
     public UriAssert isUri() {
         Node node = assertType(STRING);
+        //noinspection DataFlowIssue
         return describe(new UriAssert(URI.create((String) node.getValue())));
     }
 
@@ -309,7 +312,6 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
 
     /**
      * JsonAssert that can be configured to prevent mistakes like
-     *
      * <code>
      * assertThatJson(...).isEqualsTo(...).when(...);
      * </code>

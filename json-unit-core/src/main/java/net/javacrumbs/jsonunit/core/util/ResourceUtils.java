@@ -15,8 +15,6 @@
  */
 package net.javacrumbs.jsonunit.core.util;
 
-import org.jspecify.annotations.Nullable;
-
 import static java.lang.String.format;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -26,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.Objects;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Resource reading utility

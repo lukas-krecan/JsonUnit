@@ -15,10 +15,10 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import org.jspecify.annotations.Nullable;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Resource reading utility

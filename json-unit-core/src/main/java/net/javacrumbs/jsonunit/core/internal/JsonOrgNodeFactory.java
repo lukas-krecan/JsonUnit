@@ -65,12 +65,10 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
             return new GenericNodeBuilder.BooleanNode((Boolean) object);
         } else if (object instanceof JSONArray) {
             return new JSONArrayNode((JSONArray) object);
-        } else if (JSONObject.NULL.equals(object)) {
+        } else if (object == null || JSONObject.NULL.equals(object)) {
             return new GenericNodeBuilder.NullNode();
         } else if (object instanceof Map) {
             return new JSONObjectNode(new JSONObject((Map<?, ?>) object));
-        } else if (object == null) {
-            return new GenericNodeBuilder.NullNode();
         } else if (object instanceof Collection || object.getClass().isArray()) {
             return new JSONArrayNode((JSONArray) JSONObject.wrap(object));
         } else {

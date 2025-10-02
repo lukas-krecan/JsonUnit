@@ -15,13 +15,12 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
-import org.jspecify.annotations.Nullable;
-
 import static java.util.stream.Collectors.toList;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.regex.Pattern;
+import org.jspecify.annotations.Nullable;
 
 abstract class PathMatcher {
     private static final PathMatcher EMPTY = new PathMatcher() {

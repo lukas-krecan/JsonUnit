@@ -139,7 +139,7 @@ public final class InternalMatcher {
      *
      * @see Configuration#when(PathsParam, ApplicableForPath...)
      */
-    public final InternalMatcher when(PathsParam object, ApplicableForPath... actions) {
+    public InternalMatcher when(PathsParam object, ApplicableForPath... actions) {
         return new InternalMatcher(actual, path, description, configuration.when(object, actions));
     }
 

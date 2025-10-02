@@ -15,6 +15,8 @@
  */
 package net.javacrumbs.jsonunit.core;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Implement this interface to use with parametrized matchers. Sample usage
  *
@@ -49,5 +51,5 @@ package net.javacrumbs.jsonunit.core;
  * </pre>
  */
 public interface ParametrizedMatcher {
-    void setParameter(String parameter);
+    void setParameter(@Nullable String parameter);
 }
