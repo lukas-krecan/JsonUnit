@@ -33,7 +33,7 @@ import org.jspecify.annotations.Nullable;
 public class InternalJsonPathUtils {
     private InternalJsonPathUtils() {}
 
-    public static Configuration resolveJsonPaths(Object json, Configuration configuration) {
+    public static Configuration resolveJsonPaths(@Nullable Object json, Configuration configuration) {
         Collection<String> pathsToBeIgnored = resolveJsonPaths(json, configuration.getPathsToBeIgnored());
         List<PathOption> pathOptions = configuration.getPathOptions().stream()
                 .map(po -> {

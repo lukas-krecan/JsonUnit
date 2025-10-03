@@ -17,13 +17,14 @@ package net.javacrumbs.jsonunit.test.moshi;
 
 import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class MoshiJsonAssertTest extends AbstractJsonAssertTest {
 
     @Override
-    protected Object readValue(String value) {
+    protected @Nullable Object readValue(String value) {
         return JsonTestUtils.readByMoshi(value);
     }
 

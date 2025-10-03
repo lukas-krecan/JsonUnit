@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Deserializes node using Moshi
@@ -66,18 +67,18 @@ class MoshiNodeFactory extends AbstractNodeFactory {
         }
     }
 
-    private Node newNode(Object source) {
+    private Node newNode(@Nullable Object source) {
         return moshiNodeBuilder.newNode(source);
     }
 
     @Override
-    public boolean isPreferredFor(Object source) {
+    public boolean isPreferredFor(@Nullable Object source) {
         return false;
     }
 
     private static class MoshiNodeBuilder extends GenericNodeBuilder {
         @Override
-        public Node newNode(Object object) {
+        public Node newNode(@Nullable Object object) {
             if (object instanceof Number) {
                 return new MoshiNumberNode((Number) object);
             } else {

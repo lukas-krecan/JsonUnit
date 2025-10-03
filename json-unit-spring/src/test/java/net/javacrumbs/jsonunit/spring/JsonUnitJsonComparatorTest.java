@@ -4,7 +4,6 @@ import static net.javacrumbs.jsonunit.spring.JsonUnitJsonComparator.comparator;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import net.javacrumbs.jsonunit.core.Configuration;
-import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.json.JsonComparator;
 import org.springframework.test.json.JsonContent;
@@ -33,7 +32,7 @@ class JsonUnitJsonComparatorTest {
         new JsonContentAssert(json("{\"test\" : 1.0001}")).isEqualTo("{test: 1}", comparator);
     }
 
-    private static @NonNull JsonContent json(String json) {
+    private static JsonContent json(String json) {
         return new JsonContent(json);
     }
 }

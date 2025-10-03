@@ -41,7 +41,6 @@ import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -58,10 +57,10 @@ public final class InternalMatcher {
 
     public InternalMatcher(
             @Nullable Object actual,
-            @NonNull Path path,
-            @NonNull String description,
-            @NonNull Configuration configuration,
-            @NonNull String nodeDescription) {
+            Path path,
+            String description,
+            Configuration configuration,
+            String nodeDescription) {
         this.path = path;
         this.actual = actual;
         this.description = description;
@@ -69,24 +68,18 @@ public final class InternalMatcher {
         this.nodeDescription = nodeDescription;
     }
 
-    public InternalMatcher(
-            @Nullable Object actual,
-            @NonNull Path path,
-            @NonNull String description,
-            @NonNull Configuration configuration) {
+    public InternalMatcher(@Nullable Object actual, Path path, String description, Configuration configuration) {
         this(actual, path, description, configuration, "Node \"" + path + "\"");
     }
 
-    @NonNull
-    public InternalMatcher whenIgnoringPaths(@NonNull String... pathsToBeIgnored) {
+    public InternalMatcher whenIgnoringPaths(String... pathsToBeIgnored) {
         return new InternalMatcher(actual, path, description, configuration.whenIgnoringPaths(pathsToBeIgnored));
     }
 
     /**
      * Sets the description of this object.
      */
-    @NonNull
-    public InternalMatcher describedAs(@NonNull String description) {
+    public InternalMatcher describedAs(String description) {
         return new InternalMatcher(actual, path, description, configuration);
     }
 
@@ -94,8 +87,7 @@ public final class InternalMatcher {
      * Sets the placeholder that can be used to ignore values.
      * The default value is ${json-unit.ignore}
      */
-    @NonNull
-    public InternalMatcher withIgnorePlaceholder(@NonNull String ignorePlaceholder) {
+    public InternalMatcher withIgnorePlaceholder(String ignorePlaceholder) {
         return new InternalMatcher(actual, path, description, configuration.withIgnorePlaceholder(ignorePlaceholder));
     }
 
@@ -103,7 +95,6 @@ public final class InternalMatcher {
      * Sets the tolerance for floating number comparison. If set to null, requires exact match of the values.
      * For example, if set to 0.01, ignores all differences lower than 0.01, so 1 and 0.9999 are considered equal.
      */
-    @NonNull
     public InternalMatcher withTolerance(double tolerance) {
         return withTolerance(BigDecimal.valueOf(tolerance));
     }
@@ -112,7 +103,6 @@ public final class InternalMatcher {
      * Sets the tolerance for floating number comparison. If set to null, requires exact match of the values.
      * For example, if set to 0.01, ignores all differences lower than 0.01, so 1 and 0.9999 are considered equal.
      */
-    @NonNull
     public InternalMatcher withTolerance(@Nullable BigDecimal tolerance) {
         return new InternalMatcher(actual, path, description, configuration.withTolerance(tolerance));
     }
@@ -120,13 +110,11 @@ public final class InternalMatcher {
     /**
      * Adds a internalMatcher to be used in ${json-unit.matches:matcherName} macro.
      */
-    @NonNull
-    public InternalMatcher withMatcher(@NonNull String matcherName, @NonNull Matcher<?> matcher) {
+    public InternalMatcher withMatcher(String matcherName, Matcher<?> matcher) {
         return new InternalMatcher(actual, path, description, configuration.withMatcher(matcherName, matcher));
     }
 
-    @NonNull
-    public InternalMatcher withDifferenceListener(@NonNull DifferenceListener differenceListener) {
+    public InternalMatcher withDifferenceListener(DifferenceListener differenceListener) {
         return new InternalMatcher(actual, path, description, configuration.withDifferenceListener(differenceListener));
     }
 
@@ -139,8 +127,7 @@ public final class InternalMatcher {
      *
      * @see net.javacrumbs.jsonunit.core.Option
      */
-    @NonNull
-    public InternalMatcher withOptions(@NonNull Option firstOption, @NonNull Option... otherOptions) {
+    public InternalMatcher withOptions(Option firstOption, Option... otherOptions) {
         return new InternalMatcher(actual, path, description, configuration.withOptions(firstOption, otherOptions));
     }
 
@@ -152,8 +139,7 @@ public final class InternalMatcher {
      *
      * @see Configuration#when(PathsParam, ApplicableForPath...)
      */
-    @NonNull
-    public final InternalMatcher when(@NonNull PathsParam object, @NonNull ApplicableForPath... actions) {
+    public InternalMatcher when(PathsParam object, ApplicableForPath... actions) {
         return new InternalMatcher(actual, path, description, configuration.when(object, actions));
     }
 
@@ -174,11 +160,11 @@ public final class InternalMatcher {
         }
     }
 
-    private void failOnDifference(@Nullable Object expected, @NonNull Object actual) {
+    private void failOnDifference(@Nullable Object expected, Object actual) {
         failOnDifference(expected, actual, singletonList(path.toString()));
     }
 
-    private void failOnDifference(@Nullable Object expected, @NonNull Object actual, @NonNull List<String> paths) {
+    private void failOnDifference(@Nullable Object expected, Object actual, List<String> paths) {
         String path;
         String node;
         if (paths.size() == 1) {
@@ -213,17 +199,15 @@ public final class InternalMatcher {
      *
      *
      */
-    @NonNull
-    public InternalMatcher node(@NonNull String newPath) {
+    public InternalMatcher node(String newPath) {
         return new InternalMatcher(actual, path.copy(newPath), description, configuration);
     }
 
-    @NonNull
-    private Diff createDiff(@Nullable Object expected, @NonNull Configuration configuration) {
+    private Diff createDiff(@Nullable Object expected, Configuration configuration) {
         return create(expected, actual, ACTUAL, path, configuration);
     }
 
-    private void failWithMessage(@NonNull String message) {
+    private void failWithMessage(String message) {
         if (description != null && !description.isEmpty()) {
             throw new AssertionError("[" + description + "] " + message);
         } else {
@@ -269,14 +253,12 @@ public final class InternalMatcher {
     /**
      * Fails if the selected JSON is not an Array or is not present.
      */
-    @NonNull
     public ArrayMatcher isArray() {
         Node node = assertType(ARRAY);
         return new ArrayMatcher(node.arrayElements());
     }
 
-    @NonNull
-    public Node assertType(Node.@NonNull NodeType type) {
+    public Node assertType(Node.NodeType type) {
         isPresent(type.getDescription());
         Node node = getActualNode();
         if (node.getNodeType() != type) {
@@ -285,7 +267,6 @@ public final class InternalMatcher {
         return node;
     }
 
-    @NonNull
     public Node assertIntegralNumber() {
         Node node = assertType(NUMBER);
         if (!node.isIntegralNumber()) {
@@ -328,15 +309,15 @@ public final class InternalMatcher {
         return getNode(actual, path);
     }
 
-    private void failOnType(@NonNull Node node, Node.@NonNull NodeType expectedType) {
+    private void failOnType(Node node, Node.NodeType expectedType) {
         failOnType(node, expectedType.getDescription());
     }
 
-    public void failOnType(@NonNull Node node, @NonNull String expectedType) {
+    public void failOnType(Node node, String expectedType) {
         failOnType(expectedType, quoteTextValue(node.getValue()));
     }
 
-    private void failOnType(@NonNull String expectedType, @Nullable Object actualType) {
+    private void failOnType(String expectedType, @Nullable Object actualType) {
         failWithMessage(
                 nodeDescription + " has invalid type, expected: <" + expectedType + "> but was: <" + actualType + ">.");
     }
@@ -350,13 +331,13 @@ public final class InternalMatcher {
      * <li>Objects are mapped to a map so you can use json(Part)Equals or a Map matcher</li>
      * </ul>
      */
-    public void matches(@NonNull Matcher<?> matcher) {
+    public void matches(Matcher<?> matcher) {
         isPresent();
         match(actual, path, matcher);
     }
 
     @SuppressWarnings("unchecked")
-    private void match(@NonNull Object value, @NonNull Path path, @NonNull Matcher<?> matcher) {
+    private void match(Object value, Path path, Matcher<?> matcher) {
         Node node = getNode(value, path);
         assertThat(nodeDescription + " does not match.", node.getValue(), (Matcher<? super Object>) matcher);
     }
@@ -367,7 +348,7 @@ public final class InternalMatcher {
     public class ArrayMatcher {
         private final List<Node> array;
 
-        ArrayMatcher(@NonNull Iterator<Node> array) {
+        ArrayMatcher(Iterator<Node> array) {
             List<Node> list = new ArrayList<>();
             while (array.hasNext()) {
                 list.add(array.next());

@@ -30,6 +30,7 @@ import java.io.Reader;
 import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Deserializes node using Gson
@@ -63,7 +64,7 @@ class GsonNodeFactory extends AbstractNodeFactory {
         }
     }
 
-    private static Node newNode(JsonElement jsonNode) {
+    private static Node newNode(@Nullable JsonElement jsonNode) {
         if (jsonNode != null) {
             return new GsonNode(jsonNode);
         } else {
@@ -72,7 +73,7 @@ class GsonNodeFactory extends AbstractNodeFactory {
     }
 
     @Override
-    public boolean isPreferredFor(Object source) {
+    public boolean isPreferredFor(@Nullable Object source) {
         return source instanceof JsonElement;
     }
 

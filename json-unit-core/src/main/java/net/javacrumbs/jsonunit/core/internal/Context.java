@@ -39,14 +39,6 @@ record Context(Node expectedNode, Node actualNode, Path expectedPath, Path actua
                 configuration);
     }
 
-    public Context clearActual() {
-        return new Context(expectedNode, null, expectedPath, null, configuration);
-    }
-
-    public Context clearExpected() {
-        return new Context(null, actualNode, null, actualPath, configuration);
-    }
-
     Context length(Object expectedLength) {
         return new Context(
                 wrapDeserializedObject(expectedLength),

@@ -34,6 +34,7 @@ import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Contains Hamcrest matchers to be used with Hamcrest assertThat and other tools.
@@ -109,6 +110,8 @@ public class JsonMatchers {
 
     private abstract static class AbstractMatcher<T> extends BaseMatcher<T> {
         final String path;
+
+        @Nullable
         Object actual;
 
         AbstractMatcher(String path) {
@@ -197,7 +200,7 @@ public class JsonMatchers {
         // IntelliJ integration is broken by default difference string. Hamcrest generates 'Expected:' and IntelliJ
         // searches for last 'but was:' and everything between is taken as expected value
         private static final String HAMCREST_DIFFERENCE_STRING = "expected <%s> but was <%s>";
-        private final Object expected;
+        private final @Nullable Object expected;
 
         // One matcher can be used to match multiple array items. We need to persist diff description between doMatch()
         // and
@@ -207,7 +210,7 @@ public class JsonMatchers {
         // using IdentityHashMap since not all compared object do have to implement hashCode and equals
         private final IdentityHashMap<Object, String> differences = new IdentityHashMap<>();
 
-        JsonPartMatcher(String path, Object expected) {
+        JsonPartMatcher(String path, @Nullable Object expected) {
             super(path);
             this.expected = expected;
         }

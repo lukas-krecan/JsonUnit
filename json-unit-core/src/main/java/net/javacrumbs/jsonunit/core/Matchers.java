@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.hamcrest.Matcher;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -38,8 +37,7 @@ class Matchers {
         return EMPTY;
     }
 
-    @NonNull
-    public Matchers with(@NonNull String matcherName, @NonNull Matcher<?> matcher) {
+    public Matchers with(String matcherName, Matcher<?> matcher) {
         Map<String, Matcher<?>> newMatcherMap = new HashMap<>(matcherMap);
         newMatcherMap.put(matcherName, matcher);
         return new Matchers(newMatcherMap);

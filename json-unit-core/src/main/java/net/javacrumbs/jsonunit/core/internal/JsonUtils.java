@@ -24,7 +24,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -58,39 +57,34 @@ public class JsonUtils {
     /**
      * Returns node with given path.
      */
-    @NonNull
-    public static Node getNode(Object root, String path) {
+    public static Node getNode(@Nullable Object root, String path) {
         return getNode(root, Path.create(path));
     }
 
     /**
      * Returns node with given path.
      */
-    @NonNull
-    public static Node getNode(Object root, Path path) {
+    public static Node getNode(@Nullable Object root, Path path) {
         return path.getNode(convertToJson(root, "actual"));
     }
 
-    public static boolean nodeAbsent(Object json, String path, Configuration configuration) {
+    public static boolean nodeAbsent(@Nullable Object json, String path, Configuration configuration) {
         return nodeAbsent(json, Path.create(path), configuration);
     }
 
-    public static boolean nodeAbsent(Object json, Path path, Configuration configuration) {
+    public static boolean nodeAbsent(@Nullable Object json, Path path, Configuration configuration) {
         return nodeAbsent(json, path, configuration.getOptions().contains(Option.TREATING_NULL_AS_ABSENT));
     }
 
-    @NonNull
     public static Object jsonSource(Object json, String pathPrefix) {
         return jsonSource(json, pathPrefix, emptyList());
     }
 
-    @NonNull
     public static Object jsonSource(Object json, String pathPrefix, List<String> matchingPaths) {
         return new DefaultJsonSource(json, pathPrefix, matchingPaths);
     }
 
-    @NonNull
-    public static String getPathPrefix(Object json) {
+    public static String getPathPrefix(@Nullable Object json) {
         if (json instanceof JsonSource) {
             return ((JsonSource) json).getPathPrefix();
         } else {
@@ -101,7 +95,7 @@ public class JsonUtils {
     /**
      * Returns true if the is absent.
      */
-    static boolean nodeAbsent(Object json, Path path, boolean treatNullAsAbsent) {
+    static boolean nodeAbsent(@Nullable Object json, Path path, boolean treatNullAsAbsent) {
         Node node = getNode(json, path);
         if (node.isNull()) {
             return treatNullAsAbsent;
@@ -133,11 +127,8 @@ public class JsonUtils {
 
     /**
      * Add quotes around the object iff it's not a JSON object.
-     *
-     *
-     *
      */
-    static Object quoteIfNeeded(Object source) {
+    static @Nullable Object quoteIfNeeded(@Nullable Object source) {
         if (source instanceof String) {
             return quoteIfNeeded((String) source);
         } else {
@@ -148,7 +139,7 @@ public class JsonUtils {
     /**
      * Wraps deserialized object - supports null, String, numbers, maps, lists, ...
      */
-    public static Node wrapDeserializedObject(Object source) {
+    public static Node wrapDeserializedObject(@Nullable Object source) {
         return GenericNodeBuilder.wrapDeserializedObject(source);
     }
 

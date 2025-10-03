@@ -19,7 +19,6 @@ import static net.javacrumbs.jsonunit.core.internal.ClassUtils.isClassPresent;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -112,12 +111,11 @@ record Converter(List<NodeFactory> factories) {
         return factories;
     }
 
-    @NonNull
     Node convertToNode(@Nullable Object source, String label, boolean lenient) {
         return findBestFactory(source).convertToNode(source, label, lenient);
     }
 
-    private NodeFactory findBestFactory(Object source) {
+    private NodeFactory findBestFactory(@Nullable Object source) {
         if (factories.size() == 1) return factories.get(0);
 
         return factories.stream()

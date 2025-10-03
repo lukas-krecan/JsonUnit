@@ -20,12 +20,13 @@ import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByMoshi;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 public class MoshiAssertJTest extends AbstractAssertJTest {
 
     @Override
-    protected Object readValue(String value) {
+    protected @Nullable Object readValue(String value) {
         return readByMoshi(value);
     }
 

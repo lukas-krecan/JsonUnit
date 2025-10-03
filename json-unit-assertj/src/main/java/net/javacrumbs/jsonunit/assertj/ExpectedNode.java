@@ -18,6 +18,7 @@ package net.javacrumbs.jsonunit.assertj;
 import java.math.BigDecimal;
 import java.util.Iterator;
 import net.javacrumbs.jsonunit.core.internal.Node;
+import org.jspecify.annotations.Nullable;
 
 /**
  * In AssertJ we need to know which node is expected and which is actual. This class marks expected node.
@@ -91,7 +92,7 @@ class ExpectedNode implements Node {
     }
 
     @Override
-    public Object getValue() {
+    public @Nullable Object getValue() {
         return wrappedNode.getValue();
     }
 

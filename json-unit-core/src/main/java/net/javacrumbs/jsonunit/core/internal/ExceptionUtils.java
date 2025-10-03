@@ -16,17 +16,18 @@
 package net.javacrumbs.jsonunit.core.internal;
 
 import java.util.List;
+import org.jspecify.annotations.Nullable;
 
 class ExceptionUtils {
     private static final String ROOT_MESSAGE = "JSON documents are different:\n";
 
     private static final ExceptionFactory exceptionFactory = new Opentest4jExceptionFactory();
 
-    static String formatDifferences(String message, Differences differences) {
+    static String formatDifferences(@Nullable String message, Differences differences) {
         return formatDifferences(message, differences.getDifferences());
     }
 
-    static String formatDifferences(String message, List<JsonDifference> differences) {
+    static String formatDifferences(@Nullable String message, List<JsonDifference> differences) {
         StringBuilder builder = new StringBuilder();
         if (!differences.isEmpty()) {
             addHeading(message, builder);
@@ -38,11 +39,11 @@ class ExceptionUtils {
         return builder.toString();
     }
 
-    static AssertionError createException(String message, Differences diffs) {
+    static AssertionError createException(@Nullable String message, Differences diffs) {
         return exceptionFactory.createException(message, diffs);
     }
 
-    private static void addHeading(String message, StringBuilder builder) {
+    private static void addHeading(@Nullable String message, StringBuilder builder) {
         if (message != null && !message.isEmpty()) {
             if (message.startsWith("[") && message.endsWith("] ")) {
                 builder.append(message);

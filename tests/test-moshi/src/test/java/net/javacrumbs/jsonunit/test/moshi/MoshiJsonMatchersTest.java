@@ -17,10 +17,11 @@ package net.javacrumbs.jsonunit.test.moshi;
 
 import net.javacrumbs.jsonunit.test.base.AbstractJsonMatchersTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
+import org.jspecify.annotations.Nullable;
 
 public class MoshiJsonMatchersTest extends AbstractJsonMatchersTest {
     @Override
-    protected Object readValue(String value) {
+    protected @Nullable Object readValue(String value) {
         return JsonTestUtils.readByMoshi(value);
     }
 }

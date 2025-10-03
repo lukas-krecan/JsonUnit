@@ -48,6 +48,7 @@ import net.javacrumbs.jsonunit.ConfigurableJsonMatcher;
 import net.javacrumbs.jsonunit.JsonAssert;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -384,6 +385,7 @@ public abstract class AbstractJsonMatchersTest {
     @Test
     void jsonEqualsResourceShouldReturnReasonWhenNullPassedAsParameter() {
         try {
+            //noinspection DataFlowIssue
             assertThat("{\"test\":2}", jsonEquals(resource(null)));
             expectException();
         } catch (NullPointerException e) {
@@ -435,5 +437,5 @@ public abstract class AbstractJsonMatchersTest {
         fail("Exception expected");
     }
 
-    protected abstract Object readValue(String value);
+    protected abstract @Nullable Object readValue(String value);
 }

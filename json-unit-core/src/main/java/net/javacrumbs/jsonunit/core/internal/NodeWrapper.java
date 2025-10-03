@@ -17,6 +17,7 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import java.math.BigDecimal;
 import java.util.Iterator;
+import org.jspecify.annotations.Nullable;
 
 interface NodeWrapper extends Node {
     Node getWrappedNode();
@@ -82,7 +83,7 @@ interface NodeWrapper extends Node {
     }
 
     @Override
-    default Object getValue() {
+    default @Nullable Object getValue() {
         return getWrappedNode().getValue();
     }
 
