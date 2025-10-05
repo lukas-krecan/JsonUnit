@@ -1121,7 +1121,7 @@ public abstract class AbstractJsonAssertTest {
         }
 
         @Override
-        public void setParameter(String parameter) {
+        public void setParameter(@Nullable String parameter) {
             this.param = new BigDecimal(parameter);
         }
     }
@@ -1143,13 +1143,13 @@ public abstract class AbstractJsonAssertTest {
         public void describeMismatch(Object item, Description description) {}
 
         @Override
-        public void setParameter(String parameter) {
+        public void setParameter(@Nullable String parameter) {
             this.param = parameter;
         }
     }
 
     private static class NumEqualsMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
-        private BigDecimal param;
+        private @Nullable BigDecimal param;
 
         @Override
         public boolean matches(Object item) {
@@ -1162,7 +1162,7 @@ public abstract class AbstractJsonAssertTest {
         }
 
         @Override
-        public void setParameter(String parameter) {
+        public void setParameter(@Nullable String parameter) {
             this.param = new BigDecimal(parameter);
         }
     }

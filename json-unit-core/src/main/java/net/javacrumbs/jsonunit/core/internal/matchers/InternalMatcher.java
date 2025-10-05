@@ -50,7 +50,7 @@ public final class InternalMatcher {
     public static final String ACTUAL = "actual";
 
     private final Path path;
-    private final Object actual;
+    private final @Nullable Object actual;
     private final String description;
     private final Configuration configuration;
     private final String nodeDescription;

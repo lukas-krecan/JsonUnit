@@ -253,7 +253,8 @@ public class JsonMatchers {
                 // Solves the case when the item is not the same instance as the one sent to match() #338
                 return differences.values().iterator().next();
             } else {
-                return differences.get(item);
+                String diff = differences.get(item);
+                return diff != null ? diff : "Difference not found for item";
             }
         }
     }
