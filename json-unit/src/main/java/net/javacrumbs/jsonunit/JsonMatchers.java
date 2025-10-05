@@ -15,6 +15,7 @@
  */
 package net.javacrumbs.jsonunit;
 
+import static java.util.Objects.requireNonNull;
 import static net.javacrumbs.jsonunit.core.internal.Diff.createInternal;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix;
@@ -23,6 +24,7 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.IdentityHashMap;
+import java.util.Objects;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;
@@ -253,8 +255,7 @@ public class JsonMatchers {
                 // Solves the case when the item is not the same instance as the one sent to match() #338
                 return differences.values().iterator().next();
             } else {
-                String diff = differences.get(item);
-                return diff != null ? diff : "Difference not found for item";
+                return requireNonNull(differences.get(item), "Difference not found for item");
             }
         }
     }

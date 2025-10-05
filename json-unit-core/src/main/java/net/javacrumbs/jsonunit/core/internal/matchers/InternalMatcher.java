@@ -160,11 +160,11 @@ public final class InternalMatcher {
         }
     }
 
-    private void failOnDifference(@Nullable Object expected, Object actual) {
+    private void failOnDifference(@Nullable Object expected, @Nullable Object actual) {
         failOnDifference(expected, actual, singletonList(path.toString()));
     }
 
-    private void failOnDifference(@Nullable Object expected, Object actual, List<String> paths) {
+    private void failOnDifference(@Nullable Object expected, @Nullable Object actuGGal, List<String> paths) {
         String path;
         String node;
         if (paths.size() == 1) {
@@ -337,7 +337,7 @@ public final class InternalMatcher {
     }
 
     @SuppressWarnings("unchecked")
-    private void match(Object value, Path path, Matcher<?> matcher) {
+    private void match(@Nullable Object value, Path path, Matcher<?> matcher) {
         Node node = getNode(value, path);
         assertThat(nodeDescription + " does not match.", node.getValue(), (Matcher<? super Object>) matcher);
     }

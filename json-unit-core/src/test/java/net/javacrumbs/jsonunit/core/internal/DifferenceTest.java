@@ -232,7 +232,7 @@ public class DifferenceTest {
     void shouldSeeActualSource() {
         Diff diff = Diff.create("{\"test\": \"1\"}", "{}", "", "", commonConfig());
         diff.similar();
-        assertThat(listener.getActualSource().toString()).isEqualTo("{}");
+        assertThat(listener.getActualSource()).asString().isEqualTo("{}");
     }
 
     @Test
@@ -367,7 +367,7 @@ public class DifferenceTest {
         private @Nullable String parameter;
 
         @Override
-        public void setParameter(String parameter) {
+        public void setParameter(@Nullable String parameter) {
             this.parameter = parameter;
         }
 

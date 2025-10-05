@@ -20,6 +20,7 @@ import static org.springframework.http.MediaType.parseMediaType;
 
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
+import org.jspecify.annotations.Nullable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -68,7 +69,7 @@ public class ExampleController {
             return true;
         }
 
-        public Object getNull() {
+        public @Nullable Object getNull() {
             return null;
         }
 
