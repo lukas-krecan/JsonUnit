@@ -42,6 +42,7 @@ import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
+@SuppressWarnings("BadImport")
 public class DifferenceTest {
     private final RecordingDifferenceListener listener = new RecordingDifferenceListener();
 
@@ -382,6 +383,7 @@ public class DifferenceTest {
         }
     }
 
+    @SuppressWarnings("BigDecimalEquals")
     private static class NormalisedNumberComparator implements NumberComparator {
         @Override
         public boolean compare(BigDecimal expectedValue, BigDecimal actualValue, @Nullable BigDecimal tolerance) {

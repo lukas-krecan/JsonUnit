@@ -21,10 +21,10 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
 
 import java.math.BigDecimal;
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.Set;
 import java.util.Spliterators;
 import java.util.stream.StreamSupport;
@@ -263,7 +263,7 @@ public interface Node {
         }
     }
 
-    class JsonList extends LinkedList<@Nullable Object> implements NodeWrapper {
+    class JsonList extends ArrayList<@Nullable Object> implements NodeWrapper {
         private final Node wrappedNode;
 
         JsonList(Node node) {

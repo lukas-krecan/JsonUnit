@@ -66,6 +66,7 @@ record Converter(List<NodeFactory> factories) {
         return new Converter(factories);
     }
 
+    @SuppressWarnings({"StringSplitter", "StringCaseLocaleUsage"})
     private static List<NodeFactory> createFactoriesSpecifiedInProperty(String property) {
         List<NodeFactory> factories = new ArrayList<>();
         for (String factoryName : property.toLowerCase().split(",")) {

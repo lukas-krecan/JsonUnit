@@ -246,6 +246,7 @@
                         <release>${target.java.version}</release>
                         <fork>true</fork>
                         <compilerArgs>
+                            <arg>-Werror</arg>
                             <arg>-XDcompilePolicy=simple</arg>
                             <arg>-Xplugin:ErrorProne -XepOpt:NullAway:AnnotatedPackages=net.javacrumbs.jsonunit -Xep:CheckReturnValue:OFF</arg>
                             <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>

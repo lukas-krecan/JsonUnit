@@ -24,7 +24,6 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.IdentityHashMap;
-import java.util.Objects;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam;

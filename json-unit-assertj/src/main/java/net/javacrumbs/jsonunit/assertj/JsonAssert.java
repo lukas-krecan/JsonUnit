@@ -35,7 +35,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen.ApplicableForPath;
@@ -151,7 +150,8 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     @SuppressWarnings("unchecked")
     public JsonMapAssert isObject() {
         Node node = assertType(OBJECT);
-        return describe(new JsonMapAssert((Map<String, Object>) requireNonNull(node.getValue()), path.asPrefix(), configuration));
+        return describe(new JsonMapAssert(
+                (Map<String, Object>) requireNonNull(node.getValue()), path.asPrefix(), configuration));
     }
 
     /**

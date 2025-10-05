@@ -164,7 +164,7 @@ public final class InternalMatcher {
         failOnDifference(expected, actual, singletonList(path.toString()));
     }
 
-    private void failOnDifference(@Nullable Object expected, @Nullable Object actuGGal, List<String> paths) {
+    private void failOnDifference(@Nullable Object expected, @Nullable Object actual, List<String> paths) {
         String path;
         String node;
         if (paths.size() == 1) {
@@ -204,7 +204,7 @@ public final class InternalMatcher {
     }
 
     private Diff createDiff(@Nullable Object expected, Configuration configuration) {
-        return create(expected, actual, ACTUAL, path, configuration);
+        return Diff.create(expected, actual, ACTUAL, path, configuration);
     }
 
     private void failWithMessage(String message) {
@@ -369,7 +369,7 @@ public final class InternalMatcher {
         public void thatContains(@Nullable Object expected) {
 
             for (Node node : array) {
-                Diff diff = create(expected, node, ACTUAL, "", configuration);
+                Diff diff = Diff.create(expected, node, ACTUAL, "", configuration);
                 if (diff.similar()) {
                     return;
                 }
