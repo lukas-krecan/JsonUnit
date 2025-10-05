@@ -42,7 +42,6 @@ import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
-@SuppressWarnings("BadImport")
 public class DifferenceTest {
     private final RecordingDifferenceListener listener = new RecordingDifferenceListener();
 

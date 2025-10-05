@@ -162,6 +162,8 @@ public class Configuration {
     /**
      * Defines general comparison options. See {@link ConfigurationWhen#path} for some examples.
      *
+     * @param object an object to apply actions, e.g. {@link ConfigurationWhen#path}, {@link ConfigurationWhen#rootPath}.
+     * @param actions actions to be applied on the object.
      *
      * @see ConfigurationWhen#path
      */

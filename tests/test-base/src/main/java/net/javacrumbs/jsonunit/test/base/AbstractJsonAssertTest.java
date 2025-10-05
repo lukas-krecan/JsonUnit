@@ -18,6 +18,7 @@ package net.javacrumbs.jsonunit.test.base;
 import static java.math.BigDecimal.ZERO;
 import static java.math.BigDecimal.valueOf;
 import static java.util.Collections.singletonMap;
+import static java.util.Objects.requireNonNull;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonNodeAbsent;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonNodePresent;
@@ -52,6 +53,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import net.javacrumbs.jsonunit.JsonAssert;
 import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
 import org.hamcrest.BaseMatcher;
@@ -1153,7 +1155,7 @@ public abstract class AbstractJsonAssertTest {
 
         @Override
         public boolean matches(Object item) {
-            return param.compareTo((BigDecimal) item) == 0;
+            return requireNonNull(param).compareTo((BigDecimal) item) == 0;
         }
 
         @Override

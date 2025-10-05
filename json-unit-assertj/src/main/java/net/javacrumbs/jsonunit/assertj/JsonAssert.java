@@ -69,6 +69,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     @Nullable
     private final Object actualForMatcher;
 
+    @SuppressWarnings("CheckReturnValue")
     JsonAssert(Path path, Configuration configuration, @Nullable Object actual, boolean alreadyParsed) {
         super(
                 alreadyParsed ? JsonUtils.wrapDeserializedObject(actual) : JsonUtils.convertToJson(actual, "actual"),

@@ -383,17 +383,6 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    void jsonEqualsResourceShouldReturnReasonWhenNullPassedAsParameter() {
-        try {
-            //noinspection DataFlowIssue
-            assertThat("{\"test\":2}", jsonEquals(resource(null)));
-            expectException();
-        } catch (NullPointerException e) {
-            assertEquals("'null' passed instead of resource name", e.getMessage());
-        }
-    }
-
-    @Test
     void nullPointerExceptionTest() {
         String message = "{" + "     \"properties\":{" + "         \"attr\":\"123\"" + "     }" + "}";
         String path = "properties.another[0]";

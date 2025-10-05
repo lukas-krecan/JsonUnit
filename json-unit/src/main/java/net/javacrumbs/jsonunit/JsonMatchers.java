@@ -57,14 +57,14 @@ public class JsonMatchers {
     /**
      * Are the JSONs equivalent?
      */
-    public static <T> ConfigurableJsonMatcher<T> jsonEquals(Object expected) {
+    public static <T> ConfigurableJsonMatcher<T> jsonEquals(@Nullable Object expected) {
         return new JsonPartMatcher<>(EMPTY_PATH, expected);
     }
 
     /**
      * Is the part of the JSON equivalent?
      */
-    public static <T> ConfigurableJsonMatcher<T> jsonPartEquals(String path, Object expected) {
+    public static <T> ConfigurableJsonMatcher<T> jsonPartEquals(String path, @Nullable Object expected) {
         return new JsonPartMatcher<>(path, expected);
     }
 
@@ -81,7 +81,7 @@ public class JsonMatchers {
      * This method exist only for those cases, when you need to use it as Matcher&lt;String&gt; and Java refuses to
      * do the type inference correctly.
      */
-    public static ConfigurableJsonMatcher<String> jsonStringEquals(Object expected) {
+    public static ConfigurableJsonMatcher<String> jsonStringEquals(@Nullable Object expected) {
         return jsonEquals(expected);
     }
 
@@ -91,7 +91,7 @@ public class JsonMatchers {
      * This method exist only for those cases, when you need to use it as Matcher&lt;String&gt; and Java refuses to
      * do the type inference correctly.
      */
-    public static ConfigurableJsonMatcher<String> jsonStringPartEquals(String path, Object expected) {
+    public static ConfigurableJsonMatcher<String> jsonStringPartEquals(String path, @Nullable Object expected) {
         return jsonPartEquals(path, expected);
     }
 

@@ -16,7 +16,6 @@
 package net.javacrumbs.jsonunit.core.internal.matchers;
 
 import static java.util.Collections.singletonList;
-import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;

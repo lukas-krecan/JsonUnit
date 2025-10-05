@@ -248,7 +248,7 @@
                         <compilerArgs>
                             <arg>-Werror</arg>
                             <arg>-XDcompilePolicy=simple</arg>
-                            <arg>-Xplugin:ErrorProne -XepOpt:NullAway:AnnotatedPackages=net.javacrumbs.jsonunit -Xep:CheckReturnValue:OFF</arg>
+                            <arg>-Xplugin:ErrorProne -XepOpt:NullAway:AnnotatedPackages=net.javacrumbs.jsonunit -Xep:BadImport:OFF</arg>
                             <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
                             <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
                             <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED</arg>
