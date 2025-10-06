@@ -40,8 +40,8 @@ class GsonNodeFactory extends AbstractNodeFactory {
 
     @Override
     protected Node doConvertValue(Object source) {
-        if (source instanceof JsonElement) {
-            return newNode((JsonElement) source);
+        if (source instanceof JsonElement jsonElement) {
+            return newNode(jsonElement);
         } else {
             return newNode(gson.toJsonTree(source));
         }
@@ -144,8 +144,8 @@ class GsonNodeFactory extends AbstractNodeFactory {
 
         @Override
         public Iterator<Node> arrayElements() {
-            if (jsonNode instanceof JsonArray) {
-                final Iterator<JsonElement> iterator = ((JsonArray) jsonNode).iterator();
+            if (jsonNode instanceof JsonArray jsonArray) {
+                final Iterator<JsonElement> iterator = jsonArray.iterator();
                 return new Iterator<>() {
                     @Override
                     public boolean hasNext() {

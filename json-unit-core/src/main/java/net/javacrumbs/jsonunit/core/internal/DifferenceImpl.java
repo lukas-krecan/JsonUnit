@@ -99,16 +99,16 @@ class DifferenceImpl implements Difference {
             @Nullable Node actualNode,
             @Nullable Path expectedPath,
             @Nullable Path actualPath) {
-        public static DiffContext from(Context context) {
+        private static DiffContext from(Context context) {
             return new DiffContext(
                     context.expectedNode(), context.actualNode(), context.expectedPath(), context.actualPath());
         }
 
-        public DiffContext clearActual() {
+        private DiffContext clearActual() {
             return new DiffContext(expectedNode, null, expectedPath, null);
         }
 
-        public DiffContext clearExpected() {
+        private DiffContext clearExpected() {
             return new DiffContext(null, actualNode, null, actualPath);
         }
     }

@@ -124,12 +124,12 @@ public class Diff {
             String actualName,
             String path,
             Configuration configuration) {
-        if (actual instanceof JsonSource) {
+        if (actual instanceof JsonSource jsonSource) {
             return create(
                     expected,
                     actual,
                     actualName,
-                    Path.create(path, ((JsonSource) actual).getPathPrefix()),
+                    Path.create(path, jsonSource.getPathPrefix()),
                     configuration);
         } else {
             return create(expected, actual, actualName, Path.create(path, ""), configuration);
@@ -377,25 +377,19 @@ public class Diff {
                     quoteTextValue(actualNode));
         } else {
             switch (expectedNodeType) {
-                case OBJECT:
-                    compareObjectNodes(context);
-                    break;
-                case ARRAY:
-                    compareArrayNodes(context);
-                    break;
-                case STRING:
-                    compareStringValues(context);
-                    break;
-                case NUMBER:
+                case OBJECT -> compareObjectNodes(context);
+                case ARRAY -> compareArrayNodes(context);
+                case STRING -> compareStringValues(context);
+                case NUMBER -> {
                     BigDecimal actualValue = actualNode.decimalValue();
                     BigDecimal expectedValue = expectedNode.decimalValue();
                     if (!hasOption(context.actualPath(), IGNORING_VALUES)) {
                         BigDecimal tolerance = configuration.getTolerance();
                         if (!configuration.getNumberComparator().compare(expectedValue, actualValue, tolerance)) {
                             BigDecimal diff =
-                                    expectedValue.subtract(actualValue).abs();
+                                expectedValue.subtract(actualValue).abs();
                             List<Object> arguments = Arrays.asList(
-                                    fieldPath, quoteTextValue(expectedValue), quoteTextValue(actualValue));
+                                fieldPath, quoteTextValue(expectedValue), quoteTextValue(actualValue));
                             String message = "Different value found in node \"%s\", " + differenceString();
                             if (tolerance != null && tolerance.compareTo(BigDecimal.ZERO) != 0) {
                                 message += ", difference is " + diff + ", tolerance is " + tolerance;
@@ -405,15 +399,12 @@ public class Diff {
                             addAndReportDifference(context, message, arguments.toArray());
                         }
                     }
-                    break;
-                case BOOLEAN:
-                    compareValues(context, expectedNode.asBoolean(), actualNode.asBoolean());
-                    break;
-                case NULL:
+                }
+                case BOOLEAN -> compareValues(context, expectedNode.asBoolean(), actualNode.asBoolean());
+                case NULL -> {
                     // nothing
-                    break;
-                default:
-                    throw new IllegalStateException("Unexpected node type " + expectedNodeType);
+                }
+                default -> throw new IllegalStateException("Unexpected node type " + expectedNodeType);
             }
         }
     }
