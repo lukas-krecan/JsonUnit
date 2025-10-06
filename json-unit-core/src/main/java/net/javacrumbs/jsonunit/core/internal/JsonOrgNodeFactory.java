@@ -55,16 +55,16 @@ class JsonOrgNodeFactory extends AbstractNodeFactory {
     }
 
     private static Node newNode(@Nullable Object object) {
-        if (object instanceof JSONObject) {
-            return new JSONObjectNode((JSONObject) object);
-        } else if (object instanceof Number) {
-            return new GenericNodeBuilder.NumberNode((Number) object);
-        } else if (object instanceof String) {
-            return new GenericNodeBuilder.StringNode((String) object);
-        } else if (object instanceof Boolean) {
-            return new GenericNodeBuilder.BooleanNode((Boolean) object);
-        } else if (object instanceof JSONArray) {
-            return new JSONArrayNode((JSONArray) object);
+        if (object instanceof JSONObject jSONObject) {
+            return new JSONObjectNode(jSONObject);
+        } else if (object instanceof Number number) {
+            return new GenericNodeBuilder.NumberNode(number);
+        } else if (object instanceof String string) {
+            return new GenericNodeBuilder.StringNode(string);
+        } else if (object instanceof Boolean b) {
+            return new GenericNodeBuilder.BooleanNode(b);
+        } else if (object instanceof JSONArray jSONArray) {
+            return new JSONArrayNode(jSONArray);
         } else if (object == null || JSONObject.NULL.equals(object)) {
             return new GenericNodeBuilder.NullNode();
         } else if (object instanceof Map) {

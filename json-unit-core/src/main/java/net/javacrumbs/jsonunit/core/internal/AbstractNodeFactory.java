@@ -31,15 +31,15 @@ abstract class AbstractNodeFactory implements NodeFactory {
     public Node convertToNode(@Nullable Object source, String label, boolean lenient) {
         if (source == null) {
             return nullNode();
-        } else if (source instanceof Node) {
-            return (Node) source;
-        } else if (source instanceof String && !((String) source).trim().isEmpty()) {
-            return readValue((String) source, label, lenient);
-        } else if (source instanceof Reader) {
+        } else if (source instanceof Node node) {
+            return node;
+        } else if (source instanceof String sourceString && !sourceString.trim().isEmpty()) {
+            return readValue(sourceString, label, lenient);
+        } else if (source instanceof Reader reader) {
             try {
-                return readValue((Reader) source, label, lenient);
+                return readValue(reader, label, lenient);
             } finally {
-                closeQuietly((Reader) source);
+                closeQuietly(reader);
             }
         } else {
             return convertValue(source);
@@ -47,17 +47,16 @@ abstract class AbstractNodeFactory implements NodeFactory {
     }
 
     final Node convertValue(Object source) {
-        if (source instanceof BigDecimal) {
-            return new GenericNodeBuilder.NumberNode((Number) source);
+        if (source instanceof BigDecimal bigDecimal) {
+            return new GenericNodeBuilder.NumberNode(bigDecimal);
         } else {
             return doConvertValue(source);
         }
     }
 
     protected IllegalArgumentException newParseException(String label, Reader value, Exception e) {
-        if (value instanceof JsonStringReader) {
-            return new IllegalArgumentException(
-                    "Can not parse " + label + " value: '" + ((JsonStringReader) value).getString() + "'", e);
+        if (value instanceof JsonStringReader reader) {
+            return new IllegalArgumentException("Can not parse " + label + " value: '" + reader.getString() + "'", e);
         } else {
             return new IllegalArgumentException("Can not parse " + label + " value.", e);
         }

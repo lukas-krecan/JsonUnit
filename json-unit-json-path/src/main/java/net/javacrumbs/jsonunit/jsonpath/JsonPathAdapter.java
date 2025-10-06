@@ -70,7 +70,7 @@ public final class JsonPathAdapter {
             return EvaluationContinuation.CONTINUE;
         }
 
-        public List<String> getMatchingPaths() {
+        List<String> getMatchingPaths() {
             return matchingPaths;
         }
     }

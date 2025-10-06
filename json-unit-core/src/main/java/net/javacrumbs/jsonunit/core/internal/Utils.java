@@ -25,8 +25,8 @@ import org.jspecify.annotations.Nullable;
  */
 class Utils {
     static String readAsString(Reader resourceReader) throws IOException {
-        if (resourceReader instanceof JsonStringReader) {
-            return ((JsonStringReader) resourceReader).getString();
+        if (resourceReader instanceof JsonStringReader jsonStringReader) {
+            return jsonStringReader.getString();
         }
 
         StringBuilder builder = new StringBuilder();

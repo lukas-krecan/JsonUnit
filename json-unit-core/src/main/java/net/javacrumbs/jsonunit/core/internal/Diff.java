@@ -124,13 +124,8 @@ public class Diff {
             String actualName,
             String path,
             Configuration configuration) {
-        if (actual instanceof JsonSource) {
-            return create(
-                    expected,
-                    actual,
-                    actualName,
-                    Path.create(path, ((JsonSource) actual).getPathPrefix()),
-                    configuration);
+        if (actual instanceof JsonSource jsonSource) {
+            return create(expected, actual, actualName, Path.create(path, jsonSource.getPathPrefix()), configuration);
         } else {
             return create(expected, actual, actualName, Path.create(path, ""), configuration);
         }
@@ -377,16 +372,10 @@ public class Diff {
                     quoteTextValue(actualNode));
         } else {
             switch (expectedNodeType) {
-                case OBJECT:
-                    compareObjectNodes(context);
-                    break;
-                case ARRAY:
-                    compareArrayNodes(context);
-                    break;
-                case STRING:
-                    compareStringValues(context);
-                    break;
-                case NUMBER:
+                case OBJECT -> compareObjectNodes(context);
+                case ARRAY -> compareArrayNodes(context);
+                case STRING -> compareStringValues(context);
+                case NUMBER -> {
                     BigDecimal actualValue = actualNode.decimalValue();
                     BigDecimal expectedValue = expectedNode.decimalValue();
                     if (!hasOption(context.actualPath(), IGNORING_VALUES)) {
@@ -405,15 +394,12 @@ public class Diff {
                             addAndReportDifference(context, message, arguments.toArray());
                         }
                     }
-                    break;
-                case BOOLEAN:
-                    compareValues(context, expectedNode.asBoolean(), actualNode.asBoolean());
-                    break;
-                case NULL:
+                }
+                case BOOLEAN -> compareValues(context, expectedNode.asBoolean(), actualNode.asBoolean());
+                case NULL -> {
                     // nothing
-                    break;
-                default:
-                    throw new IllegalStateException("Unexpected node type " + expectedNodeType);
+                }
+                default -> throw new IllegalStateException("Unexpected node type " + expectedNodeType);
             }
         }
     }

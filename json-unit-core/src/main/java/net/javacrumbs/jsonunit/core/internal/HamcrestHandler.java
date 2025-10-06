@@ -29,8 +29,8 @@ class HamcrestHandler {
     void matchHamcrestMatcher(Context context, Node actualNode, Matcher patternMatcher, String matcherName) {
         org.hamcrest.Matcher<?> matcher = configuration.getMatcher(matcherName);
         if (matcher != null) {
-            if (matcher instanceof ParametrizedMatcher) {
-                ((ParametrizedMatcher) matcher).setParameter(patternMatcher.group(2));
+            if (matcher instanceof ParametrizedMatcher parametrizedMatcher) {
+                parametrizedMatcher.setParameter(patternMatcher.group(2));
             }
             Object value = actualNode.getValue();
             if (!matcher.matches(value)) {

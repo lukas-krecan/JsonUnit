@@ -47,8 +47,8 @@ public class JsonUtils {
      * Converts object to JSON.
      */
     public static Node convertToJson(@Nullable Object source, String label, boolean lenient) {
-        if (source instanceof JsonSource) {
-            return converter.convertToNode(((JsonSource) source).getJson(), label, lenient);
+        if (source instanceof JsonSource jsonSource) {
+            return converter.convertToNode(jsonSource.getJson(), label, lenient);
         } else {
             return converter.convertToNode(source, label, lenient);
         }
@@ -85,8 +85,8 @@ public class JsonUtils {
     }
 
     public static String getPathPrefix(@Nullable Object json) {
-        if (json instanceof JsonSource) {
-            return ((JsonSource) json).getPathPrefix();
+        if (json instanceof JsonSource jsonSource) {
+            return jsonSource.getPathPrefix();
         } else {
             return "";
         }
@@ -129,8 +129,8 @@ public class JsonUtils {
      * Add quotes around the object iff it's not a JSON object.
      */
     static @Nullable Object quoteIfNeeded(@Nullable Object source) {
-        if (source instanceof String) {
-            return quoteIfNeeded((String) source);
+        if (source instanceof String sourceString) {
+            return quoteIfNeeded(sourceString);
         } else {
             return source;
         }
@@ -206,7 +206,7 @@ public class JsonUtils {
         private final String pathPrefix;
         private final List<String> matchingPaths;
 
-        public DefaultJsonSource(Object json, String pathPrefix, List<String> matchingPaths) {
+        private DefaultJsonSource(Object json, String pathPrefix, List<String> matchingPaths) {
             this.json = json;
             this.pathPrefix = pathPrefix;
             this.matchingPaths = matchingPaths;

@@ -254,6 +254,7 @@
                         <compilerArgs>
                             <arg>-Werror</arg>
                             <arg>-XDcompilePolicy=simple</arg>
+                            <arg>--should-stop=ifError=FLOW</arg>
                             <arg>-Xplugin:ErrorProne -XepOpt:NullAway:AnnotatedPackages=net.javacrumbs.jsonunit -Xep:BadImport:OFF</arg>
                             <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED</arg>
                             <arg>-J--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED</arg>
@@ -270,7 +271,7 @@
                             <path>
                                 <groupId>com.google.errorprone</groupId>
                                 <artifactId>error_prone_core</artifactId>
-                                <version>2.35.1</version>
+                                <version>2.42.0</version>
                             </path>
                             <path>
                                 <groupId>com.uber.nullaway</groupId>

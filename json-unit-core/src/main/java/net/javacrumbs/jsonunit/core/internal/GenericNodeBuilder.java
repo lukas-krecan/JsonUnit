@@ -40,24 +40,24 @@ class GenericNodeBuilder implements NodeBuilder {
             return new NullNode();
         } else if (object instanceof Map) {
             return new ObjectNode((Map<String, Object>) object, this);
-        } else if (object instanceof Number) {
-            return new NumberNode((Number) object);
-        } else if (object instanceof String) {
-            return new StringNode((String) object);
-        } else if (object instanceof Boolean) {
-            return new BooleanNode((Boolean) object);
-        } else if (object instanceof Object[]) {
-            return new ArrayNode(Arrays.asList((Object[]) object), this);
-        } else if (object instanceof int[]) {
-            return new ArrayNode(toIntList((int[]) object), this);
-        } else if (object instanceof double[]) {
-            return new ArrayNode(toDoubleList((double[]) object), this);
-        } else if (object instanceof boolean[]) {
-            return new ArrayNode(toBoolList((boolean[]) object), this);
+        } else if (object instanceof Number number) {
+            return new NumberNode(number);
+        } else if (object instanceof String string) {
+            return new StringNode(string);
+        } else if (object instanceof Boolean bool) {
+            return new BooleanNode(bool);
+        } else if (object instanceof Object[] objects) {
+            return new ArrayNode(Arrays.asList(objects), this);
+        } else if (object instanceof int[] ints) {
+            return new ArrayNode(toIntList(ints), this);
+        } else if (object instanceof double[] doubles) {
+            return new ArrayNode(toDoubleList(doubles), this);
+        } else if (object instanceof boolean[] booleans) {
+            return new ArrayNode(toBoolList(booleans), this);
         } else if (object instanceof List) {
             return new ArrayNode((List<?>) object, this);
-        } else if (object instanceof Node) {
-            return (Node) object;
+        } else if (object instanceof Node node) {
+            return node;
         } else {
             throw new IllegalArgumentException("Unsupported type " + object.getClass());
         }
