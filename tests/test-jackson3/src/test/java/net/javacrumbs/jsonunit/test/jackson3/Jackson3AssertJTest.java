@@ -20,6 +20,7 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson3;
 
 import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 public class Jackson3AssertJTest extends AbstractAssertJTest {
@@ -30,6 +31,13 @@ public class Jackson3AssertJTest extends AbstractAssertJTest {
                 .inPath("$.a")
                 .isArray()
                 .containsExactlyInAnyOrder(json(readValue("{\"c\": 1}")), json(readValue("{\"b\": 1}")));
+    }
+
+    @Test
+    @Disabled
+    @Override
+    protected void shouldAssert1e0() {
+        // Jackson parses 1e0 as 1
     }
 
     @Override

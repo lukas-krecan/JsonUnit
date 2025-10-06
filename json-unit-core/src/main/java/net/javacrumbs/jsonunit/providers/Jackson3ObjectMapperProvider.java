@@ -18,7 +18,7 @@ package net.javacrumbs.jsonunit.providers;
 import tools.jackson.databind.ObjectMapper;
 
 /**
- * Interface for customizing Jackson 2 ObjectMapper. @see <a href="https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html">SPI intro</a>
+ * Interface for customizing Jackson 3 ObjectMapper. @see <a href="https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html">SPI intro</a>
  */
 public interface Jackson3ObjectMapperProvider {
     /**

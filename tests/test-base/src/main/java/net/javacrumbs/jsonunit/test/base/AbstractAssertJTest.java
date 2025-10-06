@@ -60,7 +60,6 @@ import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest.DivisionMatcher;
 import org.hamcrest.Matcher;
 import org.jspecify.annotations.Nullable;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.opentest4j.AssertionFailedError;
@@ -952,7 +951,6 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
-    @Disabled
     protected void shouldAssert1e0() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":1e0}").node("a").isIntegralNumber())
                 .hasMessageStartingWith("Node \"a\" has invalid type, expected: <integer> but was:");
