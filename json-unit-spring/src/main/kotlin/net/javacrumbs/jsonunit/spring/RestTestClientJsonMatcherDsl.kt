@@ -2,8 +2,9 @@ package net.javacrumbs.jsonunit.spring
 
 import net.javacrumbs.jsonunit.assertj.JsonAssert
 import net.javacrumbs.jsonunit.assertj.JsonAssertions
+import net.javacrumbs.jsonunit.spring.RestTestClientUtils.getContentAsString
 import net.javacrumbs.jsonunit.spring.WebTestClientUtils.getContentAsString
-import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.test.web.servlet.client.RestTestClient
 
 /**
  * Example usage:
@@ -13,8 +14,8 @@ import org.springframework.test.web.reactive.server.WebTestClient
  * .jsonContent { isEqualTo(CORRECT_JSON) }
  * ```
  */
-fun WebTestClient.BodyContentSpec.jsonContent(
+fun RestTestClient.BodyContentSpec.jsonContent(
     matcher: JsonAssert.ConfigurableJsonAssert.() -> Unit
-): WebTestClient.BodyContentSpec = consumeWith { result ->
+): RestTestClient.BodyContentSpec = consumeWith { result ->
     matcher(JsonAssertions.assertThatJson(getContentAsString(result)))
 }

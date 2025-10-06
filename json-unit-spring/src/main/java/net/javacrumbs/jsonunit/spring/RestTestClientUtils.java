@@ -1,12 +1,10 @@
 package net.javacrumbs.jsonunit.spring;
 
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import org.jspecify.annotations.Nullable;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.reactive.server.EntityExchangeResult;
+import org.springframework.test.web.servlet.client.EntityExchangeResult;
 
-class Utils {
+class RestTestClientUtils {
     static @Nullable String getContentAsString(EntityExchangeResult<byte[]> result) {
         Charset charset = getCharset(result);
         byte[] responseBody = result.getResponseBody();
@@ -18,14 +16,6 @@ class Utils {
     }
 
     private static Charset getCharset(EntityExchangeResult<byte[]> result) {
-        return getCharset(result.getResponseHeaders().getContentType());
-    }
-
-    static Charset getCharset(@Nullable MediaType contentType) {
-        if (contentType != null && contentType.getCharset() != null) {
-            return contentType.getCharset();
-        } else {
-            return StandardCharsets.UTF_8;
-        }
+        return CharsetUtils.getCharset(result.getResponseHeaders().getContentType());
     }
 }

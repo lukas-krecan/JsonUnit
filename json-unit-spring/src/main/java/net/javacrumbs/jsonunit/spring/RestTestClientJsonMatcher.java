@@ -1,11 +1,11 @@
 package net.javacrumbs.jsonunit.spring;
 
-import java.nio.charset.Charset;
+import static net.javacrumbs.jsonunit.spring.RestTestClientUtils.getContentAsString;
+
 import java.util.function.Consumer;
 import java.util.function.Function;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
-import org.jspecify.annotations.Nullable;
 import org.springframework.test.web.servlet.client.EntityExchangeResult;
 
 /**
@@ -50,16 +50,6 @@ public class RestTestClientJsonMatcher
         @Override
         public void accept(EntityExchangeResult<byte[]> result) {
             doMatch(getContentAsString(result));
-        }
-
-        private static @Nullable String getContentAsString(EntityExchangeResult<byte[]> result) {
-            Charset charset = getCharset(result);
-            byte[] responseBody = result.getResponseBody();
-            return responseBody != null ? new String(responseBody, charset) : null;
-        }
-
-        private static Charset getCharset(EntityExchangeResult<byte[]> result) {
-            return Utils.getCharset(result.getResponseHeaders().getContentType());
         }
     }
 }

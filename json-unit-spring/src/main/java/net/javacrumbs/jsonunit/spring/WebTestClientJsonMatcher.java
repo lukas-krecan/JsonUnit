@@ -1,6 +1,6 @@
 package net.javacrumbs.jsonunit.spring;
 
-import static net.javacrumbs.jsonunit.spring.Utils.getContentAsString;
+import static net.javacrumbs.jsonunit.spring.WebTestClientUtils.getContentAsString;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
