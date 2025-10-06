@@ -18,6 +18,7 @@ package net.javacrumbs.jsonunit.test.base;
 import static java.math.BigDecimal.ZERO;
 import static java.math.BigDecimal.valueOf;
 import static java.util.Collections.singletonMap;
+import static java.util.Objects.requireNonNull;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonNodeAbsent;
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonNodePresent;
@@ -57,6 +58,7 @@ import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
@@ -1107,7 +1109,7 @@ public abstract class AbstractJsonAssertTest {
     }
 
     static class DivisionMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
-        private BigDecimal param;
+        private @Nullable BigDecimal param;
 
         @Override
         public boolean matches(Object item) {
@@ -1120,13 +1122,13 @@ public abstract class AbstractJsonAssertTest {
         }
 
         @Override
-        public void setParameter(String parameter) {
+        public void setParameter(@Nullable String parameter) {
             this.param = new BigDecimal(parameter);
         }
     }
 
     private static class TrueMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
-        private String param;
+        private @Nullable String param;
 
         @Override
         public boolean matches(Object item) {
@@ -1142,18 +1144,17 @@ public abstract class AbstractJsonAssertTest {
         public void describeMismatch(Object item, Description description) {}
 
         @Override
-        public void setParameter(String parameter) {
+        public void setParameter(@Nullable String parameter) {
             this.param = parameter;
         }
     }
 
     private static class NumEqualsMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
-
-        private BigDecimal param;
+        private @Nullable BigDecimal param;
 
         @Override
         public boolean matches(Object item) {
-            return param.compareTo((BigDecimal) item) == 0;
+            return requireNonNull(param).compareTo((BigDecimal) item) == 0;
         }
 
         @Override
@@ -1162,7 +1163,7 @@ public abstract class AbstractJsonAssertTest {
         }
 
         @Override
-        public void setParameter(String parameter) {
+        public void setParameter(@Nullable String parameter) {
             this.param = new BigDecimal(parameter);
         }
     }
@@ -1544,5 +1545,5 @@ public abstract class AbstractJsonAssertTest {
         assertJsonEquals(s, s);
     }
 
-    protected abstract Object readValue(String value);
+    protected abstract @Nullable Object readValue(String value);
 }

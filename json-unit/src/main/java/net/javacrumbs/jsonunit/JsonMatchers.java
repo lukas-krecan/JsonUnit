@@ -15,6 +15,7 @@
  */
 package net.javacrumbs.jsonunit;
 
+import static java.util.Objects.requireNonNull;
 import static net.javacrumbs.jsonunit.core.internal.Diff.createInternal;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix;
@@ -34,6 +35,7 @@ import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Contains Hamcrest matchers to be used with Hamcrest assertThat and other tools.
@@ -55,14 +57,14 @@ public class JsonMatchers {
     /**
      * Are the JSONs equivalent?
      */
-    public static <T> ConfigurableJsonMatcher<T> jsonEquals(Object expected) {
+    public static <T> ConfigurableJsonMatcher<T> jsonEquals(@Nullable Object expected) {
         return new JsonPartMatcher<>(EMPTY_PATH, expected);
     }
 
     /**
      * Is the part of the JSON equivalent?
      */
-    public static <T> ConfigurableJsonMatcher<T> jsonPartEquals(String path, Object expected) {
+    public static <T> ConfigurableJsonMatcher<T> jsonPartEquals(String path, @Nullable Object expected) {
         return new JsonPartMatcher<>(path, expected);
     }
 
@@ -79,7 +81,7 @@ public class JsonMatchers {
      * This method exist only for those cases, when you need to use it as Matcher&lt;String&gt; and Java refuses to
      * do the type inference correctly.
      */
-    public static ConfigurableJsonMatcher<String> jsonStringEquals(Object expected) {
+    public static ConfigurableJsonMatcher<String> jsonStringEquals(@Nullable Object expected) {
         return jsonEquals(expected);
     }
 
@@ -89,7 +91,7 @@ public class JsonMatchers {
      * This method exist only for those cases, when you need to use it as Matcher&lt;String&gt; and Java refuses to
      * do the type inference correctly.
      */
-    public static ConfigurableJsonMatcher<String> jsonStringPartEquals(String path, Object expected) {
+    public static ConfigurableJsonMatcher<String> jsonStringPartEquals(String path, @Nullable Object expected) {
         return jsonPartEquals(path, expected);
     }
 
@@ -109,6 +111,8 @@ public class JsonMatchers {
 
     private abstract static class AbstractMatcher<T> extends BaseMatcher<T> {
         final String path;
+
+        @Nullable
         Object actual;
 
         AbstractMatcher(String path) {
@@ -197,7 +201,7 @@ public class JsonMatchers {
         // IntelliJ integration is broken by default difference string. Hamcrest generates 'Expected:' and IntelliJ
         // searches for last 'but was:' and everything between is taken as expected value
         private static final String HAMCREST_DIFFERENCE_STRING = "expected <%s> but was <%s>";
-        private final Object expected;
+        private final @Nullable Object expected;
 
         // One matcher can be used to match multiple array items. We need to persist diff description between doMatch()
         // and
@@ -207,7 +211,7 @@ public class JsonMatchers {
         // using IdentityHashMap since not all compared object do have to implement hashCode and equals
         private final IdentityHashMap<Object, String> differences = new IdentityHashMap<>();
 
-        JsonPartMatcher(String path, Object expected) {
+        JsonPartMatcher(String path, @Nullable Object expected) {
             super(path);
             this.expected = expected;
         }
@@ -250,7 +254,7 @@ public class JsonMatchers {
                 // Solves the case when the item is not the same instance as the one sent to match() #338
                 return differences.values().iterator().next();
             } else {
-                return differences.get(item);
+                return requireNonNull(differences.get(item), "Difference not found for item");
             }
         }
     }

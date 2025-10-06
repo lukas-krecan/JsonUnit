@@ -15,6 +15,8 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import org.jspecify.annotations.Nullable;
+
 interface NodeBuilder {
-    Node newNode(Object object);
+    Node newNode(@Nullable Object object);
 }

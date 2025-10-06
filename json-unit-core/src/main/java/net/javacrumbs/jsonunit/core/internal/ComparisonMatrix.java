@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 import net.javacrumbs.jsonunit.core.Configuration;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Stores comparison result when comparing two arrays.
@@ -35,7 +36,7 @@ class ComparisonMatrix {
     private final List<List<Integer>>
             equalElements; // equalElements[actualIndex] = [expectedElementIndex1, expectedElementIndex2, ...]
     private final int compareFrom;
-    private final Integer[] matches; // matches[expectedElementIndex] = actualElementIndex
+    private final @Nullable Integer[] matches; // matches[expectedElementIndex] = actualElementIndex
     private final List<Integer> extra;
     private final BitSet alreadyMatched;
 

@@ -15,6 +15,7 @@
  */
 package net.javacrumbs.jsonunit.test.all;
 
+import static java.util.Objects.requireNonNull;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson2;
@@ -24,6 +25,7 @@ import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
 import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 
 public class AllAssertJTest extends AbstractAssertJTest {
@@ -50,27 +52,31 @@ public class AllAssertJTest extends AbstractAssertJTest {
     }
 
     private static class EmbeddedJsonMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
-        private ConfigurableJsonMatcher<Object> embeddedMatcher;
+        private @Nullable ConfigurableJsonMatcher<Object> embeddedMatcher;
 
         @Override
-        public void setParameter(String parameter) {
+        public void setParameter(@Nullable String parameter) {
             embeddedMatcher = jsonEquals(parameter);
         }
 
         @Override
         public boolean matches(Object item) {
             // leniently parse
-            return embeddedMatcher.matches(new org.json.JSONObject((String) item));
+            return getEmbeddedMatcher().matches(new org.json.JSONObject((String) item));
         }
 
         @Override
         public void describeTo(Description description) {
-            embeddedMatcher.describeTo(description);
+            getEmbeddedMatcher().describeTo(description);
         }
 
         @Override
         public void describeMismatch(Object item, Description description) {
-            embeddedMatcher.describeMismatch(item, description);
+            getEmbeddedMatcher().describeMismatch(item, description);
+        }
+
+        private ConfigurableJsonMatcher<Object> getEmbeddedMatcher() {
+            return requireNonNull(embeddedMatcher);
         }
     }
 }

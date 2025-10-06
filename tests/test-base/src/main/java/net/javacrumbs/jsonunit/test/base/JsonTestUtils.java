@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -23,8 +23,13 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.Map;
 import org.json.JSONTokener;
+import org.jspecify.annotations.Nullable;
 
 public class JsonTestUtils {
+
+    public static Object readByJackson3(String value) {
+        return new tools.jackson.databind.ObjectMapper().readTree(value);
+    }
 
     public static Object readByJackson2(String value) {
         try {
@@ -48,7 +53,7 @@ public class JsonTestUtils {
         return new JSONTokener(value).nextValue();
     }
 
-    public static Object readByMoshi(String value) {
+    public static @Nullable Object readByMoshi(String value) {
         Moshi moshi = new Moshi.Builder().build();
         try {
             return moshi.adapter(Map.class).fromJson(value);

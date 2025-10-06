@@ -21,14 +21,14 @@ import static net.javacrumbs.jsonunit.core.internal.Utils.toReader;
 import java.io.Reader;
 import java.math.BigDecimal;
 import net.javacrumbs.jsonunit.core.internal.Utils.JsonStringReader;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Common superclass for node factories
  */
 abstract class AbstractNodeFactory implements NodeFactory {
     @Override
-    public Node convertToNode(Object source, String label, boolean lenient) {
+    public Node convertToNode(@Nullable Object source, String label, boolean lenient) {
         if (source == null) {
             return nullNode();
         } else if (source instanceof Node) {
@@ -54,7 +54,6 @@ abstract class AbstractNodeFactory implements NodeFactory {
         }
     }
 
-    @NotNull
     protected IllegalArgumentException newParseException(String label, Reader value, Exception e) {
         if (value instanceof JsonStringReader) {
             return new IllegalArgumentException(

@@ -17,9 +17,12 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public final class Path {
     private final String path;
+
     private final String pathPrefix;
 
     private static final Pattern arrayPattern = Pattern.compile("(.*)\\[(-?\\d+)]");

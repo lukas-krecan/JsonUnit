@@ -9,13 +9,13 @@
     <properties>
         <kotlin.compiler.jvmTarget>17</kotlin.compiler.jvmTarget>
         <osgi.exportPackage>net.javacrumbs.jsonunit.kotest</osgi.exportPackage>
-        <kotest.version>5.9.1</kotest.version>
+        <kotest.version>6.0.1</kotest.version>
     </properties>
 
     <parent>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit-parent</artifactId>
-        <version>4.1.2-SNAPSHOT</version>
+        <version>5.0.0-RC2-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -33,7 +33,7 @@
 
         <dependency>
             <groupId>io.kotest</groupId>
-            <artifactId>kotest-assertions-shared-jvm</artifactId>
+            <artifactId>kotest-assertions-core-jvm</artifactId>
             <version>${kotest.version}</version>
         </dependency>
 

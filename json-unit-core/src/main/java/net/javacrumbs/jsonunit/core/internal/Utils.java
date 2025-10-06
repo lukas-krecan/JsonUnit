@@ -18,7 +18,7 @@ package net.javacrumbs.jsonunit.core.internal;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Resource reading utility
@@ -43,7 +43,8 @@ class Utils {
         return new JsonStringReader(string);
     }
 
-    static void closeQuietly(final Reader resourceReader) {
+    @SuppressWarnings("EmptyCatch")
+    static void closeQuietly(@Nullable Reader resourceReader) {
         if (resourceReader != null) {
             try {
                 resourceReader.close();
@@ -58,7 +59,7 @@ class Utils {
     static class JsonStringReader extends StringReader {
         private final String string;
 
-        public JsonStringReader(@NotNull String s) {
+        public JsonStringReader(String s) {
             super(s);
             this.string = s;
         }

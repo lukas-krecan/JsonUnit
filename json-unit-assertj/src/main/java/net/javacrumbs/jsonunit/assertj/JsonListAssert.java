@@ -25,24 +25,27 @@ import net.javacrumbs.jsonunit.core.internal.Path;
 import org.assertj.core.api.FactoryBasedNavigableListAssert;
 import org.assertj.core.description.Description;
 import org.assertj.core.error.BasicErrorMessageFactory;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAssert, List<?>, Object, JsonAssert> {
     private final Configuration configuration;
     private final Path path;
 
+    @SuppressWarnings("CheckReturnValue")
     JsonListAssert(List<?> actual, Path path, Configuration configuration) {
         super(actual, JsonListAssert.class, t -> new JsonAssert(path, configuration, t, true));
         this.path = path;
         this.configuration = configuration;
+        //noinspection ResultOfMethodCallIgnored
         usingComparator(new JsonComparator(configuration, path, true));
+        //noinspection ResultOfMethodCallIgnored
         usingElementComparator(new JsonComparator(configuration, path.asPrefix(), true));
     }
 
+    @SuppressWarnings("CheckReturnValue")
     @Override
-    @NotNull
     public JsonListAssert isEqualTo(@Nullable Object expected) {
+        //noinspection ResultOfMethodCallIgnored
         describedAs((Description) null);
         Diff diff = createDiff(expected);
         diff.failIfDifferent();
@@ -50,7 +53,6 @@ public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAsse
     }
 
     @Override
-    @NotNull
     public JsonListAssert isNotEqualTo(@Nullable Object other) {
         Diff diff = createDiff(other);
         if (diff.similar()) {
@@ -66,8 +68,7 @@ public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAsse
         return new JsonListAssert(newArrayList(iterable), path, configuration);
     }
 
-    @NotNull
-    private Diff createDiff(Object other) {
+    private Diff createDiff(@Nullable Object other) {
         return Diff.create(other, wrapDeserializedObject(actual), "fullJson", path, configuration);
     }
 }

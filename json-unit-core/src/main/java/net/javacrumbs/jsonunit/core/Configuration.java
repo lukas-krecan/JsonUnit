@@ -29,8 +29,7 @@ import net.javacrumbs.jsonunit.core.internal.DefaultNumberComparator;
 import net.javacrumbs.jsonunit.core.internal.PathOption;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.Matcher;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Comparison configuration. Immutable.
@@ -50,7 +49,7 @@ public class Configuration {
             DUMMY_LISTENER,
             Collections.emptyList(),
             DEFAULT_NUMBER_COMPARATOR);
-    private final BigDecimal tolerance;
+    private final @Nullable BigDecimal tolerance;
     private final Options options;
     private final String ignorePlaceholder;
     private final Matchers matchers;
@@ -81,7 +80,6 @@ public class Configuration {
     /**
      * Returns an empty configuration.
      */
-    @NotNull
     public static Configuration empty() {
         return EMPTY_CONFIGURATION;
     }
@@ -89,10 +87,7 @@ public class Configuration {
     /**
      * Sets numerical comparison tolerance.
      *
-     * @param tolerance
-     * @return
      */
-    @NotNull
     public Configuration withTolerance(@Nullable BigDecimal tolerance) {
         return new Configuration(
                 tolerance,
@@ -108,10 +103,7 @@ public class Configuration {
     /**
      * Sets numerical comparison tolerance.
      *
-     * @param tolerance
-     * @return
      */
-    @NotNull
     public Configuration withTolerance(double tolerance) {
         return withTolerance(BigDecimal.valueOf(tolerance));
     }
@@ -119,24 +111,16 @@ public class Configuration {
     /**
      * Adds comparison options.
      *
-     * @param first
-     * @param next
-     * @return
      */
-    @NotNull
-    public Configuration when(@NotNull Option first, @NotNull Option... next) {
+    public Configuration when(Option first, Option... next) {
         return withOptions(first, next);
     }
 
     /**
      * Adds comparison options.
      *
-     * @param first
-     * @param next
-     * @return
      */
-    @NotNull
-    public Configuration withOptions(@NotNull Option first, @NotNull Option... next) {
+    public Configuration withOptions(Option first, Option... next) {
         return new Configuration(
                 tolerance,
                 options.with(first, next),
@@ -151,8 +135,7 @@ public class Configuration {
     /**
      * Adds comparison options.
      */
-    @NotNull
-    public Configuration withOptions(@NotNull Collection<Option> optionsToAdd) {
+    public Configuration withOptions(Collection<Option> optionsToAdd) {
         return new Configuration(
                 tolerance,
                 options.with(optionsToAdd),
@@ -164,7 +147,6 @@ public class Configuration {
                 numberComparator);
     }
 
-    @NotNull
     public Configuration resetOptions() {
         return new Configuration(
                 tolerance,
@@ -185,8 +167,7 @@ public class Configuration {
      *
      * @see ConfigurationWhen#path
      */
-    @NotNull
-    public final Configuration when(@NotNull PathsParam object, @NotNull ApplicableForPath... actions) {
+    public final Configuration when(PathsParam object, ApplicableForPath... actions) {
         Configuration configuration = this;
         for (ApplicableForPath action : actions) {
             configuration = object.apply(configuration, action);
@@ -194,15 +175,13 @@ public class Configuration {
         return configuration;
     }
 
-    @NotNull
-    Configuration addPathOption(@NotNull PathOption pathOption) {
+    Configuration addPathOption(PathOption pathOption) {
         List<PathOption> newOptions = new ArrayList<>(this.pathOptions);
         newOptions.add(pathOption);
         return withPathOptions(newOptions);
     }
 
-    @NotNull
-    public Configuration withPathOptions(@NotNull List<PathOption> pathOptions) {
+    public Configuration withPathOptions(List<PathOption> pathOptions) {
         return new Configuration(
                 tolerance,
                 options,
@@ -214,8 +193,7 @@ public class Configuration {
                 numberComparator);
     }
 
-    @NotNull
-    public Configuration whenIgnoringPaths(@NotNull Collection<String> pathsToBeIgnored) {
+    public Configuration whenIgnoringPaths(Collection<String> pathsToBeIgnored) {
         return new Configuration(
                 tolerance,
                 options,
@@ -231,24 +209,18 @@ public class Configuration {
      * Makes JsonUnit ignore the specified paths in the actual value. If the path matches,
      * it's completely ignored. It may be missing, null or have any value
      *
-     * @param pathsToBeIgnored
-     * @return
      *
      * @see ConfigurationWhen#thenIgnore
      */
-    @NotNull
-    public Configuration whenIgnoringPaths(@NotNull String... pathsToBeIgnored) {
+    public Configuration whenIgnoringPaths(String... pathsToBeIgnored) {
         return whenIgnoringPaths(asList(pathsToBeIgnored));
     }
 
     /**
      * Sets ignore placeholder.
      *
-     * @param ignorePlaceholder
-     * @return
      */
-    @NotNull
-    public Configuration withIgnorePlaceholder(@NotNull String ignorePlaceholder) {
+    public Configuration withIgnorePlaceholder(String ignorePlaceholder) {
         return new Configuration(
                 tolerance,
                 options,
@@ -263,12 +235,8 @@ public class Configuration {
     /**
      * Adds a matcher to be used in ${json-unit.matches:matcherName} macro.
      *
-     * @param matcherName
-     * @param matcher
-     * @return
      */
-    @NotNull
-    public Configuration withMatcher(@NotNull String matcherName, @NotNull Matcher<?> matcher) {
+    public Configuration withMatcher(String matcherName, Matcher<?> matcher) {
         return new Configuration(
                 tolerance,
                 options,
@@ -283,8 +251,7 @@ public class Configuration {
     /**
      * Sets difference listener
      */
-    @NotNull
-    public Configuration withDifferenceListener(@NotNull DifferenceListener differenceListener) {
+    public Configuration withDifferenceListener(DifferenceListener differenceListener) {
         return new Configuration(
                 tolerance,
                 options,
@@ -299,8 +266,7 @@ public class Configuration {
     /**
      * Sets Number comparator
      */
-    @NotNull
-    public Configuration withNumberComparator(@NotNull NumberComparator numberComparator) {
+    public Configuration withNumberComparator(NumberComparator numberComparator) {
         return new Configuration(
                 tolerance,
                 options,
@@ -312,7 +278,6 @@ public class Configuration {
                 numberComparator);
     }
 
-    @NotNull
     public static DifferenceListener dummyDifferenceListener() {
         return DUMMY_LISTENER;
     }
@@ -327,32 +292,26 @@ public class Configuration {
         return tolerance;
     }
 
-    @NotNull
     public Set<Option> getOptions() {
         return options.values();
     }
 
-    @NotNull
     public String getIgnorePlaceholder() {
         return ignorePlaceholder;
     }
 
-    @NotNull
     public List<PathOption> getPathOptions() {
         return pathOptions;
     }
 
-    @NotNull
     public Set<String> getPathsToBeIgnored() {
         return pathsToBeIgnored;
     }
 
-    @NotNull
     public DifferenceListener getDifferenceListener() {
         return differenceListener;
     }
 
-    @NotNull
     public NumberComparator getNumberComparator() {
         return numberComparator;
     }

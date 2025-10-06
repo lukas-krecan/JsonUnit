@@ -81,7 +81,7 @@ class MockMvcTest {
     }
 
     @Test
-    void shouldSupportJsonPathError() throws Exception {
+    void shouldSupportJsonPathError() {
         assertThatThrownBy(() -> exec("/sampleProduces")
                         .andExpect(json().inPath("$.result.array[1]").isEqualTo(3)))
                 .hasMessage(

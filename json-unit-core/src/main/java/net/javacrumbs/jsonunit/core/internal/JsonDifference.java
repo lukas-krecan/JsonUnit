@@ -15,13 +15,15 @@
  */
 package net.javacrumbs.jsonunit.core.internal;
 
+import org.jspecify.annotations.Nullable;
+
 class JsonDifference {
     private final String message;
     private final Object[] args;
-    private final Node expected;
-    private final Node actual;
+    private final @Nullable Node expected;
+    private final @Nullable Node actual;
 
-    private JsonDifference(String message, Object[] args, Node expected, Node actual) {
+    private JsonDifference(String message, Object[] args, @Nullable Node expected, @Nullable Node actual) {
         this.message = message;
         this.args = args;
         this.expected = expected;
@@ -32,11 +34,11 @@ class JsonDifference {
         this(message, args, context.expectedNode(), context.actualNode());
     }
 
-    public Node getExpected() {
+    public @Nullable Node getExpected() {
         return expected;
     }
 
-    public Node getActual() {
+    public @Nullable Node getActual() {
         return actual;
     }
 

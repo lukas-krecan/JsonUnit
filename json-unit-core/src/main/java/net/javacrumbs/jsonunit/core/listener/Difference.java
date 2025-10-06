@@ -15,6 +15,8 @@
  */
 package net.javacrumbs.jsonunit.core.listener;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Describes differences between documents.
  */
@@ -28,21 +30,25 @@ public interface Difference {
     /**
      * Path to the difference
      */
+    @Nullable
     String getActualPath();
 
     /**
      * Path to the expected element (may be different from actual path if IGNORE_ARRAY_ORDER is used)
      */
+    @Nullable
     String getExpectedPath();
 
     /**
      * Actual node serialized as Map&lt;String, Object&gt; for objects, BigDecimal for numbers, ...
      */
+    @Nullable
     Object getActual();
 
     /**
      * Expected node serialized as Map&lt;String, Object&gt; for objects, BigDecimal for numbers, ...
      */
+    @Nullable
     Object getExpected();
 
     /**

@@ -19,19 +19,21 @@ import static com.jayway.jsonpath.JsonPath.using;
 import static java.util.stream.Collectors.toList;
 
 import com.jayway.jsonpath.Option;
+import com.jayway.jsonpath.PathNotFoundException;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
 import net.javacrumbs.jsonunit.core.internal.PathOption;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
+@NullMarked
 public class InternalJsonPathUtils {
     private InternalJsonPathUtils() {}
 
-    @NotNull
-    public static Configuration resolveJsonPaths(@NotNull Object json, @NotNull Configuration configuration) {
+    public static Configuration resolveJsonPaths(@Nullable Object json, Configuration configuration) {
         Collection<String> pathsToBeIgnored = resolveJsonPaths(json, configuration.getPathsToBeIgnored());
         List<PathOption> pathOptions = configuration.getPathOptions().stream()
                 .map(po -> {
@@ -43,8 +45,7 @@ public class InternalJsonPathUtils {
         return configuration.whenIgnoringPaths(pathsToBeIgnored).withPathOptions(pathOptions);
     }
 
-    @NotNull
-    private static List<String> resolveJsonPaths(@NotNull Object json, @NotNull Collection<String> paths) {
+    private static List<String> resolveJsonPaths(@Nullable Object json, Collection<String> paths) {
         com.jayway.jsonpath.Configuration conf = com.jayway.jsonpath.Configuration.builder()
                 .options(Option.AS_PATH_LIST, Option.SUPPRESS_EXCEPTIONS)
                 .build();
@@ -61,9 +62,12 @@ public class InternalJsonPathUtils {
                 .collect(toList());
     }
 
-    static <T> T readValue(com.jayway.jsonpath.Configuration conf, Object json, String path) {
+    @SuppressWarnings("TypeParameterUnusedInFormals")
+    static <T> T readValue(com.jayway.jsonpath.Configuration conf, @Nullable Object json, String path) {
         if (json instanceof String) {
             return using(conf).parse((String) json).read(path);
+        } else if (json == null) {
+            throw new PathNotFoundException("Path not found in <null>");
         } else {
             return using(conf)
                     .parse(JsonUtils.convertToJson(json, "actual").getValue())

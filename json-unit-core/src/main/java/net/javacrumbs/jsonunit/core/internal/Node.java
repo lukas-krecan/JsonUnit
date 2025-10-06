@@ -21,14 +21,14 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
 
 import java.math.BigDecimal;
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.Set;
 import java.util.Spliterators;
 import java.util.stream.StreamSupport;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 /**
  * For internal use only!!! Abstract node representation.
@@ -70,7 +70,7 @@ public interface Node {
         },
         NULL("null") {
             @Override
-            public Object getValue(Node node) {
+            public @Nullable Object getValue(Node node) {
                 return null;
             }
         };
@@ -122,6 +122,7 @@ public interface Node {
 
     Boolean asBoolean();
 
+    @Nullable
     Object getValue();
 
     void ___do_not_implement_this_interface_seriously();
@@ -211,7 +212,7 @@ public interface Node {
         }
 
         @Override
-        public Object getValue() {
+        public @Nullable Object getValue() {
             return null;
         }
 
@@ -225,19 +226,19 @@ public interface Node {
     };
 
     interface ValueExtractor {
+        @Nullable
         Object getValue(Node node);
     }
 
     class JsonMap extends AbstractMap<String, Object> implements NodeWrapper {
         private final Node wrappedNode;
 
-        private Set<Entry<String, Object>> entrySet;
+        private @Nullable Set<Entry<String, Object>> entrySet;
 
         JsonMap(Node node) {
             wrappedNode = node;
         }
 
-        @NotNull
         @Override
         public Set<Entry<String, Object>> entrySet() {
             if (entrySet == null) {
@@ -262,7 +263,7 @@ public interface Node {
         }
     }
 
-    class JsonList extends LinkedList<Object> implements NodeWrapper {
+    class JsonList extends ArrayList<@Nullable Object> implements NodeWrapper {
         private final Node wrappedNode;
 
         JsonList(Node node) {

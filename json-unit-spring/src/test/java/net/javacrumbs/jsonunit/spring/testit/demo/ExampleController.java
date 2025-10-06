@@ -20,6 +20,7 @@ import static org.springframework.http.MediaType.parseMediaType;
 
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
+import org.jspecify.annotations.Nullable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@SuppressWarnings("UnusedMethod")
 public class ExampleController {
 
     @GetMapping(value = "/sample")
@@ -68,7 +70,7 @@ public class ExampleController {
             return true;
         }
 
-        public Object getNull() {
+        public @Nullable Object getNull() {
             return null;
         }
 

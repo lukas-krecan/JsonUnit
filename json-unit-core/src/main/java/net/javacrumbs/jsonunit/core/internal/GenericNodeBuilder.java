@@ -24,17 +24,18 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.Nullable;
 
 class GenericNodeBuilder implements NodeBuilder {
     private static final GenericNodeBuilder INSTANCE = new GenericNodeBuilder();
 
-    static Node wrapDeserializedObject(Object object) {
+    static Node wrapDeserializedObject(@Nullable Object object) {
         return INSTANCE.newNode(object);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Node newNode(Object object) {
+    public Node newNode(@Nullable Object object) {
         if (object == null) {
             return new NullNode();
         } else if (object instanceof Map) {
@@ -241,11 +242,6 @@ class GenericNodeBuilder implements NodeBuilder {
                 public Node next() {
                     return newNode(iterator.next());
                 }
-
-                @Override
-                public void remove() {
-                    iterator.remove();
-                }
             };
         }
 
@@ -296,11 +292,6 @@ class GenericNodeBuilder implements NodeBuilder {
                 @Override
                 public boolean hasNext() {
                     return iterator.hasNext();
-                }
-
-                @Override
-                public void remove() {
-                    iterator.remove();
                 }
 
                 @Override

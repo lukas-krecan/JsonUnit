@@ -38,6 +38,7 @@ import net.javacrumbs.jsonunit.core.listener.DifferenceContext;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -231,7 +232,7 @@ public class DifferenceTest {
     void shouldSeeActualSource() {
         Diff diff = Diff.create("{\"test\": \"1\"}", "{}", "", "", commonConfig());
         diff.similar();
-        assertThat(listener.getActualSource().toString()).isEqualTo("{}");
+        assertThat(listener.getActualSource()).asString().isEqualTo("{}");
     }
 
     @Test
@@ -337,8 +338,8 @@ public class DifferenceTest {
 
     private static class RecordingDifferenceListener implements DifferenceListener {
         private final List<Difference> differenceList = new ArrayList<>();
-        private Object actualSource;
-        private Object expectedSource;
+        private @Nullable Object actualSource;
+        private @Nullable Object expectedSource;
 
         @Override
         public void diff(Difference difference, DifferenceContext context) {
@@ -351,20 +352,22 @@ public class DifferenceTest {
             return differenceList;
         }
 
+        @Nullable
         Object getActualSource() {
             return actualSource;
         }
 
+        @Nullable
         Object getExpectedSource() {
             return expectedSource;
         }
     }
 
     private static class EqualsMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
-        private String parameter;
+        private @Nullable String parameter;
 
         @Override
-        public void setParameter(String parameter) {
+        public void setParameter(@Nullable String parameter) {
             this.parameter = parameter;
         }
 
@@ -379,9 +382,10 @@ public class DifferenceTest {
         }
     }
 
+    @SuppressWarnings("BigDecimalEquals")
     private static class NormalisedNumberComparator implements NumberComparator {
         @Override
-        public boolean compare(BigDecimal expectedValue, BigDecimal actualValue, BigDecimal tolerance) {
+        public boolean compare(BigDecimal expectedValue, BigDecimal actualValue, @Nullable BigDecimal tolerance) {
             var normalisedExpectedValue = expectedValue.stripTrailingZeros();
             var normalisedActualValue = actualValue.stripTrailingZeros();
             if (tolerance != null) {

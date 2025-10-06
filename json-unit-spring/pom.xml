@@ -7,7 +7,7 @@
         Spring Mock assertions
     </description>
     <properties>
-        <spring.version>6.2.11</spring.version>
+        <spring.version>7.0.0-M9</spring.version>
         <kotlin.compiler.jvmTarget>17</kotlin.compiler.jvmTarget>
         <osgi.exportPackage>net.javacrumbs.jsonunit.spring</osgi.exportPackage>
     </properties>
@@ -15,7 +15,7 @@
     <parent>
         <groupId>net.javacrumbs.json-unit</groupId>
         <artifactId>json-unit-parent</artifactId>
-        <version>4.1.2-SNAPSHOT</version>
+        <version>5.0.0-RC2-SNAPSHOT</version>
     </parent>
 
     <dependencies>
@@ -35,6 +35,11 @@
             <artifactId>kotlin-stdlib</artifactId>
             <version>${kotlin.version}</version>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-core</artifactId>
         </dependency>
 
         <dependency>
@@ -65,9 +70,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
+            <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson2.version}</version>
+            <version>${jackson3.version}</version>
             <scope>test</scope>
         </dependency>
 

@@ -58,6 +58,7 @@ import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.internal.ArrayComparison.ComparisonResult;
 import net.javacrumbs.jsonunit.core.internal.ArrayComparison.NodeWithIndex;
 import net.javacrumbs.jsonunit.core.listener.Difference;
+import org.jspecify.annotations.Nullable;
 import org.opentest4j.AssertionFailedError;
 
 /**
@@ -118,7 +119,11 @@ public class Diff {
     }
 
     public static Diff create(
-            Object expected, Object actual, String actualName, String path, Configuration configuration) {
+            @Nullable Object expected,
+            @Nullable Object actual,
+            String actualName,
+            String path,
+            Configuration configuration) {
         if (actual instanceof JsonSource) {
             return create(
                     expected,
@@ -132,13 +137,17 @@ public class Diff {
     }
 
     public static Diff create(
-            Object expected, Object actual, String actualName, Path path, Configuration configuration) {
+            @Nullable Object expected,
+            @Nullable Object actual,
+            String actualName,
+            Path path,
+            Configuration configuration) {
         return createInternal(expected, actual, actualName, path, configuration, DEFAULT_DIFFERENCE_STRING);
     }
 
     public static Diff createInternal(
-            Object expected,
-            Object actual,
+            @Nullable Object expected,
+            @Nullable Object actual,
             String actualName,
             Path path,
             Configuration configuration,
@@ -502,7 +511,7 @@ public class Diff {
     /**
      * If the value is String than it's quoted in ".
      */
-    public static Object quoteTextValue(Object value) {
+    public static @Nullable Object quoteTextValue(@Nullable Object value) {
         if (value instanceof String) {
             return "\"" + value + "\"";
         } else {
@@ -629,12 +638,12 @@ public class Diff {
     /**
      * Adds a difference to the difference list.
      */
-    private void addDifference(Context context, String message, Object... arguments) {
+    private void addDifference(Context context, String message, @Nullable Object... arguments) {
         differences.add(new JsonDifference(context, message, arguments));
         possiblyFailFast(context);
     }
 
-    private void addAndReportDifference(Context context, String message, Object... arguments) {
+    private void addAndReportDifference(Context context, String message, @Nullable Object... arguments) {
         addDifference(context, message, arguments);
         reportDifference(DifferenceImpl.different(context));
         possiblyFailFast(context);
@@ -725,7 +734,7 @@ public class Diff {
         failIfDifferent(null);
     }
 
-    public void failIfDifferent(String message) {
+    public void failIfDifferent(@Nullable String message) {
         if (!similar()) {
             if (!configuration.getOptions().contains(REPORTING_DIFFERENCE_AS_NORMALIZED_STRING)
                     || actualRoot.isMissingNode()) {
