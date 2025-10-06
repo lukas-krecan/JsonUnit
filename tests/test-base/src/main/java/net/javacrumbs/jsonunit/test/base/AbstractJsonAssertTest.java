@@ -1368,13 +1368,13 @@ public abstract class AbstractJsonAssertTest {
 
     @Test
     void shouldCompareLongArrays() {
-        String actual =
+        String expected =
                 "[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]";
 
-        String expected =
+        String actual =
                 "[1,8,9,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]";
 
-        assertThatThrownBy(() -> assertJsonEquals(actual, expected, when(IGNORING_ARRAY_ORDER)))
+        assertThatThrownBy(() -> assertJsonEquals(expected, actual, when(IGNORING_ARRAY_ORDER)))
                 .hasMessage(
                         """
                 JSON documents are different:
@@ -1384,13 +1384,13 @@ public abstract class AbstractJsonAssertTest {
 
     @Test
     void shouldCompareLongArraysWithTwoEquivalentSets() {
-        String actual =
+        String expected =
                 "[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5]";
 
-        String expected =
+        String actual =
                 "[1,8,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,5,9,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5]";
 
-        assertThatThrownBy(() -> assertJsonEquals(actual, expected, when(IGNORING_ARRAY_ORDER)))
+        assertThatThrownBy(() -> assertJsonEquals(expected, actual, when(IGNORING_ARRAY_ORDER)))
                 .hasMessage(
                         """
                 JSON documents are different:
