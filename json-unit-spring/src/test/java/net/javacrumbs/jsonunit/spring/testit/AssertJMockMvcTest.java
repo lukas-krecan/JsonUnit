@@ -10,7 +10,7 @@ import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.spring.testit.demo.ExampleController;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.test.web.servlet.assertj.MockMvcTester;
 
 public class AssertJMockMvcTest {
@@ -27,7 +27,7 @@ public class AssertJMockMvcTest {
     @Test
     void shouldUseConvertToJackson() {
         MockMvcTester mvc = MockMvcTester.of(new ExampleController())
-                .withHttpMessageConverters(singleton(new MappingJackson2HttpMessageConverter()));
+                .withHttpMessageConverters(singleton(new JacksonJsonHttpMessageConverter()));
         assertThat(mvc.get().uri("/sample"))
                 .hasStatusOk()
                 .bodyJson()
