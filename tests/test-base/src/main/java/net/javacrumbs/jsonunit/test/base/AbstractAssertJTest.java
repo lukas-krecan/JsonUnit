@@ -1369,7 +1369,7 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
-    void shoulEscapeDot() {
+    void shouldEscapeDot() {
         assertThatJson("{\"name.with.dot\": \"value\"}")
                 .node("name\\.with\\.dot")
                 .isEqualTo("value");
@@ -1691,9 +1691,9 @@ public abstract class AbstractAssertJTest {
     void testArrayShouldMatchRegardlessOfOrder() {
 
         final String actual =
-                "{\"response\":[{\"attributes\":null,\"empolyees\":[{\"dob\":\"1987-03-21\",\"firstName\":\"Joe\",\"lastName\":\"Doe\"},{\"dob\":\"1986-02-12\",\"firstName\":\"Jason\",\"lastName\":\"Kowalski\"},{\"dob\":\"1985-01-11\",\"firstName\":\"Kate\",\"lastName\":\"Smith\"}],\"id\":123}]}";
+                "{\"response\":[{\"attributes\":null,\"employees\":[{\"dob\":\"1987-03-21\",\"firstName\":\"Joe\",\"lastName\":\"Doe\"},{\"dob\":\"1986-02-12\",\"firstName\":\"Jason\",\"lastName\":\"Kowalski\"},{\"dob\":\"1985-01-11\",\"firstName\":\"Kate\",\"lastName\":\"Smith\"}],\"id\":123}]}";
         final String expected =
-                "{\"response\":[{\"attributes\":null,\"empolyees\":[{\"dob\":\"1985-01-11\",\"firstName\":\"Kate\",\"lastName\":\"Smith\"},{\"dob\":\"1986-02-12\",\"firstName\":\"Jason\",\"lastName\":\"Kowalski\"},{\"dob\":\"1987-03-21\",\"firstName\":\"Joe\",\"lastName\":\"Doe\"}],\"id\":123}]}";
+                "{\"response\":[{\"attributes\":null,\"employees\":[{\"dob\":\"1985-01-11\",\"firstName\":\"Kate\",\"lastName\":\"Smith\"},{\"dob\":\"1986-02-12\",\"firstName\":\"Jason\",\"lastName\":\"Kowalski\"},{\"dob\":\"1987-03-21\",\"firstName\":\"Joe\",\"lastName\":\"Doe\"}],\"id\":123}]}";
 
         assertThatJson(actual).when(Option.IGNORING_ARRAY_ORDER).isEqualTo(expected);
     }

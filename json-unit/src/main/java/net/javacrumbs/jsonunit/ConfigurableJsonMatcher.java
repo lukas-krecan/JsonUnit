@@ -42,7 +42,7 @@ public interface ConfigurableJsonMatcher<T> extends Matcher<T> {
     ConfigurableJsonMatcher<T> withTolerance(double tolerance);
 
     /**
-     * Add options. Note that options are ADDED to those set by
+     * Add options. Note that options are ADDED to those set
      * by net.javacrumbs.jsonunit.JsonAssert.setOptions()
      */
     ConfigurableJsonMatcher<T> when(Option first, Option... next);

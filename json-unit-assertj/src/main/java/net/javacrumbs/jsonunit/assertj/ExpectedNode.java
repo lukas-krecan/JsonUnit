@@ -21,7 +21,7 @@ import net.javacrumbs.jsonunit.core.internal.Node;
 import org.jspecify.annotations.Nullable;
 
 /**
- * In AssertJ we need to know which node is expected and which is actual. This class marks expected node.
+ * In AssertJ, we need to know which node is expected and which is actual. This class marks expected node.
  */
 class ExpectedNode implements Node {
 

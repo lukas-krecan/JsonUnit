@@ -1087,7 +1087,7 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
-    void matcherNameShouldBeparsedUntilFirstCurlyBrace() {
+    void matcherNameShouldBeParsedUntilFirstCurlyBrace() {
         String expected = "{ \"o\" : \"${json-unit.matches:embedded}{\\\"x\\\" : \\\"y\\\"}\" }";
         String actual = "{ \"o\" : \"{\\\"x\\\" : \\\"y\\\"}\" }";
 
