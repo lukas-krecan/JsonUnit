@@ -25,10 +25,8 @@ import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
 import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
-import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
-import java.util.Objects;
 
 public class AllAssertJTest extends AbstractAssertJTest {
     @Override
