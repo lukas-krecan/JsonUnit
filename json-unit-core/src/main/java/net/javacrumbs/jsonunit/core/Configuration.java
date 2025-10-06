@@ -87,8 +87,6 @@ public class Configuration {
     /**
      * Sets numerical comparison tolerance.
      *
-     * @param tolerance
-     * @return
      */
     public Configuration withTolerance(@Nullable BigDecimal tolerance) {
         return new Configuration(
@@ -105,8 +103,6 @@ public class Configuration {
     /**
      * Sets numerical comparison tolerance.
      *
-     * @param tolerance
-     * @return
      */
     public Configuration withTolerance(double tolerance) {
         return withTolerance(BigDecimal.valueOf(tolerance));
@@ -115,9 +111,6 @@ public class Configuration {
     /**
      * Adds comparison options.
      *
-     * @param first
-     * @param next
-     * @return
      */
     public Configuration when(Option first, Option... next) {
         return withOptions(first, next);
@@ -126,9 +119,6 @@ public class Configuration {
     /**
      * Adds comparison options.
      *
-     * @param first
-     * @param next
-     * @return
      */
     public Configuration withOptions(Option first, Option... next) {
         return new Configuration(
@@ -219,8 +209,6 @@ public class Configuration {
      * Makes JsonUnit ignore the specified paths in the actual value. If the path matches,
      * it's completely ignored. It may be missing, null or have any value
      *
-     * @param pathsToBeIgnored
-     * @return
      *
      * @see ConfigurationWhen#thenIgnore
      */
@@ -231,8 +219,6 @@ public class Configuration {
     /**
      * Sets ignore placeholder.
      *
-     * @param ignorePlaceholder
-     * @return
      */
     public Configuration withIgnorePlaceholder(String ignorePlaceholder) {
         return new Configuration(
@@ -249,9 +235,6 @@ public class Configuration {
     /**
      * Adds a matcher to be used in ${json-unit.matches:matcherName} macro.
      *
-     * @param matcherName
-     * @param matcher
-     * @return
      */
     public Configuration withMatcher(String matcherName, Matcher<?> matcher) {
         return new Configuration(

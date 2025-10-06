@@ -15,6 +15,7 @@
  */
 package net.javacrumbs.jsonunit;
 
+import static java.util.Objects.requireNonNull;
 import static net.javacrumbs.jsonunit.core.internal.Diff.createInternal;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix;
@@ -56,14 +57,14 @@ public class JsonMatchers {
     /**
      * Are the JSONs equivalent?
      */
-    public static <T> ConfigurableJsonMatcher<T> jsonEquals(Object expected) {
+    public static <T> ConfigurableJsonMatcher<T> jsonEquals(@Nullable Object expected) {
         return new JsonPartMatcher<>(EMPTY_PATH, expected);
     }
 
     /**
      * Is the part of the JSON equivalent?
      */
-    public static <T> ConfigurableJsonMatcher<T> jsonPartEquals(String path, Object expected) {
+    public static <T> ConfigurableJsonMatcher<T> jsonPartEquals(String path, @Nullable Object expected) {
         return new JsonPartMatcher<>(path, expected);
     }
 
@@ -80,7 +81,7 @@ public class JsonMatchers {
      * This method exist only for those cases, when you need to use it as Matcher&lt;String&gt; and Java refuses to
      * do the type inference correctly.
      */
-    public static ConfigurableJsonMatcher<String> jsonStringEquals(Object expected) {
+    public static ConfigurableJsonMatcher<String> jsonStringEquals(@Nullable Object expected) {
         return jsonEquals(expected);
     }
 
@@ -90,7 +91,7 @@ public class JsonMatchers {
      * This method exist only for those cases, when you need to use it as Matcher&lt;String&gt; and Java refuses to
      * do the type inference correctly.
      */
-    public static ConfigurableJsonMatcher<String> jsonStringPartEquals(String path, Object expected) {
+    public static ConfigurableJsonMatcher<String> jsonStringPartEquals(String path, @Nullable Object expected) {
         return jsonPartEquals(path, expected);
     }
 
@@ -253,7 +254,7 @@ public class JsonMatchers {
                 // Solves the case when the item is not the same instance as the one sent to match() #338
                 return differences.values().iterator().next();
             } else {
-                return differences.get(item);
+                return requireNonNull(differences.get(item), "Difference not found for item");
             }
         }
     }

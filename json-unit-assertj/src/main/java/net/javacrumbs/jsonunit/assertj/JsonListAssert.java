@@ -31,16 +31,21 @@ public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAsse
     private final Configuration configuration;
     private final Path path;
 
+    @SuppressWarnings("CheckReturnValue")
     JsonListAssert(List<?> actual, Path path, Configuration configuration) {
         super(actual, JsonListAssert.class, t -> new JsonAssert(path, configuration, t, true));
         this.path = path;
         this.configuration = configuration;
+        //noinspection ResultOfMethodCallIgnored
         usingComparator(new JsonComparator(configuration, path, true));
+        //noinspection ResultOfMethodCallIgnored
         usingElementComparator(new JsonComparator(configuration, path.asPrefix(), true));
     }
 
+    @SuppressWarnings("CheckReturnValue")
     @Override
     public JsonListAssert isEqualTo(@Nullable Object expected) {
+        //noinspection ResultOfMethodCallIgnored
         describedAs((Description) null);
         Diff diff = createDiff(expected);
         diff.failIfDifferent();

@@ -44,10 +44,12 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
     private final Configuration configuration;
     private final Path path;
 
+    @SuppressWarnings("CheckReturnValue")
     JsonMapAssert(Map<String, Object> actual, Path path, Configuration configuration) {
         super(actual, JsonMapAssert.class);
         this.path = path;
         this.configuration = configuration;
+        //noinspection ResultOfMethodCallIgnored
         usingComparator(new JsonComparator(configuration, path.asPrefix(), true));
     }
 
@@ -123,9 +125,8 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
         return contains(array(entry(key, value)));
     }
 
-    @SafeVarargs
     @Override
-    protected final JsonMapAssert containsAnyOfForProxy(Entry<? extends String, ?>... entries) {
+    protected final JsonMapAssert containsAnyOfForProxy(Entry<? extends String, ?>[] entries) {
         boolean anyMatch = stream(entries).anyMatch(this::doesContainEntry);
         if (!anyMatch) {
             throwAssertionError(shouldContainAnyOf(actual, entries));
@@ -141,10 +142,9 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
     /**
      * This method does not support JsonUnit features. Prefer {@link #containsOnly(Entry[])}
      */
-    @SafeVarargs
     @Override
     @Deprecated
-    public final JsonMapAssert containsExactlyForProxy(Entry<? extends String, ?>... entries) {
+    public final JsonMapAssert containsExactlyForProxy(Entry<? extends String, ?>[] entries) {
         return super.containsExactlyForProxy(entries);
     }
 
@@ -157,9 +157,8 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
         return super.containsExactlyEntriesOf(map);
     }
 
-    @SafeVarargs
     @Override
-    protected final JsonMapAssert containsOnlyForProxy(Entry<? extends String, ?>... expected) {
+    protected final JsonMapAssert containsOnlyForProxy(Entry<? extends String, ?>[] expected) {
         Map<? extends String, ?> expectedAsMap =
                 stream(expected).collect(Collectors.toMap(Entry::getKey, Entry::getValue));
         return isEqualTo(wrapDeserializedObject(expectedAsMap));
@@ -170,8 +169,7 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
     }
 
     @Override
-    @SafeVarargs
-    protected final JsonMapAssert containsForProxy(Entry<? extends String, ?>... expected) {
+    protected final JsonMapAssert containsForProxy(Entry<? extends String, ?>[] expected) {
         List<Entry<? extends String, ?>> notFound = entriesNotFoundInMap(expected);
         if (!notFound.isEmpty()) {
             throwAssertionError(shouldContain(actual, expected, notFound));
@@ -197,7 +195,7 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
     }
 
     @Override
-    protected JsonMapAssert containsValuesForProxy(Object... values) {
+    protected JsonMapAssert containsValuesForProxy(Object[] values) {
         stream(values).forEach(this::containsValue);
         return this;
     }
@@ -267,7 +265,9 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
         return new UnsupportedOperationException("Operation not supported for JSON documents");
     }
 
+    @SuppressWarnings("CheckReturnValue")
     private JsonMapAssert compare(@Nullable Object other, Configuration configuration) {
+        //noinspection ResultOfMethodCallIgnored
         describedAs((Description) null);
         Diff diff = Diff.create(other, actual, "fullJson", path, configuration);
         diff.failIfDifferent();

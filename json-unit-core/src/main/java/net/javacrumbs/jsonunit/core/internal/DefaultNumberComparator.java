@@ -6,6 +6,7 @@ import org.jspecify.annotations.Nullable;
 
 public class DefaultNumberComparator implements NumberComparator {
     @Override
+    @SuppressWarnings("BigDecimalEquals")
     public boolean compare(BigDecimal expectedValue, BigDecimal actualValue, @Nullable BigDecimal tolerance) {
         if (tolerance != null) {
             BigDecimal diff = expectedValue.subtract(actualValue).abs();

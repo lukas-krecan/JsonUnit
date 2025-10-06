@@ -16,7 +16,6 @@
 package net.javacrumbs.jsonunit.core.internal.matchers;
 
 import static java.util.Collections.singletonList;
-import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
@@ -50,7 +49,7 @@ public final class InternalMatcher {
     public static final String ACTUAL = "actual";
 
     private final Path path;
-    private final Object actual;
+    private final @Nullable Object actual;
     private final String description;
     private final Configuration configuration;
     private final String nodeDescription;
@@ -160,11 +159,11 @@ public final class InternalMatcher {
         }
     }
 
-    private void failOnDifference(@Nullable Object expected, Object actual) {
+    private void failOnDifference(@Nullable Object expected, @Nullable Object actual) {
         failOnDifference(expected, actual, singletonList(path.toString()));
     }
 
-    private void failOnDifference(@Nullable Object expected, Object actual, List<String> paths) {
+    private void failOnDifference(@Nullable Object expected, @Nullable Object actual, List<String> paths) {
         String path;
         String node;
         if (paths.size() == 1) {
@@ -204,7 +203,7 @@ public final class InternalMatcher {
     }
 
     private Diff createDiff(@Nullable Object expected, Configuration configuration) {
-        return create(expected, actual, ACTUAL, path, configuration);
+        return Diff.create(expected, actual, ACTUAL, path, configuration);
     }
 
     private void failWithMessage(String message) {
@@ -337,7 +336,7 @@ public final class InternalMatcher {
     }
 
     @SuppressWarnings("unchecked")
-    private void match(Object value, Path path, Matcher<?> matcher) {
+    private void match(@Nullable Object value, Path path, Matcher<?> matcher) {
         Node node = getNode(value, path);
         assertThat(nodeDescription + " does not match.", node.getValue(), (Matcher<? super Object>) matcher);
     }
@@ -369,7 +368,7 @@ public final class InternalMatcher {
         public void thatContains(@Nullable Object expected) {
 
             for (Node node : array) {
-                Diff diff = create(expected, node, ACTUAL, "", configuration);
+                Diff diff = Diff.create(expected, node, ACTUAL, "", configuration);
                 if (diff.similar()) {
                     return;
                 }

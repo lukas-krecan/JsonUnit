@@ -15,6 +15,7 @@
  */
 package net.javacrumbs.jsonunit.assertj;
 
+import static java.util.Objects.requireNonNull;
 import static net.javacrumbs.jsonunit.core.internal.Diff.quoteTextValue;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getPathPrefix;
@@ -68,6 +69,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     @Nullable
     private final Object actualForMatcher;
 
+    @SuppressWarnings("CheckReturnValue")
     JsonAssert(Path path, Configuration configuration, @Nullable Object actual, boolean alreadyParsed) {
         super(
                 alreadyParsed ? JsonUtils.wrapDeserializedObject(actual) : JsonUtils.convertToJson(actual, "actual"),
@@ -149,8 +151,8 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     @SuppressWarnings("unchecked")
     public JsonMapAssert isObject() {
         Node node = assertType(OBJECT);
-        //noinspection DataFlowIssue
-        return describe(new JsonMapAssert((Map<String, Object>) node.getValue(), path.asPrefix(), configuration));
+        return describe(new JsonMapAssert(
+                (Map<String, Object>) requireNonNull(node.getValue()), path.asPrefix(), configuration));
     }
 
     /**
@@ -187,8 +189,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
         } else {
             internalMatcher().failOnType(node, "number or string");
         }
-        //noinspection DataFlowIssue
-        return null;
+        throw new IllegalStateException("Unreachable");
     }
 
     private BigDecimalAssert createBigDecimalAssert(BigDecimal value) {
@@ -209,8 +210,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     }
 
     private JsonListAssert createListAssert(Node node) {
-        //noinspection DataFlowIssue
-        return new JsonListAssert((List<?>) node.getValue(), path.asPrefix(), configuration);
+        return new JsonListAssert((List<?>) requireNonNull(node.getValue()), path.asPrefix(), configuration);
     }
 
     /**

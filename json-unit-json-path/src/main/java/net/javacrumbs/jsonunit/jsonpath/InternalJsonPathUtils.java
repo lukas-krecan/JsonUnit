@@ -62,6 +62,7 @@ public class InternalJsonPathUtils {
                 .collect(toList());
     }
 
+    @SuppressWarnings("TypeParameterUnusedInFormals")
     static <T> T readValue(com.jayway.jsonpath.Configuration conf, @Nullable Object json, String path) {
         if (json instanceof String) {
             return using(conf).parse((String) json).read(path);

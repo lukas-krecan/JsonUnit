@@ -43,6 +43,7 @@ class Utils {
         return new JsonStringReader(string);
     }
 
+    @SuppressWarnings("EmptyCatch")
     static void closeQuietly(@Nullable Reader resourceReader) {
         if (resourceReader != null) {
             try {
