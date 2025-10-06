@@ -21,7 +21,7 @@ class Utils {
         return getCharset(result.getResponseHeaders().getContentType());
     }
 
-    private static Charset getCharset(@Nullable MediaType contentType) {
+    static Charset getCharset(@Nullable MediaType contentType) {
         if (contentType != null && contentType.getCharset() != null) {
             return contentType.getCharset();
         } else {

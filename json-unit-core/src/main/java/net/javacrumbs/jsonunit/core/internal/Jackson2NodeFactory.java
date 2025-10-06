@@ -106,7 +106,8 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
 
         @Override
         public Iterator<KeyValue> fields() {
-            final Iterator<Map.Entry<String, JsonNode>> iterator = jsonNode.fields();
+            final Iterator<Map.Entry<String, JsonNode>> iterator =
+                    jsonNode.properties().iterator();
             return new Iterator<>() {
                 @Override
                 public boolean hasNext() {
