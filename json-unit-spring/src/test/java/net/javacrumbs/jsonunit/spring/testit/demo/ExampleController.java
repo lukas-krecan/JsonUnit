@@ -53,6 +53,7 @@ public class ExampleController {
     @GetMapping(value = "/empty")
     public void empty() {}
 
+    @SuppressWarnings("EffectivelyPrivate")
     private static class Result {
         public String getString() {
             return "stringValue";

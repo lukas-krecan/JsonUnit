@@ -43,20 +43,20 @@ class JohnzonNodeFactory extends AbstractNodeFactory {
 
     @Override
     protected Node doConvertValue(Object source) {
-        if (source instanceof JsonValue) {
-            return newNode((JsonValue) source);
-        } else if (source instanceof int[]) {
+        if (source instanceof JsonValue jsonValue) {
+            return newNode(jsonValue);
+        } else if (source instanceof int[] array) {
             // Johnzon can't convert arrays but it support lists
-            return newNodeFrom(toIntList((int[]) source));
-        } else if (source instanceof double[]) {
+            return newNodeFrom(toIntList(array));
+        } else if (source instanceof double[] array) {
             // Johnzon can't convert arrays but it support lists
-            return newNodeFrom(toDoubleList((double[]) source));
-        } else if (source instanceof boolean[]) {
+            return newNodeFrom(toDoubleList(array));
+        } else if (source instanceof boolean[] array) {
             // Johnzon can't convert arrays but it support lists
-            return newNodeFrom(toBoolList((boolean[]) source));
-        } else if (source instanceof Object[]) {
+            return newNodeFrom(toBoolList(array));
+        } else if (source instanceof Object[] array) {
             // Johnzon can't convert arrays but it support lists
-            return newNodeFrom(asList((Object[]) source));
+            return newNodeFrom(asList(array));
         } else {
             return newNodeFrom(source);
         }
@@ -100,9 +100,9 @@ class JohnzonNodeFactory extends AbstractNodeFactory {
 
         @Override
         public Node element(int index) {
-            if (jsonNode instanceof JsonArray) {
+            if (jsonNode instanceof JsonArray jsonArray) {
                 try {
-                    return newNode(((JsonArray) jsonNode).get(index));
+                    return newNode(jsonArray.get(index));
                 } catch (IndexOutOfBoundsException e) {
                     return MISSING_NODE;
                 }
@@ -113,9 +113,9 @@ class JohnzonNodeFactory extends AbstractNodeFactory {
 
         @Override
         public Iterator<KeyValue> fields() {
-            if (jsonNode instanceof JsonObject) {
+            if (jsonNode instanceof JsonObject jsonObject) {
                 final Iterator<Map.Entry<String, JsonValue>> iterator =
-                        ((JsonObject) jsonNode).entrySet().iterator();
+                        jsonObject.entrySet().iterator();
                 return new Iterator<>() {
                     @Override
                     public boolean hasNext() {
@@ -163,8 +163,8 @@ class JohnzonNodeFactory extends AbstractNodeFactory {
 
         @Override
         public Iterator<Node> arrayElements() {
-            if (jsonNode instanceof JsonArray) {
-                final Iterator<JsonValue> iterator = ((JsonArray) jsonNode).iterator();
+            if (jsonNode instanceof JsonArray jsonArray) {
+                final Iterator<JsonValue> iterator = jsonArray.iterator();
                 return new Iterator<>() {
                     @Override
                     public boolean hasNext() {
@@ -182,8 +182,8 @@ class JohnzonNodeFactory extends AbstractNodeFactory {
 
         @Override
         public int size() {
-            if (jsonNode instanceof JsonArray) {
-                return ((JsonArray) jsonNode).size();
+            if (jsonNode instanceof JsonArray jsonArray) {
+                return jsonArray.size();
             }
             throw new IllegalStateException("Can call size() only on an JsonArray");
         }

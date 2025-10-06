@@ -79,8 +79,8 @@ class MoshiNodeFactory extends AbstractNodeFactory {
     private static class MoshiNodeBuilder extends GenericNodeBuilder {
         @Override
         public Node newNode(@Nullable Object object) {
-            if (object instanceof Number) {
-                return new MoshiNumberNode((Number) object);
+            if (object instanceof Number number) {
+                return new MoshiNumberNode(number);
             } else {
                 return super.newNode(object);
             }

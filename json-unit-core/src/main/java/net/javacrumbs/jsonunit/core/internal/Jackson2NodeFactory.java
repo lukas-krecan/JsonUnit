@@ -41,8 +41,8 @@ class Jackson2NodeFactory extends AbstractNodeFactory {
 
     @Override
     protected Node doConvertValue(Object source) {
-        if (source instanceof JsonNode) {
-            return newNode((JsonNode) source);
+        if (source instanceof JsonNode jsonNode) {
+            return newNode(jsonNode);
         } else {
             return newNode(getMapper(false).convertValue(source, JsonNode.class));
         }

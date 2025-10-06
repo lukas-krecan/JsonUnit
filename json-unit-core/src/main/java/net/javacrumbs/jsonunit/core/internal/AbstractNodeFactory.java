@@ -56,8 +56,7 @@ abstract class AbstractNodeFactory implements NodeFactory {
 
     protected IllegalArgumentException newParseException(String label, Reader value, Exception e) {
         if (value instanceof JsonStringReader reader) {
-            return new IllegalArgumentException(
-                    "Can not parse " + label + " value: '" + reader.getString() + "'", e);
+            return new IllegalArgumentException("Can not parse " + label + " value: '" + reader.getString() + "'", e);
         } else {
             return new IllegalArgumentException("Can not parse " + label + " value.", e);
         }

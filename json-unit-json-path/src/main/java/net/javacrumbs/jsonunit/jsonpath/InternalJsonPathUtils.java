@@ -64,8 +64,8 @@ public class InternalJsonPathUtils {
 
     @SuppressWarnings("TypeParameterUnusedInFormals")
     static <T> T readValue(com.jayway.jsonpath.Configuration conf, @Nullable Object json, String path) {
-        if (json instanceof String) {
-            return using(conf).parse((String) json).read(path);
+        if (json instanceof String string) {
+            return using(conf).parse(string).read(path);
         } else if (json == null) {
             throw new PathNotFoundException("Path not found in <null>");
         } else {

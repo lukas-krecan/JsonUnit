@@ -86,9 +86,9 @@ class GsonNodeFactory extends AbstractNodeFactory {
 
         @Override
         public Node element(int index) {
-            if (jsonNode instanceof JsonArray) {
+            if (jsonNode instanceof JsonArray jsonArray) {
                 try {
-                    return newNode(((JsonArray) jsonNode).get(index));
+                    return newNode(jsonArray.get(index));
                 } catch (IndexOutOfBoundsException e) {
                     return MISSING_NODE;
                 }
@@ -120,8 +120,8 @@ class GsonNodeFactory extends AbstractNodeFactory {
 
         @Override
         public Node get(String key) {
-            if (jsonNode instanceof JsonObject) {
-                return newNode(((JsonObject) jsonNode).get(key));
+            if (jsonNode instanceof JsonObject jsonObject) {
+                return newNode(jsonObject.get(key));
             } else {
                 return Node.MISSING_NODE;
             }
@@ -164,8 +164,8 @@ class GsonNodeFactory extends AbstractNodeFactory {
 
         @Override
         public int size() {
-            if (jsonNode instanceof JsonArray) {
-                return ((JsonArray) jsonNode).size();
+            if (jsonNode instanceof JsonArray jsonArray) {
+                return jsonArray.size();
             }
             throw new IllegalStateException("Can call arrayElements() only on an JsonArray");
         }
@@ -181,11 +181,11 @@ class GsonNodeFactory extends AbstractNodeFactory {
                 return NodeType.OBJECT;
             } else if (jsonNode.isJsonArray()) {
                 return NodeType.ARRAY;
-            } else if (jsonNode instanceof JsonPrimitive && ((JsonPrimitive) jsonNode).isString()) {
+            } else if (jsonNode instanceof JsonPrimitive jsonPrimitive && jsonPrimitive.isString()) {
                 return NodeType.STRING;
-            } else if (jsonNode instanceof JsonPrimitive && ((JsonPrimitive) jsonNode).isNumber()) {
+            } else if (jsonNode instanceof JsonPrimitive jsonPrimitive && jsonPrimitive.isNumber()) {
                 return NodeType.NUMBER;
-            } else if (jsonNode instanceof JsonPrimitive && ((JsonPrimitive) jsonNode).isBoolean()) {
+            } else if (jsonNode instanceof JsonPrimitive jsonPrimitive && jsonPrimitive.isBoolean()) {
                 return NodeType.BOOLEAN;
             } else if (jsonNode.isJsonNull()) {
                 return NodeType.NULL;

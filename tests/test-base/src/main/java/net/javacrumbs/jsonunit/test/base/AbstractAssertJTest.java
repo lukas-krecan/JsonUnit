@@ -1416,7 +1416,7 @@ public abstract class AbstractAssertJTest {
                 .isEqualTo("[{\"a\":1, \"b\":0},{\"a\":1, \"b\":0}]");
     }
 
-    @SuppressWarnings("UnusedMethod")
+    @SuppressWarnings({"UnusedMethod", "EffectivelyPrivate"})
     private static class TestBean {
         final BigDecimal demo;
 
