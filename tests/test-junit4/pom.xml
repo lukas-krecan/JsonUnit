@@ -33,11 +33,6 @@
             <artifactId>jackson-databind</artifactId>
             <version>${jackson2.version}</version>
         </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.5.19</version>
-        </dependency>
     </dependencies>
 
     <build>
