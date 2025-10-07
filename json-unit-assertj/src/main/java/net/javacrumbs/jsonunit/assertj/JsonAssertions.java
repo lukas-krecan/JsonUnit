@@ -30,9 +30,9 @@ public final class JsonAssertions {
      * Allows to move from standard AssertJ asserts to JsonUnit. For example
      * <code>
      *       assertThat(resp)
-     *             .hasFieldOrPropertyWithValue("trackingId", "abcd-0001")  //<- Assertj API
+     *             .hasFieldOrPropertyWithValue("trackingId", "abcd-0001")  // &lt;- Assertj API
      *             .extracting("json").asInstanceOf(JSON)
-     *             .isObject().containsEntry("foo", "bar"); // <- JsonUnit API
+     *             .isObject().containsEntry("foo", "bar"); // &lt;- JsonUnit API
      * </code>
      */
     public static final InstanceOfAssertFactory<Object, ConfigurableJsonAssert> JSON =
@@ -90,7 +90,7 @@ public final class JsonAssertions {
      *                 .hasStatusOk()
      *                 .bodyJson()
      *                 .convertTo(jsonUnitJson())
-     *                 .inPath("result.array") <-- JsonUnit assert
+     *                 .inPath("result.array") &lt;-- JsonUnit assert
      *                 .isArray()
      *                 .containsExactly(1, 2, 3);
      * </code>

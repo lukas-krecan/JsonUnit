@@ -10,9 +10,9 @@ import org.springframework.test.web.reactive.server.EntityExchangeResult;
 
 /**
  * Matcher compatible with Spring TestWebClient.
- * <p/>
+ * <p>
  * Sample usage:
- * <p/>
+ * <p>
  * <code>
  * client.get().uri(path).accept(MediaType.APPLICATION_JSON).exchange().expectBody()
  * .consumeWith(json().isEqualTo(CORRECT_JSON));

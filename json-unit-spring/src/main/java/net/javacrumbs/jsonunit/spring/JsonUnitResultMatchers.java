@@ -27,9 +27,9 @@ import org.springframework.test.web.servlet.ResultMatcher;
 
 /**
  * Matchers compatible with Spring MVC test framework.
- * <p/>
+ * <p>
  * Sample usage:
- * <p/>
+ * <p>
  * <code>
  * this.mockMvc.perform(get("/sample").accept(MediaType.APPLICATION_JSON)).andExpect(json().isEqualTo(CORRECT_JSON));
  * </code>

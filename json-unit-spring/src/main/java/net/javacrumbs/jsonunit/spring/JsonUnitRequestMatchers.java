@@ -25,9 +25,9 @@ import org.springframework.test.web.client.RequestMatcher;
 
 /**
  * Matchers compatible with Spring mocking framework.
- * <p/>
+ * <p>
  * Sample usage:
- * <p/>
+ * <p>
  * <code>
  *         mockServer.expect(requestTo(URI))
  *                           .andExpect(json().isEqualTo(json))

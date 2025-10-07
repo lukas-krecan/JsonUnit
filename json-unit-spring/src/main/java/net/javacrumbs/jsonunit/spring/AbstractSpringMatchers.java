@@ -52,7 +52,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
     /**
      * Creates a matcher object that only compares given node.
      * The path is denoted by JSON path, for example.
-     * <p/>
+     * <p>
      * <code>
      * this.mockMvc.perform(get("/sample").accept(MediaType.APPLICATION_JSON)).andExpect(json().node("root.test[0]").isEqualTo("1"));
      * </code>
@@ -127,13 +127,13 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
     /**
      * Compares JSON for equality. The expected object is converted to JSON
      * before comparison. Ignores order of sibling nodes and whitespaces.
-     * <p/>
+     * <p>
      * Please note that if you pass a String, it's parsed as JSON which can lead to an
      * unexpected behavior. If you pass in "1" it is parsed as a JSON containing
      * integer 1. If you compare it with a string it fails due to a different type.
      * If you want to pass in real string you have to quote it "\"1\"" or use
      * {@link #isStringEqualTo(String)}.
-     * <p/>
+     * <p>
      * If the string parameter is not a valid JSON, it is quoted automatically.
      *
      *
@@ -211,7 +211,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
 
     /**
      * Matches the node using Hamcrest matcher.
-     * <p/>
+     * <p>
      * <ul>
      * <li>Numbers are mapped to BigDecimal</li>
      * <li>Arrays are mapped to a Collection</li>
