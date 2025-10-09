@@ -20,6 +20,7 @@ import static net.javacrumbs.jsonunit.spring.JsonUnitJsonComparator.comparator;
 import static net.javacrumbs.jsonunit.spring.RestTestClientJsonMatcher.json;
 import static net.javacrumbs.jsonunit.spring.testit.demo.ExampleController.CORRECT_JSON;
 import static net.javacrumbs.jsonunit.spring.testit.demo.ExampleController.ISO_VALUE;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -125,6 +126,11 @@ class RestTestClientTest {
     void errorOnEmptyResponse() {
         assertThatThrownBy(() -> exec("/empty").consumeWith(json().isObject()))
                 .hasMessageStartingWith("Node \"\" has invalid type, expected: <object> but was: <null>.");
+    }
+
+    @Test
+    void errorOnEmptyResponse1() {
+        assertThat(exec("/empty").returnResult().getResponseBody()).isNull();
     }
 
     @Test
