@@ -7,7 +7,7 @@
         Spring Mock assertions
     </description>
     <properties>
-        <spring.version>7.0.0-M9</spring.version>
+        <spring.version>7.0.0-SNAPSHOT</spring.version>
         <kotlin.compiler.jvmTarget>17</kotlin.compiler.jvmTarget>
         <osgi.exportPackage>net.javacrumbs.jsonunit.spring</osgi.exportPackage>
     </properties>
@@ -17,6 +17,18 @@
         <artifactId>json-unit-parent</artifactId>
         <version>5.0.0-RC2-SNAPSHOT</version>
     </parent>
+
+    <repositories>
+        <repository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/snapshot</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
 
     <dependencies>
         <dependency>
