@@ -122,6 +122,12 @@ class RestTestClientTest {
     }
 
     @Test
+    void errorOnEmptyResponse() {
+        assertThatThrownBy(() -> exec("/empty").consumeWith(json().isObject()))
+                .hasMessageStartingWith("Node \"\" has invalid type, expected: <object> but was: <null>.");
+    }
+
+    @Test
     void isNullShouldPassOnNull() {
         exec().consumeWith(json().node("result.null").isNull());
     }

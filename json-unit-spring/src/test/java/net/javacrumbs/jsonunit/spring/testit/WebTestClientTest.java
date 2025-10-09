@@ -113,6 +113,12 @@ class WebTestClientTest {
     }
 
     @Test
+    void errorOnEmptyResponse() {
+        assertThatThrownBy(() -> exec("/empty").consumeWith(json().isObject()))
+                .hasMessageStartingWith("Node \"\" has invalid type, expected: <object> but was: <\"\">.");
+    }
+
+    @Test
     void isNullShouldPassOnNull() {
         exec().consumeWith(json().node("result.null").isNull());
     }
