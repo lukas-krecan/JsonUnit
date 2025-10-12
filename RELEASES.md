@@ -1,5 +1,18 @@
 Release notes
 =============
+## 5.0.0 (2025-10-12)
+* **Breaking:** Support for Jackson 3
+* **Breaking:** Fluent assertions module removed
+* **Breaking:** Hamcrest made optional dependency
+* **Breaking:** Upgraded to JUnit 6
+* **Breaking:** Upgraded to Kotest 6
+* Migrated to JSpecify annotations for nullability
+* Added NullAway static analysis
+* Support for RestTestClient with Java and Kotlin (#970)
+* Tests on Java 25 (#973)
+* Dependency updates (Jackson 2.20.0, Spring 6.2.11, Kotlin 2.2.20, AssertJ 3.27.6, and many others)
+
+
 ## 4.1.1 (2025-05-09)
 * Publishing to OSS central
 * Dependency updates
