@@ -8,6 +8,7 @@ JsonUnit is a library that simplifies JSON comparison in tests.
   * [Hamcrest matchers](#hamcrest)
   * [Spring MVC assertions](#spring)
   * [Spring WebTestClient](#spring-web-client)
+  * [Spring RestTestClient](#spring-rest-client)
   * [Spring REST client assertions](#spring-client)
   * [Kotest assertions](#kotest)
 - [Features](#features)
@@ -158,7 +159,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>4.1.1</version>
+    <version>5.0.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -191,7 +192,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>4.1.1</version>
+    <version>5.0.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -236,7 +237,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>4.1.1</version>
+    <version>5.0.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -280,12 +281,63 @@ Import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>4.1.1</version>
+    <version>5.0.0</version>
     <scope>test</scope>
 </dependency>
 ```
 
 For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/master/json-unit-spring/src/test/java/net/javacrumbs/jsonunit/spring/testit/WebTestClientTest.java).
+
+## <a name="spring-rest-client"></a>Spring RestTestClient
+Spring RestTestClient is a new testing utility introduced in Spring Framework that combines features of MockMvc and WebTestClient. JsonUnit provides seamless integration with it.
+
+```java
+import static net.javacrumbs.jsonunit.spring.RestTestClientJsonMatcher.json;
+...
+
+client.get().uri(path).accept(MediaType.APPLICATION_JSON)
+    .exchange()
+    .expectBody()
+    .consumeWith(json().isEqualTo(CORRECT_JSON));
+
+client.get().uri(path).exchange().expectBody()
+    .consumeWith(json().node("result.string").isEqualTo("stringValue"));
+
+client.get().uri(path).exchange().expectBody()
+    .consumeWith(json().node("result.array")
+        .when(Option.IGNORING_ARRAY_ORDER)
+        .isEqualTo(new int[]{3, 2, 1}));
+```
+
+For Kotlin, you can use the DSL:
+
+```kotlin
+import net.javacrumbs.jsonunit.spring.jsonContent
+...
+
+client.get().uri(path).accept(APPLICATION_JSON)
+    .exchange()
+    .expectBody()
+    .jsonContent { isEqualTo(CORRECT_JSON) }
+
+client.get().uri(path).exchange()
+    .expectBody()
+    .jsonContent { 
+        node("result.string").isString().isEqualTo("stringValue") 
+    }
+```
+
+To use import
+```xml
+<dependency>
+    <groupId>net.javacrumbs.json-unit</groupId>
+    <artifactId>json-unit-spring</artifactId>
+    <version>5.0.0</version>
+    <scope>test</scope>
+</dependency>
+```
+
+For more examples see [the tests](https://github.com/lukas-krecan/JsonUnit/blob/master/json-unit-spring/src/test/java/net/javacrumbs/jsonunit/spring/testit/RestTestClientTest.java).
 
 ## <a name="spring-mockmvc-assertj"></a>Spring AssertJ for MockMvc
 Since version 4.0.0 JsonUnit supports Spring MockMvc AssertJ assertions.
@@ -320,7 +372,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>4.1.1</version>
+    <version>5.0.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -336,7 +388,7 @@ Import:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-kotest</artifactId>
-    <version>4.1.1</version>
+    <version>5.0.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -738,6 +790,36 @@ public class Java8ObjectMapperProvider implements Jackson2ObjectMapperProvider {
 and register it in `META-INF/services/net.javacrumbs.jsonunit.providers.Jackson2ObjectMapperProvider`.
 See [this example](https://github.com/lukas-krecan/JsonUnit/commit/8dc7c884448c7373886dcf3b0eabfecf47c0710b).
 
+## Jackson 3 Object Mapper customization
+If you need to customize Jackson 3 Object Mapper, you can do using [SPI](https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html).
+Implement `net.javacrumbs.jsonunit.providers.Jackson3ObjectMapperProvider`.
+
+```java
+public class Jackson3CustomProvider implements Jackson3ObjectMapperProvider {
+    private final ObjectMapper mapper;
+    private final ObjectMapper lenientMapper;
+
+    public Jackson3CustomProvider() {
+        mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+
+        lenientMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        lenientMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_FIELD_NAMES, true);
+        lenientMapper.configure(JsonParser.Feature.ALLOW_COMMENTS, true);
+        lenientMapper.configure(JsonParser.Feature.ALLOW_SINGLE_QUOTES, true);
+    }
+
+    @Override
+    public ObjectMapper getObjectMapper(boolean lenient) {
+        return lenient ? lenientMapper : mapper;
+    }
+}
+```
+
+and register it in `META-INF/services/net.javacrumbs.jsonunit.providers.Jackson3ObjectMapperProvider`.
+
+Note: Jackson 3 uses the `tools.jackson` package namespace instead of `com.fasterxml.jackson`.
+
 ## Logging
 
 Although the differences are printed out by the assert statement, sometimes you use JsonUnit with other libraries like
@@ -758,8 +840,8 @@ assertThatJson("{\"test\":-1}")
 ## Selecting underlying library
 
 JsonUnit is trying to cleverly match which JSON library to use. In case you need to change the default behavior, you can
-use `json-unit.libraries` system property. For example `-Djson-unit.libraries=jackson2,gson`
-or `System.setProperty("json-unit.libraries", "jackson2");`. Supported values are gson, json.org, moshi, jackson2
+use `json-unit.libraries` system property. For example `-Djson-unit.libraries=jackson2,jackson3,gson`
+or `System.setProperty("json-unit.libraries", "jackson2");`. Supported values are gson, json.org, moshi, jackson2, jackson3
 
 Licence
 -------
