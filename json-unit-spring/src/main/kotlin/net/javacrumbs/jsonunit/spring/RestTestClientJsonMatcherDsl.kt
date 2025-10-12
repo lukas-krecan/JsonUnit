@@ -3,7 +3,6 @@ package net.javacrumbs.jsonunit.spring
 import net.javacrumbs.jsonunit.assertj.JsonAssert
 import net.javacrumbs.jsonunit.assertj.JsonAssertions
 import net.javacrumbs.jsonunit.spring.RestTestClientUtils.getContentAsString
-import net.javacrumbs.jsonunit.spring.WebTestClientUtils.getContentAsString
 import org.springframework.test.web.servlet.client.RestTestClient
 
 /**
