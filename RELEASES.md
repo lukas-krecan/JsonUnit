@@ -1,5 +1,12 @@
 Release notes
 =============
+## 5.0.0 (2025-10-12)
+* Spring RestTestClient support with Java and Kotlin DSL (#970)
+* Jackson 3 support
+* Java 25 support (#973)
+* Removed deprecated fluent assertions API
+* Dependency updates
+
 ## 4.1.1 (2025-05-09)
 * Publishing to OSS central
 * Dependency updates
