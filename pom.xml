@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-parent</artifactId>
-    <version>5.0.0</version>
+    <version>5.0.0-SNAPSHOT</version>
     <name>${project.groupId}:${project.artifactId}</name>
     <url>https://github.com/lukas-krecan/JsonUnit</url>
     <properties>
@@ -392,6 +392,6 @@
         <connection>scm:git:git@github.com:lukas-krecan/JsonUnit.git</connection>
         <developerConnection>scm:git:git@github.com:lukas-krecan/JsonUnit.git</developerConnection>
         <url>scm:git:git@github.com:lukas-krecan/JsonUnit.git</url>
-      <tag>json-unit-parent-5.0.0</tag>
+      <tag>HEAD</tag>
   </scm>
 </project>
