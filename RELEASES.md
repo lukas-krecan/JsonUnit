@@ -1,10 +1,12 @@
 Release notes
 =============
-## 5.0.0 (2025-10-12)
-* Spring RestTestClient support with Java and Kotlin DSL (#970)
+## 5.0.0 (2025-10-13)
 * Jackson 3 support
-* Java 25 support (#973)
-* Removed deprecated fluent assertions API
+* Kotest 6 support
+* Spring RestTestClient support with Java and Kotlin DSL
+* (Breaking) Removed deprecated fluent assertions API
+* Hamcrest dependency made optional
+* Migrated to JSpecify (please report if it breaks anything)
 * Dependency updates
 
 ## 4.1.1 (2025-05-09)
