@@ -52,6 +52,7 @@
         <module>json-unit-assertj</module>
         <module>json-unit-spring</module>
         <module>json-unit-kotest</module>
+        <module>json-unit-bom</module>
         <module>tests</module>
     </modules>
 
