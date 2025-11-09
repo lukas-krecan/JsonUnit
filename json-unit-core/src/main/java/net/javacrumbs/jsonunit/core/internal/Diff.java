@@ -16,6 +16,7 @@
 package net.javacrumbs.jsonunit.core.internal;
 
 import static java.util.Collections.emptySet;
+import static java.util.stream.Collectors.toCollection;
 import static net.javacrumbs.jsonunit.core.Option.FAIL_FAST;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_ARRAY_ITEMS;
@@ -247,14 +248,10 @@ public class Diff {
      * Removes extra keys that are null and should be treated as absent.
      */
     private Set<String> removeNullExtraKeysWhereNeeded(Node actual, Set<String> extraKeys, Path actualPath) {
-        Set<String> notNullExtraKeys = new TreeSet<>();
-        for (String extraKey : extraKeys) {
-            if (!hasOption(actualPath.toField(extraKey), TREATING_NULL_AS_ABSENT)
-                    || !actual.get(extraKey).isNull()) {
-                notNullExtraKeys.add(extraKey);
-            }
-        }
-        return notNullExtraKeys;
+        return extraKeys.stream()
+                .filter(extraKey -> !actual.get(extraKey).isNull()
+                        || !hasOption(actualPath.toField(extraKey), TREATING_NULL_AS_ABSENT))
+                .collect(toCollection(TreeSet::new));
     }
 
     private static String getMissingKeysMessage(Set<String> missingKeys, Path path) {
