@@ -1,7 +1,7 @@
 Release notes
 =============
 ## 5.1.0 (2025-11-14)
-* #994 Added BOM module
+* Added BOM module #994
 * Dependency updates (especially Spring 7.0.0)
 
 ## 5.0.0 (2025-10-13)
