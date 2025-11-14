@@ -3,7 +3,7 @@
     <parent>
         <artifactId>tests</artifactId>
         <groupId>net.javacrumbs.json-unit</groupId>
-        <version>5.0.0-SNAPSHOT</version>
+        <version>5.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -53,4 +53,8 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+  <scm>
+    <tag>json-unit-parent-5.1.0</tag>
+  </scm>
 </project>
