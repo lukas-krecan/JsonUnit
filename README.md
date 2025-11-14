@@ -159,7 +159,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>5.0.0</version>
+    <version>5.1.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -192,7 +192,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>5.0.0</version>
+    <version>5.1.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -237,7 +237,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>5.0.0</version>
+    <version>5.1.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -281,7 +281,7 @@ Import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>5.0.0</version>
+    <version>5.1.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -322,8 +322,8 @@ client.get().uri(path).accept(APPLICATION_JSON)
 
 client.get().uri(path).exchange()
     .expectBody()
-    .jsonContent { 
-        node("result.string").isString().isEqualTo("stringValue") 
+    .jsonContent {
+        node("result.string").isString().isEqualTo("stringValue")
     }
 ```
 
@@ -332,7 +332,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>5.0.0</version>
+    <version>5.1.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -372,7 +372,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>5.0.0</version>
+    <version>5.1.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -388,7 +388,7 @@ Import:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-kotest</artifactId>
-    <version>5.0.0</version>
+    <version>5.1.0</version>
     <scope>test</scope>
 </dependency>
 ```
