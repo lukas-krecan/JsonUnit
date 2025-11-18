@@ -42,6 +42,7 @@ import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
+import static net.javacrumbs.jsonunit.jsonpath.InternalJsonPathUtils.resolveJsonPaths;
 import static net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter.inPath;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -54,6 +55,7 @@ import java.io.StringReader;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import net.javacrumbs.jsonunit.JsonAssert;
+import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -1106,6 +1108,51 @@ public abstract class AbstractJsonAssertTest {
                 Different value found when comparing expected array element test[0] to actual element test[1].
                 Matcher "eq" does not match value 2 in node "test[1]". Expected number equal to <1> but was <2>
                 """);
+    }
+
+    @Test
+    void pathTest() {
+        String actual = """
+            {
+              "name": "someName",
+              "children": [
+                {
+                  "id": "randomId",
+                  "name": "someName",
+                  "children": [
+                  ]
+                },
+                {
+                  "id": "randomId",
+                  "name": "someName",
+                  "children": [
+                  ]
+                }
+              ]
+            }""";
+        JsonAssert.assertJsonEquals(
+            /* id omitted everywhere in expected  */ """
+                {
+                  "name": "someName",
+                  "children": [
+                    {
+                      "name": "someName",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "name": "someName",
+                      "children": [
+                      ]
+                    }
+                  ]
+                }""",
+            /* id present in children in actual  */ actual,
+            resolveJsonPaths(actual, Configuration
+                .empty()
+                .whenIgnoringPaths("$.children[*].id")
+            ) // <<- FAILs even though I am excluding "id" of all items in "children" array from comparison.
+        );
     }
 
     static class DivisionMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
