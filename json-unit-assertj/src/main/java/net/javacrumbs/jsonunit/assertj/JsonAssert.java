@@ -66,8 +66,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     final Path path;
     final Configuration configuration;
 
-    @Nullable
-    private final Object actualForMatcher;
+    private final @Nullable Object actualForMatcher;
 
     @SuppressWarnings("CheckReturnValue")
     JsonAssert(Path path, Configuration configuration, @Nullable Object actual, boolean alreadyParsed) {
@@ -319,8 +318,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
     @NullMarked
     public static class ConfigurableJsonAssert extends JsonAssert {
         // Want to pass to inPath to not parse twice.
-        @Nullable
-        private final Object originalActual;
+        private final @Nullable Object originalActual;
 
         ConfigurableJsonAssert(Path path, Configuration configuration, @Nullable Object actual) {
             super(path, configuration, actual);

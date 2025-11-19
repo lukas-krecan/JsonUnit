@@ -282,13 +282,11 @@ public class Configuration {
         return DUMMY_LISTENER;
     }
 
-    @Nullable
-    public Matcher<?> getMatcher(String matcherName) {
+    public @Nullable Matcher<?> getMatcher(String matcherName) {
         return matchers.getMatcher(matcherName);
     }
 
-    @Nullable
-    public BigDecimal getTolerance() {
+    public @Nullable BigDecimal getTolerance() {
         return tolerance;
     }
 
