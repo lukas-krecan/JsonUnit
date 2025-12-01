@@ -7,7 +7,7 @@
     <url>https://github.com/lukas-krecan/JsonUnit</url>
     <properties>
         <jackson2.version>2.20.1</jackson2.version>
-        <jackson3.version>3.0.2</jackson3.version>
+        <jackson3.version>3.0.3</jackson3.version>
         <moshi.version>1.15.2</moshi.version>
         <gson.version>2.13.2</gson.version>
         <hamcrest.version>3.0</hamcrest.version>
