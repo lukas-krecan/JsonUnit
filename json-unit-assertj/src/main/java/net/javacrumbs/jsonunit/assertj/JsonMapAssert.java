@@ -90,32 +90,37 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
     }
 
     @Override
-    @Deprecated
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     public JsonMapAssert isEqualToIgnoringGivenFields(@Nullable Object other, String... propertiesOrFieldsToIgnore) {
         return compare(other, configuration.whenIgnoringPaths(propertiesOrFieldsToIgnore));
     }
 
     @Override
-    @Deprecated
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     public JsonMapAssert isEqualToComparingOnlyGivenFields(
             @Nullable Object other, String... propertiesOrFieldsUsedInComparison) {
         throw unsupportedOperation();
     }
 
     @Override
-    @Deprecated
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     public JsonMapAssert isEqualToIgnoringNullFields(@Nullable Object other) {
         throw unsupportedOperation();
     }
 
     @Override
-    @Deprecated
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     public JsonMapAssert isEqualToComparingFieldByField(@Nullable Object other) {
         throw unsupportedOperation();
     }
 
     @Override
-    @Deprecated
+    @Deprecated(forRemoval = true)
+    @SuppressWarnings("removal")
     public JsonMapAssert isEqualToComparingFieldByFieldRecursively(@Nullable Object other) {
         throw unsupportedOperation();
     }
