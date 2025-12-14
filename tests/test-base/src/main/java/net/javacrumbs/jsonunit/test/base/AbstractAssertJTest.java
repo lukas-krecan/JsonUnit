@@ -1828,7 +1828,7 @@ public abstract class AbstractAssertJTest {
                     """);
     }
 
-    @SuppressWarnings("deprecation")
+    @SuppressWarnings("removal")
     @Test
     void shouldIgnoreFields() {
         assertThatJson("{\"root\":{\"test\":1, \"ignored\": 1}}")
