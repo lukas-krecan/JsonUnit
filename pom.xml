@@ -15,7 +15,7 @@
         <geronimo.jsonp.version>1.5</geronimo.jsonp.version>
         <jsonorg.version>20251224</jsonorg.version>
         <slf4j.version>2.0.17</slf4j.version>
-        <assertj.version>4.0.0-M1</assertj.version>
+        <assertj.version>4.0.0-SNAPSHOT</assertj.version>
         <target.java.version>17</target.java.version>
         <junit-jupiter.version>6.0.1</junit-jupiter.version>
         <json-path.version>2.10.0</json-path.version>

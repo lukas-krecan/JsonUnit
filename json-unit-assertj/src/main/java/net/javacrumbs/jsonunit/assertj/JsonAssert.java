@@ -77,7 +77,7 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
         this.configuration = configuration;
         this.actualForMatcher = alreadyParsed ? JsonUtils.wrapDeserializedObject(actual) : actual;
         //noinspection ResultOfMethodCallIgnored
-        usingComparator(new JsonComparator(configuration, path, false));
+        //FIXME: usingComparator(new JsonComparator(configuration, path, false));
     }
 
     JsonAssert(Path path, Configuration configuration, @Nullable Object actual) {
