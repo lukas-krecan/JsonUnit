@@ -62,7 +62,7 @@ import org.hamcrest.Matcher;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
-//FIXME: implement Assert and delegate to AbstractAssertWithComparator
+// FIXME: implement Assert and delegate to AbstractAssertWithComparator
 @NullMarked
 public class JsonAssert extends AbstractAssertWithComparator<JsonAssert, Object> {
     final Path path;
@@ -79,7 +79,7 @@ public class JsonAssert extends AbstractAssertWithComparator<JsonAssert, Object>
         this.configuration = configuration;
         this.actualForMatcher = alreadyParsed ? JsonUtils.wrapDeserializedObject(actual) : actual;
         //noinspection ResultOfMethodCallIgnored
-        usingComparator(new JsonComparator(configuration, path.asPrefix(), false));
+        usingComparator(new JsonComparator(configuration, path, false));
     }
 
     JsonAssert(Path path, Configuration configuration, @Nullable Object actual) {
