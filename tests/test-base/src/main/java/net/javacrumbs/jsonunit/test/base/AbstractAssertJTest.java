@@ -989,7 +989,7 @@ public abstract class AbstractAssertJTest {
                 .hasMessage(
                         """
                     [Node ""]\s
-                    Expecting ArrayList:
+                    Expecting ListN:
                       [(1, {"first":"Aaron"}), (2, {"first":"John"})]
                     to contain:
                       [(1, "{"first":"Aaron"}"), (2, "{"first":"Paul"}")]
@@ -1014,7 +1014,7 @@ public abstract class AbstractAssertJTest {
                 .hasMessage(
                         """
                     [Node ""]\s
-                    Expecting ArrayList:
+                    Expecting ListN:
                       [(1, {"first":"Aaron"}), (2, {"first":"John"})]
                     to contain:
                       [(1, "{"first":"Aaron"}", 3), (2, "{"first":"John"}")]

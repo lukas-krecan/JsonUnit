@@ -31,6 +31,7 @@ import static org.assertj.core.util.Arrays.array;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Diff;
@@ -49,8 +50,9 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
         super(actual, JsonMapAssert.class);
         this.path = path;
         this.configuration = configuration;
+        // FIXME:
         //noinspection ResultOfMethodCallIgnored
-        //FIXME: usingComparator(new JsonComparator(configuration, path.asPrefix(), true));
+        usingEqualsForValues((actual1, expected) -> new JsonComparator(configuration, path.asPrefix(), true).compare(actual1, expected) == 0);
     }
 
     @Override
