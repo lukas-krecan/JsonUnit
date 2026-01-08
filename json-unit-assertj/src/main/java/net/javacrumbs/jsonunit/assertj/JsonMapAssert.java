@@ -31,7 +31,6 @@ import static org.assertj.core.util.Arrays.array;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Diff;
@@ -44,20 +43,28 @@ import org.jspecify.annotations.Nullable;
 public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, Object>, String, @Nullable Object> {
     private final Configuration configuration;
     private final Path path;
+    private final JsonBiPredicate valueEquals;
 
     @SuppressWarnings("CheckReturnValue")
     JsonMapAssert(Map<String, Object> actual, Path path, Configuration configuration) {
         super(actual, JsonMapAssert.class);
         this.path = path;
         this.configuration = configuration;
-        // FIXME:
-        //noinspection ResultOfMethodCallIgnored
-        usingEqualsForValues((actual1, expected) -> new JsonComparator(configuration, path.asPrefix(), true).compare(actual1, expected) == 0);
+        this.valueEquals = new JsonBiPredicate(configuration, path.asPrefix(), true);
+        usingEqualsForValues(valueEquals);
     }
 
     @Override
     public JsonMapAssert isEqualTo(@Nullable Object expected) {
         return compare(expected, configuration);
+    }
+
+    @Override
+    public JsonMapAssert isNotEqualTo(@Nullable Object other) {
+        if (valueEquals.test(actual, other)) {
+            failWithMessage("%nExpecting actual:%n  %s%nnot to be equal to:%n  %s%n", actual, other);
+        }
+        return this;
     }
 
     /**
