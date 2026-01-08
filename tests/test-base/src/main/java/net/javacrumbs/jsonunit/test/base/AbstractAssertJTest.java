@@ -556,7 +556,7 @@ public abstract class AbstractAssertJTest {
                       {"b":"string"}
                     not to be equal to:
                       {"b":"${json-unit.any-string}"}
-                    when comparing values using JsonComparator""");
+                    """);
     }
 
     @Test
@@ -2302,12 +2302,11 @@ public abstract class AbstractAssertJTest {
                 .isArray()
                 .element(1, STRING)
                 .startsWith("s");
-        //FIXME:
-//        assertThatJson("{\"a\":{\"b\": \"c\"}}")
-//                .inPath("a")
-//                .isObject()
-//                .extracting("b", STRING)
-//                .endsWith("c");
+        assertThatJson("{\"a\":{\"b\": \"c\"}}")
+                .inPath("a")
+                .isObject()
+                .extractingByKey("b", STRING)
+                .endsWith("c");
         assertThatJson("{\"a\":[1, 2, 3]}").inPath("a").asInstanceOf(LIST).hasSize(3);
         assertThatJson("{\"a\":[1, 2, 3]}")
                 .inPath("a")

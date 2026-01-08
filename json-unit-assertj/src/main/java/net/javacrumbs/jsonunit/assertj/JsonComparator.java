@@ -15,64 +15,23 @@
  */
 package net.javacrumbs.jsonunit.assertj;
 
-import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
-
 import java.util.Comparator;
-import java.util.List;
 import net.javacrumbs.jsonunit.core.Configuration;
-import net.javacrumbs.jsonunit.core.internal.Diff;
-import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Path;
-import org.assertj.core.groups.Tuple;
 
 class JsonComparator implements Comparator<Object> {
-    private final Configuration configuration;
-    private final Path path;
-    private final boolean actualParsed;
+    private final JsonBiPredicate predicate;
 
     JsonComparator(Configuration configuration, Path path, boolean actualParsed) {
-        this.configuration = configuration;
-        this.path = path;
-        this.actualParsed = actualParsed;
+        this.predicate = new JsonBiPredicate(configuration, path.asPrefix(), actualParsed);
     }
 
     @Override
     public int compare(Object actual, Object expected) {
-        if (actual instanceof Tuple && expected instanceof Tuple) {
-            return compareTuples((Tuple) actual, (Tuple) expected);
-        }
-
-        // this comparator is not transitive, `expected` is usually a Node and `actual` is usually a Map, or primitive
-        if ((actualParsed
-                        && !(actual instanceof Node)
-                        && (expected instanceof Node)
-                        && !(expected instanceof ExpectedNode))
-                || (actual instanceof ExpectedNode)) {
-            Object tmp = actual;
-            actual = expected;
-            expected = tmp;
-        }
-
-        // if actual is already parsed, do not parse it again.
-        Object actual2 = actualParsed ? wrapDeserializedObject(actual) : actual;
-
-        Diff diff = Diff.create(expected, actual2, "", path, configuration);
-        if (diff.similar()) {
+        if (predicate.test(actual, expected)) {
             return 0;
         } else {
             return -1;
         }
-    }
-
-    private int compareTuples(Tuple actual, Tuple expected) {
-        List<Object> actualList = actual.toList();
-        List<Object> expectedList = expected.toList();
-        if (actualList.size() != expectedList.size()) return -1;
-
-        for (int i = 0; i < actualList.size(); i++) {
-            int result = compare(actualList.get(i), expectedList.get(i));
-            if (result != 0) return result;
-        }
-        return 0;
     }
 }
