@@ -17,6 +17,7 @@ package net.javacrumbs.jsonunit.test.all;
 
 import static net.javacrumbs.jsonunit.JsonAssert.assertJsonEquals;
 import static net.javacrumbs.jsonunit.JsonAssert.when;
+import static net.javacrumbs.jsonunit.core.Configuration.empty;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_VALUES;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByGson;
 import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson2;
@@ -134,6 +135,46 @@ class AllJsonAssertTest extends AbstractJsonAssertTest {
                 JSON documents are different:
                 Different keys found in node "", missing: "test2", expected: <{"test":"a","test2":"aa"}> but was: <{"test":"a"}>
                 """);
+    }
+
+    @Test
+    void shouldSupportJsonPath() {
+        assertJsonEquals(
+                /* id omitted everywhere in expected  */ """
+                {
+                  "name": "someName",
+                  "children": [
+                    {
+                      "name": "someName",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "name": "someName",
+                      "children": [
+                      ]
+                    }
+                  ]
+                }""",
+                /* id present in children in actual  */ """
+                {
+                  "name": "someName",
+                  "children": [
+                    {
+                      "id": "randomId",
+                      "name": "someName",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "id": "randomId",
+                      "name": "someName",
+                      "children": [
+                      ]
+                    }
+                  ]
+                }""",
+                empty().whenIgnoringPaths("$.children[*].id"));
     }
 
     @Test
