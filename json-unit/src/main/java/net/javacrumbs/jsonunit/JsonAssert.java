@@ -17,6 +17,8 @@ package net.javacrumbs.jsonunit;
 
 import static net.javacrumbs.jsonunit.core.internal.Diff.create;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.nodeAbsent;
+import static net.javacrumbs.jsonunit.jsonpath.InternalJsonPathUtils.resolveJsonPaths;
+import static net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter.inPath;
 
 import java.math.BigDecimal;
 import net.javacrumbs.jsonunit.core.Configuration;
@@ -79,8 +81,16 @@ public class JsonAssert {
      */
     public static void assertJsonPartEquals(
             @Nullable Object expected, @Nullable Object fullJson, String path, Configuration configuration) {
-        Diff diff = create(expected, fullJson, FULL_JSON, path, configuration);
+        Diff diff = create(expected, path(fullJson, path), FULL_JSON, ROOT, resolveJsonPaths(fullJson, configuration));
         diff.failIfDifferent();
+    }
+
+    private static @Nullable Object path(@Nullable Object fullJson, String path) {
+        if (path.isEmpty()) {
+            return fullJson;
+        } else {
+            return inPath(fullJson, path);
+        }
     }
 
     /**
@@ -111,7 +121,7 @@ public class JsonAssert {
      */
     public static void assertJsonPartNotEquals(
             Object expected, Object fullJson, String path, Configuration configuration) {
-        Diff diff = create(expected, fullJson, FULL_JSON, path, configuration);
+        Diff diff = create(expected, fullJson, FULL_JSON, path, resolveJsonPaths(fullJson, configuration));
         if (diff.similar()) {
             if (ROOT.equals(path)) {
                 doFail("Expected different values but the values were equal.");
