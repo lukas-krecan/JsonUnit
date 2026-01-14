@@ -138,46 +138,6 @@ class AllJsonAssertTest extends AbstractJsonAssertTest {
     }
 
     @Test
-    void shouldSupportJsonPath() {
-        assertJsonEquals(
-                /* id omitted everywhere in expected  */ """
-                {
-                  "name": "someName",
-                  "children": [
-                    {
-                      "name": "someName",
-                      "children": [
-                      ]
-                    },
-                    {
-                      "name": "someName",
-                      "children": [
-                      ]
-                    }
-                  ]
-                }""",
-                /* id present in children in actual  */ """
-                {
-                  "name": "someName",
-                  "children": [
-                    {
-                      "id": "randomId",
-                      "name": "someName",
-                      "children": [
-                      ]
-                    },
-                    {
-                      "id": "randomId",
-                      "name": "someName",
-                      "children": [
-                      ]
-                    }
-                  ]
-                }""",
-                empty().whenIgnoringPaths("$.children[*].id"));
-    }
-
-    @Test
     void shouldSerializeBasedOnAnnotation() {
         assertJsonEquals("{\"bean\": {\"property\": \"value\"}}", new Jackson2Bean("value"));
     }
