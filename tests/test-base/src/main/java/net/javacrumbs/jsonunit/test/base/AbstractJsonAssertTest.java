@@ -1322,11 +1322,10 @@ public abstract class AbstractJsonAssertTest {
         assertJsonEquals("{\"binary\":\"aGk=\"}", singletonMap("binary", "hi".getBytes(StandardCharsets.UTF_8)));
     }
 
-
     @Test
     void shouldSupportJsonPath() {
         assertJsonEquals(
-            /* id omitted everywhere in expected  */ """
+                /* id omitted everywhere in expected  */ """
                 {
                   "name": "someName",
                   "children": [
@@ -1342,7 +1341,7 @@ public abstract class AbstractJsonAssertTest {
                     }
                   ]
                 }""",
-            /* id present in children in actual  */ """
+                /* id present in children in actual  */ """
                 {
                   "name": "someName",
                   "children": [
@@ -1360,14 +1359,13 @@ public abstract class AbstractJsonAssertTest {
                     }
                   ]
                 }""",
-            Configuration.empty().whenIgnoringPaths("$.children[*].id"));
+                Configuration.empty().whenIgnoringPaths("$.children[*].id"));
     }
 
     @Test
     void shouldSupportJsonPathInNotEquals() {
-        assertThatThrownBy(() ->
-            assertJsonNotEquals(
-            /* id omitted everywhere in expected  */ """
+        assertThatThrownBy(() -> assertJsonNotEquals(
+                        /* id omitted everywhere in expected  */ """
                 {
                   "name": "someName",
                   "children": [
@@ -1383,7 +1381,7 @@ public abstract class AbstractJsonAssertTest {
                     }
                   ]
                 }""",
-            /* id present in children in actual  */ """
+                        /* id present in children in actual  */ """
                 {
                   "name": "someName",
                   "children": [
@@ -1401,8 +1399,8 @@ public abstract class AbstractJsonAssertTest {
                     }
                   ]
                 }""",
-            Configuration.empty().whenIgnoringPaths("$.children[*].id"))
-        ).hasMessage("Expected different values but the values were equal.");
+                        Configuration.empty().whenIgnoringPaths("$.children[*].id")))
+                .hasMessage("Expected different values but the values were equal.");
     }
 
     @Test
