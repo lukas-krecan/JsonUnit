@@ -48,6 +48,7 @@
     <modules>
         <module>json-unit-core</module>
         <module>json-unit</module>
+        <module>json-unit-json-path</module>
         <module>json-unit-assertj</module>
         <module>json-unit-spring</module>
         <module>json-unit-kotest</module>
