@@ -35,7 +35,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
  * </code>
  */
 public class JsonUnitResultMatchers extends AbstractSpringMatchers<JsonUnitResultMatchers, ResultMatcher> {
-    private JsonUnitResultMatchers(Configuration configuration, Function<Object, Object> jsonTransformer) {
+    private JsonUnitResultMatchers(Configuration configuration, JsonAndConfigurationTransformer jsonTransformer) {
         super(configuration, jsonTransformer);
     }
 
@@ -43,7 +43,7 @@ public class JsonUnitResultMatchers extends AbstractSpringMatchers<JsonUnitResul
      * Creates JsonUnitResultMatchers to be used for JSON assertions.
      */
     public static JsonUnitResultMatchers json() {
-        return new JsonUnitResultMatchers(Configuration.empty(), Function.identity());
+        return new JsonUnitResultMatchers(Configuration.empty(), it -> it);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class JsonUnitResultMatchers extends AbstractSpringMatchers<JsonUnitResul
     }
 
     @Override
-    JsonUnitResultMatchers matchers(Configuration configuration, Function<Object, Object> jsonTransformer) {
+    JsonUnitResultMatchers matchers(Configuration configuration, JsonAndConfigurationTransformer jsonTransformer) {
         return new JsonUnitResultMatchers(configuration, jsonTransformer);
     }
 
@@ -60,7 +60,7 @@ public class JsonUnitResultMatchers extends AbstractSpringMatchers<JsonUnitResul
         private JsonResultMatcher(
                 Configuration configuration,
                 Consumer<InternalMatcher> matcher,
-                Function<Object, Object> jsonTransformer) {
+                JsonAndConfigurationTransformer jsonTransformer) {
             super(configuration, matcher, jsonTransformer);
         }
 

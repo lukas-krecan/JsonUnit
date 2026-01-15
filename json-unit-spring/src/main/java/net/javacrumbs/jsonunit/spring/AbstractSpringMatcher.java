@@ -26,19 +26,20 @@ import org.jspecify.annotations.Nullable;
 abstract class AbstractSpringMatcher {
     private final Configuration configuration;
     private final Consumer<InternalMatcher> matcher;
-    private final Function<@Nullable Object, Object> jsonTransformer;
+    private final JsonAndConfigurationTransformer jsonTransformer;
 
     AbstractSpringMatcher(
             Configuration configuration,
             Consumer<InternalMatcher> matcher,
-            Function<@Nullable Object, Object> jsonTransformer) {
+            JsonAndConfigurationTransformer jsonTransformer) {
         this.configuration = configuration;
         this.matcher = matcher;
         this.jsonTransformer = jsonTransformer;
     }
 
     void doMatch(@Nullable Object actual) {
-        Object json = jsonTransformer.apply(actual);
+        JsonAndConfiguration jsonAndConfig = jsonTransformer.transform(actual, configuration);
+        Object json = jsonAndConfig.json();
         String pathPrefix = JsonUtils.getPathPrefix(json);
         Path path = Path.create("", pathPrefix);
         matcher.accept(new InternalMatcher(json, path, "", configuration));

@@ -34,16 +34,16 @@ import org.jspecify.annotations.Nullable;
  */
 abstract class AbstractSpringMatchers<ME, MATCHER> {
     final Configuration configuration;
-    final Function<Object, Object> jsonTransformer;
+    final JsonAndConfigurationTransformer jsonTransformer;
 
-    AbstractSpringMatchers(Configuration configuration, Function<Object, Object> jsonTransformer) {
+    AbstractSpringMatchers(Configuration configuration, JsonAndConfigurationTransformer jsonTransformer) {
         this.configuration = configuration;
         this.jsonTransformer = jsonTransformer;
     }
 
     abstract MATCHER matcher(Consumer<InternalMatcher> matcher);
 
-    abstract ME matchers(Configuration configuration, Function<Object, Object> jsonTransformer);
+    abstract ME matchers(Configuration configuration, JsonAndConfigurationTransformer jsonTransformer);
 
     protected ME matchers(Configuration configuration) {
         return matchers(configuration, jsonTransformer);
@@ -67,7 +67,10 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      * Uses JsonPath to extract values from the actual value.
      */
     public ME inPath(String path) {
-        return matchers(configuration, json -> JsonPathAdapter.inPath(jsonTransformer.apply(json), path));
+        return matchers(configuration, jsonAndConfig -> {
+            JsonAndConfiguration transformed = jsonTransformer.transform(jsonAndConfig);
+            return new JsonAndConfiguration(JsonPathAdapter.inPath(transformed.json(), path), transformed.configuration());
+        });
     }
 
     /**

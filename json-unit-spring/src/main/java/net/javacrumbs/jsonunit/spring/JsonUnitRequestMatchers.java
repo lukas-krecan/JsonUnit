@@ -36,7 +36,7 @@ import org.springframework.test.web.client.RequestMatcher;
  */
 public class JsonUnitRequestMatchers extends AbstractSpringMatchers<JsonUnitRequestMatchers, RequestMatcher> {
 
-    private JsonUnitRequestMatchers(Configuration configuration, Function<Object, Object> jsonTransformer) {
+    private JsonUnitRequestMatchers(Configuration configuration, JsonAndConfigurationTransformer jsonTransformer) {
         super(configuration, jsonTransformer);
     }
 
@@ -46,7 +46,7 @@ public class JsonUnitRequestMatchers extends AbstractSpringMatchers<JsonUnitRequ
     }
 
     @Override
-    JsonUnitRequestMatchers matchers(Configuration configuration, Function<Object, Object> jsonTransformer) {
+    JsonUnitRequestMatchers matchers(Configuration configuration, JsonAndConfigurationTransformer jsonTransformer) {
         return new JsonUnitRequestMatchers(configuration, jsonTransformer);
     }
 
@@ -54,14 +54,14 @@ public class JsonUnitRequestMatchers extends AbstractSpringMatchers<JsonUnitRequ
      * Creates JsonUnitResultMatchers to be used for JSON assertions.
      */
     public static JsonUnitRequestMatchers json() {
-        return new JsonUnitRequestMatchers(Configuration.empty(), Function.identity());
+        return new JsonUnitRequestMatchers(Configuration.empty(), it -> it);
     }
 
     private static class JsonRequestMatcher extends AbstractSpringMatcher implements RequestMatcher {
         private JsonRequestMatcher(
                 Configuration configuration,
                 Consumer<InternalMatcher> matcher,
-                Function<Object, Object> jsonTransformer) {
+                JsonAndConfigurationTransformer jsonTransformer) {
             super(configuration, matcher, jsonTransformer);
         }
 

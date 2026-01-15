@@ -20,12 +20,12 @@ import org.springframework.test.web.reactive.server.EntityExchangeResult;
  */
 public class WebTestClientJsonMatcher
         extends AbstractSpringMatchers<WebTestClientJsonMatcher, Consumer<EntityExchangeResult<byte[]>>> {
-    private WebTestClientJsonMatcher(Configuration configuration, Function<Object, Object> jsonTransformer) {
+    private WebTestClientJsonMatcher(Configuration configuration, JsonAndConfigurationTransformer jsonTransformer) {
         super(configuration, jsonTransformer);
     }
 
     public static WebTestClientJsonMatcher json() {
-        return new WebTestClientJsonMatcher(Configuration.empty(), Function.identity());
+        return new WebTestClientJsonMatcher(Configuration.empty(), it -> it);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class WebTestClientJsonMatcher
     }
 
     @Override
-    WebTestClientJsonMatcher matchers(Configuration configuration, Function<Object, Object> jsonTransformer) {
+    WebTestClientJsonMatcher matchers(Configuration configuration, JsonAndConfigurationTransformer jsonTransformer) {
         return new WebTestClientJsonMatcher(configuration, jsonTransformer);
     }
 
@@ -43,7 +43,7 @@ public class WebTestClientJsonMatcher
         private JsonUnitWebTestClientMatcher(
                 Configuration configuration,
                 Consumer<InternalMatcher> matcher,
-                Function<Object, Object> jsonTransformer) {
+                JsonAndConfigurationTransformer jsonTransformer) {
             super(configuration, matcher, jsonTransformer);
         }
 
