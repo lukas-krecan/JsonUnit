@@ -1,9 +1,9 @@
 package net.javacrumbs.jsonunit.spring;
 
+import static net.javacrumbs.jsonunit.spring.JsonTransformer.identity;
 import static net.javacrumbs.jsonunit.spring.RestTestClientUtils.getContentAsString;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
 import org.springframework.test.web.servlet.client.EntityExchangeResult;
@@ -20,12 +20,12 @@ import org.springframework.test.web.servlet.client.EntityExchangeResult;
  */
 public class RestTestClientJsonMatcher
         extends AbstractSpringMatchers<RestTestClientJsonMatcher, Consumer<EntityExchangeResult<byte[]>>> {
-    private RestTestClientJsonMatcher(Configuration configuration, Function<Object, Object> jsonTransformer) {
+    private RestTestClientJsonMatcher(Configuration configuration, JsonTransformer jsonTransformer) {
         super(configuration, jsonTransformer);
     }
 
     public static RestTestClientJsonMatcher json() {
-        return new RestTestClientJsonMatcher(Configuration.empty(), Function.identity());
+        return new RestTestClientJsonMatcher(Configuration.empty(), identity());
     }
 
     @Override
@@ -34,16 +34,14 @@ public class RestTestClientJsonMatcher
     }
 
     @Override
-    RestTestClientJsonMatcher matchers(Configuration configuration, Function<Object, Object> jsonTransformer) {
+    RestTestClientJsonMatcher matchers(Configuration configuration, JsonTransformer jsonTransformer) {
         return new RestTestClientJsonMatcher(configuration, jsonTransformer);
     }
 
     private static class JsonUnitWebTestClientMatcher extends AbstractSpringMatcher
             implements Consumer<EntityExchangeResult<byte[]>> {
         private JsonUnitWebTestClientMatcher(
-                Configuration configuration,
-                Consumer<InternalMatcher> matcher,
-                Function<Object, Object> jsonTransformer) {
+                Configuration configuration, Consumer<InternalMatcher> matcher, JsonTransformer jsonTransformer) {
             super(configuration, matcher, jsonTransformer);
         }
 
