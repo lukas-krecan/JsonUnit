@@ -2273,6 +2273,15 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void shouldBeAbleToCombinePathsOptionsWithInPath() {
+        assertThatJson("{\"result\":{\"array\":[2,3,1],\"extraField\":true}}")
+                .when(paths("$..array"), then(IGNORING_ARRAY_ORDER))
+                .when(IGNORING_EXTRA_FIELDS)
+                .inPath("$.result")
+                .isEqualTo("{\"array\": [1, 3, 2]}");
+    }
+
+    @Test
     void shouldUseAsInstanceOfToMoveToJsonUnit() {
         record DummyResponse(String trackingId, String json) {}
         DummyResponse resp = new DummyResponse("abcd-0001", "{ \"foo\": \"bar\" }");
