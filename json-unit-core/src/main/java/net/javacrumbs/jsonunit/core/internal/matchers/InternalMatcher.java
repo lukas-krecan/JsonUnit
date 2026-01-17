@@ -24,6 +24,7 @@ import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NULL;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.NUMBER;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.OBJECT;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType.STRING;
+import static net.javacrumbs.jsonunit.jsonpath.InternalJsonPathUtils.resolveJsonPaths;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.math.BigDecimal;
@@ -39,6 +40,7 @@ import net.javacrumbs.jsonunit.core.internal.JsonSource;
 import net.javacrumbs.jsonunit.core.internal.Node;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
+import net.javacrumbs.jsonunit.jsonpath.InternalJsonPathUtils;
 import org.hamcrest.Matcher;
 import org.jspecify.annotations.Nullable;
 
@@ -203,7 +205,7 @@ public final class InternalMatcher {
     }
 
     private Diff createDiff(@Nullable Object expected, Configuration configuration) {
-        return Diff.create(expected, actual, ACTUAL, path, configuration);
+        return Diff.create(expected, actual, ACTUAL, path, resolveJsonPaths(actual, configuration));
     }
 
     private void failWithMessage(String message) {

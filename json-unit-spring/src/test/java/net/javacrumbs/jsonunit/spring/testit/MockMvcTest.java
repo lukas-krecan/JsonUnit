@@ -120,18 +120,8 @@ class MockMvcTest {
     void shouldSupportJsonPathOptions() throws Exception {
         exec("/sampleProduces").andExpect(
             json()
-                .when(paths("$..array"), then(IGNORING_ARRAY_ORDER))
-                .inPath("$.result.array")
-                .isEqualTo("[1, 3, 2]")
-        );
-    }
-
-    @Test
-    void shouldSupportJsonPathOptionsAfterInPath() throws Exception {
-        exec("/sampleProduces").andExpect(
-            json()
                 .inPath("$.result")
-                .when(paths("$.array"), then(IGNORING_ARRAY_ORDER))
+                .when(paths("$..array"), then(IGNORING_ARRAY_ORDER))
                 .when(IGNORING_EXTRA_FIELDS)
                 .isEqualTo("{array: [1, 3, 2]}")
         );
