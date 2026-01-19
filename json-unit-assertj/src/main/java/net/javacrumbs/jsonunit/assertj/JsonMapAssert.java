@@ -17,7 +17,6 @@ package net.javacrumbs.jsonunit.assertj;
 
 import static java.util.Arrays.stream;
 import static java.util.Objects.deepEquals;
-import static java.util.stream.Collectors.toList;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
@@ -143,7 +142,7 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
     }
 
     private List<Entry<? extends String, ?>> entriesNotFoundInMap(Entry<? extends String, ?>[] expected) {
-        return stream(expected).filter(entry -> !doesContainEntry(entry)).collect(toList());
+        return stream(expected).filter(entry -> !doesContainEntry(entry)).toList();
     }
 
     @Override

@@ -17,7 +17,6 @@ package net.javacrumbs.jsonunit.core.internal;
 
 import static java.lang.Math.min;
 import static java.util.Collections.unmodifiableList;
-import static java.util.stream.Collectors.toList;
 import static net.javacrumbs.jsonunit.core.Configuration.dummyDifferenceListener;
 import static net.javacrumbs.jsonunit.core.Option.FAIL_FAST;
 import static net.javacrumbs.jsonunit.core.internal.Diff.DEFAULT_DIFFERENCE_STRING;
@@ -225,7 +224,7 @@ class ComparisonMatrix {
                         i,
                         equalElements.get(i).stream()
                                 .filter(n -> n != expectedIndex)
-                                .collect(toList()));
+                                .toList());
             }
         }
         alreadyMatched.set(actualIndex);
