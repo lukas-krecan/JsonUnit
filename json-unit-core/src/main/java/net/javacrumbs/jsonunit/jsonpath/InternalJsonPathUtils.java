@@ -16,7 +16,6 @@
 package net.javacrumbs.jsonunit.jsonpath;
 
 import static com.jayway.jsonpath.JsonPath.using;
-import static java.util.stream.Collectors.toList;
 
 import com.jayway.jsonpath.Option;
 import com.jayway.jsonpath.PathNotFoundException;
@@ -40,7 +39,7 @@ public class InternalJsonPathUtils {
                     List<String> newPoPaths = resolveJsonPaths(json, po.getPaths());
                     return po.withPaths(newPoPaths);
                 })
-                .collect(toList());
+                .toList();
 
         return configuration.whenIgnoringPaths(pathsToBeIgnored).withPathOptions(pathOptions);
     }
@@ -59,7 +58,7 @@ public class InternalJsonPathUtils {
                         return Stream.of(path);
                     }
                 })
-                .collect(toList());
+                .toList();
     }
 
     @SuppressWarnings("TypeParameterUnusedInFormals")
