@@ -1,12 +1,12 @@
 /**
  * Copyright 2009-2019 the original author or authors.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,24 +22,30 @@ import java.util.List;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Path;
+import org.assertj.core.api.AbstractListAssert;
 import org.assertj.core.api.FactoryBasedNavigableListAssert;
 import org.assertj.core.description.Description;
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.jspecify.annotations.Nullable;
 
-public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAssert, List<?>, Object, JsonAssert> {
+public class JsonListAssert extends AbstractListAssert<JsonListAssert, List<?>, Object, JsonAssert> {
     private final Configuration configuration;
     private final Path path;
 
     @SuppressWarnings("CheckReturnValue")
     JsonListAssert(List<?> actual, Path path, Configuration configuration) {
-        super(actual, JsonListAssert.class, t -> new JsonAssert(path, configuration, t, true));
+        super(actual, JsonListAssert.class);
         this.path = path;
         this.configuration = configuration;
         //noinspection ResultOfMethodCallIgnored
         usingComparator(new JsonComparator(configuration, path, true));
         //noinspection ResultOfMethodCallIgnored
         usingElementComparator(new JsonComparator(configuration, path.asPrefix(), true));
+    }
+
+    @Override
+    protected JsonAssert toAssert(Object value, String description) {
+        return new JsonAssert(path, configuration, value, true).as(description);
     }
 
     @SuppressWarnings("CheckReturnValue")
@@ -58,7 +64,7 @@ public class JsonListAssert extends FactoryBasedNavigableListAssert<JsonListAsse
         if (diff.similar()) {
             JsonComparisonStrategy strategy = new JsonComparisonStrategy(configuration);
             throwAssertionError(new BasicErrorMessageFactory(
-                    "%nExpecting:%n <%s>%nnot to be equal to:%n <%s>%n%s", actual, other, strategy));
+                "%nExpecting:%n <%s>%nnot to be equal to:%n <%s>%n%s", actual, other, strategy));
         }
         return this;
     }
