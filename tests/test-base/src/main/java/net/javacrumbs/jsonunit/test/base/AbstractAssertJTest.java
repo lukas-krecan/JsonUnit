@@ -19,6 +19,8 @@ import static java.math.BigDecimal.valueOf;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
+import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
+import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodeAbsent;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.JSON;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
@@ -37,11 +39,14 @@ import static net.javacrumbs.jsonunit.core.Option.REPORTING_DIFFERENCE_AS_NORMAL
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
 import static net.javacrumbs.jsonunit.test.base.RegexBuilder.regex;
+import static org.assertj.core.api.Assertions.anyOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.entry;
+import static org.assertj.core.api.Assertions.not;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.api.HamcrestCondition.matching;
 import static org.assertj.core.api.InstanceOfAssertFactories.BIG_DECIMAL;
 import static org.assertj.core.api.InstanceOfAssertFactories.BOOLEAN;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
@@ -788,6 +793,13 @@ public abstract class AbstractAssertJTest {
                 .node("b")
                 .isNumber()
                 .isEqualByComparingTo("1");
+    }
+
+    @Test
+    void shouldUseCondition() {
+        assertThatJson("{\"a\":1}")
+            .node("a")
+            .is(anyOf(matching(jsonNodeAbsent("")), not(matching(jsonEquals(null)))));
     }
 
     @Test
