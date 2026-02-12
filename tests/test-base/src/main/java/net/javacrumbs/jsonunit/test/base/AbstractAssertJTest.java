@@ -25,6 +25,7 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.JSON;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.value;
+import static net.javacrumbs.jsonunit.assertj.JsonConditions.isPresent;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.path;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.paths;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.rootPath;
@@ -60,6 +61,7 @@ import java.util.List;
 import java.util.Map;
 import net.javacrumbs.jsonunit.assertj.JsonAssert;
 import net.javacrumbs.jsonunit.assertj.JsonAssert.ConfigurableJsonAssert;
+import net.javacrumbs.jsonunit.assertj.JsonConditions;
 import net.javacrumbs.jsonunit.core.NumberComparator;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.test.base.AbstractJsonAssertTest.DivisionMatcher;
@@ -846,6 +848,30 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() ->
                         assertThatJson("{\"a\":{\"b\": null}}").node("a.c").isNotNull())
                 .hasMessage("Different value found in node \"a.c\", expected: <not null> but was: <missing>.");
+    }
+
+    @Nested
+    protected class Conditions {
+        @Test
+        void shouldPassIfNodeIsPresent() {
+            assertThatJson("{\"a\":1}")
+                    .node("a")
+                    .is(isPresent());
+        }
+
+        @Test
+        void shouldPassIfRootIsPresent() {
+            assertThatJson("{\"a\":1}")
+                    .is(isPresent());
+        }
+
+        @Test
+        void shouldFailIfNodeIsMissing() {
+            assertThatThrownBy(() -> assertThatJson("{\"a\":1}")
+                            .node("b")
+                            .is(isPresent()))
+                    .hasMessage("Different value found in node \"b\", expected: <node to be present> but was: <missing>.");
+        }
     }
 
     @Test
