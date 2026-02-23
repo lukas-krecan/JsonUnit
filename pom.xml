@@ -6,7 +6,7 @@
     <name>${project.groupId}:${project.artifactId}</name>
     <url>https://github.com/lukas-krecan/JsonUnit</url>
     <properties>
-        <jackson2.version>2.21.0</jackson2.version>
+        <jackson2.version>2.21.1</jackson2.version>
         <jackson3.version>3.0.4</jackson3.version>
         <moshi.version>1.15.2</moshi.version>
         <gson.version>2.13.2</gson.version>
