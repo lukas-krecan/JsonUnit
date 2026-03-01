@@ -16,6 +16,8 @@
 package net.javacrumbs.jsonunit.spring.testit;
 
 import static java.math.BigDecimal.valueOf;
+import static net.javacrumbs.jsonunit.core.ConfigurationWhen.paths;
+import static net.javacrumbs.jsonunit.core.ConfigurationWhen.then;
 import static net.javacrumbs.jsonunit.spring.JsonUnitJsonComparator.comparator;
 import static net.javacrumbs.jsonunit.spring.RestTestClientJsonMatcher.json;
 import static net.javacrumbs.jsonunit.spring.testit.demo.ExampleController.CORRECT_JSON;
@@ -26,6 +28,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+import java.util.List;
 import net.javacrumbs.jsonunit.core.Option;
 import net.javacrumbs.jsonunit.core.listener.Difference;
 import net.javacrumbs.jsonunit.core.listener.DifferenceContext;
@@ -70,6 +73,47 @@ class RestTestClientTest {
     @Test
     void shouldSupportJsonPath() {
         exec("/sampleProduces").consumeWith(json().inPath("$.result.array[1]").isEqualTo(2));
+    }
+
+    @Test
+    void shouldSupportJsonPathError() {
+        assertThatThrownBy(() -> exec("/sampleProduces").consumeWith(json().inPath("$.result.array[1]").isEqualTo(3)))
+                .hasMessageStartingWith(
+                        """
+                JSON documents are different:
+                Different value found in node "$.result.array[1]", expected: <3> but was: <2>.
+                """);
+    }
+
+    @Test
+    void shouldSupportJsonPathChainedError() {
+        assertThatThrownBy(() -> exec("/sampleProduces")
+                        .consumeWith(json().inPath("$.result").inPath("$.array[*]").isEqualTo(List.of(1, 3, 3))))
+                .hasMessageStartingWith(
+                        """
+                JSON documents are different:
+                Different value found in node "$.result.array[*][1]", expected: <3> but was: <2>.
+                """);
+    }
+
+    @Test
+    void shouldSupportJsonPathChainedWithNodeError() {
+        assertThatThrownBy(() -> exec("/sampleProduces")
+                        .consumeWith(json().node("result").inPath("$.array[1]").isEqualTo(3)))
+                .hasMessageStartingWith(
+                        """
+                JSON documents are different:
+                Different value found in node "result.array[1]", expected: <3> but was: <2>.
+                """);
+    }
+
+    @Test
+    void shouldSupportJsonPathOptions() {
+        exec("/sampleProduces")
+                .consumeWith(json().when(paths("$..array"), then(Option.IGNORING_ARRAY_ORDER))
+                        .when(Option.IGNORING_EXTRA_FIELDS)
+                        .inPath("$.result")
+                        .isEqualTo("{array: [1, 3, 2]}"));
     }
 
     @Test

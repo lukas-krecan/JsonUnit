@@ -17,7 +17,6 @@ package net.javacrumbs.jsonunit.spring;
 
 import java.math.BigDecimal;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ConfigurationWhen;
 import net.javacrumbs.jsonunit.core.Option;
@@ -34,16 +33,16 @@ import org.jspecify.annotations.Nullable;
  */
 abstract class AbstractSpringMatchers<ME, MATCHER> {
     final Configuration configuration;
-    final Function<Object, Object> jsonTransformer;
+    final JsonTransformer jsonTransformer;
 
-    AbstractSpringMatchers(Configuration configuration, Function<Object, Object> jsonTransformer) {
+    AbstractSpringMatchers(Configuration configuration, JsonTransformer jsonTransformer) {
         this.configuration = configuration;
         this.jsonTransformer = jsonTransformer;
     }
 
     abstract MATCHER matcher(Consumer<InternalMatcher> matcher);
 
-    abstract ME matchers(Configuration configuration, Function<Object, Object> jsonTransformer);
+    abstract ME matchers(Configuration configuration, JsonTransformer jsonTransformer);
 
     protected ME matchers(Configuration configuration) {
         return matchers(configuration, jsonTransformer);
@@ -67,7 +66,7 @@ abstract class AbstractSpringMatchers<ME, MATCHER> {
      * Uses JsonPath to extract values from the actual value.
      */
     public ME inPath(String path) {
-        return matchers(configuration, json -> JsonPathAdapter.inPath(jsonTransformer.apply(json), path));
+        return matchers(configuration, json -> JsonPathAdapter.inPath(jsonTransformer.transform(json), path));
     }
 
     /**

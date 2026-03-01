@@ -17,8 +17,10 @@ package net.javacrumbs.jsonunit.spring.testit;
 
 import static java.math.BigDecimal.valueOf;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.path;
+import static net.javacrumbs.jsonunit.core.ConfigurationWhen.paths;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.then;
 import static net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER;
+import static net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS;
 import static net.javacrumbs.jsonunit.spring.JsonUnitResultMatchers.json;
 import static net.javacrumbs.jsonunit.spring.testit.demo.ExampleController.CORRECT_JSON;
 import static net.javacrumbs.jsonunit.spring.testit.demo.ExampleController.ISO_VALUE;
@@ -112,6 +114,15 @@ class MockMvcTest {
             JSON documents are different:
             Different value found in node "result.array[1]", expected: <3> but was: <2>.
             """);
+    }
+
+    @Test
+    void shouldSupportJsonPathOptions() throws Exception {
+        exec("/sampleProduces")
+                .andExpect(json().when(paths("$..array"), then(IGNORING_ARRAY_ORDER))
+                        .when(IGNORING_EXTRA_FIELDS)
+                        .inPath("$.result")
+                        .isEqualTo("{array: [1, 3, 2]}"));
     }
 
     @Test
