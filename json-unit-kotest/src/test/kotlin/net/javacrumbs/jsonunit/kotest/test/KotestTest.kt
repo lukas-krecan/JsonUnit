@@ -72,6 +72,15 @@ Different value found in node "test", expected: <2> but was: <1>."""
     }
 
     @Test
+    fun `Should ignore paths when using inPath`() {
+        """{"test": {"a": 1, "b": 2}}""" inPath "$.test" should
+            equalJson(
+                """{"a": 1, "b": 99}""",
+                configuration { whenIgnoringPaths("$.test.b") },
+            )
+    }
+
+    @Test
     fun `Should assert path`() {
         assertThrows<AssertionError> { """{"test":1}""" inPath "test" should equalJson("2") }
             .shouldHaveMessage(
