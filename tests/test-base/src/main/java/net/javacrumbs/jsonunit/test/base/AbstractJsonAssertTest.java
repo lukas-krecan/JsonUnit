@@ -54,6 +54,7 @@ import java.io.StringReader;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import net.javacrumbs.jsonunit.JsonAssert;
+import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.ParametrizedMatcher;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
@@ -440,6 +441,11 @@ public abstract class AbstractJsonAssertTest {
     @Test
     void testAssertPartOkReaders() {
         assertJsonPartEquals(new StringReader("1"), new StringReader("{\"test\":{\"value\":1}}"), "test.value");
+    }
+
+    @Test
+    void testAssertPartWithJsonPath() {
+        assertJsonPartEquals("[1]", "{\"test\":{\"value\":1}}", "$..value");
     }
 
     @Test
@@ -1314,6 +1320,87 @@ public abstract class AbstractJsonAssertTest {
     @Test
     protected void testBinary() {
         assertJsonEquals("{\"binary\":\"aGk=\"}", singletonMap("binary", "hi".getBytes(StandardCharsets.UTF_8)));
+    }
+
+    @Test
+    void shouldSupportJsonPath() {
+        assertJsonEquals(
+                /* id omitted everywhere in expected  */ """
+                {
+                  "name": "someName",
+                  "children": [
+                    {
+                      "name": "someName",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "name": "someName",
+                      "children": [
+                      ]
+                    }
+                  ]
+                }""",
+                /* id present in children in actual  */ """
+                {
+                  "name": "someName",
+                  "children": [
+                    {
+                      "id": "randomId",
+                      "name": "someName",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "id": "randomId",
+                      "name": "someName",
+                      "children": [
+                      ]
+                    }
+                  ]
+                }""",
+                Configuration.empty().whenIgnoringPaths("$.children[*].id"));
+    }
+
+    @Test
+    void shouldSupportJsonPathInNotEquals() {
+        assertThatThrownBy(() -> assertJsonNotEquals(
+                        /* id omitted everywhere in expected  */ """
+                {
+                  "name": "someName",
+                  "children": [
+                    {
+                      "name": "someName",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "name": "someName",
+                      "children": [
+                      ]
+                    }
+                  ]
+                }""",
+                        /* id present in children in actual  */ """
+                {
+                  "name": "someName",
+                  "children": [
+                    {
+                      "id": "randomId",
+                      "name": "someName",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "id": "randomId",
+                      "name": "someName",
+                      "children": [
+                      ]
+                    }
+                  ]
+                }""",
+                        Configuration.empty().whenIgnoringPaths("$.children[*].id")))
+                .hasMessage("Expected different values but the values were equal.");
     }
 
     @Test

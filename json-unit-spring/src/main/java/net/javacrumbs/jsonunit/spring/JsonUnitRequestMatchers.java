@@ -15,8 +15,9 @@
  */
 package net.javacrumbs.jsonunit.spring;
 
+import static net.javacrumbs.jsonunit.spring.JsonTransformer.identity;
+
 import java.util.function.Consumer;
-import java.util.function.Function;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
 import org.springframework.http.client.ClientHttpRequest;
@@ -36,7 +37,7 @@ import org.springframework.test.web.client.RequestMatcher;
  */
 public class JsonUnitRequestMatchers extends AbstractSpringMatchers<JsonUnitRequestMatchers, RequestMatcher> {
 
-    private JsonUnitRequestMatchers(Configuration configuration, Function<Object, Object> jsonTransformer) {
+    private JsonUnitRequestMatchers(Configuration configuration, JsonTransformer jsonTransformer) {
         super(configuration, jsonTransformer);
     }
 
@@ -46,7 +47,7 @@ public class JsonUnitRequestMatchers extends AbstractSpringMatchers<JsonUnitRequ
     }
 
     @Override
-    JsonUnitRequestMatchers matchers(Configuration configuration, Function<Object, Object> jsonTransformer) {
+    JsonUnitRequestMatchers matchers(Configuration configuration, JsonTransformer jsonTransformer) {
         return new JsonUnitRequestMatchers(configuration, jsonTransformer);
     }
 
@@ -54,14 +55,12 @@ public class JsonUnitRequestMatchers extends AbstractSpringMatchers<JsonUnitRequ
      * Creates JsonUnitResultMatchers to be used for JSON assertions.
      */
     public static JsonUnitRequestMatchers json() {
-        return new JsonUnitRequestMatchers(Configuration.empty(), Function.identity());
+        return new JsonUnitRequestMatchers(Configuration.empty(), identity());
     }
 
     private static class JsonRequestMatcher extends AbstractSpringMatcher implements RequestMatcher {
         private JsonRequestMatcher(
-                Configuration configuration,
-                Consumer<InternalMatcher> matcher,
-                Function<Object, Object> jsonTransformer) {
+                Configuration configuration, Consumer<InternalMatcher> matcher, JsonTransformer jsonTransformer) {
             super(configuration, matcher, jsonTransformer);
         }
 
