@@ -15,10 +15,11 @@
  */
 package net.javacrumbs.jsonunit.spring;
 
+import static net.javacrumbs.jsonunit.spring.JsonTransformer.identity;
+
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -35,7 +36,7 @@ import org.springframework.test.web.servlet.ResultMatcher;
  * </code>
  */
 public class JsonUnitResultMatchers extends AbstractSpringMatchers<JsonUnitResultMatchers, ResultMatcher> {
-    private JsonUnitResultMatchers(Configuration configuration, Function<Object, Object> jsonTransformer) {
+    private JsonUnitResultMatchers(Configuration configuration, JsonTransformer jsonTransformer) {
         super(configuration, jsonTransformer);
     }
 
@@ -43,7 +44,7 @@ public class JsonUnitResultMatchers extends AbstractSpringMatchers<JsonUnitResul
      * Creates JsonUnitResultMatchers to be used for JSON assertions.
      */
     public static JsonUnitResultMatchers json() {
-        return new JsonUnitResultMatchers(Configuration.empty(), Function.identity());
+        return new JsonUnitResultMatchers(Configuration.empty(), identity());
     }
 
     @Override
@@ -52,15 +53,13 @@ public class JsonUnitResultMatchers extends AbstractSpringMatchers<JsonUnitResul
     }
 
     @Override
-    JsonUnitResultMatchers matchers(Configuration configuration, Function<Object, Object> jsonTransformer) {
+    JsonUnitResultMatchers matchers(Configuration configuration, JsonTransformer jsonTransformer) {
         return new JsonUnitResultMatchers(configuration, jsonTransformer);
     }
 
     private static class JsonResultMatcher extends AbstractSpringMatcher implements ResultMatcher {
         private JsonResultMatcher(
-                Configuration configuration,
-                Consumer<InternalMatcher> matcher,
-                Function<Object, Object> jsonTransformer) {
+                Configuration configuration, Consumer<InternalMatcher> matcher, JsonTransformer jsonTransformer) {
             super(configuration, matcher, jsonTransformer);
         }
 

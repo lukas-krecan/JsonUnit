@@ -1,6 +1,5 @@
 package net.javacrumbs.jsonunit.core.internal;
 
-import static java.util.stream.Collectors.toList;
 import static net.javacrumbs.jsonunit.core.internal.ExceptionUtils.formatDifferences;
 
 import java.util.Collections;
@@ -37,7 +36,7 @@ class Opentest4jExceptionFactory implements ExceptionFactory {
                     message,
                     differences.getDifferences().stream()
                             .map(JsonAssertError::getError)
-                            .collect(toList()));
+                            .toList());
             this.message = message;
             this.differences = differences;
         }
