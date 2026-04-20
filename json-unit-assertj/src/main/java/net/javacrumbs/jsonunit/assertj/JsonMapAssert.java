@@ -17,7 +17,6 @@ package net.javacrumbs.jsonunit.assertj;
 
 import static java.util.Arrays.stream;
 import static java.util.Objects.deepEquals;
-import static java.util.stream.Collectors.toList;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.getNode;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
@@ -43,19 +42,28 @@ import org.jspecify.annotations.Nullable;
 public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, Object>, String, @Nullable Object> {
     private final Configuration configuration;
     private final Path path;
+    private final JsonBiPredicate valueEquals;
 
     @SuppressWarnings("CheckReturnValue")
     JsonMapAssert(Map<String, Object> actual, Path path, Configuration configuration) {
         super(actual, JsonMapAssert.class);
         this.path = path;
         this.configuration = configuration;
-        //noinspection ResultOfMethodCallIgnored
-        usingComparator(new JsonComparator(configuration, path.asPrefix(), true));
+        this.valueEquals = new JsonBiPredicate(configuration, path.asPrefix(), true);
+        usingEqualsForValues(valueEquals);
     }
 
     @Override
     public JsonMapAssert isEqualTo(@Nullable Object expected) {
         return compare(expected, configuration);
+    }
+
+    @Override
+    public JsonMapAssert isNotEqualTo(@Nullable Object other) {
+        if (valueEquals.test(actual, other)) {
+            failWithMessage("%nExpecting actual:%n  %s%nnot to be equal to:%n  %s%n", actual, other);
+        }
+        return this;
     }
 
     /**
@@ -87,37 +95,6 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
         } else {
             return super.doesNotContainValue(expected);
         }
-    }
-
-    @Override
-    @Deprecated
-    public JsonMapAssert isEqualToIgnoringGivenFields(@Nullable Object other, String... propertiesOrFieldsToIgnore) {
-        return compare(other, configuration.whenIgnoringPaths(propertiesOrFieldsToIgnore));
-    }
-
-    @Override
-    @Deprecated
-    public JsonMapAssert isEqualToComparingOnlyGivenFields(
-            @Nullable Object other, String... propertiesOrFieldsUsedInComparison) {
-        throw unsupportedOperation();
-    }
-
-    @Override
-    @Deprecated
-    public JsonMapAssert isEqualToIgnoringNullFields(@Nullable Object other) {
-        throw unsupportedOperation();
-    }
-
-    @Override
-    @Deprecated
-    public JsonMapAssert isEqualToComparingFieldByField(@Nullable Object other) {
-        throw unsupportedOperation();
-    }
-
-    @Override
-    @Deprecated
-    public JsonMapAssert isEqualToComparingFieldByFieldRecursively(@Nullable Object other) {
-        throw unsupportedOperation();
     }
 
     @Override
@@ -165,7 +142,7 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
     }
 
     private List<Entry<? extends String, ?>> entriesNotFoundInMap(Entry<? extends String, ?>[] expected) {
-        return stream(expected).filter(entry -> !doesContainEntry(entry)).collect(toList());
+        return stream(expected).filter(entry -> !doesContainEntry(entry)).toList();
     }
 
     @Override
@@ -203,66 +180,6 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
     @SuppressWarnings("unchecked")
     private Entry<? extends String, ?>[] toEntries(Map<? extends String, ?> map) {
         return map.entrySet().toArray(new Entry[0]);
-    }
-
-    /**
-     * Does not work. Use {@link #containsKey(Object)} instead.
-     * https://github.com/lukas-krecan/JsonUnit/issues/324
-     */
-    @Override
-    @Deprecated
-    public JsonMapAssert hasFieldOrProperty(String name) {
-        return super.hasFieldOrProperty(name);
-    }
-
-    /**
-     * Does not work. Use {@link #contains(Entry[])} instead.
-     * https://github.com/lukas-krecan/JsonUnit/issues/324
-     */
-    @Override
-    @Deprecated
-    public JsonMapAssert hasFieldOrPropertyWithValue(String name, Object value) {
-        return super.hasFieldOrPropertyWithValue(name, value);
-    }
-
-    /**
-     * Does not work. https://github.com/lukas-krecan/JsonUnit/issues/324
-     */
-    @Override
-    @Deprecated
-    public JsonMapAssert hasAllNullFieldsOrProperties() {
-        return super.hasAllNullFieldsOrProperties();
-    }
-
-    /**
-     * Does not work. https://github.com/lukas-krecan/JsonUnit/issues/324
-     */
-    @Override
-    @Deprecated
-    public JsonMapAssert hasAllNullFieldsOrPropertiesExcept(String... propertiesOrFieldsToIgnore) {
-        return super.hasAllNullFieldsOrPropertiesExcept(propertiesOrFieldsToIgnore);
-    }
-
-    /**
-     * Does not work. https://github.com/lukas-krecan/JsonUnit/issues/324
-     */
-    @Deprecated
-    @Override
-    public JsonMapAssert hasNoNullFieldsOrProperties() {
-        return super.hasNoNullFieldsOrProperties();
-    }
-
-    /**
-     * Does not work. https://github.com/lukas-krecan/JsonUnit/issues/324
-     */
-    @Override
-    @Deprecated
-    public JsonMapAssert hasNoNullFieldsOrPropertiesExcept(String... propertiesOrFieldsToIgnore) {
-        return super.hasNoNullFieldsOrPropertiesExcept(propertiesOrFieldsToIgnore);
-    }
-
-    private UnsupportedOperationException unsupportedOperation() {
-        return new UnsupportedOperationException("Operation not supported for JSON documents");
     }
 
     @SuppressWarnings("CheckReturnValue")

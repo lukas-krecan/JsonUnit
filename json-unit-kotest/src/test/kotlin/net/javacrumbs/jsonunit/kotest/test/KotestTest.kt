@@ -14,9 +14,13 @@ import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldBeLowerCase
 import io.kotest.matchers.throwable.haveMessage
 import io.kotest.matchers.throwable.shouldHaveMessage
+import io.kotest.matchers.types.shouldBeInstanceOf
 import java.math.BigDecimal.valueOf
 import kotlin.text.RegexOption.DOT_MATCHES_ALL
+import net.javacrumbs.jsonunit.core.ConfigurationWhen.paths
+import net.javacrumbs.jsonunit.core.ConfigurationWhen.then
 import net.javacrumbs.jsonunit.core.Option.IGNORING_ARRAY_ORDER
+import net.javacrumbs.jsonunit.core.Option.IGNORING_EXTRA_FIELDS
 import net.javacrumbs.jsonunit.kotest.beJsonBoolean
 import net.javacrumbs.jsonunit.kotest.beJsonNull
 import net.javacrumbs.jsonunit.kotest.beJsonNumber
@@ -31,6 +35,7 @@ import net.javacrumbs.jsonunit.kotest.shouldBeJsonObject
 import net.javacrumbs.jsonunit.kotest.shouldBeJsonString
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
+import org.opentest4j.AssertionFailedError
 
 class KotestTest {
     @Test
@@ -55,12 +60,34 @@ Different value found in node "test", expected: <2> but was: <1>."""
     }
 
     @Test
+    fun `Should assert with JsonPath options`() {
+        """{"result":{"array":[2,3,1],"extraField":true}}""" inPath
+            "$.result" should
+            equalJson(
+                "{\"array\": [1, 3, 2]}",
+                configuration {
+                    withOptions(IGNORING_EXTRA_FIELDS).`when`(paths("$..array"), then(IGNORING_ARRAY_ORDER))
+                },
+            )
+    }
+
+    @Test
+    fun `Should ignore paths when using inPath`() {
+        """{"test": {"a": 1, "b": 2}}""" inPath "$.test" should
+            equalJson(
+                """{"a": 1, "b": 99}""",
+                configuration { whenIgnoringPaths("$.test.b") },
+            )
+    }
+
+    @Test
     fun `Should assert path`() {
         assertThrows<AssertionError> { """{"test":1}""" inPath "test" should equalJson("2") }
             .shouldHaveMessage(
                 """JSON documents are different:
 Different value found in node "test", expected: <2> but was: <1>."""
             )
+            .shouldBeInstanceOf<AssertionFailedError>()
     }
 
     @Test

@@ -19,6 +19,8 @@ import static java.math.BigDecimal.valueOf;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
+import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
+import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodeAbsent;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.JSON;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
@@ -37,11 +39,14 @@ import static net.javacrumbs.jsonunit.core.Option.REPORTING_DIFFERENCE_AS_NORMAL
 import static net.javacrumbs.jsonunit.core.Option.TREATING_NULL_AS_ABSENT;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.jsonSource;
 import static net.javacrumbs.jsonunit.test.base.RegexBuilder.regex;
+import static org.assertj.core.api.Assertions.anyOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.entry;
+import static org.assertj.core.api.Assertions.not;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.api.HamcrestCondition.matching;
 import static org.assertj.core.api.InstanceOfAssertFactories.BIG_DECIMAL;
 import static org.assertj.core.api.InstanceOfAssertFactories.BOOLEAN;
 import static org.assertj.core.api.InstanceOfAssertFactories.LIST;
@@ -556,7 +561,7 @@ public abstract class AbstractAssertJTest {
                       {"b":"string"}
                     not to be equal to:
                       {"b":"${json-unit.any-string}"}
-                    when comparing values using JsonComparator""");
+                    """);
     }
 
     @Test
@@ -791,6 +796,13 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void shouldUseCondition() {
+        assertThatJson("{\"a\":1}")
+            .node("a")
+            .is(anyOf(matching(jsonNodeAbsent("")), not(matching(jsonEquals(null)))));
+    }
+
+    @Test
     void shouldAssertUri() {
         assertThatJson("{\"a\":{\"b\":\"http://exampl.org?a=1\"}}")
                 .node("a.b")
@@ -989,7 +1001,7 @@ public abstract class AbstractAssertJTest {
                 .hasMessage(
                         """
                     [Node ""]\s
-                    Expecting ArrayList:
+                    Expecting ListN:
                       [(1, {"first":"Aaron"}), (2, {"first":"John"})]
                     to contain:
                       [(1, "{"first":"Aaron"}"), (2, "{"first":"Paul"}")]
@@ -1014,7 +1026,7 @@ public abstract class AbstractAssertJTest {
                 .hasMessage(
                         """
                     [Node ""]\s
-                    Expecting ArrayList:
+                    Expecting ListN:
                       [(1, {"first":"Aaron"}), (2, {"first":"John"})]
                     to contain:
                       [(1, "{"first":"Aaron"}", 3), (2, "{"first":"John"}")]
@@ -1828,14 +1840,6 @@ public abstract class AbstractAssertJTest {
                     """);
     }
 
-    @SuppressWarnings("deprecation")
-    @Test
-    void shouldIgnoreFields() {
-        assertThatJson("{\"root\":{\"test\":1, \"ignored\": 1}}")
-                .isObject()
-                .isEqualToIgnoringGivenFields("{\"root\":{\"test\":1, \"ignored\": 2}}", "root.ignored");
-    }
-
     @Test
     void arrayWithStringBooleansShouldBeComparable() {
         assertThatJson("{\"array\": [\"true\"]}").node("array").isArray().containsExactly(value("true"));
@@ -2281,6 +2285,15 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void shouldBeAbleToCombinePathsOptionsWithInPath() {
+        assertThatJson("{\"result\":{\"array\":[2,3,1],\"extraField\":true}}")
+                .when(paths("$..array"), then(IGNORING_ARRAY_ORDER))
+                .when(IGNORING_EXTRA_FIELDS)
+                .inPath("$.result")
+                .isEqualTo("{\"array\": [1, 3, 2]}");
+    }
+
+    @Test
     void shouldUseAsInstanceOfToMoveToJsonUnit() {
         record DummyResponse(String trackingId, String json) {}
         DummyResponse resp = new DummyResponse("abcd-0001", "{ \"foo\": \"bar\" }");
@@ -2313,7 +2326,7 @@ public abstract class AbstractAssertJTest {
         assertThatJson("{\"a\":{\"b\": \"c\"}}")
                 .inPath("a")
                 .isObject()
-                .extracting("b", STRING)
+                .extractingByKey("b", STRING)
                 .endsWith("c");
         assertThatJson("{\"a\":[1, 2, 3]}").inPath("a").asInstanceOf(LIST).hasSize(3);
         assertThatJson("{\"a\":[1, 2, 3]}")
