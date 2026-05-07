@@ -8,7 +8,6 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>test-gson</artifactId>
-    <version>5.1.2-SNAPSHOT</version>
 
     <dependencies>
         <dependency>
