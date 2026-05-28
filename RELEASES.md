@@ -1,5 +1,8 @@
 Release notes
 =============
+## 5.1.2 (2026-05-28)
+* Dependency updates
+
 ## 5.1.1 (2026-03-10)
 * BOM module flattened #1076
 * Dependency updates
