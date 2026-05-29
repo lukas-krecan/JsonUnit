@@ -549,6 +549,9 @@ assertThatJson("{\"test\":true}")
 assertThatJson("{\"test\":1.1}")
     .isEqualTo("{\"test\":\"${json-unit.any-number}\"}");
 
+assertThatJson("{\"test\":[]]}")
+    .isEqualTo("{\"test\":\"${json-unit.any-array}\"}");
+
 ```
 
 You can also use hash instead of string `#{json-unit.any-string}` for example if you are using language with string interpolation
