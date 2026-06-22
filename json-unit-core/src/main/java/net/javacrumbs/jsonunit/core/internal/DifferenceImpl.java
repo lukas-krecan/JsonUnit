@@ -22,6 +22,7 @@ class DifferenceImpl implements Difference {
     private final DiffContext context;
     private final Type type;
 
+    @SuppressWarnings("ExposedPrivateType")
     DifferenceImpl(DiffContext context, Type type) {
         this.context = context;
         this.type = type;
