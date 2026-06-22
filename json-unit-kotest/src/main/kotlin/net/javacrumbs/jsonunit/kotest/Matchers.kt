@@ -19,7 +19,6 @@ import net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter
 /**
  * Returns a [Matcher] that verifies that two JSON objects are equal. Can be customized by providing configuration like
  * this:
- *
  *  ```kotlin
  *  """{"test":1.01}""" should equalJson("""{"test":1}""", configuration { withTolerance(0.1).withOptions(IGNORING_ARRAY_ORDER) })
  *  ```
