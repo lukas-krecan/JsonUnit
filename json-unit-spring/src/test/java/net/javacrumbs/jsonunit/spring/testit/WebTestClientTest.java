@@ -79,7 +79,8 @@ class WebTestClientTest {
 
     @Test
     void shouldSupportJsonPathError() {
-        assertThatThrownBy(() -> exec("/sampleProduces").consumeWith(json().inPath("$.result.array[1]").isEqualTo(3)))
+        assertThatThrownBy(() -> exec("/sampleProduces")
+                        .consumeWith(json().inPath("$.result.array[1]").isEqualTo(3)))
                 .hasMessageStartingWith(
                         """
                 JSON documents are different:
@@ -90,7 +91,8 @@ class WebTestClientTest {
     @Test
     void shouldSupportJsonPathChainedError() {
         assertThatThrownBy(() -> exec("/sampleProduces")
-                        .consumeWith(json().inPath("$.result").inPath("$.array[*]").isEqualTo(List.of(1, 3, 3))))
+                        .consumeWith(
+                                json().inPath("$.result").inPath("$.array[*]").isEqualTo(List.of(1, 3, 3))))
                 .hasMessageStartingWith(
                         """
                 JSON documents are different:
