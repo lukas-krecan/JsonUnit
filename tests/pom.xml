@@ -21,7 +21,6 @@
         <module>test-gson</module>
         <module>test-jsonorg</module>
         <module>test-moshi</module>
-        <module>test-json-path</module>
         <module>test-no-hamcrest</module>
         <module>test-junit4</module>
     </modules>
