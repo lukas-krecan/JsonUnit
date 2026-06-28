@@ -46,7 +46,7 @@ class ComparisonMatrix {
     private ComparisonMatrix(
             List<List<Integer>> equalElements,
             int compareFrom,
-            Integer[] matches,
+            @Nullable Integer[] matches,
             List<Integer> extra,
             BitSet alreadyMatched,
             List<Node> expectedElements,

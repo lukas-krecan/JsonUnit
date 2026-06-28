@@ -7,7 +7,7 @@ import org.springframework.test.web.servlet.client.EntityExchangeResult;
 class RestTestClientUtils {
     static @Nullable String getContentAsString(EntityExchangeResult<byte[]> result) {
         Charset charset = getCharset(result);
-        byte[] responseBody = result.getResponseBody();
+        var responseBody = result.getResponseBody();
         if (responseBody != null) {
             return new String(responseBody, charset);
         } else {

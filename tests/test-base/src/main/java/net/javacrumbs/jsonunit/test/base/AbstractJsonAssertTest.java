@@ -1135,6 +1135,7 @@ public abstract class AbstractJsonAssertTest {
 
         @Override
         public void setParameter(@Nullable String parameter) {
+            requireNonNull(parameter, "Parameter for matcher cannot be null");
             this.param = new BigDecimal(parameter);
         }
     }
@@ -1176,6 +1177,7 @@ public abstract class AbstractJsonAssertTest {
 
         @Override
         public void setParameter(@Nullable String parameter) {
+            requireNonNull(parameter, "Parameter for matcher cannot be null");
             this.param = new BigDecimal(parameter);
         }
     }
