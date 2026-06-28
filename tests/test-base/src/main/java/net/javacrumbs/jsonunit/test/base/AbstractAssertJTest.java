@@ -707,6 +707,45 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void shouldIgnoreJsonPathMissingInActual() {
+        assertThatJson("{\"children\":[{\"name\":\"someName\"}]}")
+                .whenIgnoringPaths("$.children[*].id")
+                .isEqualTo("{\"children\":[{\"id\":\"ignored\",\"name\":\"someName\"}]}");
+    }
+
+    @Test
+    void shouldResolveIgnoredJsonPathFromExpected() {
+        assertThatJson(
+                        """
+                        {
+                          "fields": [
+                            {
+                              "name": "AA"
+                            },
+                            {
+                              "key": 2,
+                              "name": "AB"
+                            }
+                          ]
+                        }""")
+                .whenIgnoringPaths("$.fields[?(@.name=='AA')].key")
+                .isEqualTo(
+                        """
+                        {
+                          "fields": [
+                            {
+                              "key": 1,
+                              "name": "AA"
+                            },
+                            {
+                              "key": 2,
+                              "name": "AB"
+                            }
+                          ]
+                        }""");
+    }
+
+    @Test
     void arraySimpleIgnoringOrderNotEqualComparison() {
         assertThatJson("{\"a\":[{\"b\": 1}, {\"c\": 1}, {\"d\": 1}]}")
                 .when(Option.IGNORING_ARRAY_ORDER)

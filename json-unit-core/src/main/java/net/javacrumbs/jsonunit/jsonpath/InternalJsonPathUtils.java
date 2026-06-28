@@ -19,8 +19,10 @@ import static com.jayway.jsonpath.JsonPath.using;
 
 import com.jayway.jsonpath.Option;
 import com.jayway.jsonpath.PathNotFoundException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.JsonUtils;
@@ -33,10 +35,16 @@ public class InternalJsonPathUtils {
     private InternalJsonPathUtils() {}
 
     public static Configuration resolveJsonPaths(@Nullable Object json, Configuration configuration) {
-        Collection<String> pathsToBeIgnored = resolveJsonPaths(json, configuration.getPathsToBeIgnored());
+        return resolveJsonPaths(null, json, configuration);
+    }
+
+    public static Configuration resolveJsonPaths(
+            @Nullable Object expected, @Nullable Object actual, Configuration configuration) {
+        Collection<String> pathsToBeIgnored =
+                resolveJsonPaths(Arrays.asList(expected, actual), configuration.getPathsToBeIgnored());
         List<PathOption> pathOptions = configuration.getPathOptions().stream()
                 .map(po -> {
-                    List<String> newPoPaths = resolveJsonPaths(json, po.getPaths());
+                    List<String> newPoPaths = resolveJsonPaths(Arrays.asList(expected, actual), po.getPaths());
                     return po.withPaths(newPoPaths);
                 })
                 .toList();
@@ -44,7 +52,7 @@ public class InternalJsonPathUtils {
         return configuration.whenIgnoringPaths(pathsToBeIgnored).withPathOptions(pathOptions);
     }
 
-    private static List<String> resolveJsonPaths(@Nullable Object json, Collection<String> paths) {
+    private static List<String> resolveJsonPaths(List<@Nullable Object> jsons, Collection<String> paths) {
         com.jayway.jsonpath.Configuration conf = com.jayway.jsonpath.Configuration.builder()
                 .options(Option.AS_PATH_LIST, Option.SUPPRESS_EXCEPTIONS)
                 .build();
@@ -52,15 +60,18 @@ public class InternalJsonPathUtils {
         return paths.stream()
                 .flatMap(path -> {
                     if (path.startsWith("$")) {
-                        if (json == null) {
-                            return Stream.empty();
-                        }
-                        List<String> resolvedPaths = readValue(conf, json, path);
-                        return resolvedPaths.stream().map(InternalJsonPathUtils::fromBracketNotation);
+                        Stream<String> originalPath = Stream.of(path);
+                        Stream<String> resolvedPaths = jsons.stream()
+                                .filter(Objects::nonNull)
+                                .flatMap(json ->
+                                        InternalJsonPathUtils.<List<String>>readValue(conf, json, path).stream())
+                                .map(InternalJsonPathUtils::fromBracketNotation);
+                        return Stream.concat(originalPath, resolvedPaths);
                     } else {
                         return Stream.of(path);
                     }
                 })
+                .distinct()
                 .toList();
     }
 

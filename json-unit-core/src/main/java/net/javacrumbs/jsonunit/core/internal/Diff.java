@@ -38,6 +38,7 @@ import static net.javacrumbs.jsonunit.core.internal.Node.KeyValue;
 import static net.javacrumbs.jsonunit.core.internal.Node.MISSING_NODE;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType;
 import static net.javacrumbs.jsonunit.core.internal.Normalizer.toNormalizedString;
+import static net.javacrumbs.jsonunit.jsonpath.InternalJsonPathUtils.resolveJsonPaths;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -148,11 +149,12 @@ public class Diff {
             Path path,
             Configuration configuration,
             String differenceString) {
+        Configuration resolvedConfiguration = resolveJsonPaths(expected, actual, configuration);
         return new Diff(
                 convertToJson(quoteIfNeeded(expected), "expected", true),
                 convertToJson(actual, actualName, false),
                 path,
-                configuration,
+                resolvedConfiguration,
                 DEFAULT_DIFF_LOGGER,
                 DEFAULT_VALUE_LOGGER,
                 differenceString);

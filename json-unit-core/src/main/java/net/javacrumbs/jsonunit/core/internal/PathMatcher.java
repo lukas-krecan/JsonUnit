@@ -67,7 +67,17 @@ abstract class PathMatcher {
     private static class ArrayWildcardMatcher extends PathMatcher {
         private final Pattern pattern;
 
+        // JsonPath-based ignores may keep the original "$" path when there is no concrete match.
+        // Compare against JsonUnit paths too, so "$.array[*].id" still matches "array[0].id".
+        private final @Nullable Pattern normalizedPattern;
+
         ArrayWildcardMatcher(String path) {
+            this.pattern = Pattern.compile(toRegex(path));
+            String normalizedPath = removeRootPrefix(path);
+            this.normalizedPattern = normalizedPath.equals(path) ? null : Pattern.compile(toRegex(normalizedPath));
+        }
+
+        private static String toRegex(String path) {
             StringBuilder regexp = new StringBuilder();
             int from = 0;
             int to;
@@ -79,12 +89,24 @@ abstract class PathMatcher {
             if (from < path.length()) {
                 regexp.append("\\Q").append(path.substring(from)).append("\\E");
             }
-            pattern = Pattern.compile(regexp.toString());
+            return regexp.toString();
+        }
+
+        private static String removeRootPrefix(String path) {
+            if (path.startsWith("$.")) {
+                return path.substring(2);
+            } else if (path.startsWith("$[")) {
+                return path.substring(1);
+            } else {
+                return path;
+            }
         }
 
         @Override
         boolean matches(String pathToMatch) {
-            return pattern.matcher(pathToMatch).matches();
+            return pattern.matcher(pathToMatch).matches()
+                    || (normalizedPattern != null
+                            && normalizedPattern.matcher(pathToMatch).matches());
         }
     }
 
