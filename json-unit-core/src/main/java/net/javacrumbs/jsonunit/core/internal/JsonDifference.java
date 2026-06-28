@@ -19,18 +19,18 @@ import org.jspecify.annotations.Nullable;
 
 class JsonDifference {
     private final String message;
-    private final Object[] args;
+    private final @Nullable Object[] args;
     private final @Nullable Node expected;
     private final @Nullable Node actual;
 
-    private JsonDifference(String message, Object[] args, @Nullable Node expected, @Nullable Node actual) {
+    private JsonDifference(String message, @Nullable Object[] args, @Nullable Node expected, @Nullable Node actual) {
         this.message = message;
         this.args = args;
         this.expected = expected;
         this.actual = actual;
     }
 
-    JsonDifference(Context context, String message, Object... args) {
+    JsonDifference(Context context, String message, @Nullable Object... args) {
         this(message, args, context.expectedNode(), context.actualNode());
     }
 
