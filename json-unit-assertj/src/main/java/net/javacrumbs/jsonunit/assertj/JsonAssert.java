@@ -48,6 +48,7 @@ import net.javacrumbs.jsonunit.core.internal.matchers.InternalMatcher;
 import net.javacrumbs.jsonunit.core.listener.DifferenceListener;
 import net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter;
 import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.api.AbstractAssertWithComparator;
 import org.assertj.core.api.AbstractStringAssert;
 import org.assertj.core.api.BigDecimalAssert;
 import org.assertj.core.api.BigIntegerAssert;
@@ -61,8 +62,9 @@ import org.hamcrest.Matcher;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
+// FIXME: implement Assert and delegate to AbstractAssertWithComparator
 @NullMarked
-public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
+public class JsonAssert extends AbstractAssertWithComparator<JsonAssert, Object> {
     final Path path;
     final Configuration configuration;
 
