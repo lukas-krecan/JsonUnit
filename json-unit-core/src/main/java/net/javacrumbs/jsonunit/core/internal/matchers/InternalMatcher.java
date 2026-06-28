@@ -71,77 +71,6 @@ public final class InternalMatcher {
         this(actual, path, description, configuration, "Node \"" + path + "\"");
     }
 
-    public InternalMatcher whenIgnoringPaths(String... pathsToBeIgnored) {
-        return new InternalMatcher(actual, path, description, configuration.whenIgnoringPaths(pathsToBeIgnored));
-    }
-
-    /**
-     * Sets the description of this object.
-     */
-    public InternalMatcher describedAs(String description) {
-        return new InternalMatcher(actual, path, description, configuration);
-    }
-
-    /**
-     * Sets the placeholder that can be used to ignore values.
-     * The default value is ${json-unit.ignore}
-     */
-    public InternalMatcher withIgnorePlaceholder(String ignorePlaceholder) {
-        return new InternalMatcher(actual, path, description, configuration.withIgnorePlaceholder(ignorePlaceholder));
-    }
-
-    /**
-     * Sets the tolerance for floating number comparison. If set to null, requires exact match of the values.
-     * For example, if set to 0.01, ignores all differences lower than 0.01, so 1 and 0.9999 are considered equal.
-     */
-    public InternalMatcher withTolerance(double tolerance) {
-        return withTolerance(BigDecimal.valueOf(tolerance));
-    }
-
-    /**
-     * Sets the tolerance for floating number comparison. If set to null, requires exact match of the values.
-     * For example, if set to 0.01, ignores all differences lower than 0.01, so 1 and 0.9999 are considered equal.
-     */
-    public InternalMatcher withTolerance(@Nullable BigDecimal tolerance) {
-        return new InternalMatcher(actual, path, description, configuration.withTolerance(tolerance));
-    }
-
-    /**
-     * Adds a internalMatcher to be used in ${json-unit.matches:matcherName} macro.
-     */
-    public InternalMatcher withMatcher(String matcherName, Matcher<?> matcher) {
-        return new InternalMatcher(actual, path, description, configuration.withMatcher(matcherName, matcher));
-    }
-
-    public InternalMatcher withDifferenceListener(DifferenceListener differenceListener) {
-        return new InternalMatcher(actual, path, description, configuration.withDifferenceListener(differenceListener));
-    }
-
-    /**
-     * Sets options changing comparison behavior. This method has to be called
-     * <b>before</b> assertion.
-     * For more info see {@link net.javacrumbs.jsonunit.core.Option}
-     *
-     *
-     *
-     * @see net.javacrumbs.jsonunit.core.Option
-     */
-    public InternalMatcher withOptions(Option firstOption, Option... otherOptions) {
-        return new InternalMatcher(actual, path, description, configuration.withOptions(firstOption, otherOptions));
-    }
-
-    /**
-     * Sets advanced/local options. This method has to be called <b>before</b> assertion.
-     * For more info see {@link Configuration#when(PathsParam, ApplicableForPath...)}
-     *
-     *
-     *
-     * @see Configuration#when(PathsParam, ApplicableForPath...)
-     */
-    public InternalMatcher when(PathsParam object, ApplicableForPath... actions) {
-        return new InternalMatcher(actual, path, description, configuration.when(object, actions));
-    }
-
     public void isEqualTo(@Nullable Object expected) {
         Diff diff = createDiff(expected, configuration);
         diff.failIfDifferent(description);
@@ -188,19 +117,6 @@ public final class InternalMatcher {
         }
     }
 
-    /**
-     * Creates an assert object that only compares given node.
-     * The path is denoted by JSON path, for example.
-     *
-     * <code>
-     * assertThatJson("{\"root\":{\"test\":[1,2,3]}}").node("root.test[0]").isEqualTo("1");
-     * </code>
-     *
-     *
-     */
-    public InternalMatcher node(String newPath) {
-        return new InternalMatcher(actual, path.copy(newPath), description, configuration);
-    }
 
     private Diff createDiff(@Nullable Object expected, Configuration configuration) {
         return Diff.create(expected, actual, ACTUAL, path, configuration);
