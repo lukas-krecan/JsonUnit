@@ -1,8 +1,6 @@
 package net.javacrumbs.jsonunit.kotest
 
-import io.kotest.assertions.print.Printed
 import io.kotest.assertions.throwables.shouldNotThrowAny
-import io.kotest.matchers.DiffableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.and
@@ -18,7 +16,6 @@ import net.javacrumbs.jsonunit.core.internal.Node.NodeType
 import net.javacrumbs.jsonunit.core.internal.Path
 import net.javacrumbs.jsonunit.jsonpath.InternalJsonPathUtils
 import net.javacrumbs.jsonunit.jsonpath.JsonPathAdapter
-import org.opentest4j.AssertionFailedError
 
 /**
  * Returns a [Matcher] that verifies that two JSON objects are equal. Can be customized by providing configuration like
@@ -138,7 +135,7 @@ fun Any?.shouldBeJsonObject(): Map<String, *> {
 }
 
 private class JsonSourceWrapper(val originalJson: Any?, val jsonSource: Any?) {
-     override fun toString(): String {
+    override fun toString(): String {
         return jsonSource.toString()
     }
 }

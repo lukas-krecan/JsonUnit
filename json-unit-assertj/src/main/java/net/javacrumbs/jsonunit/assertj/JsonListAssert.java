@@ -23,7 +23,6 @@ import net.javacrumbs.jsonunit.core.Configuration;
 import net.javacrumbs.jsonunit.core.internal.Diff;
 import net.javacrumbs.jsonunit.core.internal.Path;
 import org.assertj.core.api.AbstractListAssert;
-import org.assertj.core.api.FactoryBasedNavigableListAssert;
 import org.assertj.core.description.Description;
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.jspecify.annotations.Nullable;
@@ -64,7 +63,7 @@ public class JsonListAssert extends AbstractListAssert<JsonListAssert, List<?>, 
         if (diff.similar()) {
             JsonComparisonStrategy strategy = new JsonComparisonStrategy(configuration);
             throwAssertionError(new BasicErrorMessageFactory(
-                "%nExpecting:%n <%s>%nnot to be equal to:%n <%s>%n%s", actual, other, strategy));
+                    "%nExpecting:%n <%s>%nnot to be equal to:%n <%s>%n%s", actual, other, strategy));
         }
         return this;
     }

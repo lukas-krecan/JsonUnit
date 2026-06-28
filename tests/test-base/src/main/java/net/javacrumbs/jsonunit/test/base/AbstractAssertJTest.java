@@ -797,9 +797,7 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void shouldUseCondition() {
-        assertThatJson("{\"a\":1}")
-            .node("a")
-            .is(anyOf(matching(jsonNodeAbsent("")), not(matching(jsonEquals(null)))));
+        assertThatJson("{\"a\":1}").node("a").is(anyOf(matching(jsonNodeAbsent("")), not(matching(jsonEquals(null)))));
     }
 
     @Test

@@ -1370,8 +1370,8 @@ public abstract class AbstractJsonAssertTest {
 
     @Test
     void shouldSupportJsonPathWhenActualIsNull() {
-        assertThatThrownBy(() -> assertJsonEquals("{\"name\":\"someName\"}", null, Configuration.empty()
-                        .whenIgnoringPaths("$.children[*].id")))
+        assertThatThrownBy(() -> assertJsonEquals(
+                        "{\"name\":\"someName\"}", null, Configuration.empty().whenIgnoringPaths("$.children[*].id")))
                 .hasMessage(
                         """
                 JSON documents are different:
