@@ -20,7 +20,7 @@
             net.javacrumbs.jsonunit.core.internal,
             net.javacrumbs.jsonunit.core.internal.matchers,
             net.javacrumbs.jsonunit.core.listener,
-            net.javacrumbs.jsonunit.jsonpath.*
+            net.javacrumbs.jsonunit.jsonpath
         </osgi.exportPackage>
     </properties>
 
