@@ -794,6 +794,12 @@ public abstract class AbstractJsonAssertTest {
     }
 
     @Test
+    void assertPartNotEqualsShouldFailWithJsonPath() {
+        assertThatThrownBy(() -> assertJsonPartNotEquals("[1]", "{\"test\":{\"value\":1}}", "$..value"))
+                .hasMessage("Expected different values in node \"$..value\" but the values were equal.");
+    }
+
+    @Test
     void assertNotEqualsShouldPass() {
         assertJsonNotEquals("{\"test\":{\"value\":2}}", "{\"test\":{\"value\":1}}");
     }
@@ -1360,6 +1366,17 @@ public abstract class AbstractJsonAssertTest {
                   ]
                 }""",
                 Configuration.empty().whenIgnoringPaths("$.children[*].id"));
+    }
+
+    @Test
+    void shouldSupportJsonPathWhenActualIsNull() {
+        assertThatThrownBy(() -> assertJsonEquals("{\"name\":\"someName\"}", null, Configuration.empty()
+                        .whenIgnoringPaths("$.children[*].id")))
+                .hasMessage(
+                        """
+                JSON documents are different:
+                Different value found in node "", expected: <{"name":"someName"}> but was: <null>.
+                """);
     }
 
     @Test

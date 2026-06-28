@@ -52,6 +52,9 @@ public class InternalJsonPathUtils {
         return paths.stream()
                 .flatMap(path -> {
                     if (path.startsWith("$")) {
+                        if (json == null) {
+                            return Stream.empty();
+                        }
                         List<String> resolvedPaths = readValue(conf, json, path);
                         return resolvedPaths.stream().map(InternalJsonPathUtils::fromBracketNotation);
                     } else {

@@ -121,7 +121,7 @@ public class JsonAssert {
      */
     public static void assertJsonPartNotEquals(
             Object expected, Object fullJson, String path, Configuration configuration) {
-        Diff diff = create(expected, fullJson, FULL_JSON, path, resolveJsonPaths(fullJson, configuration));
+        Diff diff = create(expected, path(fullJson, path), FULL_JSON, ROOT, resolveJsonPaths(fullJson, configuration));
         if (diff.similar()) {
             if (ROOT.equals(path)) {
                 doFail("Expected different values but the values were equal.");
