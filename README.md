@@ -213,6 +213,9 @@ mockMvc.perform(get("/sample").andExpect(
     json().node("result.string2").isAbsent()
 );
 mockMvc.perform(get("/sample").andExpect(
+    json().inPath("$.result.array[1]").isEqualTo(2)
+);
+mockMvc.perform(get("/sample").andExpect(
     json().node("result.array").when(Option.IGNORING_ARRAY_ORDER).isEqualTo(new int[]{3, 2, 1})
 );
 mockMvc.perform(get("/sample").andExpect(
@@ -256,6 +259,9 @@ client.get().uri(path).exchange().expectBody().consumeWith(
 );
 client.get().uri(path).exchange().expectBody().consumeWith(
     json().node("result.string2").isAbsent()
+);
+client.get().uri(path).exchange().expectBody().consumeWith(
+    json().inPath("$.result.array[1]").isEqualTo(2)
 );
 client.get().uri(path).exchange().expectBody().consumeWith(
     json().node("result.array").when(Option.IGNORING_ARRAY_ORDER).isEqualTo(new int[]{3, 2, 1})
@@ -302,6 +308,9 @@ client.get().uri(path).accept(MediaType.APPLICATION_JSON)
 
 client.get().uri(path).exchange().expectBody()
     .consumeWith(json().node("result.string").isEqualTo("stringValue"));
+
+client.get().uri(path).exchange().expectBody()
+    .consumeWith(json().inPath("$.result.array[1]").isEqualTo(2));
 
 client.get().uri(path).exchange().expectBody()
     .consumeWith(json().node("result.array")
@@ -429,10 +438,11 @@ And enjoy:
 See the [tests](https://github.com/lukas-krecan/JsonUnit/blob/master/json-unit-kotest/src/test/kotlin/net/javacrumbs/jsonunit/kotest/test/KotestTest.kt) for more examples.
 
 # Features
-JsonUnit support all this features regardless of API you use.
+Most JsonUnit features are available regardless of the API you use.
 
 ## <a name="jsonpath"></a>JsonPath support
-You can use JsonPath navigation together with JsonUnit. It has native support in AssertJ and Spring integration, so you can do something like this:
+You can use JsonPath navigation together with JsonUnit. It is supported by AssertJ, Spring integration, Kotest and the
+core `JsonAssert` API. JsonPath is part of `json-unit-core`, so there is no separate `json-unit-json-path` module.
 
 ```java
 // AssertJ style
@@ -447,6 +457,39 @@ assertThatJson(json)
             "                \"price\": 8.96\n" +
             "            }"
     ));
+// JsonAssert API
+assertJsonPartEquals("[1]", "{\"test\":{\"value\":1}}", "$..value");
+
+// Spring
+mockMvc.perform(get("/sample"))
+    .andExpect(json().inPath("$.result.array[1]").isEqualTo(2));
+```
+
+```kotlin
+// Kotest
+"""{"test": [{"a": "a"}, {"a": true}, {"a": null}, {"a": 4}]}""" inPath "$.test[*].a" should
+    equalJson("""["a", true, null, 4]""")
+```
+
+JsonPath can also be used in path-based configuration, for example ignored paths or local options:
+
+```java
+assertThatJson(json)
+    .whenIgnoringPaths("$.store.book[*].price")
+    .inPath("$.store.book[0]")
+    .isEqualTo("""
+        {
+            "category": "reference",
+            "author": "Nigel Rees",
+            "title": "Sayings of the Century",
+            "price": 0
+        }""");
+
+mockMvc.perform(get("/sample"))
+    .andExpect(json().when(paths("$..array"), then(IGNORING_ARRAY_ORDER))
+        .when(IGNORING_EXTRA_FIELDS)
+        .inPath("$.result")
+        .isEqualTo("{array: [1, 3, 2]}"));
 ```
 
 ## <a name="ignorevalues"></a>Ignoring values
@@ -496,9 +539,9 @@ assertThatJson("[{\"a\":1, \"b\":2},{\"a\":1, \"b\":3}]")
     .whenIgnoringPaths("[*].b")
     .isEqualTo("[{\"a\":1, \"b\":0},{\"a\":1, \"b\":0}]");
 ```
-Please note that if you use JsonPath, you should start the path to be ignored by `$`
-Also note that `whenIgnoringPaths` method supports full JsonPath syntax only in AssertJ API, all the other flavors support only
-exact path or array index placeholder as described above.
+Please note that if you use JsonPath, you should start the path to be ignored by `$`. Full JsonPath syntax in
+`whenIgnoringPaths` and path-specific options is supported by AssertJ, JsonAssert, Spring and Kotest APIs. Hamcrest
+matchers support exact paths and array index placeholder as described above.
 
 JsonPath with whenIgnoringPaths example:
 ```java
