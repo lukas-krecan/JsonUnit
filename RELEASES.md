@@ -1,5 +1,8 @@
 Release notes
 =============
+## 6.0.1 (2026-07-07)
+* Compatibility with Kotlin 2.2.0 brought back
+
 ## 6.0.0 (2026-07-07)
 * JsonPath support moved to `json-unit-core`, removing the separate `json-unit-json-path` module
 * JsonAssert supports JsonPath
