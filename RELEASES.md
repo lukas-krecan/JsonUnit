@@ -1,5 +1,12 @@
 Release notes
 =============
+## 6.0.0 (2026-07-07)
+* JsonPath support moved to `json-unit-core`, removing the separate `json-unit-json-path` module
+* JsonAssert supports JsonPath
+* Kotest supports JsonPath
+* Spring assertions support JsonPath in path-specific options
+* Dependency updates
+
 ## 5.1.2 (2026-05-28)
 * Dependency updates
 
@@ -499,4 +506,3 @@ Release notes
 
 ## 0.0.2
 * Support for nulls
-
