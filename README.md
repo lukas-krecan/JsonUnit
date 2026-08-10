@@ -515,6 +515,19 @@ assertThatJson("{\"root\":{\"test\":1, \"ignored\": null}}")
 
 The assertion will not fail if the element is missing in the actual value.
 
+## <a name="missingornull"></a>Missing or null
+If the element should be missing or null, you can use `${json-unit.missing-or-null}`
+placeholder.
+
+```java
+// AssertJ API
+assertThatJson("{\"root\":{\"test\":1}}")
+      .isEqualTo("{\"root\":{\"test\":1, \"optional\": \"${json-unit.missing-or-null}\"}}");
+```
+
+The assertion will fail if the element has any non-null value. You can also use hash instead of dollar
+`#{json-unit.missing-or-null}` for example if you are using language with string interpolation like Kotlin.
+
 ## <a name="ignorepaths"></a>Ignoring paths
 
 `whenIgnoringPaths` configuration option makes JsonUnit ignore the specified paths in the actual value. If the path
