@@ -1,5 +1,9 @@
 Release notes
 =============
+## 6.1.0 (2026-08-10)
+* Support for ${json-unit.missing-or-null}
+* Dependency updates
+
 ## 6.0.1 (2026-07-07)
 * Compatibility with Kotlin 2.2.0 brought back
 
