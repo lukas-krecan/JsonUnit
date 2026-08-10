@@ -75,6 +75,7 @@ public class Diff {
     private static final Pattern ANY_BOOLEAN_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.any-boolean\\}");
     private static final Pattern ANY_STRING_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.any-string\\}");
     private static final Pattern ANY_ARRAY_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.any-array\\}");
+    private static final Pattern MISSING_OR_NULL_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.missing-or-null\\}");
 
     private static final Pattern REGEX_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.regex\\}(.*)");
     private static final Pattern MATCHER_PLACEHOLDER_PATTERN =
@@ -163,8 +164,10 @@ public class Diff {
             Node part = startPath.getNode(actualRoot);
             Context context = new Context(expectedRoot, part, startPath, startPath, configuration);
             if (part.isMissingNode()) {
-                addDifference(context, "Missing node in path \"%s\".", startPath);
-                reportDifference(missing(context));
+                if (!isMissingOrNullPlaceholder(expectedRoot)) {
+                    addDifference(context, "Missing node in path \"%s\".", startPath);
+                    reportDifference(missing(context));
+                }
             } else {
                 try {
                     compareNodes(context);
@@ -229,7 +232,10 @@ public class Diff {
     }
 
     private void removeMissingIgnoredElements(Node expected, Set<String> missingKeys) {
-        missingKeys.removeIf(missingKey -> shouldIgnoreElement(expected.get(missingKey)));
+        missingKeys.removeIf(missingKey -> {
+            Node expectedNode = expected.get(missingKey);
+            return shouldIgnoreElement(expectedNode) || isMissingOrNullPlaceholder(expectedNode);
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -336,6 +342,10 @@ public class Diff {
             return;
         }
 
+        if (checkMissingOrNull(context)) {
+            return;
+        }
+
         // Any number
         if (checkAny(NodeType.NUMBER, ANY_NUMBER_PLACEHOLDER, "a number", context)) {
             return;
@@ -404,6 +414,29 @@ public class Diff {
     private boolean shouldIgnoreElement(Node expectedNode) {
         return expectedNode.getNodeType() == NodeType.STRING
                 && "${json-unit.ignore-element}".equals(expectedNode.asText());
+    }
+
+    private boolean isMissingOrNullPlaceholder(Node expectedNode) {
+        return expectedNode.getNodeType() == NodeType.STRING
+                && MISSING_OR_NULL_PLACEHOLDER.matcher(expectedNode.asText()).matches();
+    }
+
+    private boolean checkMissingOrNull(Context context) {
+        Node expectedNode = context.expectedNode();
+        Node actualNode = context.actualNode();
+
+        if (isMissingOrNullPlaceholder(expectedNode)) {
+            if (!actualNode.isMissingNode() && !actualNode.isNull()) {
+                addAndReportDifference(
+                        context,
+                        "Different value found in node \"%s\", " + differenceString() + ".",
+                        context.actualPath(),
+                        "missing or null",
+                        quoteTextValue(actualNode));
+            }
+            return true;
+        }
+        return false;
     }
 
     private boolean shouldIgnorePath(Path fieldPath) {

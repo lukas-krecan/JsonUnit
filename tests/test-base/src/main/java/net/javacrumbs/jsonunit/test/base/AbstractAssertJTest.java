@@ -438,6 +438,74 @@ public abstract class AbstractAssertJTest {
     }
 
     @Test
+    void shouldTreatMissingOrNullAsMissing() {
+        assertThatJson("{\"root\":{\"test\":1}}")
+                .isEqualTo("{\"root\":{\"test\":1, \"optional\": \"${json-unit.missing-or-null}\"}}");
+    }
+
+    @Test
+    void shouldTreatMissingOrNullAsNull() {
+        assertThatJson("{\"root\":{\"test\":1, \"optional\": null}}")
+                .isEqualTo("{\"root\":{\"test\":1, \"optional\": \"${json-unit.missing-or-null}\"}}");
+    }
+
+    @Test
+    void missingOrNullShouldFailOnValue() {
+        assertThatThrownBy(() -> assertThatJson("{\"root\":{\"test\":1, \"optional\": \"value\"}}")
+                        .isEqualTo("{\"root\":{\"test\":1, \"optional\": \"${json-unit.missing-or-null}\"}}"))
+                .hasMessage(
+                        """
+                    JSON documents are different:
+                    Different value found in node "root.optional", expected: <missing or null> but was: <"value">.
+                    """);
+    }
+
+    @Test
+    void missingOrNullShouldNotIgnoreExtraFields() {
+        assertThatThrownBy(() -> assertThatJson("{\"root\":{\"test\":1, \"extra\": 2}}")
+                        .isEqualTo("{\"root\":{\"test\":1, \"optional\": \"${json-unit.missing-or-null}\"}}"))
+                .hasMessage(
+                        """
+                    JSON documents are different:
+                    Different keys found in node "root", extra: "root.extra", expected: <{"optional":"${json-unit.missing-or-null}","test":1}> but was: <{"extra":2,"test":1}>
+                    """);
+    }
+
+    @Test
+    void missingOrNullShouldWorkWhenIgnoringExtraFields() {
+        assertThatJson(
+                        """
+                    {
+                      "id": 11,
+                      "creationTimestamp": 1785745559434,
+                      "updatedTimestamp": 1785745559435,
+                      "details": {
+                        "job": "software tester"
+                      },
+                      "name": "John",
+                      "extra": "ignored",
+                      "status": "active"
+                    }
+                    """)
+                .when(IGNORING_EXTRA_FIELDS)
+                .isEqualTo(
+                        """
+                    {
+                      "id": "${json-unit.any-number}",
+                      "creationTimestamp": "${json-unit.any-number}",
+                      "updatedTimestamp": "${json-unit.any-number}",
+                      "details": {
+                        "job": "software tester",
+                        "salary": "${json-unit.missing-or-null}"
+                      },
+                      "name": "John",
+                      "previousEmployee": "${json-unit.missing-or-null}",
+                      "status": "active"
+                    }
+                    """);
+    }
+
+    @Test
     void shouldAssertObjectJson() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": 1}}")
                         .node("a")
