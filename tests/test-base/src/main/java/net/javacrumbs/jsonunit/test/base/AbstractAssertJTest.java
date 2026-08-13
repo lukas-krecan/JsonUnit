@@ -25,6 +25,10 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.JSON;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.value;
+import static net.javacrumbs.jsonunit.assertj.JsonConditions.nodeAbsent;
+import static net.javacrumbs.jsonunit.assertj.JsonConditions.nodeNotNull;
+import static net.javacrumbs.jsonunit.assertj.JsonConditions.nodeNull;
+import static net.javacrumbs.jsonunit.assertj.JsonConditions.nodePresent;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.path;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.paths;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.rootPath;
@@ -866,6 +870,42 @@ public abstract class AbstractAssertJTest {
     @Test
     void shouldUseCondition() {
         assertThatJson("{\"a\":1}").node("a").is(anyOf(matching(jsonNodeAbsent("")), not(matching(jsonEquals(null)))));
+    }
+
+    @Test
+    void shouldUseJsonConditions() {
+        assertThatJson("{\"a\":1}")
+                .node("a")
+                .is(nodePresent())
+                .is(nodeNotNull())
+                .is(not(nodeNull()));
+        assertThatJson("{\"a\":null}")
+                .node("a")
+                .is(nodePresent())
+                .is(nodeNull())
+                .is(not(nodeNotNull()));
+        assertThatJson("{\"a\":1}").node("b").is(nodeAbsent()).is(not(nodePresent()));
+    }
+
+    @Test
+    void shouldCombineJsonConditions() {
+        assertThatJson("{\"a\":null}").node("a").is(anyOf(nodeAbsent(), nodeNull()));
+        assertThatJson("{\"a\":1}").node("b").is(anyOf(nodeAbsent(), nodeNull()));
+    }
+
+    @Test
+    void shouldFailCombinedJsonConditions() {
+        assertThatThrownBy(() -> assertThatJson("{\"a\":1}").node("a").is(anyOf(nodeAbsent(), nodeNull())))
+                .hasMessage(
+                        "\n"
+                                + """
+                    Expecting actual:
+                      1
+                    to be:
+                    [\u2717] any of:[
+                       [\u2717] node to be absent,
+                       [\u2717] node to be null
+                    ]""");
     }
 
     @Test
