@@ -25,10 +25,10 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.JSON;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.value;
-import static net.javacrumbs.jsonunit.assertj.JsonConditions.nodeAbsent;
-import static net.javacrumbs.jsonunit.assertj.JsonConditions.nodeNotNull;
-import static net.javacrumbs.jsonunit.assertj.JsonConditions.nodeNull;
-import static net.javacrumbs.jsonunit.assertj.JsonConditions.nodePresent;
+import static net.javacrumbs.jsonunit.assertj.JsonConditions.absent;
+import static net.javacrumbs.jsonunit.assertj.JsonConditions.notNullValue;
+import static net.javacrumbs.jsonunit.assertj.JsonConditions.nullValue;
+import static net.javacrumbs.jsonunit.assertj.JsonConditions.present;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.path;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.paths;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.rootPath;
@@ -876,26 +876,26 @@ public abstract class AbstractAssertJTest {
     void shouldUseJsonConditions() {
         assertThatJson("{\"a\":1}")
                 .node("a")
-                .is(nodePresent())
-                .is(nodeNotNull())
-                .is(not(nodeNull()));
+                .is(present())
+                .is(notNullValue())
+                .is(not(nullValue()));
         assertThatJson("{\"a\":null}")
                 .node("a")
-                .is(nodePresent())
-                .is(nodeNull())
-                .is(not(nodeNotNull()));
-        assertThatJson("{\"a\":1}").node("b").is(nodeAbsent()).is(not(nodePresent()));
+                .is(present())
+                .is(nullValue())
+                .is(not(notNullValue()));
+        assertThatJson("{\"a\":1}").node("b").is(absent()).is(not(present()));
     }
 
     @Test
     void shouldCombineJsonConditions() {
-        assertThatJson("{\"a\":null}").node("a").is(anyOf(nodeAbsent(), nodeNull()));
-        assertThatJson("{\"a\":1}").node("b").is(anyOf(nodeAbsent(), nodeNull()));
+        assertThatJson("{\"a\":null}").node("a").is(anyOf(absent(), nullValue()));
+        assertThatJson("{\"a\":1}").node("b").is(anyOf(absent(), nullValue()));
     }
 
     @Test
     void shouldFailCombinedJsonConditions() {
-        assertThatThrownBy(() -> assertThatJson("{\"a\":1}").node("a").is(anyOf(nodeAbsent(), nodeNull())))
+        assertThatThrownBy(() -> assertThatJson("{\"a\":1}").node("a").is(anyOf(absent(), nullValue())))
                 .hasMessage(
                         "\n"
                                 + """

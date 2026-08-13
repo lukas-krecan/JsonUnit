@@ -28,7 +28,7 @@ import org.jspecify.annotations.Nullable;
  * <pre>{@code
  * assertThatJson(actual)
  *     .node("optional")
- *     .is(anyOf(nodeAbsent(), nodeNull()));
+ *     .is(anyOf(absent(), nullValue()));
  * }</pre>
  */
 @NullMarked
@@ -39,28 +39,28 @@ public final class JsonConditions {
     /**
      * Creates condition that matches when the selected node is absent.
      */
-    public static Condition<Object> nodeAbsent() {
+    public static Condition<Object> absent() {
         return nodeCondition(Node::isMissingNode, "node to be absent");
     }
 
     /**
      * Creates condition that matches when the selected node is present.
      */
-    public static Condition<Object> nodePresent() {
+    public static Condition<Object> present() {
         return nodeCondition(node -> !node.isMissingNode(), "node to be present");
     }
 
     /**
      * Creates condition that matches when the selected node is present and null.
      */
-    public static Condition<Object> nodeNull() {
+    public static Condition<Object> nullValue() {
         return nodeCondition(Node::isNull, "node to be null");
     }
 
     /**
      * Creates condition that matches when the selected node is present and not null.
      */
-    public static Condition<Object> nodeNotNull() {
+    public static Condition<Object> notNullValue() {
         return nodeCondition(node -> !node.isMissingNode() && !node.isNull(), "node to be not null");
     }
 

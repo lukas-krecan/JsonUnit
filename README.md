@@ -39,8 +39,8 @@ The recommended API is AssertJ integration which combines the power of JsonUnit 
 ```java
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
-import static net.javacrumbs.jsonunit.assertj.JsonConditions.nodeAbsent;
-import static net.javacrumbs.jsonunit.assertj.JsonConditions.nodeNull;
+import static net.javacrumbs.jsonunit.assertj.JsonConditions.absent;
+import static net.javacrumbs.jsonunit.assertj.JsonConditions.nullValue;
 import static org.assertj.core.api.Assertions.anyOf;
 
 ...
@@ -85,7 +85,7 @@ assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}").and(
 // AssertJ conditions
 assertThatJson("{\"test\": null}")
     .node("test")
-    .is(anyOf(nodeAbsent(), nodeNull()));
+    .is(anyOf(absent(), nullValue()));
 
 // JsonPath support
 assertThatJson(json)
