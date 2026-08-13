@@ -26,7 +26,6 @@ import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.json;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.value;
 import static net.javacrumbs.jsonunit.assertj.JsonConditions.absent;
-import static net.javacrumbs.jsonunit.assertj.JsonConditions.notNullValue;
 import static net.javacrumbs.jsonunit.assertj.JsonConditions.nullValue;
 import static net.javacrumbs.jsonunit.assertj.JsonConditions.present;
 import static net.javacrumbs.jsonunit.core.ConfigurationWhen.path;
@@ -877,13 +876,8 @@ public abstract class AbstractAssertJTest {
         assertThatJson("{\"a\":1}")
                 .node("a")
                 .is(present())
-                .is(notNullValue())
                 .is(not(nullValue()));
-        assertThatJson("{\"a\":null}")
-                .node("a")
-                .is(present())
-                .is(nullValue())
-                .is(not(notNullValue()));
+        assertThatJson("{\"a\":null}").node("a").is(present()).is(nullValue());
         assertThatJson("{\"a\":1}").node("b").is(absent()).is(not(present()));
     }
 
@@ -906,6 +900,17 @@ public abstract class AbstractAssertJTest {
                        [\u2717] node to be absent,
                        [\u2717] node to be null
                     ]""");
+    }
+
+    @Test
+    void shouldFailNegatedJsonCondition() {
+        assertThatThrownBy(() -> assertThatJson("{\"a\":null}").node("a").is(not(nullValue())))
+                .hasMessage(
+                        "\n"
+                                + """
+                    Expecting actual:
+                      null
+                    to be not :<node to be null>""");
     }
 
     @Test

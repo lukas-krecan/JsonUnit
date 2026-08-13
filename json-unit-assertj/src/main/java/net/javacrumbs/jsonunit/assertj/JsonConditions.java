@@ -57,13 +57,6 @@ public final class JsonConditions {
         return nodeCondition(Node::isNull, "node to be null");
     }
 
-    /**
-     * Creates condition that matches when the selected node is present and not null.
-     */
-    public static Condition<Object> notNullValue() {
-        return nodeCondition(node -> !node.isMissingNode() && !node.isNull(), "node to be not null");
-    }
-
     private static Condition<Object> nodeCondition(Predicate<Node> predicate, String description) {
         return new Condition<>(actual -> predicate.test(toNode(actual)), description);
     }
