@@ -24,6 +24,8 @@
         <kotlin.compiler.languageVersion>2.2</kotlin.compiler.languageVersion>
         <kotlin.compiler.apiVersion>2.2</kotlin.compiler.apiVersion>
         <bnd.version>7.3.0</bnd.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <symbolic.name>${project.groupId}.${project.artifactId}</symbolic.name>
         <osgi.importPackage>!kotlin.*,*</osgi.importPackage>
         <osgi.exportPackage />
@@ -32,12 +34,6 @@
     <packaging>pom</packaging>
 
     <description>Unit testing library that can decide if to JSON documents are equal. Strongly inspired by XmlUnit.</description>
-
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>9</version>
-    </parent>
 
     <developers>
         <developer>
@@ -362,6 +358,30 @@
             </activation>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.3.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar-no-fork</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
