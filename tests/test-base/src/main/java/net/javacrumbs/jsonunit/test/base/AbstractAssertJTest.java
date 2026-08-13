@@ -873,10 +873,7 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void shouldUseJsonConditions() {
-        assertThatJson("{\"a\":1}")
-                .node("a")
-                .is(present())
-                .is(not(nullValue()));
+        assertThatJson("{\"a\":1}").node("a").is(present()).is(not(nullValue()));
         assertThatJson("{\"a\":null}").node("a").is(present()).is(nullValue());
         assertThatJson("{\"a\":1}").node("b").is(absent()).is(not(present()));
     }
