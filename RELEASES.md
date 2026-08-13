@@ -1,5 +1,9 @@
 Release notes
 =============
+## 6.2.0 (2026-08-13)
+* Support for AssertJ conditions
+* Dependency updates
+
 ## 6.1.0 (2026-08-10)
 * Support for ${json-unit.missing-or-null}
 * Dependency updates
