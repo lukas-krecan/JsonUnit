@@ -15,6 +15,9 @@
  */
 package net.javacrumbs.jsonunit.test.johnzon;
 
+import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
+
+import java.math.BigDecimal;
 import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
 import org.junit.jupiter.api.Disabled;
@@ -44,4 +47,12 @@ public class JohnzonAssertJTest extends AbstractAssertJTest {
     @Override
     @Disabled
     protected void shouldAssertLenient() {}
+
+    @Override
+    @Test
+    protected void shouldEqualNumberInObject() {
+        TestBean actual = new TestBean(new BigDecimal("2.00"));
+        String expected = "{ \"demo\": \"2.00\" }";
+        assertThatJson(actual).withTolerance(0).isEqualTo(expected);
+    }
 }

@@ -1495,10 +1495,10 @@ public abstract class AbstractAssertJTest {
     }
 
     @SuppressWarnings({"UnusedMethod", "EffectivelyPrivate"})
-    private static class TestBean {
+    protected static class TestBean {
         final BigDecimal demo;
 
-        TestBean(BigDecimal demo) {
+        public TestBean(BigDecimal demo) {
             this.demo = demo;
         }
 
