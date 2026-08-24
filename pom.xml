@@ -23,7 +23,7 @@
         <kotlin.version>2.4.10</kotlin.version>
         <kotlin.compiler.languageVersion>2.2</kotlin.compiler.languageVersion>
         <kotlin.compiler.apiVersion>2.2</kotlin.compiler.apiVersion>
-        <bnd.version>7.3.0</bnd.version>
+        <bnd.version>7.4.0</bnd.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <symbolic.name>${project.groupId}.${project.artifactId}</symbolic.name>
