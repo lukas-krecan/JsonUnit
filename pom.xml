@@ -14,6 +14,7 @@
         <johnzon.version>2.2.0</johnzon.version>
         <geronimo.jsonp.version>1.5</geronimo.jsonp.version>
         <jsonorg.version>20260814</jsonorg.version>
+        <wiremock.version>3.13.2</wiremock.version>
         <slf4j.version>2.0.19</slf4j.version>
         <assertj.version>3.27.7</assertj.version>
         <target.java.version>17</target.java.version>
@@ -246,6 +247,7 @@
                         <artifact>test-kotlin</artifact>
                         <artifact>test-moshi</artifact>
                         <artifact>test-no-hamcrest</artifact>
+                        <artifact>test-wiremock</artifact>
                     </excludeArtifacts>
                 </configuration>
             </plugin>

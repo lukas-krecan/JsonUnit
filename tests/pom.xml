@@ -22,6 +22,7 @@
         <module>test-jsonorg</module>
         <module>test-moshi</module>
         <module>test-no-hamcrest</module>
+        <module>test-wiremock</module>
     </modules>
 
     <build>
