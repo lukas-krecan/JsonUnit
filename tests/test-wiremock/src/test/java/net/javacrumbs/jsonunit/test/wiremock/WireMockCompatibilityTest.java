@@ -6,41 +6,67 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+import com.github.tomakehurst.wiremock.client.VerificationException;
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Objects;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class WireMockCompatibilityTest {
+    private WireMockServer wireMockServer;
+
+    @BeforeEach
+    void startWireMock() {
+        wireMockServer = new WireMockServer(WireMockConfiguration.options().dynamicPort());
+        wireMockServer.start();
+    }
+
+    @AfterEach
+    void stopWireMock() {
+        wireMockServer.stop();
+    }
 
     @Test
     void wireMockJsonMatchingWorksWithCurrentJsonUnit() throws Exception {
-        WireMockServer wireMockServer =
-                new WireMockServer(WireMockConfiguration.options().dynamicPort());
+        wireMockServer.stubFor(post(urlEqualTo("/json"))
+                .withRequestBody(equalToJson("{\"id\":1,\"name\":\"test\"}", true, true))
+                .willReturn(ok("matched")));
 
-        try {
-            wireMockServer.start();
+        HttpResponse<String> response = sendJson(wireMockServer.baseUrl() + "/json", "{\"name\":\"test\",\"id\":1}");
 
-            wireMockServer.stubFor(post(urlEqualTo("/json"))
-                    .withRequestBody(equalToJson("{\"id\":1,\"name\":\"test\"}", true, true))
-                    .willReturn(ok("matched")));
+        assertEquals(200, response.statusCode());
+        assertEquals("matched", response.body());
 
-            HttpResponse<String> response =
-                    sendJson(wireMockServer.baseUrl() + "/json", "{\"name\":\"test\",\"id\":1}");
+        wireMockServer.verify(postRequestedFor(urlEqualTo("/json"))
+                .withRequestBody(equalToJson("{\"id\":1,\"name\":\"test\"}", true, true)));
+    }
 
-            assertEquals(200, response.statusCode());
-            assertEquals("matched", response.body());
+    @Test
+    void wireMockThrowsVerificationExceptionWhenJsonDoesNotMatch() throws Exception {
+        wireMockServer.stubFor(post(urlEqualTo("/json")).willReturn(ok("received")));
 
-            wireMockServer.verify(postRequestedFor(urlEqualTo("/json"))
-                    .withRequestBody(equalToJson("{\"id\":1,\"name\":\"test\"}", true, true)));
-        } finally {
-            wireMockServer.stop();
-        }
+        sendJson(wireMockServer.baseUrl() + "/json", "{\"id\":2,\"name\":\"test\"}");
+
+        VerificationException exception = assertThrows(
+                VerificationException.class,
+                () -> wireMockServer.verify(postRequestedFor(urlEqualTo("/json"))
+                        .withRequestBody(equalToJson("{\"id\":1,\"name\":\"test\"}", true, true))));
+
+        String message = Objects.requireNonNull(exception.getMessage());
+        assertTrue(message.contains("No requests exactly matched. Most similar request was:"));
+        assertTrue(message.contains("[equalToJson]"));
+        assertTrue(message.contains("\"id\" : 1"));
+        assertTrue(message.contains("\"id\" : 2"));
     }
 
     private static HttpResponse<String> sendJson(String url, String body) throws IOException, InterruptedException {
