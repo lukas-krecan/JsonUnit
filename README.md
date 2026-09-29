@@ -26,6 +26,7 @@ JsonUnit is a library that simplifies JSON comparison in tests.
   * [Lenient parsing of expected value](#lenient-parsing-of-expected-value)
   * [DifferenceListener](#differencelistener)
   * [Jackson Object Mapper customization](#jackson-object-mapper-customization)
+- [Release signing](#release-signing)
 - [Release notes](#release-notes)
 
 
@@ -913,6 +914,11 @@ or `System.setProperty("json-unit.libraries", "jackson2");`. Supported values ar
 Licence
 -------
 JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/LICENSE-2.0).
+
+Release signing
+===============
+Releases published to Maven Central since 2024 are signed with the following OpenPGP key
+[EED6 2020 3884 9B47 FEEA  D1EC 9266 3261 61C2 6F29](https://keyserver.ubuntu.com/pks/lookup?search=EED6202038849B47FEEAD1EC9266326161C26F29&fingerprint=on&op=index)
 
 Release notes
 =============
