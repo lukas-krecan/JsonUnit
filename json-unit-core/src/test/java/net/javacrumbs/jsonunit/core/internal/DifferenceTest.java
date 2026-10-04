@@ -46,6 +46,32 @@ public class DifferenceTest {
     private final RecordingDifferenceListener listener = new RecordingDifferenceListener();
 
     @Test
+    void shouldPreserveSharedMatchesWhenComparingUnorderedArraysWithTolerance() {
+        Diff diff = Diff.create(
+                "[0, 1, 2]",
+                "[1, 1, -1]",
+                "",
+                "",
+                commonConfig().withOptions(IGNORING_ARRAY_ORDER).withTolerance(1));
+
+        assertThat(diff.similar()).isTrue();
+        assertThat(listener.getDifferenceList()).isEmpty();
+    }
+
+    @Test
+    void shouldPreserveSharedMatchesWhenIgnoringExtraFieldsInUnorderedArrays() {
+        Diff diff = Diff.create(
+                "[{\"a\": 1}, {\"b\": 2}, {\"c\": 3}]",
+                "[{\"a\": 1, \"b\": 2, \"c\": 3}, {\"a\": 1, \"b\": 2, \"c\": 3}, {\"a\": 1}]",
+                "",
+                "",
+                commonConfig().withOptions(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_FIELDS));
+
+        assertThat(diff.similar()).isTrue();
+        assertThat(listener.getDifferenceList()).isEmpty();
+    }
+
+    @Test
     void shouldSeeEmptyDiffNodes() {
         Diff diff = Diff.create("{}", "{}", "", "", commonConfig());
         diff.similar();

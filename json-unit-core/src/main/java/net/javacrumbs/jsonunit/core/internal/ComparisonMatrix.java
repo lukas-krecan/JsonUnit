@@ -158,7 +158,7 @@ class ComparisonMatrix {
                         for (int j = 0;
                                 j < min(equivalentElements.size(), equalToUsedOnlyInEquivalentElements.size());
                                 j++) {
-                            recordMatch(equivalentElements.get(j), equalTo.get(j));
+                            recordMatch(equivalentElements.get(j), equalToUsedOnlyInEquivalentElements.get(j));
                         }
                     }
                 }
