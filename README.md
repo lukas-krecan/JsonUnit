@@ -917,8 +917,11 @@ JsonUnit is licensed under [Apache 2.0 licence](https://www.apache.org/licenses/
 
 Release signing
 ===============
-Releases published to Maven Central since 2024 are signed with the following OpenPGP key
-[EED6 2020 3884 9B47 FEEA  D1EC 9266 3261 61C2 6F29](https://keyserver.ubuntu.com/pks/lookup?search=EED6202038849B47FEEAD1EC9266326161C26F29&fingerprint=on&op=index)
+Releases published to Maven Central are signed with OpenPGP keys listed in [KEYS](KEYS).
+Recent releases use
+[0E51 9FB0 02B9 DE71 010C  6BA9 BBF5 AC5A 3CDB FD37](https://keyserver.ubuntu.com/pks/lookup?search=0E519FB002B9DE71010C6BA9BBF5AC5A3CDBFD37&fingerprint=on&op=index);
+some older releases use
+[EED6 2020 3884 9B47 FEEA  D1EC 9266 3261 61C2 6F29](https://keyserver.ubuntu.com/pks/lookup?search=EED6202038849B47FEEAD1EC9266326161C26F29&fingerprint=on&op=index).
 
 Release notes
 =============
