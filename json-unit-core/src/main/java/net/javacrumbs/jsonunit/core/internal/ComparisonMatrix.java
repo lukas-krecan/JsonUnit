@@ -29,14 +29,35 @@ import net.javacrumbs.jsonunit.core.Configuration;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Stores comparison result when comparing two arrays.
+ * Stores possible matches between actual and expected array elements and resolves them to a one-to-one matching.
+ *
+ * <p>Rows are actual elements, columns are expected elements. A value in {@link #equalElements} means that the row's
+ * actual element is similar to the corresponding expected element under the current comparison options.
  */
 class ComparisonMatrix {
-    private final List<List<Integer>>
-            equalElements; // equalElements[actualIndex] = [expectedElementIndex1, expectedElementIndex2, ...]
+    /**
+     * equalElements[actualIndex] contains expected indexes that can be matched by actualIndex.
+     */
+    private final List<List<Integer>> equalElements;
+
+    /**
+     * First actual index that still has to be considered in this matrix branch.
+     */
     private final int compareFrom;
-    private final @Nullable Integer[] matches; // matches[expectedElementIndex] = actualElementIndex
+
+    /**
+     * matches[expectedIndex] contains the actual index selected for that expected element.
+     */
+    private final @Nullable Integer[] matches;
+
+    /**
+     * Actual indexes that could not be matched to any expected element.
+     */
     private final List<Integer> extra;
+
+    /**
+     * Actual indexes already consumed by {@link #recordMatch(int, int)}.
+     */
     private final BitSet alreadyMatched;
 
     // just for debugging
@@ -75,7 +96,7 @@ class ComparisonMatrix {
             List<Node> expectedElements, List<Node> actualElements, Path path, Configuration configuration) {
         List<List<Integer>> equalElements = new ArrayList<>(actualElements.size());
 
-        // Compare all elements
+        // Compare every actual element to every expected element before resolving any pairings.
         for (int i = 0; i < actualElements.size(); i++) {
             Node actual = actualElements.get(i);
             ArrayList<Integer> actualIsEqualTo = new ArrayList<>(expectedElements.size());
@@ -90,7 +111,6 @@ class ComparisonMatrix {
 
             equalElements.add(unmodifiableList(actualIsEqualTo));
         }
-        // System.out.println(actualElements + " x " + expectedElements + " -> " + equalElements);
         return equalElements;
     }
 
@@ -116,8 +136,8 @@ class ComparisonMatrix {
                 if (matches.size() == 1) {
                     recordMatch(i, matches.get(0));
                 } else if (!matches.isEmpty()) {
-                    // we have more matches, since comparison does not have to be transitive ([1, 2] == [2] == [2, 3]),
-                    // we have to check all the possibilities
+                    // Similarity is not necessarily transitive: for example [1, 2] == [2] == [2, 3], but [1, 2] may
+                    // not equal [2, 3]. Try every candidate until a complete matching is found.
                     for (int match : matches) {
                         ComparisonMatrix copy = copy(i + 1);
                         copy.recordMatch(i, match);
@@ -137,8 +157,11 @@ class ComparisonMatrix {
     }
 
     /**
-     * Algorithm above is not effective when we are comparing arrays with a lot of matching values like [1,1,1,1,1,1] vs [8,1,1,1,1,1].
-     * We can make it faster if we collapse simple matching values.
+     * Collapses deterministic parts of the matrix before recursive matching.
+     *
+     * <p>The recursive algorithm is expensive for arrays with many repeated values, for example [1,1,1,1,1,1] vs
+     * [8,1,1,1,1,1]. When several actual elements have exactly the same candidate expected elements, we can often
+     * match some of them immediately without changing whether a complete matching exists.
      */
     private void doSimpleMatching() {
         for (int i = 0; i < equalElements.size(); i++) {
@@ -147,7 +170,8 @@ class ComparisonMatrix {
                 if (!equalTo.isEmpty()) {
                     List<Integer> equivalentElements = getEquivalentElements(equalTo);
 
-                    // We have the same set matching as is equivalent, we can remove them all
+                    // The group has exactly as many actual elements as expected candidates, so none of those candidates
+                    // can be needed outside the group.
                     if (equalTo.size() == equivalentElements.size()) {
                         for (int j = 0; j < equivalentElements.size(); j++) {
                             recordMatch(equivalentElements.get(j), equalTo.get(j));
@@ -155,6 +179,8 @@ class ComparisonMatrix {
                     } else if (equivalentElements.size() > 1 && equalTo.size() > 1) {
                         List<Integer> equalToUsedOnlyInEquivalentElements =
                                 getEqualToUsedOnlyInEquivalentElements(equalTo, equivalentElements);
+                        // Only consume expected candidates that no other actual element can use. Shared candidates have
+                        // to stay available for the recursive search.
                         for (int j = 0;
                                 j < min(equivalentElements.size(), equalToUsedOnlyInEquivalentElements.size());
                                 j++) {
@@ -167,9 +193,10 @@ class ComparisonMatrix {
     }
 
     /**
-     * If there are more equivalent elements, we can match those that are not used anywhere else
-     * we iterate over actual elements that are not in equivalentElements and from equalTo remove those
-     * that are used outside equivalent elements
+     * Returns candidates from {@code equalTo} that are not used by actual elements outside {@code equivalentElements}.
+     *
+     * <p>Those candidates are safe to greedily assign to the equivalent group. Any candidate also used outside the group
+     * must be preserved for the recursive search because it might be the only way to match another actual element.
      */
     private List<Integer> getEqualToUsedOnlyInEquivalentElements(
             List<Integer> equalTo, List<Integer> equivalentElements) {
@@ -184,6 +211,9 @@ class ComparisonMatrix {
         return result;
     }
 
+    /**
+     * Finds unmatched actual elements with the same candidate expected indexes as the current actual element.
+     */
     private List<Integer> getEquivalentElements(List<Integer> equalTo) {
         List<Integer> equivalentElements = new ArrayList<>();
         for (int i = 0; i < equalElements.size(); i++) {
@@ -217,7 +247,7 @@ class ComparisonMatrix {
 
     private void recordMatch(int actualIndex, int expectedIndex) {
         matches[expectedIndex] = actualIndex;
-        // remove all matches of expectedIndex
+        // Once an expected element has been consumed, remove it from every unresolved actual row.
         for (int i = 0; i < equalElements.size(); i++) {
             if (!alreadyMatched.get(i)) {
                 equalElements.set(
