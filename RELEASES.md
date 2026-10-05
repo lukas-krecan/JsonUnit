@@ -1,5 +1,9 @@
 Release notes
 =============
+## 6.3.0 (2026-10-05)
+* Fix unordered array comparison #1206 (thanks @PHJ2000)
+* Dependency updates
+
 ## 6.2.0 (2026-08-13)
 * Support for AssertJ conditions
 * Dependency updates

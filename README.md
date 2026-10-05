@@ -168,7 +168,7 @@ To use AssertJ integration, import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-assertj</artifactId>
-    <version>6.2.0</version>
+    <version>6.3.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -201,7 +201,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit</artifactId>
-    <version>6.2.0</version>
+    <version>6.3.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -249,7 +249,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>6.2.0</version>
+    <version>6.3.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -296,7 +296,7 @@ Import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>6.2.0</version>
+    <version>6.3.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -350,7 +350,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>6.2.0</version>
+    <version>6.3.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -390,7 +390,7 @@ To use import
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-spring</artifactId>
-    <version>6.2.0</version>
+    <version>6.3.0</version>
     <scope>test</scope>
 </dependency>
 ```
@@ -406,7 +406,7 @@ Import:
 <dependency>
     <groupId>net.javacrumbs.json-unit</groupId>
     <artifactId>json-unit-kotest</artifactId>
-    <version>6.2.0</version>
+    <version>6.3.0</version>
     <scope>test</scope>
 </dependency>
 ```
