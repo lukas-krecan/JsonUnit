@@ -126,9 +126,10 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void shouldFailCorrectlyOnNull() {
-        assertThatThrownBy(() -> assertThatJson(null).isEqualTo(1))
-                .hasMessage("JSON documents are different:\n"
-                        + "Different value found in node \"\", expected: <1> but was: <null>.\n");
+        assertThatThrownBy(() -> assertThatJson(null).isEqualTo(1)).hasMessage("""
+            JSON documents are different:
+            Different value found in node "", expected: <1> but was: <null>.
+            """);
     }
 
     @Test
@@ -792,7 +793,10 @@ public abstract class AbstractAssertJTest {
                         .node("a.b")
                         .isBoolean()
                         .isFalse())
-                .hasMessage("[Different value found in node \"a.b\"] \n" + "Expecting value to be false but was true");
+                .hasMessage("""
+                    [Different value found in node "a.b"]\s
+                    Expecting value to be false but was true\
+                    """);
     }
 
     @Test
@@ -870,7 +874,8 @@ public abstract class AbstractAssertJTest {
     @Test
     void shouldFailCombinedJsonConditions() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":1}").node("a").is(anyOf(absent(), nullValue())))
-                .hasMessage("\n" + """
+                .hasMessage("""
+
                     Expecting actual:
                       1
                     to be:
@@ -884,7 +889,8 @@ public abstract class AbstractAssertJTest {
     @Test
     void shouldFailNegatedJsonCondition() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":null}").node("a").is(not(nullValue())))
-                .hasMessage("\n" + """
+                .hasMessage("""
+
                     Expecting actual:
                       null
                     to be not :<node to be null>\
@@ -1048,8 +1054,10 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"a\":1.0}")
                         .withConfiguration(c -> c.withNumberComparator(numberComparator))
                         .isEqualTo("{\"a\":1}"))
-                .hasMessage("JSON documents are different:\n"
-                        + "Different value found in node \"a\", expected: <1> but was: <1.0>.\n");
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "a", expected: <1> but was: <1.0>.
+                    """);
     }
 
     @Test
@@ -1239,15 +1247,19 @@ public abstract class AbstractAssertJTest {
     @Test
     void testAssertNode() {
         assertThatThrownBy(() -> assertThatJson(readValue("{\"test\":1}")).isEqualTo(readValue("{\"test\":2}")))
-                .hasMessage("JSON documents are different:\n"
-                        + "Different value found in node \"test\", expected: <2> but was: <1>.\n");
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "test", expected: <2> but was: <1>.
+                    """);
     }
 
     @Test
     void testAssertNodeInExpectOnly() {
         assertThatThrownBy(() -> assertThatJson("{\"test\":1}").isEqualTo(readValue("{\"test\":2}")))
-                .hasMessage("JSON documents are different:\n"
-                        + "Different value found in node \"test\", expected: <2> but was: <1>.\n");
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "test", expected: <2> but was: <1>.
+                    """);
     }
 
     @Test
@@ -1255,8 +1267,10 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson(jsonSource("{\"test\":1}", "$"))
                         .node("test")
                         .isEqualTo("2"))
-                .hasMessage("JSON documents are different:\n"
-                        + "Different value found in node \"$.test\", expected: <2> but was: <1>.\n");
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "$.test", expected: <2> but was: <1>.
+                    """);
     }
 
     @Test
@@ -1286,8 +1300,10 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"root\":{\"test\":[1,2,3]}}")
                         .node("root.test[0]")
                         .isEqualTo(2))
-                .hasMessage("JSON documents are different:\n"
-                        + "Different value found in node \"root.test[0]\", expected: <2> but was: <1>.\n");
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "root.test[0]", expected: <2> but was: <1>.
+                    """);
     }
 
     @Test
@@ -1383,8 +1399,10 @@ public abstract class AbstractAssertJTest {
     void testMessage() {
         assertThatThrownBy(() ->
                         assertThatJson("{\"test\":1}").as("Test is different").isEqualTo("{\"test\":2}"))
-                .hasMessage("[Test is different] JSON documents are different:\n"
-                        + "Different value found in node \"test\", expected: <2> but was: <1>.\n");
+                .hasMessage("""
+                    [Test is different] JSON documents are different:
+                    Different value found in node "test", expected: <2> but was: <1>.
+                    """);
     }
 
     @Test
@@ -1397,16 +1415,20 @@ public abstract class AbstractAssertJTest {
     @Test
     void anyNumberShouldFailOnNull() {
         assertThatThrownBy(() -> assertThatJson("{\"test\":null}").isEqualTo("{\"test\":\"${json-unit.any-number}\"}"))
-                .hasMessage("JSON documents are different:\n"
-                        + "Different value found in node \"test\", expected: <a number> but was: <null>.\n");
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "test", expected: <a number> but was: <null>.
+                    """);
     }
 
     @Test
     void anyNumberShouldFailOnObject() {
         assertThatThrownBy(() ->
                         assertThatJson("{\"test\":{\"a\":1}}").isEqualTo("{\"test\":\"${json-unit.any-number}\"}"))
-                .hasMessage("JSON documents are different:\n"
-                        + "Different value found in node \"test\", expected: <a number> but was: <{\"a\":1}>.\n");
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "test", expected: <a number> but was: <{"a":1}>.
+                    """);
     }
 
     @Test
@@ -1418,15 +1440,19 @@ public abstract class AbstractAssertJTest {
     void anyArrayShouldFailOnObject() {
         assertThatThrownBy(
                         () -> assertThatJson("{\"test\":{\"a\":1}}").isEqualTo("{\"test\":\"${json-unit.any-array}\"}"))
-                .hasMessage("JSON documents are different:\n"
-                        + "Different value found in node \"test\", expected: <an array> but was: <{\"a\":1}>.\n");
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "test", expected: <an array> but was: <{"a":1}>.
+                    """);
     }
 
     @Test
     void anyArrayShouldFailOnNull() {
         assertThatThrownBy(() -> assertThatJson("{\"test\": null}").isEqualTo("{\"test\":\"${json-unit.any-array}\"}"))
-                .hasMessage("JSON documents are different:\n"
-                        + "Different value found in node \"test\", expected: <an array> but was: <null>.\n");
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "test", expected: <an array> but was: <null>.
+                    """);
     }
 
     @Test
@@ -1451,9 +1477,10 @@ public abstract class AbstractAssertJTest {
                         .withMatcher("positive", greaterThan(valueOf(0)))
                         .withDifferenceListener(listener)
                         .isEqualTo("{\"test\": \"${json-unit.matches:positive}\"}"))
-                .hasMessage("JSON documents are different:\n"
-                        + "Matcher \"positive\" does not match value -1 in node \"test\". Expected a value greater"
-                        + " than <0> but <-1> was less than <0>\n");
+                .hasMessage("""
+                    JSON documents are different:
+                    Matcher "positive" does not match value -1 in node "test". Expected a value greater than <0> but <-1> was less than <0>
+                    """);
 
         assertThat(listener.getDifferenceList()).hasSize(1);
         assertThat(listener.getDifferenceList().get(0).toString())
@@ -1468,11 +1495,10 @@ public abstract class AbstractAssertJTest {
                     .withMatcher("isDivisibleBy", divisionMatcher)
                     .isEqualTo("{\"test\": \"${json-unit.matches:isDivisibleBy}3\"}");
         } catch (AssertionError e) {
-            assertEquals(
-                    "JSON documents are different:\n"
-                        + "Matcher \"isDivisibleBy\" does not match value 5 in node \"test\". Expected value divisible"
-                        + " by <3> but was <5>\n",
-                    e.getMessage());
+            assertEquals("""
+                JSON documents are different:
+                Matcher "isDivisibleBy" does not match value 5 in node "test". Expected value divisible by <3> but was <5>
+                """, e.getMessage());
         }
     }
 
@@ -2071,9 +2097,10 @@ public abstract class AbstractAssertJTest {
                         .inPath("$.store.book[0]")
                         .node("title")
                         .isEqualTo("Sayings of the Century2"))
-                .hasMessage("JSON documents are different:\n"
-                        + "Different value found in node \"$.store.book[0].title\", expected: <\"Sayings of the"
-                        + " Century2\"> but was: <\"Sayings of the Century\">.\n");
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "$.store.book[0].title", expected: <"Sayings of the Century2"> but was: <"Sayings of the Century">.
+                    """);
     }
 
     @Test

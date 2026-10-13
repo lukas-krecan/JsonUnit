@@ -61,29 +61,37 @@ class AllJsonAssertTest extends AbstractJsonAssertTest {
     @Test
     void testEqualsNodeFailJackson2() {
         assertThatThrownBy(() -> assertJsonEquals(readByJackson2("{\"test\":1}"), "{\"test\": 2}"))
-                .hasMessage("JSON documents are different:\n"
-                        + "Different value found in node \"test\", expected: <1> but was: <2>.\n");
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "test", expected: <1> but was: <2>.
+                    """);
     }
 
     @Test
     void testEqualsNodeFailJackson3() {
         assertThatThrownBy(() -> assertJsonEquals(readByJackson3("{\"test\":1}"), "{\"test\": 2}"))
-                .hasMessage("JSON documents are different:\n"
-                        + "Different value found in node \"test\", expected: <1> but was: <2>.\n");
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "test", expected: <1> but was: <2>.
+                    """);
     }
 
     @Test
     void testEqualsNodeFailGson() {
         assertThatThrownBy(() -> assertJsonEquals(readByGson("{\"test\":1}"), "{\"test\": 2}"))
-                .hasMessage("JSON documents are different:\n"
-                        + "Different value found in node \"test\", expected: <1> but was: <2>.\n");
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "test", expected: <1> but was: <2>.
+                    """);
     }
 
     @Test
     void testEqualsNodeFailJsonOrg() {
         assertThatThrownBy(() -> assertJsonEquals(readByJsonOrg("{\"test\":1}"), "{\"test\": 2}"))
-                .hasMessage("JSON documents are different:\n"
-                        + "Different value found in node \"test\", expected: <1> but was: <2>.\n");
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "test", expected: <1> but was: <2>.
+                    """);
     }
 
     @Test
@@ -99,8 +107,10 @@ class AllJsonAssertTest extends AbstractJsonAssertTest {
     @Test
     void assertEqualsDifferentTypesFailsOnDifferentTypes() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\": 3}", "{\"test\": {\"inner\": 5}}", when(IGNORING_VALUES)))
-                .hasMessage("JSON documents are different:\n"
-                        + "Different value found in node \"test\", expected: <3> but was: <{\"inner\":5}>.\n");
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "test", expected: <3> but was: <{"inner":5}>.
+                    """);
     }
 
     @Test
@@ -111,8 +121,10 @@ class AllJsonAssertTest extends AbstractJsonAssertTest {
     @Test
     void testEqualsNodeStringFail() {
         assertThatThrownBy(() -> assertJsonEquals("{\"test\":\"a\"}", readByJackson2("{\"test\": \"b\"}")))
-                .hasMessage("JSON documents are different:\n"
-                        + "Different value found in node \"test\", expected: <\"a\"> but was: <\"b\">.\n");
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "test", expected: <"a"> but was: <"b">.
+                    """);
     }
 
     @Test
@@ -147,16 +159,20 @@ class AllJsonAssertTest extends AbstractJsonAssertTest {
     void dotInPathFailure() {
         assertThatThrownBy(() -> assertJsonEquals(
                         "{\"root\":{\"test\":1, \".ignored\": 1}}", "{\"root\":{\"test\":1, \".ignored\": 2}}"))
-                .hasMessage("JSON documents are different:\n"
-                        + "Different value found in node \"root..ignored\", expected: <1> but was: <2>.\n");
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "root..ignored", expected: <1> but was: <2>.
+                    """);
     }
 
     @Test
     void dotInPathMiddleFailure() {
         assertThatThrownBy(() -> assertJsonEquals(
                         "{\"root\":{\"test\":1, \"igno.red\": 1}}", "{\"root\":{\"test\":1, \"igno.red\": 2}}"))
-                .hasMessage("JSON documents are different:\n"
-                        + "Different value found in node \"root.igno.red\", expected: <1> but was: <2>.\n");
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "root.igno.red", expected: <1> but was: <2>.
+                    """);
     }
 
     @Test
