@@ -157,9 +157,10 @@ class RestTestClientTest {
         assertThatThrownBy(() -> exec().consumeWith(json().withMatcher("negative", lessThan(valueOf(0)))
                         .node("result.decimal")
                         .isEqualTo("${json-unit.matches:negative}")))
-                .hasMessage("JSON documents are different:\n"
-                        + "Matcher \"negative\" does not match value 1.00001 in node \"result.decimal\". Expected"
-                        + " a value less than <0> but <1.00001> was greater than <0>\n");
+                .hasMessage("""
+                    JSON documents are different:
+                    Matcher "negative" does not match value 1.00001 in node "result.decimal". Expected a value less than <0> but <1.00001> was greater than <0>
+                    """);
     }
 
     @Test
