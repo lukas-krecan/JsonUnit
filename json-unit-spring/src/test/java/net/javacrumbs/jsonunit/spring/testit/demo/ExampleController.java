@@ -81,7 +81,8 @@ public class ExampleController {
     }
 
     public static final String CORRECT_JSON =
-            "{\"result\":{\"string\":\"stringValue\", \"array\":[1, 2, 3],\"decimal\":1.00001, \"boolean\": true, \"null\" : null, \"utf8\":\"€\"}}";
+            "{\"result\":{\"string\":\"stringValue\", \"array\":[1, 2, 3],\"decimal\":1.00001, \"boolean\": true,"
+                    + " \"null\" : null, \"utf8\":\"€\"}}";
 
     public static final String ISO_VALUE = "Příliš žluťoučký kůň";
 }

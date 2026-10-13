@@ -42,10 +42,8 @@ public class AllAssertJTest extends AbstractAssertJTest {
                 + "}"
                 + "}";
 
-        String expected = "{" + "\"response\": {"
-                + "\"body\": \"${json-unit.matches:embeddedJson}{'message':'Success','time-sent':'${json-unit.ignore}'}\""
-                + "}"
-                + "}";
+        String expected = "{\"response\": {\"body\":"
+                + " \"${json-unit.matches:embeddedJson}{'message':'Success','time-sent':'${json-unit.ignore}'}\"}}";
 
         assertThatJson(actual)
                 .withConfiguration(c -> c.withMatcher("embeddedJson", new EmbeddedJsonMatcher()))

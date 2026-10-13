@@ -295,16 +295,14 @@ public class JsonAssert extends AbstractAssert<JsonAssert, Object> {
             InstanceOfAssertFactory<?, ASSERT> instanceOfAssertFactory) {
         Node node = internalMatcher().getActualNode();
 
-        var ass =
-                switch (node.getNodeType()) {
-                    case OBJECT ->
-                        throw new UnsupportedOperationException("asInstanceOf is not supported for Object type");
-                    case ARRAY -> createListAssert(node);
-                    case STRING -> createStringAssert(node);
-                    case NUMBER -> createBigDecimalAssert(node.decimalValue());
-                    case BOOLEAN -> createBooleanAssert(node);
-                    case NULL -> new StringAssert(null);
-                };
+        var ass = switch (node.getNodeType()) {
+            case OBJECT -> throw new UnsupportedOperationException("asInstanceOf is not supported for Object type");
+            case ARRAY -> createListAssert(node);
+            case STRING -> createStringAssert(node);
+            case NUMBER -> createBigDecimalAssert(node.decimalValue());
+            case BOOLEAN -> createBooleanAssert(node);
+            case NULL -> new StringAssert(null);
+        };
 
         return ass.asInstanceOf(instanceOfAssertFactory);
     }

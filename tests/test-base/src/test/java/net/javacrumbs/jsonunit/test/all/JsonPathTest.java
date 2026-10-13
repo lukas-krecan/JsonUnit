@@ -40,8 +40,7 @@ class JsonPathTest {
     void shouldBeAbleToUseSimpleValuesFailure() {
         assertThatThrownBy(() -> assertThatJson(inPath(json, "$.store.book[*].author"))
                         .isEqualTo("['Nigel Rees', 'Evelyn Waugh', 'Herman Melville', 'Arthur C. Clark']"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Different value found in node "$.store.book[*].author[3]", expected: <"Arthur C. Clark"> but was: <"J. R. R. Tolkien">.
                     """);
@@ -49,19 +48,15 @@ class JsonPathTest {
 
     @Test
     void shouldBeAbleToUseObjects() {
-        assertThatThrownBy(
-                        () -> assertThatJson(inPath(json, "$.store.book[0]"))
-                                .isEqualTo(
-                                        """
-                                    {
-                                        "category": "reference",
-                                        "author": "Nigel Rees",
-                                        "title": "Sayings of the Century",
-                                        "price": 8.96
-                                    }\
-                        """))
-                .hasMessage(
-                        """
+        assertThatThrownBy(() -> assertThatJson(inPath(json, "$.store.book[0]")).isEqualTo("""
+                        {
+                            "category": "reference",
+                            "author": "Nigel Rees",
+                            "title": "Sayings of the Century",
+                            "price": 8.96
+                        }\
+            """))
+                .hasMessage("""
                     JSON documents are different:
                     Different value found in node "$.store.book[0].price", expected: <8.96> but was: <8.95>.
                     """);
@@ -72,8 +67,7 @@ class JsonPathTest {
         assertThatJson(json)
                 .whenIgnoringPaths("$.store.book[*].price")
                 .inPath("$.store.book[0]")
-                .isEqualTo(
-                        """
+                .isEqualTo("""
                                 {
                                     "category": "reference",
                                     "author": "Nigel Rees",
@@ -83,43 +77,43 @@ class JsonPathTest {
                     """);
     }
 
-    private static final String json =
-            """
-            {
-                "store": {
-                    "book": [
-                        {
-                            "category": "reference",
-                            "author": "Nigel Rees",
-                            "title": "Sayings of the Century",
-                            "price": 8.95
-                        },
-                        {
-                            "category": "fiction",
-                            "author": "Evelyn Waugh",
-                            "title": "Sword of Honour",
-                            "price": 12.99
-                        },
-                        {
-                            "category": "fiction",
-                            "author": "Herman Melville",
-                            "title": "Moby Dick",
-                            "isbn": "0-553-21311-3",
-                            "price": 8.99
-                        },
-                        {
-                            "category": "fiction",
-                            "author": "J. R. R. Tolkien",
-                            "title": "The Lord of the Rings",
-                            "isbn": "0-395-19395-8",
-                            "price": 22.99
-                        }
-                    ],
-                    "bicycle": {
-                        "color": "red",
-                        "price": 19.95
+    private static final String json = """
+        {
+            "store": {
+                "book": [
+                    {
+                        "category": "reference",
+                        "author": "Nigel Rees",
+                        "title": "Sayings of the Century",
+                        "price": 8.95
+                    },
+                    {
+                        "category": "fiction",
+                        "author": "Evelyn Waugh",
+                        "title": "Sword of Honour",
+                        "price": 12.99
+                    },
+                    {
+                        "category": "fiction",
+                        "author": "Herman Melville",
+                        "title": "Moby Dick",
+                        "isbn": "0-553-21311-3",
+                        "price": 8.99
+                    },
+                    {
+                        "category": "fiction",
+                        "author": "J. R. R. Tolkien",
+                        "title": "The Lord of the Rings",
+                        "isbn": "0-395-19395-8",
+                        "price": 22.99
                     }
-                },
-                "expensive": 10
-            }""";
+                ],
+                "bicycle": {
+                    "color": "red",
+                    "price": 19.95
+                }
+            },
+            "expensive": 10
+        }\
+        """;
 }

@@ -590,7 +590,8 @@ public class Diff {
 
                 addDifference(
                         context,
-                        "Array \"%s\" has different content. Missing values: %s, extra values: %s, expected: <%s> but was: <%s>",
+                        "Array \"%s\" has different content. Missing values: %s, extra values: %s, expected: <%s> but"
+                                + " was: <%s>",
                         path,
                         missingValues,
                         extraValues,

@@ -127,8 +127,8 @@ public abstract class AbstractAssertJTest {
     @Test
     void shouldFailCorrectlyOnNull() {
         assertThatThrownBy(() -> assertThatJson(null).isEqualTo(1))
-                .hasMessage(
-                        "JSON documents are different:\nDifferent value found in node \"\", expected: <1> but was: <null>.\n");
+                .hasMessage("JSON documents are different:\n"
+                        + "Different value found in node \"\", expected: <1> but was: <null>.\n");
     }
 
     @Test
@@ -183,8 +183,7 @@ public abstract class AbstractAssertJTest {
                         .contains(
                                 entry("a", json("\"${json-unit.any-string}\"")),
                                 entry("b", json("\"${json-unit.any-number}\""))))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Different value found in node ""]\s
                     Expecting map:
                       {"a":1,"b":2}
@@ -214,14 +213,14 @@ public abstract class AbstractAssertJTest {
                         .containsAnyOf(
                                 entry("a", json("\"${json-unit.any-string}\"")),
                                 entry("b", json("\"${json-unit.any-string}\""))))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Different value found in node ""]\s
                     Expecting actual:
                       {"a":1,"b":2}
                     to contain at least one of the following elements:
                       ["a"="${json-unit.any-string}", "b"="${json-unit.any-string}"]
-                    but none were found""");
+                    but none were found\
+                    """);
     }
 
     @Test
@@ -236,13 +235,13 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson(json)
                         .isObject()
                         .containsValues(valueOf(1), valueOf(2), json("\"${json-unit.any-string}\"")))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Different value found in node ""]\s
                     Expecting actual:
                       {"a":1,"b":2}
                     to contain value:
-                      "${json-unit.any-string}\"""");
+                      "${json-unit.any-string}\"\
+                    """);
     }
 
     @Test
@@ -276,13 +275,13 @@ public abstract class AbstractAssertJTest {
                         .node("root")
                         .isObject()
                         .containsValue(json("{\"c\" :5}")))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Different value found in node "root"]\s
                     Expecting actual:
                       {"a":1,"b":{"c":3}}
                     to contain value:
-                      {"c":5}""");
+                      {"c":5}\
+                    """);
     }
 
     @Test
@@ -306,13 +305,13 @@ public abstract class AbstractAssertJTest {
                         .node("root")
                         .isObject()
                         .doesNotContainValue(json("{\"c\" :3}")))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Different value found in node "root"]\s
                     Expecting actual:
                       {"a":1,"b":{"c":3}}
                     not to contain value:
-                      {"c":3}""");
+                      {"c":3}\
+                    """);
     }
 
     @Test
@@ -334,8 +333,7 @@ public abstract class AbstractAssertJTest {
                         .inPath("$.root")
                         .isArray()
                         .containsExactly(value("450")))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Node "$.root"]\s
                     Expecting actual:
                       [450]
@@ -345,7 +343,8 @@ public abstract class AbstractAssertJTest {
                       ["450"]
                     and others were not expected:
                       [450]
-                    when comparing values using JsonComparator""");
+                    when comparing values using JsonComparator\
+                    """);
     }
 
     @Test
@@ -403,8 +402,7 @@ public abstract class AbstractAssertJTest {
     void shouldIgnoreIfMissing() {
         assertThatThrownBy(() -> assertThatJson("{\"root\":{\"test\":1}}")
                         .isEqualTo("{\"root\":{\"test\":1, \"ignored\": \"${json-unit.ignore}\"}}"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Different keys found in node "root", missing: "root.ignored", expected: <{"ignored":"${json-unit.ignore}","test":1}> but was: <{"test":1}>
                     """);
@@ -456,8 +454,7 @@ public abstract class AbstractAssertJTest {
     void missingOrNullShouldFailOnValue() {
         assertThatThrownBy(() -> assertThatJson("{\"root\":{\"test\":1, \"optional\": \"value\"}}")
                         .isEqualTo("{\"root\":{\"test\":1, \"optional\": \"${json-unit.missing-or-null}\"}}"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Different value found in node "root.optional", expected: <missing or null> but was: <"value">.
                     """);
@@ -467,8 +464,7 @@ public abstract class AbstractAssertJTest {
     void missingOrNullShouldNotIgnoreExtraFields() {
         assertThatThrownBy(() -> assertThatJson("{\"root\":{\"test\":1, \"extra\": 2}}")
                         .isEqualTo("{\"root\":{\"test\":1, \"optional\": \"${json-unit.missing-or-null}\"}}"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Different keys found in node "root", extra: "root.extra", expected: <{"optional":"${json-unit.missing-or-null}","test":1}> but was: <{"extra":2,"test":1}>
                     """);
@@ -476,36 +472,32 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void missingOrNullShouldWorkWhenIgnoringExtraFields() {
-        assertThatJson(
-                        """
-                    {
-                      "id": 11,
-                      "creationTimestamp": 1785745559434,
-                      "updatedTimestamp": 1785745559435,
-                      "details": {
-                        "job": "software tester"
-                      },
-                      "name": "John",
-                      "extra": "ignored",
-                      "status": "active"
-                    }
-                    """)
-                .when(IGNORING_EXTRA_FIELDS)
-                .isEqualTo(
-                        """
-                    {
-                      "id": "${json-unit.any-number}",
-                      "creationTimestamp": "${json-unit.any-number}",
-                      "updatedTimestamp": "${json-unit.any-number}",
-                      "details": {
-                        "job": "software tester",
-                        "salary": "${json-unit.missing-or-null}"
-                      },
-                      "name": "John",
-                      "previousEmployee": "${json-unit.missing-or-null}",
-                      "status": "active"
-                    }
-                    """);
+        assertThatJson("""
+            {
+              "id": 11,
+              "creationTimestamp": 1785745559434,
+              "updatedTimestamp": 1785745559435,
+              "details": {
+                "job": "software tester"
+              },
+              "name": "John",
+              "extra": "ignored",
+              "status": "active"
+            }
+            """).when(IGNORING_EXTRA_FIELDS).isEqualTo("""
+                {
+                  "id": "${json-unit.any-number}",
+                  "creationTimestamp": "${json-unit.any-number}",
+                  "updatedTimestamp": "${json-unit.any-number}",
+                  "details": {
+                    "job": "software tester",
+                    "salary": "${json-unit.missing-or-null}"
+                  },
+                  "name": "John",
+                  "previousEmployee": "${json-unit.missing-or-null}",
+                  "status": "active"
+                }
+                """);
     }
 
     @Test
@@ -514,8 +506,7 @@ public abstract class AbstractAssertJTest {
                         .node("a")
                         .isObject()
                         .isEqualTo(json("{\"b\": 2}")))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Different value found in node "a.b", expected: <2> but was: <1>.
                     """);
@@ -532,8 +523,7 @@ public abstract class AbstractAssertJTest {
                         .node("a")
                         .isObject()
                         .contains(entry("b", valueOf(2))))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Different value found in node "a"]\s
                     Expecting map:
                       {"b":1}
@@ -555,8 +545,7 @@ public abstract class AbstractAssertJTest {
                         .node("a")
                         .isObject()
                         .containsOnlyKeys("b", "c", "d"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Different value found in node "a"]\s
                     Expecting actual:
                       {"b":1,"c":true}
@@ -581,8 +570,7 @@ public abstract class AbstractAssertJTest {
                         .node("a")
                         .isObject()
                         .containsAllEntriesOf(singletonMap("c", false)))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Different value found in node "a"]\s
                     Expecting map:
                       {"b":1,"c":true}
@@ -596,8 +584,7 @@ public abstract class AbstractAssertJTest {
     @Test
     void shouldAssertJson() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": 1}}").node("a").isEqualTo(json("{\"b\": 2}")))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Different value found in node "a.b", expected: <2> but was: <1>.
                     """);
@@ -625,14 +612,14 @@ public abstract class AbstractAssertJTest {
                         .node("a")
                         .isObject()
                         .isNotEqualTo(json("{\"b\":\"${json-unit.any-string}\"}")))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Different value found in node "a"]\s
                     Expecting actual:
                       {"b":"string"}
                     not to be equal to:
                       {"b":"${json-unit.any-string}"}
-                    when comparing values using JsonComparator""");
+                    when comparing values using JsonComparator\
+                    """);
     }
 
     @Test
@@ -641,8 +628,7 @@ public abstract class AbstractAssertJTest {
                         .node("a")
                         .isObject()
                         .isEqualTo(json("{\"b\":\"${json-unit.any-string}\"}")))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Different value found in node "a.b", expected: <a string> but was: <1>.
                     """);
@@ -654,8 +640,7 @@ public abstract class AbstractAssertJTest {
                         .node("a.b")
                         .isString()
                         .startsWith("bar"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Different value found in node "a.b"]\s
                     Expecting actual:
                       "foo"
@@ -671,8 +656,7 @@ public abstract class AbstractAssertJTest {
                         .isString()
                         .as("Sad!")
                         .startsWith("bar"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Sad!]\s
                     Expecting actual:
                       "foo"
@@ -731,8 +715,7 @@ public abstract class AbstractAssertJTest {
                         .node("a")
                         .isArray()
                         .isEqualTo(json("[{\"c\": 2}, {\"b\": 1} ,{\"d\": 1}]")))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Different value found when comparing expected array element a[0] to actual element a[1].
                     Different value found in node "a[1].c", expected: <2> but was: <1>.
@@ -750,8 +733,8 @@ public abstract class AbstractAssertJTest {
                 .satisfies(e -> {
                     List<Throwable> failures = e.getFailures();
                     assertThat(failures.get(0).getMessage())
-                            .isEqualTo(
-                                    "Different value found when comparing expected array element a[0] to actual element a[1].");
+                            .isEqualTo("Different value found when comparing expected array element a[0] to actual"
+                                    + " element a[1].");
                     assertThat(failures.get(1).getMessage())
                             .isEqualTo("Different value found in node \"a[1].c\", expected: <2> but was: <1>.");
                 });
@@ -793,14 +776,14 @@ public abstract class AbstractAssertJTest {
                         .node("a")
                         .isArray()
                         .isNotEqualTo(json("[{\"c\": 1}, {\"b\": 1} ,{\"d\": 1}]")))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Node "a"]\s
                     Expecting:
                      <[{"b":1}, {"c":1}, {"d":1}]>
                     not to be equal to:
                      <[{"c":1},{"b":1},{"d":1}]>
-                    when comparing as JSON with [IGNORING_ARRAY_ORDER]""");
+                    when comparing as JSON with [IGNORING_ARRAY_ORDER]\
+                    """);
     }
 
     @Test
@@ -849,11 +832,11 @@ public abstract class AbstractAssertJTest {
                         .node("b")
                         .isNumber()
                         .isEqualByComparingTo("2"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Different value found in node "a.b"]\s
                     expected: 2
-                     but was: 1""");
+                     but was: 1\
+                    """);
     }
 
     @Test
@@ -887,27 +870,25 @@ public abstract class AbstractAssertJTest {
     @Test
     void shouldFailCombinedJsonConditions() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":1}").node("a").is(anyOf(absent(), nullValue())))
-                .hasMessage(
-                        "\n"
-                                + """
+                .hasMessage("\n" + """
                     Expecting actual:
                       1
                     to be:
                     [\u2717] any of:[
                        [\u2717] node to be absent,
                        [\u2717] node to be null
-                    ]""");
+                    ]\
+                    """);
     }
 
     @Test
     void shouldFailNegatedJsonCondition() {
         assertThatThrownBy(() -> assertThatJson("{\"a\":null}").node("a").is(not(nullValue())))
-                .hasMessage(
-                        "\n"
-                                + """
+                .hasMessage("\n" + """
                     Expecting actual:
                       null
-                    to be not :<node to be null>""");
+                    to be not :<node to be null>\
+                    """);
     }
 
     @Test
@@ -925,15 +906,15 @@ public abstract class AbstractAssertJTest {
                         .node("a.b")
                         .isUri()
                         .hasScheme("http"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Different value found in node "a.b"]\s
                     Expecting scheme of
                       <test>
                     to be:
                       <"http">
                     but was:
-                      <null>""");
+                      <null>\
+                    """);
     }
 
     @Test
@@ -983,7 +964,8 @@ public abstract class AbstractAssertJTest {
                         .inPath("$.[*].c")
                         .isAbsent())
                 .hasMessage(
-                        "Different value found in nodes \"[$[0].c, $[2].c]\", expected: <node to be absent> but was: <[{\"x\":2},{\"x\":2}]>.");
+                        "Different value found in nodes \"[$[0].c, $[2].c]\", expected: <node to be absent> but was:"
+                                + " <[{\"x\":2},{\"x\":2}]>.");
     }
 
     @Test
@@ -1066,8 +1048,8 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"a\":1.0}")
                         .withConfiguration(c -> c.withNumberComparator(numberComparator))
                         .isEqualTo("{\"a\":1}"))
-                .hasMessage(
-                        "JSON documents are different:\nDifferent value found in node \"a\", expected: <1> but was: <1.0>.\n");
+                .hasMessage("JSON documents are different:\n"
+                        + "Different value found in node \"a\", expected: <1> but was: <1.0>.\n");
     }
 
     @Test
@@ -1083,12 +1065,12 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void arrayExtractingShouldPass() {
-        assertThatJson(
-                        """
-                [
-                      {"id": 1, "name":{"first":"Aaron"}},
-                      {"id": 2, "name":{"first":"Paul"}}
-                    ]""")
+        assertThatJson("""
+            [
+                  {"id": 1, "name":{"first":"Aaron"}},
+                  {"id": 2, "name":{"first":"Paul"}}
+                ]\
+            """)
                 .isArray()
                 .extracting("id", "name")
                 .contains(tuple(valueOf(1), "{\"first\":\"Aaron\"}"), tuple(valueOf(2), "{\"first\":\"Paul\"}"));
@@ -1096,18 +1078,17 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void arrayExtractingShouldFail() {
-        assertThatThrownBy(() -> assertThatJson(
-                                """
-                [
-                      {"id": 1, "name":{"first":"Aaron"}},
-                      {"id": 2, "name":{"first":"John"}}
-                    ]""")
+        assertThatThrownBy(() -> assertThatJson("""
+            [
+                  {"id": 1, "name":{"first":"Aaron"}},
+                  {"id": 2, "name":{"first":"John"}}
+                ]\
+            """)
                         .isArray()
                         .extracting("id", "name")
                         .contains(
                                 tuple(valueOf(1), "{\"first\":\"Aaron\"}"), tuple(valueOf(2), "{\"first\":\"Paul\"}")))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Node ""]\s
                     Expecting ArrayList:
                       [(1, {"first":"Aaron"}), (2, {"first":"John"})]
@@ -1115,24 +1096,24 @@ public abstract class AbstractAssertJTest {
                       [(1, "{"first":"Aaron"}"), (2, "{"first":"Paul"}")]
                     but could not find the following element(s):
                       [(2, "{"first":"Paul"}")]
-                    when comparing values using JsonComparator""");
+                    when comparing values using JsonComparator\
+                    """);
     }
 
     @Test
     void arrayExtractingShouldFailOnDifferentLengthTuple() {
-        assertThatThrownBy(() -> assertThatJson(
-                                """
-                [
-                      {"id": 1, "name":{"first":"Aaron"}},
-                      {"id": 2, "name":{"first":"John"}}
-                    ]""")
+        assertThatThrownBy(() -> assertThatJson("""
+            [
+                  {"id": 1, "name":{"first":"Aaron"}},
+                  {"id": 2, "name":{"first":"John"}}
+                ]\
+            """)
                         .isArray()
                         .extracting("id", "name")
                         .contains(
                                 tuple(valueOf(1), "{\"first\":\"Aaron\"}", 3),
                                 tuple(valueOf(2), "{\"first\":\"John\"}")))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Node ""]\s
                     Expecting ArrayList:
                       [(1, {"first":"Aaron"}), (2, {"first":"John"})]
@@ -1140,17 +1121,21 @@ public abstract class AbstractAssertJTest {
                       [(1, "{"first":"Aaron"}", 3), (2, "{"first":"John"}")]
                     but could not find the following element(s):
                       [(1, "{"first":"Aaron"}", 3)]
-                    when comparing values using JsonComparator""");
+                    when comparing values using JsonComparator\
+                    """);
     }
 
     @Test
     void shouldNotParseTwice() {
         String result = "{\"bundles\":[\"http://localhost:33621/rms/framework/bundle/0\"]}";
-        assertThatJson(result).and(JsonAssert::isObject, j -> j.node("bundles")
-                .isArray()
-                .element(0)
-                .asString()
-                .contains("http://", "/framework/bundle/0"));
+        assertThatJson(result)
+                .and(
+                        JsonAssert::isObject,
+                        j -> j.node("bundles")
+                                .isArray()
+                                .element(0)
+                                .asString()
+                                .contains("http://", "/framework/bundle/0"));
     }
 
     @Test
@@ -1162,8 +1147,8 @@ public abstract class AbstractAssertJTest {
                         .isArray()
                         .element(0)
                         .isNumber())
-                .hasMessage(
-                        "Node \"bundles\" element at index 0 has invalid type, expected: <number> but was: <\"http://localhost:33621/rms/framework/bundle/0\">.");
+                .hasMessage("Node \"bundles\" element at index 0 has invalid type, expected: <number> but was:"
+                        + " <\"http://localhost:33621/rms/framework/bundle/0\">.");
     }
 
     @Test
@@ -1189,17 +1174,16 @@ public abstract class AbstractAssertJTest {
     @Test
     void containsValue() {
         assertThatThrownBy(() -> assertThatJson("{\"a\": 1}").isObject().containsKey("lastModified2"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Different value found in node ""]\s
                     Expecting actual:
                       {"a":1}
                     to contain key:
-                      "lastModified2\"""");
+                      "lastModified2\"\
+                    """);
 
         assertThatThrownBy(() -> assertThatJson("{\"a\": 1}").isObject().contains(entry("lastModified2", null)))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Different value found in node ""]\s
                     Expecting map:
                       {"a":1}
@@ -1214,11 +1198,11 @@ public abstract class AbstractAssertJTest {
     void shouldAssertNumberFailure() {
         assertThatThrownBy(
                         () -> assertThatJson("{\"a\":1}").node("a").isNumber().isEqualByComparingTo("2"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Different value found in node "a"]\s
                     expected: 2
-                     but was: 1""");
+                     but was: 1\
+                    """);
     }
 
     @Test
@@ -1255,15 +1239,15 @@ public abstract class AbstractAssertJTest {
     @Test
     void testAssertNode() {
         assertThatThrownBy(() -> assertThatJson(readValue("{\"test\":1}")).isEqualTo(readValue("{\"test\":2}")))
-                .hasMessage(
-                        "JSON documents are different:\nDifferent value found in node \"test\", expected: <2> but was: <1>.\n");
+                .hasMessage("JSON documents are different:\n"
+                        + "Different value found in node \"test\", expected: <2> but was: <1>.\n");
     }
 
     @Test
     void testAssertNodeInExpectOnly() {
         assertThatThrownBy(() -> assertThatJson("{\"test\":1}").isEqualTo(readValue("{\"test\":2}")))
-                .hasMessage(
-                        "JSON documents are different:\nDifferent value found in node \"test\", expected: <2> but was: <1>.\n");
+                .hasMessage("JSON documents are different:\n"
+                        + "Different value found in node \"test\", expected: <2> but was: <1>.\n");
     }
 
     @Test
@@ -1271,8 +1255,8 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson(jsonSource("{\"test\":1}", "$"))
                         .node("test")
                         .isEqualTo("2"))
-                .hasMessage(
-                        "JSON documents are different:\nDifferent value found in node \"$.test\", expected: <2> but was: <1>.\n");
+                .hasMessage("JSON documents are different:\n"
+                        + "Different value found in node \"$.test\", expected: <2> but was: <1>.\n");
     }
 
     @Test
@@ -1280,21 +1264,21 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson(jsonSource("{\"test\":1}", "$"))
                         .node("test2")
                         .isPresent())
-                .hasMessage(
-                        "Different value found in node \"$.test2\", expected: <node to be present> but was: <missing>.");
+                .hasMessage("Different value found in node \"$.test2\", expected: <node to be present> but was:"
+                        + " <missing>.");
     }
 
     @Test
     protected void testNotEqualTo() {
         assertThatThrownBy(() -> assertThatJson("{\"test\":1}").isNotEqualTo("{\"test\": \"${json-unit.any-number}\"}"))
-                .hasMessage(
-                        """
+                .hasMessage("""
 
                     Expecting actual:
                       {"test":1}
                     not to be equal to:
                       "{"test": "${json-unit.any-number}"}"
-                    when comparing values using JsonComparator""");
+                    when comparing values using JsonComparator\
+                    """);
     }
 
     @Test
@@ -1302,15 +1286,15 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"root\":{\"test\":[1,2,3]}}")
                         .node("root.test[0]")
                         .isEqualTo(2))
-                .hasMessage(
-                        "JSON documents are different:\nDifferent value found in node \"root.test[0]\", expected: <2> but was: <1>.\n");
+                .hasMessage("JSON documents are different:\n"
+                        + "Different value found in node \"root.test[0]\", expected: <2> but was: <1>.\n");
     }
 
     @Test
     void testLongRegexp() {
         assertThatJson("{\"test\": \"This is some text followed by: ABCD, followed by this\"}")
-                .isEqualTo(
-                        "{\"test\": \"${json-unit.regex}^\\\\QThis is some text followed by: \\\\E[A-Z]+\\\\Q, followed by this\\\\E$\"}");
+                .isEqualTo("{\"test\": \"${json-unit.regex}^\\\\QThis is some text followed by: \\\\E[A-Z]+\\\\Q,"
+                        + " followed by this\\\\E$\"}");
     }
 
     @Test
@@ -1375,8 +1359,9 @@ public abstract class AbstractAssertJTest {
     @Test
     void testAnd() {
         assertThatJson(
-                "{\"test1\":2, \"test2\":1}", json -> json.inPath("test1").isEqualTo(2), json -> json.inPath("test2")
-                        .isEqualTo(1));
+                "{\"test1\":2, \"test2\":1}",
+                json -> json.inPath("test1").isEqualTo(2),
+                json -> json.inPath("test2").isEqualTo(1));
     }
 
     @Test
@@ -1398,8 +1383,8 @@ public abstract class AbstractAssertJTest {
     void testMessage() {
         assertThatThrownBy(() ->
                         assertThatJson("{\"test\":1}").as("Test is different").isEqualTo("{\"test\":2}"))
-                .hasMessage(
-                        "[Test is different] JSON documents are different:\nDifferent value found in node \"test\", expected: <2> but was: <1>.\n");
+                .hasMessage("[Test is different] JSON documents are different:\n"
+                        + "Different value found in node \"test\", expected: <2> but was: <1>.\n");
     }
 
     @Test
@@ -1412,16 +1397,16 @@ public abstract class AbstractAssertJTest {
     @Test
     void anyNumberShouldFailOnNull() {
         assertThatThrownBy(() -> assertThatJson("{\"test\":null}").isEqualTo("{\"test\":\"${json-unit.any-number}\"}"))
-                .hasMessage(
-                        "JSON documents are different:\nDifferent value found in node \"test\", expected: <a number> but was: <null>.\n");
+                .hasMessage("JSON documents are different:\n"
+                        + "Different value found in node \"test\", expected: <a number> but was: <null>.\n");
     }
 
     @Test
     void anyNumberShouldFailOnObject() {
         assertThatThrownBy(() ->
                         assertThatJson("{\"test\":{\"a\":1}}").isEqualTo("{\"test\":\"${json-unit.any-number}\"}"))
-                .hasMessage(
-                        "JSON documents are different:\nDifferent value found in node \"test\", expected: <a number> but was: <{\"a\":1}>.\n");
+                .hasMessage("JSON documents are different:\n"
+                        + "Different value found in node \"test\", expected: <a number> but was: <{\"a\":1}>.\n");
     }
 
     @Test
@@ -1433,15 +1418,15 @@ public abstract class AbstractAssertJTest {
     void anyArrayShouldFailOnObject() {
         assertThatThrownBy(
                         () -> assertThatJson("{\"test\":{\"a\":1}}").isEqualTo("{\"test\":\"${json-unit.any-array}\"}"))
-                .hasMessage(
-                        "JSON documents are different:\nDifferent value found in node \"test\", expected: <an array> but was: <{\"a\":1}>.\n");
+                .hasMessage("JSON documents are different:\n"
+                        + "Different value found in node \"test\", expected: <an array> but was: <{\"a\":1}>.\n");
     }
 
     @Test
     void anyArrayShouldFailOnNull() {
         assertThatThrownBy(() -> assertThatJson("{\"test\": null}").isEqualTo("{\"test\":\"${json-unit.any-array}\"}"))
-                .hasMessage(
-                        "JSON documents are different:\nDifferent value found in node \"test\", expected: <an array> but was: <null>.\n");
+                .hasMessage("JSON documents are different:\n"
+                        + "Different value found in node \"test\", expected: <an array> but was: <null>.\n");
     }
 
     @Test
@@ -1466,8 +1451,9 @@ public abstract class AbstractAssertJTest {
                         .withMatcher("positive", greaterThan(valueOf(0)))
                         .withDifferenceListener(listener)
                         .isEqualTo("{\"test\": \"${json-unit.matches:positive}\"}"))
-                .hasMessage(
-                        "JSON documents are different:\nMatcher \"positive\" does not match value -1 in node \"test\". Expected a value greater than <0> but <-1> was less than <0>\n");
+                .hasMessage("JSON documents are different:\n"
+                        + "Matcher \"positive\" does not match value -1 in node \"test\". Expected a value greater"
+                        + " than <0> but <-1> was less than <0>\n");
 
         assertThat(listener.getDifferenceList()).hasSize(1);
         assertThat(listener.getDifferenceList().get(0).toString())
@@ -1483,7 +1469,9 @@ public abstract class AbstractAssertJTest {
                     .isEqualTo("{\"test\": \"${json-unit.matches:isDivisibleBy}3\"}");
         } catch (AssertionError e) {
             assertEquals(
-                    "JSON documents are different:\nMatcher \"isDivisibleBy\" does not match value 5 in node \"test\". Expected value divisible by <3> but was <5>\n",
+                    "JSON documents are different:\n"
+                        + "Matcher \"isDivisibleBy\" does not match value 5 in node \"test\". Expected value divisible"
+                        + " by <3> but was <5>\n",
                     e.getMessage());
         }
     }
@@ -1515,8 +1503,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"b\": 1}}")
                         .describedAs("It's broken")
                         .isEqualTo("{\"b\": 2}"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [It's broken] JSON documents are different:
                     Different keys found in node "", missing: "b", extra: "a", expected: <{"b":2}> but was: <{"a":{"b":1}}>
                     """);
@@ -1576,8 +1563,7 @@ public abstract class AbstractAssertJTest {
                         .isObject()
                         .containsEntry("a", 1)
                         .containsEntry("b", 2))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Different value found in node ""]\s
                     Expecting map:
                       {"a":1,"b":2.0}
@@ -1635,19 +1621,18 @@ public abstract class AbstractAssertJTest {
                         .node("test")
                         .isArray()
                         .hasSize(2))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Node "test"]\s
                     Expected size: 2 but was: 3 in:
-                    [1, 2, 3]""");
+                    [1, 2, 3]\
+                    """);
     }
 
     @Test
     void shouldReportExtraArrayItemsWhenNotIgnoringOrder() {
         assertThatThrownBy(
                         () -> assertThatJson("{\"test\":[1,2,3]}").node("test").isEqualTo("[1]"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Array "test" has different length, expected: <1> but was: <3>.
                     Array "test" has different content. Extra values: [2, 3], expected: <[1]> but was: <[1,2,3]>
@@ -1660,8 +1645,7 @@ public abstract class AbstractAssertJTest {
                         .when(IGNORING_ARRAY_ORDER)
                         .node("test")
                         .isEqualTo("[1]"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Array "test" has different length, expected: <1> but was: <3>.
                     Array "test" has different content. Missing values: [], extra values: [2, 3], expected: <[1]> but was: <[1,2,3]>
@@ -1671,8 +1655,7 @@ public abstract class AbstractAssertJTest {
     @Test
     void shouldReportMissingArrayItemsWhenNotIgnoringOrder() {
         assertThatThrownBy(() -> assertThatJson("{\"test\":[1]}").node("test").isEqualTo("[1, 2, 3]"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Array "test" has different length, expected: <3> but was: <1>.
                     Array "test" has different content. Missing values: [2, 3], expected: <[1,2,3]> but was: <[1]>
@@ -1685,8 +1668,7 @@ public abstract class AbstractAssertJTest {
                         .when(IGNORING_ARRAY_ORDER)
                         .node("test")
                         .isEqualTo("[1, 2, 3]"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Array "test" has different length, expected: <3> but was: <1>.
                     Array "test" has different content. Missing values: [2, 3], extra values: [], expected: <[1,2,3]> but was: <[1]>
@@ -1698,8 +1680,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"test\":[\"x\",\"b\",\"c\"]}")
                         .node("test")
                         .isEqualTo("[\"a\"]"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Array "test" has different length, expected: <1> but was: <3>.
                     Array "test" has different content. Extra values: ["b", "c"], expected: <["a"]> but was: <["x","b","c"]>
@@ -1717,8 +1698,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"root\":{\"test\":[1,2,3]}}")
                         .node("root.test[-3]")
                         .isEqualTo(3))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Different value found in node "root.test[-3]", expected: <3> but was: <1>.
                     """);
@@ -1729,8 +1709,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"root\":{\"test\":[1,2,3]}}")
                         .node("root.test[-5]")
                         .isEqualTo(3))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Missing node in path "root.test[-5]".
                     """);
@@ -1741,8 +1720,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"root\":{\"test\":[1,2,3]}}")
                         .node("root.test[5]")
                         .isEqualTo(3))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Missing node in path "root.test[5]".
                     """);
@@ -1754,8 +1732,7 @@ public abstract class AbstractAssertJTest {
                         .node("test")
                         .isArray()
                         .contains("{\"id\":42}"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Node "test"]\s
                     Expecting JsonList:
                       [{"id":36}, {"id":37}, {"id":38}]
@@ -1763,7 +1740,8 @@ public abstract class AbstractAssertJTest {
                       ["{"id":42}"]
                     but could not find the following element(s):
                       ["{"id":42}"]
-                    when comparing values using JsonComparator""");
+                    when comparing values using JsonComparator\
+                    """);
     }
 
     @Test
@@ -1871,10 +1849,10 @@ public abstract class AbstractAssertJTest {
     @Test
     void andFailure() {
         assertThatThrownBy(() -> assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}")
-                        .and(a -> a.node("test").isObject(), a -> a.node("test.b")
-                                .isEqualTo(3)))
-                .hasMessage(
-                        """
+                        .and(
+                                a -> a.node("test").isObject(),
+                                a -> a.node("test.b").isEqualTo(3)))
+                .hasMessage("""
                     JSON documents are different:
                     Different value found in node "test.b", expected: <3> but was: <2>.
                     """);
@@ -1891,8 +1869,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}")
                         .node("test")
                         .and(a -> a.node("a").isEqualTo(1), a -> a.node("b").isEqualTo(3)))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Different value found in node "test.b", expected: <3> but was: <2>.
                     """);
@@ -1920,8 +1897,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"foo.bar\":\"boo\"}")
                         .node("foo\\.bar")
                         .isEqualTo("baz"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Different value found in node "foo\\.bar", expected: <"baz"> but was: <"boo">.
                     """);
@@ -1941,8 +1917,7 @@ public abstract class AbstractAssertJTest {
     @Test
     void shouldWorkWithPercentSign() {
         assertThatThrownBy(() -> assertThatJson("{\"a\": \"1\"}").isEqualTo("{\"%\": \"2\"}"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Different keys found in node "", missing: "%", extra: "a", expected: <{"%":"2"}> but was: <{"a":"1"}>
                     """);
@@ -1965,10 +1940,7 @@ public abstract class AbstractAssertJTest {
     void stringArray() {
         assertThatJson("""
                             ["abc"]
-            """)
-                .isArray()
-                .first()
-                .isEqualTo(value("abc"));
+            """).isArray().first().isEqualTo(value("abc"));
     }
 
     // *****************************************************************************************************************
@@ -1976,21 +1948,18 @@ public abstract class AbstractAssertJTest {
     // *****************************************************************************************************************
     @Test
     void jsonPathShouldBeAbleToUseObjects() {
-        assertThatThrownBy(
-                        () -> assertThatJson(json)
-                                .describedAs("My little assert")
-                                .inPath("$.store.book[0]")
-                                .isEqualTo(
-                                        """
-                                    {
-                                        "category": "reference",
-                                        "author": "Nigel Rees",
-                                        "title": "Sayings of the Century",
-                                        "price": 8.96
-                                    }\
-                        """))
-                .hasMessage(
-                        """
+        assertThatThrownBy(() -> assertThatJson(json)
+                        .describedAs("My little assert")
+                        .inPath("$.store.book[0]")
+                        .isEqualTo("""
+                                        {
+                                            "category": "reference",
+                                            "author": "Nigel Rees",
+                                            "title": "Sayings of the Century",
+                                            "price": 8.96
+                                        }\
+                            """))
+                .hasMessage("""
                     JSON documents are different:
                     Different value found in node "$.store.book[0].price", expected: <8.96> but was: <8.95>.
                     """);
@@ -2001,8 +1970,7 @@ public abstract class AbstractAssertJTest {
         assertThatJson(json)
                 .withConfiguration(c -> c.whenIgnoringPaths("$.store.book[*].price"))
                 .inPath("$.store.book[0]")
-                .isEqualTo(
-                        """
+                .isEqualTo("""
                                 {
                                     "category": "reference",
                                     "author": "Nigel Rees",
@@ -2014,17 +1982,16 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void ignoredJsonPaths() {
-        assertThatJson(
-                        """
-                {
-                     "category": "reference",
-                     "author": "Nigel Rees",
-                     "title": "Sayings of the Century",
-                     "price": 1111
-                }""")
+        assertThatJson("""
+            {
+                 "category": "reference",
+                 "author": "Nigel Rees",
+                 "title": "Sayings of the Century",
+                 "price": 1111
+            }\
+            """)
                 .withConfiguration(c -> c.whenIgnoringPaths("$..price"))
-                .isEqualTo(
-                        """
+                .isEqualTo("""
                                 {
                                     "category": "reference",
                                     "author": "Nigel Rees",
@@ -2052,8 +2019,7 @@ public abstract class AbstractAssertJTest {
         assertThatJson(json)
                 .withConfiguration(c -> c.whenIgnoringPaths("$.rubbish"))
                 .inPath("$.store.book[0]")
-                .isEqualTo(
-                        """
+                .isEqualTo("""
                                 {
                                     "category": "reference",
                                     "author": "Nigel Rees",
@@ -2069,8 +2035,7 @@ public abstract class AbstractAssertJTest {
                 .whenIgnoringPaths("$..price")
                 .withTolerance(0.01)
                 .inPath("$.store.book[0]")
-                .isEqualTo(
-                        """
+                .isEqualTo("""
                                 {
                                     "category": "reference",
                                     "author": "Nigel Rees",
@@ -2085,8 +2050,7 @@ public abstract class AbstractAssertJTest {
         assertThatJson(json)
                 .whenIgnoringPaths("$..price")
                 .inPath("$['store']['book'][0]")
-                .isEqualTo(
-                        """
+                .isEqualTo("""
                                 {
                                     "category": "reference",
                                     "author": "Nigel Rees",
@@ -2107,8 +2071,9 @@ public abstract class AbstractAssertJTest {
                         .inPath("$.store.book[0]")
                         .node("title")
                         .isEqualTo("Sayings of the Century2"))
-                .hasMessage(
-                        "JSON documents are different:\nDifferent value found in node \"$.store.book[0].title\", expected: <\"Sayings of the Century2\"> but was: <\"Sayings of the Century\">.\n");
+                .hasMessage("JSON documents are different:\n"
+                        + "Different value found in node \"$.store.book[0].title\", expected: <\"Sayings of the"
+                        + " Century2\"> but was: <\"Sayings of the Century\">.\n");
     }
 
     @Test
@@ -2143,8 +2108,7 @@ public abstract class AbstractAssertJTest {
     @Test
     void testAbsentInJsonPathEquals() {
         assertThatThrownBy(() -> assertThatJson("{}").inPath("$.abc").isEqualTo("value"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Missing node in path "$.abc".
                     """);
@@ -2164,13 +2128,8 @@ public abstract class AbstractAssertJTest {
 
     @Test
     protected void jsonPathShouldBeAbleToUseArrays() {
-        assertThatThrownBy(
-                        () -> assertThatJson(json)
-                                .inPath("$.store.book")
-                                .isArray()
-                                .contains(
-                                        json(
-                                                """
+        assertThatThrownBy(() ->
+                        assertThatJson(json).inPath("$.store.book").isArray().contains(json("""
                                         {
                                             "category": "reference",
                                             "author": "Nigel Rees",
@@ -2178,8 +2137,7 @@ public abstract class AbstractAssertJTest {
                                             "price": 8.96
                                         }\
                             """)))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     [Node "$.store.book"]\s
                     Expecting JsonList:
                       [{"author":"Nigel Rees","category":"reference","price":8.95,"title":"Sayings of the Century"},
@@ -2190,7 +2148,8 @@ public abstract class AbstractAssertJTest {
                       [{"category":"reference","author":"Nigel Rees","title":"Sayings of the Century","price":8.96}]
                     but could not find the following element(s):
                       [{"category":"reference","author":"Nigel Rees","title":"Sayings of the Century","price":8.96}]
-                    when comparing values using JsonComparator""");
+                    when comparing values using JsonComparator\
+                    """);
     }
 
     @Test
@@ -2223,14 +2182,14 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void testArrayBug() {
-        assertThatJson(
-                        """
-                [
-                      {"value": "1", "title": "Entity", "info": "Entity info"},
-                      {"value": "2", "title": "Column", "info": "Column info"},
-                      {"value": "3", "title": "Table", "info": "Table info"},
-                      {"value": "4", "title": "Schema", "info": "Schema info"}
-                    ]""")
+        assertThatJson("""
+            [
+                  {"value": "1", "title": "Entity", "info": "Entity info"},
+                  {"value": "2", "title": "Column", "info": "Column info"},
+                  {"value": "3", "title": "Table", "info": "Table info"},
+                  {"value": "4", "title": "Schema", "info": "Schema info"}
+                ]\
+            """)
                 .inPath("$[?(@.value =='1')]")
                 .isArray()
                 .last()
@@ -2239,14 +2198,14 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void testArrayNode() {
-        assertThatJson(
-                        """
-                [
-                      {"value": "1", "title": "Entity", "info": "Entity info"},
-                      {"value": "2", "title": "Column", "info": "Column info"},
-                      {"value": "3", "title": "Table", "info": "Table info"},
-                      {"value": "4", "title": "Schema", "info": "Schema info"}
-                    ]""")
+        assertThatJson("""
+            [
+                  {"value": "1", "title": "Entity", "info": "Entity info"},
+                  {"value": "2", "title": "Column", "info": "Column info"},
+                  {"value": "3", "title": "Table", "info": "Table info"},
+                  {"value": "4", "title": "Schema", "info": "Schema info"}
+                ]\
+            """)
                 .inPath("$[?(@.value =='1')]")
                 .isArray()
                 .first()
@@ -2340,8 +2299,7 @@ public abstract class AbstractAssertJTest {
                         .when(path("[*].b"), then(IGNORING_ARRAY_ORDER))
                         .when(path("[0].b"), thenNot(IGNORING_ARRAY_ORDER))
                         .isEqualTo("[{\"b\":[1,2,3]},{\"b\":[4,5,6]},{\"b\":[7,8,9]}]"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Different value found in node "[0].b[1]", expected: <2> but was: <3>.
                     Different value found in node "[0].b[2]", expected: <3> but was: <2>.
@@ -2367,8 +2325,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"a\":1,\"b\":null,\"c\":null}")
                         .when(path("b"), then(TREATING_NULL_AS_ABSENT))
                         .isEqualTo("{\"a\":1}"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Different keys found in node "", extra: "c", expected: <{"a":1}> but was: <{"a":1,"b":null,"c":null}>
                     """);
@@ -2386,8 +2343,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"a1\":1,\"a2\":2},\"b\":{\"b1\":1,\"b2\":2}}")
                         .when(path("a"), then(IGNORING_EXTRA_FIELDS))
                         .isEqualTo("{\"a\":{\"a1\":1},\"b\":{\"b1\":1}}"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Different keys found in node "b", extra: "b.b2", expected: <{"b1":1}> but was: <{"b1":1,"b2":2}>
                     """);
@@ -2460,8 +2416,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"a\":[1,2,3],\"b\":[1,2,3]}")
                         .when(path("a"), then(IGNORING_EXTRA_ARRAY_ITEMS))
                         .isEqualTo("{\"a\":[1,2],\"b\":[1,2]}"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Array "b" has different length, expected: <2> but was: <3>.
                     Array "b" has different content. Extra values: [3], expected: <[1,2]> but was: <[1,2,3]>
@@ -2495,8 +2450,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"a\":2,\"b\":\"string2\",\"c\":3}")
                         .when(paths("a", "b"), then(IGNORING_VALUES))
                         .isEqualTo("{\"a\":1,\"b\":\"string\",\"c\":2}"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Different value found in node "c", expected: <2> but was: <3>.
                     """);
@@ -2522,8 +2476,7 @@ public abstract class AbstractAssertJTest {
         assertThatThrownBy(() -> assertThatJson("{\"a\":{\"a1\": 1},\"b\":{\"b1\": 1}}")
                         .withOptions(Option.FAIL_FAST)
                         .isEqualTo("{\"a\":{\"a1\": 2},\"b\":{\"b1\": 2}}"))
-                .hasMessage(
-                        """
+                .hasMessage("""
                     JSON documents are different:
                     Different value found in node "a.a1", expected: <2> but was: <1>.
                     """);
@@ -2531,22 +2484,18 @@ public abstract class AbstractAssertJTest {
 
     @Test
     void hamcrestMessageTest() {
-        assertThatThrownBy(
-                        () -> assertThatJson(
-                                        """
-                {
-                  "someText": "abc123"
-                }
-                """)
-                                .withMatcher("exampleMatcher", org.hamcrest.Matchers.equalTo("def456"))
-                                .isEqualTo(
-                                        """
-                        {
-                          "someText": "${json-unit.matches:exampleMatcher}"
-                        }
-                        """))
-                .hasMessage(
-                        """
+        assertThatThrownBy(() -> assertThatJson("""
+            {
+              "someText": "abc123"
+            }
+            """)
+                        .withMatcher("exampleMatcher", org.hamcrest.Matchers.equalTo("def456"))
+                        .isEqualTo("""
+                            {
+                              "someText": "${json-unit.matches:exampleMatcher}"
+                            }
+                            """))
+                .hasMessage("""
                     JSON documents are different:
                     Matcher "exampleMatcher" does not match value "abc123" in node "someText". Expected "def456" but was "abc123"
                     """);
@@ -2559,8 +2508,7 @@ public abstract class AbstractAssertJTest {
             assertThatThrownBy(() -> assertThatJson("{\"a\": {\"c\": [{\"e\": 2, \"f\": 3}, 3]}, \"b\": false}")
                             .when(REPORTING_DIFFERENCE_AS_NORMALIZED_STRING)
                             .isEqualTo("{\"b\": true, \"a\": {\"c\": [{\"f\": 2, \"e\": 3}, 5]}}"))
-                    .hasMessage(
-                            """
+                    .hasMessage("""
                         JSON documents are different: expected <{
                           "b": true,
                           "a": {
@@ -2583,7 +2531,8 @@ public abstract class AbstractAssertJTest {
                               3
                             ]
                           }
-                        }>""");
+                        }>\
+                        """);
         }
 
         @Test
@@ -2591,8 +2540,7 @@ public abstract class AbstractAssertJTest {
             assertThatThrownBy(() -> assertThatJson("{\"d\": 1, \"c\": 2, \"b\": 3}")
                             .when(REPORTING_DIFFERENCE_AS_NORMALIZED_STRING)
                             .isEqualTo("{\"a\": 1, \"b\": 3, \"c\": 2}"))
-                    .hasMessage(
-                            """
+                    .hasMessage("""
                         JSON documents are different: expected <{
                           "a": 1,
                           "b": 3,
@@ -2601,7 +2549,8 @@ public abstract class AbstractAssertJTest {
                           "b": 3,
                           "c": 2,
                           "d": 1
-                        }>""");
+                        }>\
+                        """);
         }
 
         @Test
@@ -2609,8 +2558,7 @@ public abstract class AbstractAssertJTest {
             assertThatThrownBy(() -> assertThatJson("{\"root\":[{\"d\": 1, \"c\": 2, \"b\": 3}]}")
                             .when(REPORTING_DIFFERENCE_AS_NORMALIZED_STRING)
                             .isEqualTo("{\"root\":[{\"a\": 1, \"b\": 3, \"c\": 2}]}"))
-                    .hasMessage(
-                            """
+                    .hasMessage("""
                         JSON documents are different: expected <{
                           "root": [
                             {
@@ -2627,7 +2575,8 @@ public abstract class AbstractAssertJTest {
                               "d": 1
                             }
                           ]
-                        }>""");
+                        }>\
+                        """);
         }
 
         @Test
@@ -2635,8 +2584,7 @@ public abstract class AbstractAssertJTest {
             assertThatThrownBy(() -> assertThatJson("{\"a\": {\"b\": 1}}")
                             .when(REPORTING_DIFFERENCE_AS_NORMALIZED_STRING)
                             .isEqualTo("{\"a\": [\"b\", 1]}"))
-                    .hasMessage(
-                            """
+                    .hasMessage("""
                         JSON documents are different: expected <{
                           "a": [
                             "b",
@@ -2646,7 +2594,8 @@ public abstract class AbstractAssertJTest {
                           "a": {
                             "b": 1
                           }
-                        }>""");
+                        }>\
+                        """);
         }
 
         @Test
@@ -2655,8 +2604,7 @@ public abstract class AbstractAssertJTest {
                             .when(REPORTING_DIFFERENCE_AS_NORMALIZED_STRING)
                             .inPath("c")
                             .isEqualTo("{\"b\": true}"))
-                    .hasMessage(
-                            """
+                    .hasMessage("""
                         JSON documents are different:
                         Missing node in path "c".
                         """);
@@ -2668,8 +2616,7 @@ public abstract class AbstractAssertJTest {
                             .when(REPORTING_DIFFERENCE_AS_NORMALIZED_STRING)
                             .inPath("a.c")
                             .isEqualTo("[{\"e\": 3}, 5]"))
-                    .hasMessage(
-                            """
+                    .hasMessage("""
                         JSON documents are different: expected <[
                           {
                             "e": 3
@@ -2680,49 +2627,50 @@ public abstract class AbstractAssertJTest {
                             "e": 2
                           },
                           3
-                        ]>""");
+                        ]>\
+                        """);
         }
     }
 
-    private static final String json =
-            """
-            {
-                "store": {
-                    "book": [
-                        {
-                            "category": "reference",
-                            "author": "Nigel Rees",
-                            "title": "Sayings of the Century",
-                            "price": 8.95
-                        },
-                        {
-                            "category": "fiction",
-                            "author": "Evelyn Waugh",
-                            "title": "Sword of Honour",
-                            "price": 12.99
-                        },
-                        {
-                            "category": "fiction",
-                            "author": "Herman Melville",
-                            "title": "Moby Dick",
-                            "isbn": "0-553-21311-3",
-                            "price": 8.99
-                        },
-                        {
-                            "category": "fiction",
-                            "author": "J. R. R. Tolkien",
-                            "title": "The Lord of the Rings",
-                            "isbn": "0-395-19395-8",
-                            "price": 22.99
-                        }
-                    ],
-                    "bicycle": {
-                        "color": "red",
-                        "price": 19.95
+    private static final String json = """
+        {
+            "store": {
+                "book": [
+                    {
+                        "category": "reference",
+                        "author": "Nigel Rees",
+                        "title": "Sayings of the Century",
+                        "price": 8.95
+                    },
+                    {
+                        "category": "fiction",
+                        "author": "Evelyn Waugh",
+                        "title": "Sword of Honour",
+                        "price": 12.99
+                    },
+                    {
+                        "category": "fiction",
+                        "author": "Herman Melville",
+                        "title": "Moby Dick",
+                        "isbn": "0-553-21311-3",
+                        "price": 8.99
+                    },
+                    {
+                        "category": "fiction",
+                        "author": "J. R. R. Tolkien",
+                        "title": "The Lord of the Rings",
+                        "isbn": "0-395-19395-8",
+                        "price": 22.99
                     }
-                },
-                "expensive": 10
-            }""";
+                ],
+                "bicycle": {
+                    "color": "red",
+                    "price": 19.95
+                }
+            },
+            "expensive": 10
+        }\
+        """;
 
     protected abstract @Nullable Object readValue(String value);
 }
