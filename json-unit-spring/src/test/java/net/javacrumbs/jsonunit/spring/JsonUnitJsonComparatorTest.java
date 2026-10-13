@@ -19,11 +19,10 @@ class JsonUnitJsonComparatorTest {
     @Test
     void shouldFailWithMessage() {
         assertThatThrownBy(() -> new JsonContentAssert(json("{\"test\" : 1}")).isEqualTo("{test: 2}", comparator()))
-                .hasMessageEndingWith(
-                        """
-            JSON documents are different:
-            Different value found in node "test", expected: <2> but was: <1>.
-            """);
+                .hasMessageEndingWith("""
+                    JSON documents are different:
+                    Different value found in node "test", expected: <2> but was: <1>.
+                    """);
     }
 
     @Test

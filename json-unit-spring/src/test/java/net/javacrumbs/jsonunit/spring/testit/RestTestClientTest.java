@@ -79,11 +79,10 @@ class RestTestClientTest {
     void shouldSupportJsonPathError() {
         assertThatThrownBy(() -> exec("/sampleProduces")
                         .consumeWith(json().inPath("$.result.array[1]").isEqualTo(3)))
-                .hasMessageStartingWith(
-                        """
-                JSON documents are different:
-                Different value found in node "$.result.array[1]", expected: <3> but was: <2>.
-                """);
+                .hasMessageStartingWith("""
+                    JSON documents are different:
+                    Different value found in node "$.result.array[1]", expected: <3> but was: <2>.
+                    """);
     }
 
     @Test
@@ -91,22 +90,20 @@ class RestTestClientTest {
         assertThatThrownBy(() -> exec("/sampleProduces")
                         .consumeWith(
                                 json().inPath("$.result").inPath("$.array[*]").isEqualTo(List.of(1, 3, 3))))
-                .hasMessageStartingWith(
-                        """
-                JSON documents are different:
-                Different value found in node "$.result.array[*][1]", expected: <3> but was: <2>.
-                """);
+                .hasMessageStartingWith("""
+                    JSON documents are different:
+                    Different value found in node "$.result.array[*][1]", expected: <3> but was: <2>.
+                    """);
     }
 
     @Test
     void shouldSupportJsonPathChainedWithNodeError() {
         assertThatThrownBy(() -> exec("/sampleProduces")
                         .consumeWith(json().node("result").inPath("$.array[1]").isEqualTo(3)))
-                .hasMessageStartingWith(
-                        """
-                JSON documents are different:
-                Different value found in node "result.array[1]", expected: <3> but was: <2>.
-                """);
+                .hasMessageStartingWith("""
+                    JSON documents are different:
+                    Different value found in node "result.array[1]", expected: <3> but was: <2>.
+                    """);
     }
 
     @Test
@@ -128,11 +125,10 @@ class RestTestClientTest {
         DifferenceListener listener = mock(DifferenceListener.class);
         assertThatThrownBy(() -> exec().consumeWith(json().withDifferenceListener(listener)
                         .isEqualTo(CORRECT_JSON.replace("stringValue", "stringValue2"))))
-                .hasMessageStartingWith(
-                        """
-                JSON documents are different:
-                Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
-                """);
+                .hasMessageStartingWith("""
+                    JSON documents are different:
+                    Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
+                    """);
 
         verify(listener).diff(any(Difference.class), any(DifferenceContext.class));
     }
@@ -141,21 +137,19 @@ class RestTestClientTest {
     void isEqualToShouldFailIfDoesNotEqualUsingComparator() {
 
         assertThatThrownBy(() -> exec().json(CORRECT_JSON.replace("stringValue", "stringValue2"), comparator()))
-                .hasMessageStartingWith(
-                        """
-        JSON documents are different:
-        Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
-        """);
+                .hasMessageStartingWith("""
+                    JSON documents are different:
+                    Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
+                    """);
     }
 
     @Test
     void isEqualToInNodeFailIfDoesNotEqual() {
         assertThatThrownBy(() -> exec().consumeWith(json().node("result.string").isEqualTo("stringValue2")))
-                .hasMessageStartingWith(
-                        """
-                JSON documents are different:
-                Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
-                """);
+                .hasMessageStartingWith("""
+                    JSON documents are different:
+                    Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
+                    """);
     }
 
     @Test
@@ -163,8 +157,9 @@ class RestTestClientTest {
         assertThatThrownBy(() -> exec().consumeWith(json().withMatcher("negative", lessThan(valueOf(0)))
                         .node("result.decimal")
                         .isEqualTo("${json-unit.matches:negative}")))
-                .hasMessage(
-                        "JSON documents are different:\nMatcher \"negative\" does not match value 1.00001 in node \"result.decimal\". Expected a value less than <0> but <1.00001> was greater than <0>\n");
+                .hasMessage("JSON documents are different:\n"
+                        + "Matcher \"negative\" does not match value 1.00001 in node \"result.decimal\". Expected"
+                        + " a value less than <0> but <1.00001> was greater than <0>\n");
     }
 
     @Test
@@ -190,7 +185,8 @@ class RestTestClientTest {
         assertThatThrownBy(
                         () -> exec().consumeWith(json().node("result.missing").isNull()))
                 .hasMessageStartingWith(
-                        "Different value found in node \"result.missing\", expected: <node to be present> but was: <missing>.");
+                        "Different value found in node \"result.missing\", expected: <node to be present> but was:"
+                                + " <missing>.");
     }
 
     @Test
@@ -220,21 +216,19 @@ class RestTestClientTest {
     void isFalseShouldFailOnTrue() {
         assertThatThrownBy(
                         () -> exec().consumeWith(json().node("result.boolean").isFalse()))
-                .hasMessageStartingWith(
-                        """
-                JSON documents are different:
-                Different value found in node "result.boolean", expected: <false> but was: <true>.
-                """);
+                .hasMessageStartingWith("""
+                    JSON documents are different:
+                    Different value found in node "result.boolean", expected: <false> but was: <true>.
+                    """);
     }
 
     @Test
     void isTrueShouldFailOnString() {
         assertThatThrownBy(() -> exec().consumeWith(json().node("result.string").isTrue()))
-                .hasMessageStartingWith(
-                        """
-                JSON documents are different:
-                Different value found in node "result.string", expected: <true> but was: <"stringValue">.
-                """);
+                .hasMessageStartingWith("""
+                    JSON documents are different:
+                    Different value found in node "result.string", expected: <true> but was: <"stringValue">.
+                    """);
     }
 
     @Test
@@ -246,7 +240,8 @@ class RestTestClientTest {
     void isAbsentShouldFailIfNodeExists() {
         assertThatThrownBy(() -> exec().consumeWith(json().node("result.string").isAbsent()))
                 .hasMessageStartingWith(
-                        "Different value found in node \"$.result.string\", expected: <node to be absent> but was: <\"stringValue\">.");
+                        "Different value found in node \"$.result.string\", expected: <node to be absent> but was:"
+                                + " <\"stringValue\">.");
     }
 
     @Test
@@ -259,7 +254,8 @@ class RestTestClientTest {
         assertThatThrownBy(
                         () -> exec().consumeWith(json().node("result.string2").isPresent()))
                 .hasMessageStartingWith(
-                        "Different value found in node \"result.string2\", expected: <node to be present> but was: <missing>.");
+                        "Different value found in node \"result.string2\", expected: <node to be present> but was:"
+                                + " <missing>.");
     }
 
     @Test
@@ -331,11 +327,10 @@ class RestTestClientTest {
     @Test
     void isEqualToShouldFailIfNodeDoesNotEqual() {
         assertThatThrownBy(() -> exec().consumeWith(json().node("result.string").isEqualTo("stringValue2")))
-                .hasMessageStartingWith(
-                        """
-                JSON documents are different:
-                Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
-                """);
+                .hasMessageStartingWith("""
+                    JSON documents are different:
+                    Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
+                    """);
     }
 
     @Test
@@ -347,11 +342,11 @@ class RestTestClientTest {
     void intValueShouldFailIfDoesNotMatch() {
         assertThatThrownBy(() -> exec().consumeWith(
                                 json().node("result.array").matches(everyItem(lessThanOrEqualTo(valueOf(2))))))
-                .hasMessageStartingWith(
-                        """
-                Node "result.array" does not match.
-                Expected: every item is a value less than or equal to <2>
-                     but: an item <3> was greater than <2>""");
+                .hasMessageStartingWith("""
+                    Node "result.array" does not match.
+                    Expected: every item is a value less than or equal to <2>
+                         but: an item <3> was greater than <2>\
+                    """);
     }
 
     private RestTestClient.BodyContentSpec exec() {

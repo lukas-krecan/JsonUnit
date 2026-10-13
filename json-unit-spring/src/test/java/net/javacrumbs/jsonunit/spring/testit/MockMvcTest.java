@@ -86,11 +86,10 @@ class MockMvcTest {
     void shouldSupportJsonPathError() {
         assertThatThrownBy(() -> exec("/sampleProduces")
                         .andExpect(json().inPath("$.result.array[1]").isEqualTo(3)))
-                .hasMessage(
-                        """
-            JSON documents are different:
-            Different value found in node "$.result.array[1]", expected: <3> but was: <2>.
-            """);
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "$.result.array[1]", expected: <3> but was: <2>.
+                    """);
     }
 
     @Test
@@ -98,22 +97,20 @@ class MockMvcTest {
         assertThatThrownBy(() -> exec("/sampleProduces")
                         .andExpect(
                                 json().inPath("$.result").inPath("$.array[*]").isEqualTo(List.of(1, 3, 3))))
-                .hasMessage(
-                        """
-            JSON documents are different:
-            Different value found in node "$.result.array[*][1]", expected: <3> but was: <2>.
-            """);
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "$.result.array[*][1]", expected: <3> but was: <2>.
+                    """);
     }
 
     @Test
     void shouldSupportJsonPathChainedWithNodeError() {
         assertThatThrownBy(() -> exec("/sampleProduces")
                         .andExpect(json().node("result").inPath("$.array[1]").isEqualTo(3)))
-                .hasMessage(
-                        """
-            JSON documents are different:
-            Different value found in node "result.array[1]", expected: <3> but was: <2>.
-            """);
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "result.array[1]", expected: <3> but was: <2>.
+                    """);
     }
 
     @Test
@@ -140,11 +137,10 @@ class MockMvcTest {
         DifferenceListener listener = mock(DifferenceListener.class);
         assertThatThrownBy(() -> exec().andExpect(json().withDifferenceListener(listener)
                         .isEqualTo(CORRECT_JSON.replace("stringValue", "stringValue2"))))
-                .hasMessage(
-                        """
-                JSON documents are different:
-                Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
-                """);
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
+                    """);
 
         verify(listener).diff(any(Difference.class), any(DifferenceContext.class));
     }
@@ -152,11 +148,10 @@ class MockMvcTest {
     @Test
     void isEqualToInNodeFailIfDoesNotEqual() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.string").isEqualTo("stringValue2")))
-                .hasMessage(
-                        """
-                JSON documents are different:
-                Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
-                """);
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
+                    """);
     }
 
     @Test
@@ -173,8 +168,8 @@ class MockMvcTest {
     @Test
     void isNullShouldFailOnMissing() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.missing").isNull()))
-                .hasMessage(
-                        "Different value found in node \"result.missing\", expected: <node to be present> but was: <missing>.");
+                .hasMessage("Different value found in node \"result.missing\", expected: <node to be present> but was:"
+                        + " <missing>.");
     }
 
     @Test
@@ -202,21 +197,19 @@ class MockMvcTest {
     @Test
     void isFalseShouldFailOnTrue() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.boolean").isFalse()))
-                .hasMessage(
-                        """
-                JSON documents are different:
-                Different value found in node "result.boolean", expected: <false> but was: <true>.
-                """);
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "result.boolean", expected: <false> but was: <true>.
+                    """);
     }
 
     @Test
     void isTrueShouldFailOnString() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.string").isTrue()))
-                .hasMessage(
-                        """
-                JSON documents are different:
-                Different value found in node "result.string", expected: <true> but was: <"stringValue">.
-                """);
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "result.string", expected: <true> but was: <"stringValue">.
+                    """);
     }
 
     @Test
@@ -227,8 +220,8 @@ class MockMvcTest {
     @Test
     void isAbsentShouldFailIfNodeExists() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.string").isAbsent()))
-                .hasMessage(
-                        "Different value found in node \"$.result.string\", expected: <node to be absent> but was: <\"stringValue\">.");
+                .hasMessage("Different value found in node \"$.result.string\", expected: <node to be absent> but was:"
+                        + " <\"stringValue\">.");
     }
 
     @Test
@@ -239,8 +232,8 @@ class MockMvcTest {
     @Test
     void isPresentShouldFailIfNodeIsAbsent() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.string2").isPresent()))
-                .hasMessage(
-                        "Different value found in node \"result.string2\", expected: <node to be present> but was: <missing>.");
+                .hasMessage("Different value found in node \"result.string2\", expected: <node to be present> but was:"
+                        + " <missing>.");
     }
 
     @Test
@@ -306,11 +299,10 @@ class MockMvcTest {
     @Test
     void isEqualToShouldFailIfNodeDoesNotEqual() {
         assertThatThrownBy(() -> exec().andExpect(json().node("result.string").isEqualTo("stringValue2")))
-                .hasMessage(
-                        """
-                JSON documents are different:
-                Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
-                """);
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "result.string", expected: <"stringValue2"> but was: <"stringValue">.
+                    """);
     }
 
     @Test
@@ -322,11 +314,11 @@ class MockMvcTest {
     void intValueShouldFailIfDoesNotMatch() {
         assertThatThrownBy(() ->
                         exec().andExpect(json().node("result.array").matches(everyItem(lessThanOrEqualTo(valueOf(2))))))
-                .hasMessage(
-                        """
-                Node "result.array" does not match.
-                Expected: every item is a value less than or equal to <2>
-                     but: an item <3> was greater than <2>""");
+                .hasMessage("""
+                    Node "result.array" does not match.
+                    Expected: every item is a value less than or equal to <2>
+                         but: an item <3> was greater than <2>\
+                    """);
     }
 
     private ResultActions exec() {

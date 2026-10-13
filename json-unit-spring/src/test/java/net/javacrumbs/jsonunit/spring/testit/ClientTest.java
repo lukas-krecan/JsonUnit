@@ -56,11 +56,10 @@ class ClientTest {
                 .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
 
         assertThatThrownBy(() -> restTemplate.postForEntity(URI, json, String.class))
-                .hasMessage(
-                        """
-                JSON documents are different:
-                Different value found in node "", expected: <[]> but was: <{"test":1}>.
-                """);
+                .hasMessage("""
+                    JSON documents are different:
+                    Different value found in node "", expected: <[]> but was: <{"test":1}>.
+                    """);
     }
 
     @Test
