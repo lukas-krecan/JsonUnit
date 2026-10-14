@@ -12,7 +12,7 @@ jobs:
   build:
     strategy:
       matrix:
-        java: ['21', '25', '28-ea' ]
+        java: [ '21', '25', '28-ea' ]
     runs-on: 'ubuntu-latest'
     steps:
     - uses: actions/checkout@v7
