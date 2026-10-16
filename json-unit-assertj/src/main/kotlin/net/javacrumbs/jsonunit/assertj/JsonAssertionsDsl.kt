@@ -6,7 +6,7 @@ import net.javacrumbs.jsonunit.core.ConfigurationWhen.PathsParam
 import net.javacrumbs.jsonunit.core.Option
 
 /**
- * Assert json properties with possibility to chain assertion callbacks like this
+ * Assert JSON properties with possibility to chain assertion callbacks like this
  *
  * ```kotlin
  * assertThatJson("{\"test1\":2, \"test2\":1}") {

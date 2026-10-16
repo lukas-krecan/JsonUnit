@@ -20,12 +20,11 @@ JsonUnit is a library that simplifies JSON comparison in tests.
   * [Type placeholders](#typeplc)
   * [Custom matchers](#matchers)
   * [Options](#options)
-  * [Array indexing](#arrayIndexing)
+  * [Array indexing](#array-indexing)
   * [Numerical comparison](#numbers)
   * [Escaping dots](#dots)
-  * [Lenient parsing of expected value](#lenient-parsing-of-expected-value)
   * [DifferenceListener](#differencelistener)
-  * [Jackson Object Mapper customization](#jackson-object-mapper-customization)
+  * [Jackson Object Mapper customization](#object-mapper-cust)
 - [Release signing](#release-signing)
 - [Release notes](#release-notes)
 
@@ -721,7 +720,7 @@ assertThatJson("{\"test\":[{\"key\":3},{\"key\":2, \"extraField\":2},{\"key\":1}
 ```
 
 **REPORTING_DIFFERENCE_AS_NORMALIZED_STRING** - reports errors as normalized strings. Applies some basic normalization
-to compared values and then reports full json strings, so you can see the difference in the IDE diff.
+to compared values and then reports full JSON strings, so you can see the difference in the IDE diff.
 
 
 In Hamcrest assertion you can set the option like this
@@ -768,7 +767,7 @@ assertThatJson("{\"A\":1,\"B\":null}")
 ```
 All other options require paths to objects or arrays where values or order should be ignored.
 
-## <a name="arrayIndexing"></a>Array indexing
+## <a name="array-indexing"></a>Array indexing
 You can use negative numbers to index arrays form the end
 ```java
 assertThatJson("{\"root\":{\"test\":[1,2,3]}}")

@@ -1801,7 +1801,6 @@ public abstract class AbstractAssertJTest {
         final String json = "{\"C:\\\\path\\\\file.ext\": {\"Status\": \"OK\"}}";
         final String pomPath = "C:\\path\\file.ext";
 
-        System.out.println(json);
         assertThatJson(json).isObject().containsKey(pomPath);
 
         assertThatJson(json)

@@ -205,7 +205,7 @@ public class JsonMapAssert extends AbstractMapAssert<JsonMapAssert, Map<String, 
     }
 
     /**
-     * Does not work. Use {@link #containsKey(Object)} instead.
+     * Does not work. Use {@link AbstractMapAssert#containsKey(Object)} instead.
      * https://github.com/lukas-krecan/JsonUnit/issues/324
      */
     @Override
