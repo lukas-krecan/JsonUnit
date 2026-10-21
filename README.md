@@ -18,6 +18,7 @@ JsonUnit is a library that simplifies JSON comparison in tests.
   * [Ignoring paths](#ignorepaths)
   * [Regular expressions](#regexp)
   * [Type placeholders](#typeplc)
+  * [Array element expectations](#array-element-expectations)
   * [Custom matchers](#matchers)
   * [Options](#options)
   * [Array indexing](#array-indexing)
@@ -620,6 +621,42 @@ assertThatJson("{\"test\":[]]}")
 
 You can also use hash instead of string `#{json-unit.any-string}` for example if you are using language with string interpolation
 like Kotlin.
+
+## Array element expectations
+
+Use `${json-unit.any-array}` followed by an optional element expectation to check every element of an array.
+The placeholder replaces the whole expected array. An empty array is allowed by default; null, missing
+values, and other types do not match. Without an element expectation, array elements may have any value or type.
+
+```java
+assertThatJson("{\"test\":[1,2,3]}")
+    .isEqualTo("{\"test\":\"${json-unit.any-array}${json-unit.any-number}\"}");
+
+// Require a non-empty array of numbers
+assertThatJson("{\"test\":[1,2,3]}")
+    .isEqualTo("{\"test\":\"${json-unit.any-array:min=1}${json-unit.any-number}\"}");
+
+// Require a non-empty array with any elements
+assertThatJson("{\"test\":[1,true,null]}")
+    .isEqualTo("{\"test\":\"${json-unit.any-array:min=1}\"}");
+```
+
+`min` accepts a non-negative integer, so `min=3` requires at least three elements. Every element must
+match even when `IGNORING_EXTRA_ARRAY_ITEMS` is enabled.
+
+The element expectation uses the normal string comparison rules, including type placeholders,
+`${json-unit.regex}`, `${json-unit.matches:name}` with parameters, and literal strings. Array
+placeholders can be nested to check arrays of arrays. Use `#{json-unit.any-array}` and
+`#{json-unit.any-array:min=1}` in languages with string interpolation.
+To require every element to be an empty string, use `${json-unit.any-array}${json-unit.regex}^$`.
+
+```java
+assertThatJson("[\"ABC\",\"DEF\"]")
+    .isEqualTo("${json-unit.any-array}${json-unit.regex}[A-Z]+");
+
+assertThatJson("[[1,2],[3]]")
+    .isEqualTo("${json-unit.any-array}${json-unit.any-array}${json-unit.any-number}");
+```
 
 ## <a name="matchers"></a>Custom matchers
 In some special cases you might want to use your own matcher in the expected document.

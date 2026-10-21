@@ -2699,4 +2699,223 @@ public abstract class AbstractAssertJTest {
         """;
 
     protected abstract @Nullable Object readValue(String value);
+
+    @Nested
+    class ArrayElementPlaceholders {
+        @Test
+        void testArrayMatcher() {
+            assertThatJson("{\"root\":{\"test\":[1,2,3]}}")
+                    .node("root")
+                    .isEqualTo("{\"test\":\"${json-unit.any-array:min=1}${json-unit.any-number}\"}");
+        }
+
+        @Test
+        void testArrayMatcherFailure() {
+            assertThatThrownBy(() -> assertThatJson("{\"root\":{\"test\":[1,2,true]}}")
+                            .node("root")
+                            .isEqualTo("{\"test\":\"${json-unit.any-array}${json-unit.any-number}\"}"))
+                    .hasMessage("""
+                        JSON documents are different:
+                        Different value found in node "root.test[2]", expected: <a number> but was: <true>.
+                        """);
+        }
+
+        @Test
+        void testArrayMatcherFailureEmptyArray() {
+            assertThatThrownBy(() -> assertThatJson("{\"root\":{\"test\":[]}}")
+                            .node("root")
+                            .isEqualTo("{\"test\":\"${json-unit.any-array:min=1}${json-unit.any-number}\"}"))
+                    .hasMessage("""
+                        JSON documents are different:
+                        Array "root.test" has invalid length, expected: <at least 1> but was: <0>.
+                        """);
+        }
+
+        @Test
+        void testArrayMatcherZeroOrMoreElements() {
+            assertThatJson("[1,2,3]").isEqualTo("${json-unit.any-array}${json-unit.any-number}");
+            assertThatJson("[]").isEqualTo("${json-unit.any-array}${json-unit.any-number}");
+            assertThatJson("[]").isEqualTo("${json-unit.any-array:min=0}${json-unit.any-number}");
+        }
+
+        @Test
+        void testArrayMatcherWithoutElementExpectation() {
+            for (String prefix : List.of("$", "#")) {
+                assertThatJson("[]").isEqualTo(prefix + "{json-unit.any-array}");
+                assertThatJson("[1,true,null,\"text\",{},[]]").isEqualTo(prefix + "{json-unit.any-array}");
+                assertThatJson("[]").isEqualTo(prefix + "{json-unit.any-array:min=0}");
+                assertThatJson("[1,true,null,\"text\",{},[]]").isEqualTo(prefix + "{json-unit.any-array:min=1}");
+                assertThatThrownBy(() -> assertThatJson("[]").isEqualTo(prefix + "{json-unit.any-array:min=1}"))
+                        .hasMessageContaining("expected: <at least 1> but was: <0>");
+                assertThatThrownBy(() -> assertThatJson("[null]").isEqualTo(prefix + "{json-unit.any-array:min=2}"))
+                        .hasMessageContaining("expected: <at least 2> but was: <1>");
+            }
+        }
+
+        @Test
+        void testArrayMatcherMinimumSize() {
+            assertThatJson("[1,2,3]").isEqualTo("${json-unit.any-array:min=3}${json-unit.any-number}");
+            assertThatThrownBy(() ->
+                            assertThatJson("[1,2]").isEqualTo("${json-unit.any-array:min=3}${json-unit.any-number}"))
+                    .hasMessageContaining("expected: <at least 3> but was: <2>");
+        }
+
+        @Test
+        void testArrayMatcherHashPrefix() {
+            assertThatJson("[1,2,3]").isEqualTo("#{json-unit.any-array:min=1}#{json-unit.any-number}");
+            assertThatJson("[]").isEqualTo("#{json-unit.any-array}#{json-unit.any-number}");
+            assertThatJson("[1]").isEqualTo("#{json-unit.any-array}${json-unit.any-number}");
+        }
+
+        @Test
+        void testArrayMatcherOtherTypes() {
+            assertThatJson("[true,false]").isEqualTo("${json-unit.any-array}${json-unit.any-boolean}");
+            assertThatJson("[\"a\",\"b\"]").isEqualTo("${json-unit.any-array}${json-unit.any-string}");
+            assertThatJson("[null,null]").isEqualTo("${json-unit.any-array}${json-unit.missing-or-null}");
+        }
+
+        @Test
+        void testArrayOfArrays() {
+            String expected = "${json-unit.any-array}${json-unit.any-array}";
+            assertThatJson("[[],[1,true,null],[\"text\",{},[]]]").isEqualTo(expected);
+            assertThatThrownBy(() -> assertThatJson("[[],1]").isEqualTo(expected))
+                    .hasMessageContaining("node \"[1]\", expected: <an array> but was: <1>");
+        }
+
+        @Test
+        void testArrayOfArraysOfNumbers() {
+            assertThatJson("[[1,2],[],[3.5,-4]]")
+                    .isEqualTo("${json-unit.any-array}${json-unit.any-array}${json-unit.any-number}");
+        }
+
+        @Test
+        void testArrayOfArraysOfNumbersFailure() {
+            assertThatThrownBy(() -> assertThatJson("[[1,2],[],[3,true]]")
+                            .isEqualTo("${json-unit.any-array}${json-unit.any-array}${json-unit.any-number}"))
+                    .hasMessage("""
+                        JSON documents are different:
+                        Different value found in node "[2][1]", expected: <a number> but was: <true>.
+                        """);
+        }
+
+        @Test
+        void testArrayMatcherRequiresArrayEvenWhenEmptyIsAllowed() {
+            for (String expected : List.of("${json-unit.any-array}", "${json-unit.any-array}${json-unit.any-number}")) {
+                for (String actual : List.of("null", "1", "{}", "\"text\"")) {
+                    assertThatThrownBy(() -> assertThatJson(actual).isEqualTo(expected))
+                            .hasMessageContaining("expected: <an array>");
+                }
+                assertThatThrownBy(() -> assertThatJson("{}").isEqualTo("{\"test\":\"" + expected + "\"}"))
+                        .hasMessageContaining("missing: \"test\"");
+            }
+        }
+
+        @Test
+        void testArrayMatcherIsNotLiteralWhenActualIsString() {
+            String placeholder = "${json-unit.any-array}${json-unit.any-number}";
+            assertThatThrownBy(() -> assertThatJson("\"" + placeholder + "\"").isEqualTo(placeholder))
+                    .hasMessageContaining("expected: <an array>");
+        }
+
+        @Test
+        void testArrayMatcherInsideArray() {
+            assertThatJson("[[1,2],true]").isEqualTo("[\"${json-unit.any-array}${json-unit.any-number}\",true]");
+        }
+
+        @Test
+        void testNestedArrayMatcher() {
+            String expected = "${json-unit.any-array}${json-unit.any-array:min=1}${json-unit.any-number}";
+            assertThatJson("[[1,2],[3]]").isEqualTo(expected);
+            assertThatThrownBy(() -> assertThatJson("[[1,2],[true]]").isEqualTo(expected))
+                    .hasMessageContaining("node \"[1][0]\", expected: <a number> but was: <true>");
+            assertThatThrownBy(() -> assertThatJson("[[1],[]]").isEqualTo(expected))
+                    .hasMessageContaining("Array \"[1]\" has invalid length");
+        }
+
+        @Test
+        void testArrayMatcherLiteralPayload() {
+            assertThatJson("[\"text\",\"text\"]").isEqualTo("${json-unit.any-array}text");
+            assertThatJson("[\"${json-unit.unknown}\"]").isEqualTo("${json-unit.any-array}${json-unit.unknown}");
+            assertThatThrownBy(() -> assertThatJson("[\"text\",\"other\"]").isEqualTo("${json-unit.any-array}text"))
+                    .hasMessageContaining("node \"[1]\"");
+        }
+
+        @Test
+        void testArrayMatcherEmptyStrings() {
+            String expected = "${json-unit.any-array}${json-unit.regex}^$";
+            assertThatJson("[\"\",\"\"]").isEqualTo(expected);
+            assertThatThrownBy(() -> assertThatJson("[\"\",\"text\"]").isEqualTo(expected))
+                    .hasMessageContaining("node \"[1]\". Pattern");
+            assertThatThrownBy(() -> assertThatJson("[1]").isEqualTo(expected)).hasMessageContaining("node \"[0]\"");
+        }
+
+        @Test
+        void testOldPrefixesAreLiteral() {
+            assertThatJson("[\"+${json-unit.any-number}\"]").isEqualTo("[\"+${json-unit.any-number}\"]");
+            assertThatJson("[\"*${json-unit.any-number}\"]").isEqualTo("[\"*${json-unit.any-number}\"]");
+        }
+
+        @Test
+        void testRemovedArrayOfPlaceholderIsLiteral() {
+            for (String expected : List.of(
+                    "${json-unit.array-of}",
+                    "${json-unit.array-of:min=1}${json-unit.any-number}",
+                    "#{json-unit.array-of:min=1}")) {
+                assertThatJson("\"" + expected + "\"").isEqualTo(expected);
+            }
+        }
+
+        @Test
+        void testArrayCustomMatcher() {
+            assertThatJson("{\"test\":[1,2,3]}")
+                    .withMatcher("positive", greaterThan(valueOf(0)))
+                    .isEqualTo("{\"test\":\"${json-unit.any-array}${json-unit.matches:positive}\"}");
+            assertThatThrownBy(() -> assertThatJson("[1,-2]")
+                            .withMatcher("positive", greaterThan(valueOf(0)))
+                            .isEqualTo("${json-unit.any-array}${json-unit.matches:positive}"))
+                    .hasMessageContaining("Matcher \"positive\" does not match value -2 in node \"[1]\"");
+        }
+
+        @Test
+        void testArrayParametrizedMatcher() {
+            assertThatJson("[3,6,9]")
+                    .withMatcher("isDivisibleBy", new DivisionMatcher())
+                    .isEqualTo("${json-unit.any-array}${json-unit.matches:isDivisibleBy}3");
+        }
+
+        @Test
+        void testArrayRegexp() {
+            assertThatJson("{\"test\":[\"1\",\"2\",\"3\"]}")
+                    .isEqualTo("{\"test\":\"${json-unit.any-array}${json-unit.regex}\\\\d+\"}");
+            assertThatThrownBy(() -> assertThatJson("[\"1\",\"other\"]")
+                            .isEqualTo(value("${json-unit.any-array}${json-unit.regex}\\d+")))
+                    .hasMessageContaining("node \"[1]\". Pattern");
+        }
+
+        @Test
+        void testArrayMatcherComparisonOptions() {
+            assertThatThrownBy(() -> assertThatJson("[1,true]")
+                            .when(IGNORING_ARRAY_ORDER, IGNORING_EXTRA_ARRAY_ITEMS)
+                            .isEqualTo("${json-unit.any-array}${json-unit.any-number}"))
+                    .hasMessageContaining("node \"[1]\", expected: <a number> but was: <true>");
+            assertThatJson("{\"test\":[1,true]}")
+                    .whenIgnoringPaths("test[1]")
+                    .isEqualTo("{\"test\":\"${json-unit.any-array}${json-unit.any-number}\"}");
+        }
+
+        @Test
+        void testArrayMatcherInvalidMinimumSize() {
+            for (String parameter : List.of("min=-1", "min=", "min=text", "max=1", "")) {
+                assertThatThrownBy(() -> assertThatJson("[]")
+                                .isEqualTo("${json-unit.any-array:" + parameter + "}${json-unit.any-number}"))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessage("Invalid any-array parameter \"" + parameter
+                                + "\". Expected min=<non-negative integer>.");
+            }
+            assertThatThrownBy(() -> assertThatJson("[]")
+                            .isEqualTo("${json-unit.any-array:min=2147483648}${json-unit.any-number}"))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("Any-array minimum size is too large: \"min=2147483648\".");
+        }
+    }
 }
