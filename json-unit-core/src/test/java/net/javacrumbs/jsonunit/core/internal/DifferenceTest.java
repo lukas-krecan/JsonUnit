@@ -41,6 +41,8 @@ import org.hamcrest.Description;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class DifferenceTest {
     private final RecordingDifferenceListener listener = new RecordingDifferenceListener();
@@ -204,6 +206,60 @@ public class DifferenceTest {
     }
 
     @Test
+    void shouldReportArrayMinimumSize() {
+        for (Configuration cfg : List.of(commonConfig(), commonConfig().withOptions(FAIL_FAST))) {
+            listener.getDifferenceList().clear();
+            Diff diff = Diff.create(
+                    "{\"test\": \"${json-unit.any-array:min=1}${json-unit.any-number}\"}",
+                    "{\"test\": []}",
+                    "",
+                    "",
+                    cfg);
+
+            assertThat(diff.similar()).isFalse();
+            assertThat(listener.getDifferenceList()).hasSize(1);
+            Difference difference = listener.getDifferenceList().get(0);
+            assertThat(difference.getType()).isEqualTo(DIFFERENT);
+            assertThat(difference.getExpectedPath()).isEqualTo("test.length()");
+            assertThat(difference.getExpected()).isEqualTo("at least 1");
+            assertThat(difference.getActualPath()).isEqualTo("test.length()");
+            assertThat(difference.getActual()).isEqualTo(valueOf(0));
+        }
+    }
+
+    @Test
+    void shouldAllowEmptyAnyArray() {
+        Diff diff = Diff.create(
+                "{\"test\": \"${json-unit.any-array}${json-unit.any-number}\"}",
+                "{\"test\": []}",
+                "",
+                "",
+                commonConfig());
+
+        assertThat(diff.similar()).isTrue();
+        assertThat(listener.getDifferenceList()).isEmpty();
+    }
+
+    @Test
+    void shouldReportAnyArrayElementPaths() {
+        Diff diff = Diff.create(
+                "{\"test\": \"${json-unit.any-array}${json-unit.any-number}\"}",
+                "{\"test\": [1, true]}",
+                "",
+                "",
+                commonConfig());
+
+        assertThat(diff.similar()).isFalse();
+        assertThat(listener.getDifferenceList()).hasSize(1);
+        Difference difference = listener.getDifferenceList().get(0);
+        assertThat(difference.getType()).isEqualTo(DIFFERENT);
+        assertThat(difference.getExpectedPath()).isEqualTo("test");
+        assertThat(difference.getExpected()).isEqualTo("${json-unit.any-number}");
+        assertThat(difference.getActualPath()).isEqualTo("test[1]");
+        assertThat(difference.getActual()).isEqualTo(true);
+    }
+
+    @Test
     void shouldSeeAddedArrayNode() {
         Diff diff = Diff.create("[1]", "[1, 2]", "", "", commonConfig());
         diff.similar();
@@ -279,6 +335,40 @@ public class DifferenceTest {
                 cfg);
         assertThat(diff.similar()).isTrue();
         assertThat(listener.getDifferenceList()).isEmpty();
+    }
+
+    @ParameterizedTest
+    @ValueSource(
+            strings = {
+                "${json-unit.any-array}", "${json-unit.any-array:min=1}",
+                "#{json-unit.any-array}", "#{json-unit.any-array:min=1}"
+            })
+    void shouldMatchArrayElementsWithLineSeparatorCustomMatcher(String prefix) {
+        Configuration cfg = commonConfig().withMatcher("equalTo", new EqualsMatcher());
+        Diff diff = Diff.create(
+                singletonMap("test", prefix + "${json-unit.matches:equalTo}separated \n line"),
+                singletonMap("test", List.of("separated \n line", "separated \n line")),
+                "",
+                "",
+                cfg);
+
+        assertThat(diff.similar()).isTrue();
+        assertThat(listener.getDifferenceList()).isEmpty();
+    }
+
+    @Test
+    void shouldNotTreatArrayCustomMatcherWithLineSeparatorAsLiteral() {
+        String placeholder = "${json-unit.any-array}${json-unit.matches:equalTo}separated \n line";
+        Diff diff = Diff.create(
+                singletonMap("test", placeholder),
+                singletonMap("test", List.of(placeholder)),
+                "",
+                "",
+                commonConfig().withMatcher("equalTo", new EqualsMatcher()));
+
+        assertThat(diff.similar()).isFalse();
+        assertThat(listener.getDifferenceList()).hasSize(1);
+        assertThat(listener.getDifferenceList().get(0).getType()).isEqualTo(DIFFERENT);
     }
 
     @Test

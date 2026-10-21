@@ -34,6 +34,7 @@ import static net.javacrumbs.jsonunit.core.internal.JsonUnitLogger.NULL_LOGGER;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.convertToJson;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.prettyPrint;
 import static net.javacrumbs.jsonunit.core.internal.JsonUtils.quoteIfNeeded;
+import static net.javacrumbs.jsonunit.core.internal.JsonUtils.wrapDeserializedObject;
 import static net.javacrumbs.jsonunit.core.internal.Node.KeyValue;
 import static net.javacrumbs.jsonunit.core.internal.Node.MISSING_NODE;
 import static net.javacrumbs.jsonunit.core.internal.Node.NodeType;
@@ -74,7 +75,8 @@ public class Diff {
     private static final Pattern ANY_NUMBER_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.any-number\\}");
     private static final Pattern ANY_BOOLEAN_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.any-boolean\\}");
     private static final Pattern ANY_STRING_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.any-string\\}");
-    private static final Pattern ANY_ARRAY_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.any-array\\}");
+    private static final Pattern ANY_ARRAY_PLACEHOLDER =
+            Pattern.compile("[$#]\\{json-unit.any-array(?::([^}]*))?\\}(.*)", Pattern.DOTALL);
     private static final Pattern MISSING_OR_NULL_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.missing-or-null\\}");
 
     private static final Pattern REGEX_PLACEHOLDER = Pattern.compile("[$#]\\{json-unit.regex\\}(.*)");
@@ -362,7 +364,7 @@ public class Diff {
         }
 
         // Any array
-        if (checkAny(NodeType.ARRAY, ANY_ARRAY_PLACEHOLDER, "an array", context)) {
+        if (checkAnyArray(context)) {
             return;
         }
 
@@ -635,6 +637,73 @@ public class Diff {
                 compareNodes(context.toElement(i));
             }
         }
+    }
+
+    /**
+     * Checks the array size and applies the trailing expectation, if present, to every element.
+     */
+    private boolean checkAnyArray(Context context) {
+        if (context.expectedNode().getNodeType() != NodeType.STRING) {
+            return false;
+        }
+        Matcher matcher = ANY_ARRAY_PLACEHOLDER.matcher(context.expectedNode().asText());
+        if (!matcher.matches()) {
+            return false;
+        }
+
+        int minimumSize = minimumArraySize(matcher.group(1));
+        Node actual = context.actualNode();
+        if (actual.getNodeType() != NodeType.ARRAY) {
+            reportDifference(DifferenceImpl.different(context));
+            addDifference(
+                    context,
+                    "Different value found in node \"%s\", " + differenceString() + ".",
+                    context.actualPath(),
+                    "an array",
+                    quoteTextValue(actual));
+            return true;
+        }
+
+        if (actual.size() < minimumSize) {
+            Context lengthContext = context.length("at least " + minimumSize);
+            reportDifference(DifferenceImpl.different(lengthContext));
+            addDifference(
+                    lengthContext,
+                    "Array \"%s\" has invalid length, expected: <at least %d> but was: <%d>.",
+                    context.actualPath(),
+                    minimumSize,
+                    actual.size());
+        }
+
+        String elementExpectation = matcher.group(2);
+        if (elementExpectation.isEmpty()) {
+            return true;
+        }
+        Node expectedElement = wrapDeserializedObject(elementExpectation);
+        for (int i = 0; i < actual.size(); i++) {
+            compareNodes(new Context(
+                    expectedElement,
+                    actual.element(i),
+                    context.expectedPath(),
+                    context.actualPath().toElement(i),
+                    configuration));
+        }
+        return true;
+    }
+
+    private static int minimumArraySize(@Nullable String parameter) {
+        if (parameter == null) {
+            return 0;
+        }
+        if (parameter.matches("min=[0-9]+")) {
+            try {
+                return Integer.parseInt(parameter.substring("min=".length()));
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Any-array minimum size is too large: \"" + parameter + "\".", e);
+            }
+        }
+        throw new IllegalArgumentException(
+                "Invalid any-array parameter \"" + parameter + "\". Expected min=<non-negative integer>.");
     }
 
     private ComparisonResult compareArraysIgnoringOrder(
