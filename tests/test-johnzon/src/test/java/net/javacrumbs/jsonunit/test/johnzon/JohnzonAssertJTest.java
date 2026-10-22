@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;
 import net.javacrumbs.jsonunit.test.base.JsonTestUtils;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 public class JohnzonAssertJTest extends AbstractAssertJTest {
@@ -30,29 +31,35 @@ public class JohnzonAssertJTest extends AbstractAssertJTest {
         return JsonTestUtils.readByJohnzon(value);
     }
 
-    @Test
-    @Override
-    @Disabled
-    public void shouldAllowUnquotedKeysAndCommentInExpectedValue() {
-        // not supported
+    @Nested
+    class BasicAssertions extends AbstractAssertJTest.BasicAssertions {
+        @Test
+        @Override
+        @Disabled
+        public void shouldAllowUnquotedKeysAndCommentInExpectedValue() {
+            // not supported
+        }
+
+        @Test
+        @Override
+        @Disabled
+        protected void demo() {
+            // not supported
+        }
+
+        @Override
+        @Disabled
+        protected void shouldAssertLenient() {}
     }
 
-    @Test
-    @Override
-    @Disabled
-    protected void demo() {
-        // not supported
-    }
-
-    @Override
-    @Disabled
-    protected void shouldAssertLenient() {}
-
-    @Override
-    @Test
-    protected void shouldEqualNumberInObject() {
-        TestBean actual = new TestBean(new BigDecimal("2.00"));
-        String expected = "{ \"demo\": \"2.00\" }";
-        assertThatJson(actual).withTolerance(0).isEqualTo(expected);
+    @Nested
+    class NumberAssertions extends AbstractAssertJTest.NumberAssertions {
+        @Override
+        @Test
+        protected void shouldEqualNumberInObject() {
+            TestBean actual = new TestBean(new BigDecimal("2.00"));
+            String expected = "{ \"demo\": \"2.00\" }";
+            assertThatJson(actual).withTolerance(0).isEqualTo(expected);
+        }
     }
 }
