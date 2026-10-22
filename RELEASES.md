@@ -1,5 +1,9 @@
 Release notes
 =============
+## 6.4.0 (2026-10-22)
+* Support for [Array element expectations](https://github.com/lukas-krecan/JsonUnit#array-element-expectations)
+* Dependency updates
+
 ## 6.3.0 (2026-10-05)
 * Fix unordered array comparison #1206 (thanks @PHJ2000)
 * Dependency updates
