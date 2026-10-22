@@ -30,40 +30,52 @@ public class JsonOrgAssertJTest extends AbstractAssertJTest {
         return readByJsonOrg(value);
     }
 
-    @Test
-    @Override
-    public void shouldAllowUnquotedKeysAndCommentInExpectedValue() {
-        assertThatJson("{\"test\":1}").isEqualTo("{test:1}");
+    @Nested
+    class BasicAssertions extends AbstractAssertJTest.BasicAssertions {
+        @Test
+        @Override
+        public void shouldAllowUnquotedKeysAndCommentInExpectedValue() {
+            assertThatJson("{\"test\":1}").isEqualTo("{test:1}");
+        }
+
+        @Test
+        @Override
+        protected void shouldFailOnTrainingToken() {
+            // Ignored, does not work
+        }
     }
 
-    @Test
-    @Override
-    protected void shouldAssert1e0() {
-        // Ignored, does not work
+    @Nested
+    class NumberAssertions extends AbstractAssertJTest.NumberAssertions {
+        @Test
+        @Override
+        protected void shouldAssert1e0() {
+            // Ignored, does not work
+        }
+
+        @Test
+        @Override
+        protected void shouldEqualNumberInObject() {
+            // ignored, no support of object serialization neither
+        }
     }
 
-    @Test
-    @Override
-    protected void shouldFailOnTrainingToken() {
-        // Ignored, does not work
+    @Nested
+    class JsonPaths extends AbstractAssertJTest.JsonPaths {
+        @Test
+        @Override
+        protected void jsonPathShouldBeAbleToUseArrays() {
+            // ignored, json org does not keep the order in JSON
+        }
     }
 
-    @Test
-    @Override
-    protected void jsonPathShouldBeAbleToUseArrays() {
-        // ignored, json org does not keep the order in JSON
-    }
-
-    @Test
-    @Override
-    protected void shouldEqualNumberInObject() {
-        // ignored, no support of object serialization neither
-    }
-
-    @Override
-    @Test
-    protected void objectFieldsShouldBeKeptInOrder() {
-        // ignored, json org does not keep the order in JSON
+    @Nested
+    class ObjectAssertions extends AbstractAssertJTest.ObjectAssertions {
+        @Override
+        @Test
+        protected void objectFieldsShouldBeKeptInOrder() {
+            // ignored, json org does not keep the order in JSON
+        }
     }
 
     @Nested

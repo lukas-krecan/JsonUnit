@@ -27,6 +27,7 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 public class AllAssertJTest extends AbstractAssertJTest {
@@ -48,13 +49,6 @@ public class AllAssertJTest extends AbstractAssertJTest {
         assertThatJson(actual)
                 .withConfiguration(c -> c.withMatcher("embeddedJson", new EmbeddedJsonMatcher()))
                 .isEqualTo(expected);
-    }
-
-    @Test
-    @Disabled
-    @Override
-    protected void shouldAssert1e0() {
-        // Jackson parses 1e0 as 1
     }
 
     private static class EmbeddedJsonMatcher extends BaseMatcher<Object> implements ParametrizedMatcher {
@@ -83,6 +77,16 @@ public class AllAssertJTest extends AbstractAssertJTest {
 
         private ConfigurableJsonMatcher<Object> getEmbeddedMatcher() {
             return requireNonNull(embeddedMatcher);
+        }
+    }
+
+    @Nested
+    class NumberAssertions extends AbstractAssertJTest.NumberAssertions {
+        @Test
+        @Disabled
+        @Override
+        protected void shouldAssert1e0() {
+            // Jackson parses 1e0 as 1
         }
     }
 }

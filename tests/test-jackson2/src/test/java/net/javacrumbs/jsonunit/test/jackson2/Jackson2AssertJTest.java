@@ -21,6 +21,7 @@ import static net.javacrumbs.jsonunit.test.base.JsonTestUtils.readByJackson2;
 
 import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 public class Jackson2AssertJTest extends AbstractAssertJTest {
@@ -33,15 +34,18 @@ public class Jackson2AssertJTest extends AbstractAssertJTest {
                 .containsExactlyInAnyOrder(json(readValue("{\"c\": 1}")), json(readValue("{\"b\": 1}")));
     }
 
-    @Test
-    @Disabled
-    @Override
-    protected void shouldAssert1e0() {
-        // Jackson parses 1e0 as 1
-    }
-
     @Override
     protected Object readValue(String value) {
         return readByJackson2(value);
+    }
+
+    @Nested
+    class NumberAssertions extends AbstractAssertJTest.NumberAssertions {
+        @Test
+        @Disabled
+        @Override
+        protected void shouldAssert1e0() {
+            // Jackson parses 1e0 as 1
+        }
     }
 }

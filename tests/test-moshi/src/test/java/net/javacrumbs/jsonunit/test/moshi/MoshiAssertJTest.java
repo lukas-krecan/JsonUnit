@@ -21,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import net.javacrumbs.jsonunit.test.base.AbstractAssertJTest;
 import org.jspecify.annotations.Nullable;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 public class MoshiAssertJTest extends AbstractAssertJTest {
@@ -30,47 +31,53 @@ public class MoshiAssertJTest extends AbstractAssertJTest {
         return readByMoshi(value);
     }
 
-    @Test
-    @Override
-    protected void shouldAssertInteger() {
-        assertThatThrownBy(() -> assertThatJson("{\"a\":1}").node("a").isIntegralNumber())
-                .isInstanceOf(UnsupportedOperationException.class);
+    @Nested
+    class NumberAssertions extends AbstractAssertJTest.NumberAssertions {
+        @Test
+        @Override
+        protected void shouldAssertInteger() {
+            assertThatThrownBy(() -> assertThatJson("{\"a\":1}").node("a").isIntegralNumber())
+                    .isInstanceOf(UnsupportedOperationException.class);
+        }
+
+        @Test
+        @Override
+        protected void shouldAssert1e0() {
+            // Ignored, does not work
+        }
+
+        @Test
+        @Override
+        protected void shouldAssertIntegerFailure() {
+            assertThatThrownBy(() -> assertThatJson("{\"a\":1.0}").node("a").isIntegralNumber())
+                    .isInstanceOf(UnsupportedOperationException.class);
+        }
+
+        @Test
+        @Override
+        protected void shouldDiffCloseNumbers() {
+            // Does not work
+        }
+
+        @Test
+        @Override
+        protected void shouldUseCustomNumberComparator() {
+            // Does not work
+        }
+
+        @Test
+        @Override
+        protected void shouldEqualNumberInObject() {
+            // ignored, no support of object serialization neither
+        }
     }
 
-    @Test
-    @Override
-    protected void shouldAssert1e0() {
-        // Ignored, does not work
-    }
-
-    @Test
-    @Override
-    protected void shouldAssertIntegerFailure() {
-        assertThatThrownBy(() -> assertThatJson("{\"a\":1.0}").node("a").isIntegralNumber())
-                .isInstanceOf(UnsupportedOperationException.class);
-    }
-
-    @Test
-    @Override
-    protected void shouldDiffCloseNumbers() {
-        // Does not work
-    }
-
-    @Test
-    @Override
-    protected void shouldUseCustomNumberComparator() {
-        // Does not work
-    }
-
-    @Test
-    @Override
-    protected void shouldEqualNumberInObject() {
-        // ignored, no support of object serialization neither
-    }
-
-    @Test
-    @Override
-    protected void assertContainsEntryNumberFailure() {
-        // Ignored, does not work
+    @Nested
+    class ObjectAssertions extends AbstractAssertJTest.ObjectAssertions {
+        @Test
+        @Override
+        protected void assertContainsEntryNumberFailure() {
+            // Ignored, does not work
+        }
     }
 }
