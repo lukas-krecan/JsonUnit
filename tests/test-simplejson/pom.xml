@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>tests</artifactId>
+        <groupId>net.javacrumbs.json-unit</groupId>
+        <version>6.3.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>test-simplejson</artifactId>
+    <version>6.3.0-SNAPSHOT</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>net.javacrumbs.json-unit</groupId>
+            <artifactId>test-base</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <release>28</release>
+                    <compilerArgs combine.self="override">
+                        <arg>--add-modules</arg>
+                        <arg>jdk.incubator.json</arg>
+                        <arg>-Xlint:-incubating</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>--add-modules jdk.incubator.json --add-opens java.base/java.util=ALL-UNNAMED</argLine>
+                    <classpathDependencyExcludes>
+                        <classpathDependencyExclude>net.javacrumbs.json-unit:json-unit-core</classpathDependencyExclude>
+                    </classpathDependencyExcludes>
+                    <additionalClasspathElements>
+                        <additionalClasspathElement>${project.parent.basedir}/../json-unit-core/target/json-unit-core-${project.version}.jar</additionalClasspathElement>
+                    </additionalClasspathElements>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
