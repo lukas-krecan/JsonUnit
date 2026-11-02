@@ -25,6 +25,18 @@
         <module>test-wiremock</module>
     </modules>
 
+    <profiles>
+        <profile>
+            <id>simple-json-incubator</id>
+            <activation>
+                <jdk>[28,29)</jdk>
+            </activation>
+            <modules>
+                <module>test-simplejson</module>
+            </modules>
+        </profile>
+    </profiles>
+
     <build>
         <plugins>
             <plugin>

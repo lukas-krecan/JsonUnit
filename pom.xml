@@ -249,6 +249,7 @@
                         <artifact>test-kotlin</artifact>
                         <artifact>test-moshi</artifact>
                         <artifact>test-no-hamcrest</artifact>
+                        <artifact>test-simplejson</artifact>
                         <artifact>test-wiremock</artifact>
                     </excludeArtifacts>
                 </configuration>
@@ -363,6 +364,27 @@
             </activation>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-enforcer-plugin</artifactId>
+                        <inherited>false</inherited>
+                        <executions>
+                            <execution>
+                                <id>require-java-28-for-release</id>
+                                <goals>
+                                    <goal>enforce</goal>
+                                </goals>
+                                <configuration>
+                                    <rules>
+                                        <requireJavaVersion>
+                                            <version>[28,)</version>
+                                            <message>Publishing JsonUnit requires JDK 28 or newer.</message>
+                                        </requireJavaVersion>
+                                    </rules>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
