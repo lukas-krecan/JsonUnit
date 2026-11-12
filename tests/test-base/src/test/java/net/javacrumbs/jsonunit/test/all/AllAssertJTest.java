@@ -38,7 +38,7 @@ public class AllAssertJTest extends AbstractAssertJTest {
 
     @Test
     void embeddedJsonShouldBeParsed() {
-        String actual = "{" + "\"response\": {"
+        String actual = "{\"response\": {"
                 + "\"body\": \"{'message':'Success','time-sent':'2018-12-10T14:49:11.537Z[GMT]'}\""
                 + "}"
                 + "}";

@@ -375,7 +375,7 @@ public abstract class AbstractJsonMatchersTest {
 
     @Test
     void nullPointerExceptionTest() {
-        String message = "{" + "     \"properties\":{" + "         \"attr\":\"123\"" + "     }" + "}";
+        String message = "{     \"properties\":{         \"attr\":\"123\"     }}";
         String path = "properties.another[0]";
         String expected = "VALUE";
         jsonPartEquals(path, expected).matches(message);

@@ -172,7 +172,7 @@ public abstract class AbstractAssertJTest {
 
         @Test
         void containsEntryShouldWork() {
-            String entryValue = "{\n" + "  \"approvable\" : true," + "  \"rejectable\" : false" + "}";
+            String entryValue = "{\n  \"approvable\" : true,  \"rejectable\" : false}";
 
             String input = "[{\"allowedActions\":" + entryValue + "}]";
 
@@ -894,7 +894,7 @@ public abstract class AbstractAssertJTest {
 
         @Test
         void testArrayElements() {
-            String json = "[ [ \"a\", \"b\", \"c\", \"d\"," + " \"e\", \"f\", \"g\", \"h\", \"i\" ] ]";
+            String json = "[ [ \"a\", \"b\", \"c\", \"d\", \"e\", \"f\", \"g\", \"h\", \"i\" ] ]";
 
             assertThatJson(json)
                     .inPath("$.[0]")
@@ -1869,12 +1869,12 @@ public abstract class AbstractAssertJTest {
 
         @Test
         public void ignoredJsonPathComplex() {
-            assertThatJson("{\"fields\":[" + "{\"key\":1, \"name\":\"AA\"},"
+            assertThatJson("{\"fields\":[{\"key\":1, \"name\":\"AA\"},"
                             + "{\"key\":2, \"name\":\"AB\"},"
                             + "{\"key\":3, \"name\":\"AC\"}"
                             + "]}")
                     .whenIgnoringPaths("$.fields[?(@.name=='AA')].key")
-                    .isEqualTo("{\"fields\":[" + "{\"key\":2, \"name\":\"AA\"},"
+                    .isEqualTo("{\"fields\":[{\"key\":2, \"name\":\"AA\"},"
                             + "{\"key\":2, \"name\":\"AB\"},"
                             + "{\"key\":3, \"name\":\"AC\"}"
                             + "]}");
