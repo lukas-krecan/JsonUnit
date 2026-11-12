@@ -829,7 +829,7 @@ public class Diff {
                 String normalizedExpected = toNormalizedString(expectedRoot, MISSING_NODE);
                 String normalizedActual = toNormalizedString(actualRoot, expectedRoot);
                 throw new AssertionFailedError(
-                        "JSON documents are different: expected <" + normalizedExpected + ">" + "but was <"
+                        "JSON documents are different: expected <" + normalizedExpected + ">but was <"
                                 + normalizedActual + ">",
                         normalizedExpected,
                         normalizedActual);
