@@ -2195,6 +2195,18 @@ public abstract class AbstractAssertJTest {
                         Different value found in node "a.a1", expected: <2> but was: <1>.
                         """);
         }
+
+        @Test
+        void shouldFailFastOnMissingNode() {
+            assertThatThrownBy(() -> assertThatJson("{\"a\":1}")
+                            .withOptions(Option.FAIL_FAST)
+                            .node("b")
+                            .isEqualTo(1))
+                    .hasMessage("""
+                        JSON documents are different:
+                        Missing node in path "b".
+                        """);
+        }
     }
 
     @Nested
