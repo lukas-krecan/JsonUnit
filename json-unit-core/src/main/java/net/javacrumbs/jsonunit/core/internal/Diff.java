@@ -165,17 +165,17 @@ public class Diff {
         if (!compared) {
             Node part = startPath.getNode(actualRoot);
             Context context = new Context(expectedRoot, part, startPath, startPath, configuration);
-            if (part.isMissingNode()) {
-                if (!isMissingOrNullPlaceholder(expectedRoot)) {
-                    addDifference(context, "Missing node in path \"%s\".", startPath);
-                    reportDifference(missing(context));
-                }
-            } else {
-                try {
+            try {
+                if (part.isMissingNode()) {
+                    if (!isMissingOrNullPlaceholder(expectedRoot)) {
+                        reportDifference(missing(context));
+                        addDifference(context, "Missing node in path \"%s\".", startPath);
+                    }
+                } else {
                     compareNodes(context);
-                } catch (FailedFastException e) {
-                    // ignore, the difference is already in the `differences` list.
                 }
+            } catch (FailedFastException e) {
+                // ignore, the difference is already in the `differences` list.
             }
             compared = true;
 
@@ -730,9 +730,8 @@ public class Diff {
     }
 
     private void addAndReportDifference(Context context, String message, @Nullable Object... arguments) {
-        addDifference(context, message, arguments);
         reportDifference(DifferenceImpl.different(context));
-        possiblyFailFast(context);
+        addDifference(context, message, arguments);
     }
 
     /**
