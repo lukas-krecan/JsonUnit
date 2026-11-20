@@ -386,6 +386,37 @@ public class DifferenceTest {
     }
 
     @Test
+    void shouldBeAwareOfRootMissingElementWhenFailingFast() {
+        Diff diff = Diff.create(
+                "foo", "{\"test\":-1}", "", "path.node", commonConfig().withOptions(FAIL_FAST));
+        assertThat(diff.similar()).isFalse();
+        assertThat(diff.differences()).contains("Missing node in path \"path.node\".");
+
+        assertThat(listener.getDifferenceList()).hasSize(1);
+        Difference difference = listener.getDifferenceList().get(0);
+        assertThat(difference.getType()).isEqualTo(MISSING);
+        assertThat(difference.getExpectedPath()).isEqualTo("path.node");
+    }
+
+    @Test
+    void shouldSeeChangedNodeWhenFailingFast() {
+        Diff diff = Diff.create(
+                "{\"a\": 1, \"b\": 1}",
+                "{\"a\": 2, \"b\": 2}",
+                "",
+                "",
+                commonConfig().withOptions(FAIL_FAST));
+        assertThat(diff.similar()).isFalse();
+
+        assertThat(listener.getDifferenceList()).hasSize(1);
+        Difference difference = listener.getDifferenceList().get(0);
+        assertThat(difference.getType()).isEqualTo(DIFFERENT);
+        assertThat(difference.getActualPath()).isEqualTo("a");
+        assertThat(difference.getExpected()).isEqualTo(valueOf(1));
+        assertThat(difference.getActual()).isEqualTo(valueOf(2));
+    }
+
+    @Test
     void shouldWorkWhenExtraArrayItemsAreNotAllowed() {
         Diff diff = Diff.create(
                 "{\"test\": [2, 3]}",
