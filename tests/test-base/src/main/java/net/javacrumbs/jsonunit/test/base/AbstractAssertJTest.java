@@ -2202,10 +2202,19 @@ public abstract class AbstractAssertJTest {
                             .withOptions(Option.FAIL_FAST)
                             .node("b")
                             .isEqualTo(1))
+                    .isInstanceOf(AssertionFailedError.class)
                     .hasMessage("""
                         JSON documents are different:
                         Missing node in path "b".
                         """);
+        }
+
+        @Test
+        void shouldAcceptMissingOrNullOnMissingNodeWhenFailingFast() {
+            assertThatJson("{\"a\":1}")
+                    .withOptions(Option.FAIL_FAST)
+                    .node("b")
+                    .isEqualTo("${json-unit.missing-or-null}");
         }
     }
 
