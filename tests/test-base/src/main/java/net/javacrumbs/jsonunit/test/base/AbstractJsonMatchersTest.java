@@ -40,6 +40,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -110,6 +111,11 @@ public abstract class AbstractJsonMatchersTest {
     @Test
     void testJsonPartMatchesArray() {
         assertThat("{\"test\":[1, 2, 3]}", jsonPartMatches("test", hasItems(valueOf(1), valueOf(2), valueOf(3))));
+    }
+
+    @Test
+    void testJsonPartMatchesRootArray() {
+        assertThat("[\"red\",\"blue\"]", jsonPartMatches("", hasSize(2)));
     }
 
     @Test
