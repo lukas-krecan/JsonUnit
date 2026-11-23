@@ -191,19 +191,11 @@ assertThat("{\"test\":{\"a\":1, \"b\":2, \"c\":3}}",
     jsonEquals("{\"test\":{\"b\":2}}").when(IGNORING_EXTRA_FIELDS));
 
 // Can use other Hamcrest matchers too
+assertThat("[\"red\",\"blue\"]", jsonMatches(hasSize(2)));
+
 assertThat("{\"test\":1}", jsonPartMatches("test", is(valueOf(1))))
 
 assertThat("{\"test\":1}", jsonEquals(resource("test.json")));
-```
-
-When the JSON document itself is an array, pass an empty path (`""`) to `jsonPartMatches` to apply a Hamcrest matcher to the root array.
-
-```java
-import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartMatches;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasSize;
-
-assertThat("[\"red\",\"blue\"]", jsonPartMatches("", hasSize(2)));
 ```
 
 To use import
