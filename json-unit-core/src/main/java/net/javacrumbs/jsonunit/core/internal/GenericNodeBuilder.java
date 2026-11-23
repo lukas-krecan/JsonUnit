@@ -54,8 +54,8 @@ class GenericNodeBuilder implements NodeBuilder {
             return new ArrayNode(toDoubleList(doubles), this);
         } else if (object instanceof boolean[] booleans) {
             return new ArrayNode(toBoolList(booleans), this);
-        } else if (object instanceof List) {
-            return new ArrayNode((List<?>) object, this);
+        } else if (object instanceof List<?> list) {
+            return new ArrayNode(list, this);
         } else if (object instanceof Node node) {
             return node;
         } else {
