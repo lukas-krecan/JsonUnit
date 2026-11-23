@@ -76,6 +76,13 @@ public class JsonMatchers {
     }
 
     /**
+     * Applies matcher to the JSON.
+     */
+    public static <T> Matcher<T> jsonMatches(Matcher<?> matcher) {
+        return jsonPartMatches("", matcher);
+    }
+
+    /**
      * Are the JSONs equivalent?
      * <p>
      * This method exist only for those cases, when you need to use it as Matcher&lt;String&gt; and Java refuses to

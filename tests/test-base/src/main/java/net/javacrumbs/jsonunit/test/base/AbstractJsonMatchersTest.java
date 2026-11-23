@@ -18,6 +18,7 @@ package net.javacrumbs.jsonunit.test.base;
 import static java.math.BigDecimal.valueOf;
 import static java.util.Collections.singletonList;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonEquals;
+import static net.javacrumbs.jsonunit.JsonMatchers.jsonMatches;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodeAbsent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonNodePresent;
 import static net.javacrumbs.jsonunit.JsonMatchers.jsonPartEquals;
@@ -114,8 +115,8 @@ public abstract class AbstractJsonMatchersTest {
     }
 
     @Test
-    void testJsonPartMatchesRootArray() {
-        assertThat("[\"red\",\"blue\"]", jsonPartMatches("", hasSize(2)));
+    void testJsonMatchesRootArray() {
+        assertThat("[\"red\",\"blue\"]", jsonMatches(hasSize(2)));
     }
 
     @Test
