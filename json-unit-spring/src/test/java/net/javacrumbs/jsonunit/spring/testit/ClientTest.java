@@ -22,20 +22,26 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 
 class ClientTest {
     private static final String URI = "/sample";
-    private final RestTemplate restTemplate = new RestTemplate();
-
-    private final MockRestServiceServer mockServer = MockRestServiceServer.createServer(restTemplate);
+    private final RestClient restClient;
+    private final MockRestServiceServer mockServer;
 
     private final String jsonResponse = "{\"response\": \"€\"}";
     private final String json = "{\"test\": 1}";
+
+    ClientTest() {
+        RestClient.Builder builder = RestClient.builder();
+        mockServer = MockRestServiceServer.bindTo(builder).build();
+        restClient = builder.build();
+    }
 
     @Test
     void shouldAssertClient() {
@@ -44,8 +50,7 @@ class ClientTest {
                 .andExpect(json().isEqualTo(json))
                 .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
 
-        assertThat(restTemplate.postForEntity(URI, json, String.class).getBody())
-                .isEqualTo(jsonResponse);
+        assertThat(postJson()).isEqualTo(jsonResponse);
     }
 
     @Test
@@ -55,11 +60,10 @@ class ClientTest {
                 .andExpect(json().isEqualTo("[]"))
                 .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
 
-        assertThatThrownBy(() -> restTemplate.postForEntity(URI, json, String.class))
-                .hasMessage("""
-                    JSON documents are different:
-                    Different value found in node "", expected: <[]> but was: <{"test":1}>.
-                    """);
+        assertThatThrownBy(this::postJson).hasMessage("""
+            JSON documents are different:
+            Different value found in node "", expected: <[]> but was: <{"test":1}>.
+            """);
     }
 
     @Test
@@ -70,8 +74,7 @@ class ClientTest {
                 .andExpect(json().node("test").withTolerance(0.1).isEqualTo(0.99))
                 .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
 
-        assertThat(restTemplate.postForEntity(URI, json, String.class).getBody())
-                .isEqualTo(jsonResponse);
+        assertThat(postJson()).isEqualTo(jsonResponse);
     }
 
     @Test
@@ -82,7 +85,10 @@ class ClientTest {
                 .andExpect(json().inPath("$.test").isEqualTo(1))
                 .andRespond(withSuccess(jsonResponse, MediaType.APPLICATION_JSON));
 
-        assertThat(restTemplate.postForEntity(URI, json, String.class).getBody())
-                .isEqualTo(jsonResponse);
+        assertThat(postJson()).isEqualTo(jsonResponse);
+    }
+
+    private @Nullable String postJson() {
+        return restClient.post().uri(URI).body(json).retrieve().body(String.class);
     }
 }
