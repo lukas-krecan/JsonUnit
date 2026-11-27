@@ -12,6 +12,7 @@
             jakarta.json;resolution:=optional,
             com.google.gson;resolution:=optional,
             com.squareup.moshi;resolution:=optional,
+            jdk.incubator.json;resolution:=optional,
             org.jspecify.annotations;resolution:=optional,
             *
         </osgi.importPackage>
@@ -152,6 +153,66 @@
                     </bndruns>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Multi-Release>true</Multi-Release>
+                    </instructions>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>simple-json-incubator</id>
+            <activation>
+                <jdk>[28,29)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-jar-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>jar-for-simple-json-tests</id>
+                                <phase>process-test-classes</phase>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>compile-simple-json-incubator</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <release>28</release>
+                                    <multiReleaseOutput>true</multiReleaseOutput>
+                                    <compileSourceRoots>
+                                        <compileSourceRoot>${project.basedir}/src/main/java28</compileSourceRoot>
+                                    </compileSourceRoots>
+                                    <compilerArgs combine.self="override">
+                                        <arg>--add-modules</arg>
+                                        <arg>jdk.incubator.json</arg>
+                                        <arg>-Xlint:-incubating</arg>
+                                    </compilerArgs>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

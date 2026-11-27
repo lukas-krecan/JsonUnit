@@ -40,6 +40,8 @@ record Converter(List<NodeFactory> factories) {
 
     private static final boolean johnzonPresent = isClassPresent("org.apache.johnzon.mapper.Mapper");
 
+    private static final boolean simpleJsonIncubatorPresent = isClassPresent("jdk.incubator.json.JsonValue");
+
     Converter {
         if (factories.isEmpty()) {
             throw new IllegalStateException("List of factories can not be empty");
@@ -78,6 +80,7 @@ record Converter(List<NodeFactory> factories) {
                 case "jackson3" -> factories.add(new Jackson3NodeFactory());
                 case "gson" -> factories.add(new GsonNodeFactory());
                 case "johnzon" -> factories.add(new JohnzonNodeFactory());
+                case "simple-json-incubator" -> factories.add(new SimpleJsonApiIncubatorNodeFactory());
                 default -> throw new IllegalArgumentException("'" + factoryName + "' library name not recognized.");
             }
         }
@@ -86,6 +89,10 @@ record Converter(List<NodeFactory> factories) {
 
     private static List<NodeFactory> createDefaultFactories() {
         List<NodeFactory> factories = new ArrayList<>();
+        if (simpleJsonIncubatorPresent) {
+            factories.add(new SimpleJsonApiIncubatorNodeFactory());
+        }
+
         if (moshiPresent) {
             factories.add(new MoshiNodeFactory());
         }
@@ -109,6 +116,7 @@ record Converter(List<NodeFactory> factories) {
         if (jackson2Present) {
             factories.add(new Jackson2NodeFactory());
         }
+
         return factories;
     }
 
